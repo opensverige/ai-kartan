@@ -1,8 +1,34 @@
 {
-  "generated_at": "2026-10-04T21:57:39Z",
-  "antal": 298,
+  "generated_at": "2026-10-04T21:59:01Z",
+  "antal": 300,
   "senaste_andring": "2026-10-04",
   "rader": [
+    {
+      "datum": "2026-10-04",
+      "commit": "065dca83ab",
+      "id": "glesys",
+      "namn": "Glesys",
+      "falt": "kommun",
+      "andring": "ny status",
+      "gammalt": "1382",
+      "nytt": "1382",
+      "status": "confirmed",
+      "gammal_status": "claimed",
+      "kalla": "https://www.allabolag.se/5566479241"
+    },
+    {
+      "datum": "2026-10-04",
+      "commit": "065dca83ab",
+      "id": "glesys",
+      "namn": "Glesys",
+      "falt": "org_number",
+      "andring": "ny status",
+      "gammalt": "556647-9241",
+      "nytt": "556647-9241",
+      "status": "confirmed",
+      "gammal_status": "claimed",
+      "kalla": "https://www.allabolag.se/5566479241"
+    },
     {
       "datum": "2026-10-04",
       "commit": "1878d5a5c2",
