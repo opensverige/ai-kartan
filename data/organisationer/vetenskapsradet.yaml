@@ -1,0 +1,92 @@
+id: vetenskapsradet
+
+name:
+  value: Vetenskapsrådet
+  status: claimed
+  source_url: https://www.vr.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: finansiar
+  status: claimed
+  source_url: https://www.vr.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Statlig forskningsfinansiär. Bolagsform enligt allabolag.se: Statlig enhet."
+
+org_number:
+  value: "202100-5208"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/vetenskapsr%C3%A5det/stockholm/offentlig-administration/XF95LKI63IJO
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Visas även på vr.se som Org nr, utan bindestreck.
+
+website: https://www.vr.se
+
+description:
+  value: Statlig forskningsfinansiär inom alla vetenskapsområden. Medfinansierar en nordisk satsning på forskning om ansvarsfull användning av AI.
+  status: claimed
+  source_url: https://www.vr.se/aktuellt/nyheter/nyhetsarkiv/2025-12-02-17-projekt-far-bidrag-for-forskning-om-ansvarsfull-anvandning-av-ai.html
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [finansiering]
+  status: claimed
+  source_url: https://www.vr.se/aktuellt/nyheter/nyhetsarkiv/2025-12-02-17-projekt-far-bidrag-for-forskning-om-ansvarsfull-anvandning-av-ai.html
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://www.vr.se/aktuellt/nyheter/nyhetsarkiv/2025-12-02-17-projekt-far-bidrag-for-forskning-om-ansvarsfull-anvandning-av-ai.html
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/vetenskapsr%C3%A5det/stockholm/offentlig-administration/XF95LKI63IJO
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+founded:
+  value: 2001
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/vetenskapsr%C3%A5det/stockholm/offentlig-administration/XF95LKI63IJO
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2001-02-16."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/vetenskapsr%C3%A5det/stockholm/offentlig-administration/XF95LKI63IJO
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.vr.se/aktuellt/nyheter/nyhetsarkiv/2025-12-02-17-projekt-far-bidrag-for-forskning-om-ansvarsfull-anvandning-av-ai.html
+    kind: program
+    title: "Nyhet 2025-12-02: 17 projekt får bidrag för forskning om ansvarsfull användning av AI"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Nordforsk-utlysning där Vetenskapsrådet är en av finansiärerna.
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

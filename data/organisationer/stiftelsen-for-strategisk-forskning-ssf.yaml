@@ -1,0 +1,102 @@
+id: stiftelsen-for-strategisk-forskning-ssf
+
+name:
+  value: Stiftelsen för strategisk forskning (SSF)
+  status: claimed
+  source_url: https://strategiska.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Stiftelsen för strategisk forskning
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/stiftelsen-f%C3%B6r-strategisk-forskning/stockholm/forskning/3ON09VBI5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: finansiar
+  status: claimed
+  source_url: https://strategiska.se/om-ssf/ssfs-bakgrund/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Forskningsstiftelse inrättad efter beslut av riksdag och regering. Bolagsform enligt allabolag.se: Övriga stiftelser eller fonder."
+
+org_number:
+  value: "802017-9191"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/stiftelsen-f%C3%B6r-strategisk-forskning/stockholm/forskning/3ON09VBI5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://strategiska.se
+
+description:
+  value: Forskningsstiftelse som finansierar forskning inom naturvetenskap, teknik och medicin, bland annat AI-forskning och ett utlyst centrum för cyberresiliens i AI-system.
+  status: claimed
+  source_url: https://strategiska.se/pressmeddelande/ssf-satsar-60-miljoner-pa-cyberresiliens-for-ai-system/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [finansiering]
+  status: claimed
+  source_url: https://strategiska.se/pressmeddelande/ssf-satsar-60-miljoner-pa-cyberresiliens-for-ai-system/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell, forsvar_sakerhet]
+  status: claimed
+  source_url: https://strategiska.se/pressmeddelande/ssf-satsar-60-miljoner-pa-cyberresiliens-for-ai-system/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/stiftelsen-f%C3%B6r-strategisk-forskning/stockholm/forskning/3ON09VBI5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+founded:
+  value: 1994
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/stiftelsen-f%C3%B6r-strategisk-forskning/stockholm/forskning/3ON09VBI5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 1994-01-08. Stämmer med SSF:s egen historik (inrättad 3 januari 1994)."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/stiftelsen-f%C3%B6r-strategisk-forskning/stockholm/forskning/3ON09VBI5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://strategiska.se/pressmeddelande/ssf-satsar-60-miljoner-pa-cyberresiliens-for-ai-system/
+    kind: program
+    title: "Pressmeddelande: SSF satsar 60 miljoner kronor på cyberresiliens för AI-system"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Anger också över 600 miljoner kronor investerade i AI-relaterad forskning och cybersäkerhet de senaste tio åren.
+
+links:
+  linkedin: https://www.linkedin.com/company/stiftelsen-f%C3%B6r-strategisk-forskning-ssf
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

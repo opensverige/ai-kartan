@@ -1,0 +1,99 @@
+id: vinnova
+
+name:
+  value: Vinnova
+  status: claimed
+  source_url: https://www.vinnova.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Verket för innovationssystem
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/verket-f%C3%B6r-innovationssystem/stockholm/offentlig-administration/XF95LSI63IJO
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: finansiar
+  status: claimed
+  source_url: https://www.vinnova.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Statlig innovationsmyndighet som finansierar innovation. Bolagsform enligt allabolag.se: Statlig enhet."
+
+org_number:
+  value: "202100-5216"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/verket-f%C3%B6r-innovationssystem/stockholm/offentlig-administration/XF95LSI63IJO
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://www.vinnova.se
+
+description:
+  value: Statlig innovationsmyndighet som finansierar AI-satsningar, bland annat AI Sweden och en kraftsamling för AI i kommuner och civilsamhälle.
+  status: claimed
+  source_url: https://www.vinnova.se/innovation/ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [finansiering]
+  status: claimed
+  source_url: https://www.vinnova.se/innovation/ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell, energi_klimat, sprakteknik, offentlig_sektor]
+  status: claimed
+  source_url: https://www.vinnova.se/innovation/ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/verket-f%C3%B6r-innovationssystem/stockholm/offentlig-administration/XF95LSI63IJO
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+founded:
+  value: 2000
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/verket-f%C3%B6r-innovationssystem/stockholm/offentlig-administration/XF95LSI63IJO
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2000-12-14."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/verket-f%C3%B6r-innovationssystem/stockholm/offentlig-administration/XF95LSI63IJO
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.vinnova.se/innovation/ai/
+    kind: program
+    title: Vinnovas AI-satsningar
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Visar bland annat satsningen på AI Sweden och kraftsamlingen för AI i kommuner och civilsamhälle.
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

@@ -1,0 +1,100 @@
+id: almi-invest
+
+name:
+  value: Almi Invest
+  status: claimed
+  source_url: https://www.almi.se/riskkapital/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Almi Invest AB
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/almi-invest-ab/stockholm/finansbolag-finansiella-tj%C3%A4nster/2K298JWI5YE9Q
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: finansiar
+  status: claimed
+  source_url: https://www.almi.se/riskkapital/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Beskriver sig som statligt riskkapitalbolag. Aktiebolag enligt allabolag.se.
+
+org_number:
+  value: "556667-8412"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/almi-invest-ab/stockholm/finansbolag-finansiella-tj%C3%A4nster/2K298JWI5YE9Q
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://www.almi.se/riskkapital/
+
+description:
+  value: Statligt riskkapitalbolag som investerar i startups i tidiga skeden. Portföljen omfattar bland annat AI-bolaget Pickel AI.
+  status: claimed
+  source_url: https://www.almi.se/riskkapital/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Pickel AI framgår av belägget https://www.almi.se/riskkapital/portfolio/pickel-ai/.
+
+offers:
+  value: [finansiering]
+  status: claimed
+  source_url: https://www.almi.se/riskkapital/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://www.almi.se/riskkapital/portfolio/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/almi-invest-ab/stockholm/finansbolag-finansiella-tj%C3%A4nster/2K298JWI5YE9Q
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+founded:
+  value: 2004
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/almi-invest-ab/stockholm/finansbolag-finansiella-tj%C3%A4nster/2K298JWI5YE9Q
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2004-10-07."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/almi-invest-ab/stockholm/finansbolag-finansiella-tj%C3%A4nster/2K298JWI5YE9Q
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.almi.se/riskkapital/portfolio/pickel-ai/
+    kind: portfolj
+    title: "Portföljbolaget Pickel AI: AI-driven plattform för laddoperatörer"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Almi Invest gick in i bolaget 2026 enligt sidan.
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

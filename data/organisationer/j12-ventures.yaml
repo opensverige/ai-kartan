@@ -1,0 +1,104 @@
+id: j12-ventures
+
+name:
+  value: J12 Ventures
+  status: claimed
+  source_url: https://www.j12ventures.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: J12 Ventures AB
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/j12-ventures-ab/stockholm/f%C3%B6retagsutveckling/2K43590I5YEHU
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kopplingen till varumärket bygger på namn och säte. J12:s webbplats anger inte juridisk person på de sidor som granskats.
+
+type:
+  value: finansiar
+  status: claimed
+  source_url: https://www.j12ventures.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Beskriver sig som ett tesdrivet venture capital-bolag som investerar tidigt i data- och AI-bolag.
+
+org_number:
+  value: "556975-3428"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/j12-ventures-ab/stockholm/f%C3%B6retagsutveckling/2K43590I5YEHU
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Avser J12 Ventures AB. Kopplingen till varumärket bygger på namn och säte.
+
+website: https://www.j12ventures.com
+
+description:
+  value: Riskkapitalbolag som investerar tidigt i europeiska bolag inom data och AI, från infrastruktur och utvecklarverktyg till domänspecifika tillämpningar.
+  status: claimed
+  source_url: https://www.j12ventures.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [finansiering]
+  status: claimed
+  source_url: https://www.j12ventures.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://www.j12ventures.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/j12-ventures-ab/stockholm/f%C3%B6retagsutveckling/2K43590I5YEHU
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+founded:
+  value: 2014
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/j12-ventures-ab/stockholm/f%C3%B6retagsutveckling/2K43590I5YEHU
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2014-06-25."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/j12-ventures-ab/stockholm/f%C3%B6retagsutveckling/2K43590I5YEHU
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.j12ventures.com/portfolio
+    kind: portfolj
+    title: Portfölj av data- och AI-bolag
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: "Sidans beskrivning: portfölj av data- och AI-bolag i Europa."
+
+links:
+  linkedin: https://www.linkedin.com/company/j12ventures/
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

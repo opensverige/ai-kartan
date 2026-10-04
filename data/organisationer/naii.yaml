@@ -1,0 +1,107 @@
+id: naii
+
+name:
+  value: Nordic Artificial Intelligence Institute (NAII)
+  status: claimed
+  source_url: https://www.nordicaiinstitute.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Nordic Artificial Intelligence Institute
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/nordic-artificial-intelligence-institute/stockholm/f%C3%B6reningar/3OPXFWQI63IGG
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: community
+  status: claimed
+  source_url: https://www.nordicaiinstitute.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Beskriver sig som ett ideellt expertnätverk. Ideell förening enligt allabolag.se.
+
+org_number:
+  value: "802508-5898"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/nordic-artificial-intelligence-institute/stockholm/f%C3%B6reningar/3OPXFWQI63IGG
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://www.nordicaiinstitute.com
+
+description:
+  value: Ideell expertorganisation med AI-forskare och praktiker. Publicerar analyser och rapporter om AI-strategi och håller workshops och briefingar för ledningsgrupper. Säljer inga AI-produkter.
+  status: claimed
+  source_url: https://www.nordicaiinstitute.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [forskning, utbildning, community]
+  status: claimed
+  source_url: https://www.nordicaiinstitute.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://www.nordicaiinstitute.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0184"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/nordic-artificial-intelligence-institute/stockholm/f%C3%B6reningar/3OPXFWQI63IGG
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Solna. Webbplatsen anger Stockholm."
+
+founded:
+  value: 2017
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/nordic-artificial-intelligence-institute/stockholm/f%C3%B6reningar/3OPXFWQI63IGG
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2017-04-28."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/nordic-artificial-intelligence-institute/stockholm/f%C3%B6reningar/3OPXFWQI63IGG
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.nordicaiinstitute.com/signal-12
+    kind: publikation
+    title: "NAII Insider Signal nr 12: rapport om AI-suveränitet och AI-driftsättning i Europa"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://www.nordicaiinstitute.com/news-and-blog
+    kind: publikation
+    title: "Research & Insights: rapporter, whitepaper och föredrag"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/nordic-artificial-intelligence-institute
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

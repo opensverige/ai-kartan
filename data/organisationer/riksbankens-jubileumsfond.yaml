@@ -1,0 +1,101 @@
+id: riksbankens-jubileumsfond
+
+name:
+  value: Riksbankens Jubileumsfond
+  status: claimed
+  source_url: https://www.rj.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Stiftelsen Riksbankens Jubileumsfond
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/stiftelsen-riksbankens-jubileumsfond/stockholm/f%C3%B6reningar/3OMZ16KI63IGG
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Stämmer med stadgarna på https://www.rj.se/Var-organisation/Stadgar/.
+
+type:
+  value: finansiar
+  status: claimed
+  source_url: https://www.rj.se/Var-organisation/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Fristående stiftelse som finansierar forskning. Bolagsform enligt allabolag.se: Övriga stiftelser eller fonder."
+
+org_number:
+  value: "802012-1276"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/stiftelsen-riksbankens-jubileumsfond/stockholm/f%C3%B6reningar/3OMZ16KI63IGG
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Visas även på https://www.rj.se/Var-organisation/Kontakt/.
+
+website: https://www.rj.se
+
+description:
+  value: Forskningsstiftelse som finansierar humanistisk och samhällsvetenskaplig forskning, bland annat projekt om samspelet mellan människa och AI.
+  status: claimed
+  source_url: https://www.rj.se/en/grants/2024/collective-innovation-augmenting-cumulative-cultural-evolution-through-human-ai-collaboration/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [finansiering]
+  status: claimed
+  source_url: https://www.rj.se/en/grants/2024/collective-innovation-augmenting-cumulative-cultural-evolution-through-human-ai-collaboration/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://www.rj.se/en/grants/2024/collective-innovation-augmenting-cumulative-cultural-evolution-through-human-ai-collaboration/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/stiftelsen-riksbankens-jubileumsfond/stockholm/f%C3%B6reningar/3OMZ16KI63IGG
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+founded:
+  value: 1964
+  status: claimed
+  source_url: https://www.rj.se/Var-organisation/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Sidan anger att riksdagen beslutade 2 december 1964 att inrätta stiftelsen. Allabolag.se anger registreringsdatum 1986-05-21.
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/stiftelsen-riksbankens-jubileumsfond/stockholm/f%C3%B6reningar/3OMZ16KI63IGG
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.rj.se/en/grants/2024/collective-innovation-augmenting-cumulative-cultural-evolution-through-human-ai-collaboration/
+    kind: case
+    title: "RJ-bidrag 2024: Collective Innovation, samarbete mellan människa och AI"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Projektbidrag på 4 042 442 kronor enligt sidan.
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

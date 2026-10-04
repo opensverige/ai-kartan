@@ -1,0 +1,106 @@
+id: internetstiftelsen
+
+name:
+  value: Internetstiftelsen
+  status: claimed
+  source_url: https://internetstiftelsen.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Stiftelsen för Internetinfrastruktur
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/stiftelsen-f%C3%B6r-internetinfrastruktur/stockholm/datacenters/3OPB8R2I5YDLG
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: finansiar
+  status: claimed
+  source_url: https://internetstiftelsen.se/kunskap/for-samhallet/internetstiftelsen-stottar/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Stiftelse som finansierar forskning, projekt och företag med inriktning på internet. Bolagsform enligt allabolag.se: Övriga stiftelser eller fonder."
+
+org_number:
+  value: "802405-0190"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/stiftelsen-f%C3%B6r-internetinfrastruktur/stockholm/datacenters/3OPB8R2I5YDLG
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Visas även i sidfoten på internetstiftelsen.se.
+
+website: https://internetstiftelsen.se
+
+description:
+  value: Stiftelse som ansvarar för toppdomänen .se och finansierar internetrelaterade projekt. Driver tillsammans med KTH en nationell fortbildningsserie för lärare om AI och digital kompetens.
+  status: claimed
+  source_url: https://internetstiftelsen.se/om-oss/press/pressmeddelanden/internetstiftelsen-och-kth-i-satsning-pa-lararfortbildning-inom-ai-och-digital-bildning/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [finansiering, utbildning]
+  status: claimed
+  source_url: https://internetstiftelsen.se/om-oss/press/pressmeddelanden/internetstiftelsen-och-kth-i-satsning-pa-lararfortbildning-inom-ai-och-digital-bildning/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [utbildning]
+  status: claimed
+  source_url: https://internetstiftelsen.se/om-oss/press/pressmeddelanden/internetstiftelsen-och-kth-i-satsning-pa-lararfortbildning-inom-ai-och-digital-bildning/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/stiftelsen-f%C3%B6r-internetinfrastruktur/stockholm/datacenters/3OPB8R2I5YDLG
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+founded:
+  value: 1997
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/stiftelsen-f%C3%B6r-internetinfrastruktur/stockholm/datacenters/3OPB8R2I5YDLG
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 1997-12-10."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/stiftelsen-f%C3%B6r-internetinfrastruktur/stockholm/datacenters/3OPB8R2I5YDLG
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://internetstiftelsen.se/om-oss/press/pressmeddelanden/internetstiftelsen-och-kth-i-satsning-pa-lararfortbildning-inom-ai-och-digital-bildning/
+    kind: program
+    title: "Pressmeddelande 2026-04-29: Internetstiftelsen och KTH i satsning på lärarfortbildning inom AI"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://internetkunskap.se/grundkurs-i-ai/
+    kind: resurs
+    title: "Internetkunskap: grundkurs i AI"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Internetkunskap anges som en av Internetstiftelsens satsningar i nyhetsbrevsrutan på internetstiftelsen.se.
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

@@ -1,0 +1,98 @@
+id: iwib4ai
+
+name:
+  value: International WomenX in Business for Ethical AI (IWIB4AI)
+  status: claimed
+  source_url: https://www.iwib4ai.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: community
+  status: claimed
+  source_url: https://www.iwib4ai.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Ideell förening enligt allabolag.se.
+
+org_number:
+  value: "802545-3344"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/international-womenx-in-business-for-ethical-ai-iwib4ai/djursholm/f%C3%B6reningar/3OQ5BFKI63IGG
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Visas även på organisationens egen webbplats (Swedish Non-profit Org. No.).
+
+website: https://www.iwib4ai.com
+
+description:
+  value: Ideell förening som arbetar för etisk AI-användning och arrangerar föredrag, masterclasses och andra evenemang om AI-etik.
+  status: claimed
+  source_url: https://www.iwib4ai.com/events
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [community, utbildning]
+  status: claimed
+  source_url: https://www.iwib4ai.com/events
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://www.iwib4ai.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/international-womenx-in-business-for-ethical-ai-iwib4ai/djursholm/f%C3%B6reningar/3OQ5BFKI63IGG
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+founded:
+  value: 2023
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/international-womenx-in-business-for-ethical-ai-iwib4ai/djursholm/f%C3%B6reningar/3OQ5BFKI63IGG
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2023-12-01."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/international-womenx-in-business-for-ethical-ai-iwib4ai/djursholm/f%C3%B6reningar/3OQ5BFKI63IGG
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.iwib4ai.com/events
+    kind: program
+    title: Evenemang och arkiv över tidigare föredrag om AI-etik
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://iwib4aiethics.lovable.app
+    kind: produkt
+    title: Interaktivt verktyg för utbildning i EU:s principer för pålitlig AI
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Länkas som EU AI Ethics Tool från https://www.iwib4ai.com/blank-5.
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

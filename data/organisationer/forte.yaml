@@ -1,0 +1,100 @@
+id: forte
+
+name:
+  value: Forte
+  status: claimed
+  source_url: https://forte.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Forskningsrådet för hälsa, arbetsliv och välfärd
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/forskningsr%C3%A5det-f%C3%B6r-h%C3%A4lsa-arbetsliv-och-v%C3%A4lf%C3%A4rd/stockholm/forskning/XF95MGI5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: finansiar
+  status: claimed
+  source_url: https://forte.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Statligt forskningsråd som finansierar forskning. Bolagsform enligt allabolag.se: Statlig enhet."
+
+org_number:
+  value: "202100-5240"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/forskningsr%C3%A5det-f%C3%B6r-h%C3%A4lsa-arbetsliv-och-v%C3%A4lf%C3%A4rd/stockholm/forskning/XF95MGI5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Visas även i sidfoten på forte.se.
+
+website: https://forte.se
+
+description:
+  value: Statligt forskningsråd inom hälsa, arbetsliv och välfärd som medfinansierar en nordisk utlysning om ansvarsfull användning av AI.
+  status: claimed
+  source_url: https://forte.se/sok-finansiering/utlysningar/ansvarsfull-anvandning-av-artificiell-intelligens-nordforsk
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [finansiering]
+  status: claimed
+  source_url: https://forte.se/sok-finansiering/utlysningar/ansvarsfull-anvandning-av-artificiell-intelligens-nordforsk
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [halsa, generell]
+  status: claimed
+  source_url: https://forte.se/sok-finansiering/utlysningar/ansvarsfull-anvandning-av-artificiell-intelligens-nordforsk
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/forskningsr%C3%A5det-f%C3%B6r-h%C3%A4lsa-arbetsliv-och-v%C3%A4lf%C3%A4rd/stockholm/forskning/XF95MGI5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+founded:
+  value: 2001
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/forskningsr%C3%A5det-f%C3%B6r-h%C3%A4lsa-arbetsliv-och-v%C3%A4lf%C3%A4rd/stockholm/forskning/XF95MGI5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2001-01-16."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/forskningsr%C3%A5det-f%C3%B6r-h%C3%A4lsa-arbetsliv-och-v%C3%A4lf%C3%A4rd/stockholm/forskning/XF95MGI5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://forte.se/sok-finansiering/utlysningar/ansvarsfull-anvandning-av-artificiell-intelligens-nordforsk
+    kind: program
+    title: "Utlysning: Ansvarsfull användning av artificiell intelligens (NordForsk)"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Forte är en av elva finansiärer i utlysningen.
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

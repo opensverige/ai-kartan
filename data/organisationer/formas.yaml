@@ -1,0 +1,100 @@
+id: formas
+
+name:
+  value: Formas
+  status: claimed
+  source_url: https://formas.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Forskningsrådet för miljö, areella näringar och samhällsbyggande
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/forskningsr%C3%A5det-f-milj%C3%B6-areella-n%C3%A4ringar-och-samh%C3%A4llsbyggande/stockholm/offentlig-administration/XF95M8I63IJO
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Registret skriver "F" för "för". Formas beskriver sig själv som ett statligt forskningsråd för hållbar utveckling.
+
+type:
+  value: finansiar
+  status: claimed
+  source_url: https://formas.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Statligt forskningsråd som finansierar forskning. Bolagsform enligt allabolag.se: Statlig enhet."
+
+org_number:
+  value: "202100-5232"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/forskningsr%C3%A5det-f-milj%C3%B6-areella-n%C3%A4ringar-och-samh%C3%A4llsbyggande/stockholm/offentlig-administration/XF95M8I63IJO
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://formas.se
+
+description:
+  value: Statligt forskningsråd för hållbar utveckling som tillsammans med Vinnova har finansierat åtta projekt om att använda AI för klimatutmaningen.
+  status: claimed
+  source_url: https://formas.se/kunskap-och-fordjupning/nyheter/nyheter/2020-11-10-ai-projekt-ska-mota-klimatutmaningen.html
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [finansiering]
+  status: claimed
+  source_url: https://formas.se/kunskap-och-fordjupning/nyheter/nyheter/2020-11-10-ai-projekt-ska-mota-klimatutmaningen.html
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [energi_klimat, jordbruk_skog]
+  status: claimed
+  source_url: https://formas.se/kunskap-och-fordjupning/nyheter/nyheter/2020-11-10-ai-projekt-ska-mota-klimatutmaningen.html
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/forskningsr%C3%A5det-f-milj%C3%B6-areella-n%C3%A4ringar-och-samh%C3%A4llsbyggande/stockholm/offentlig-administration/XF95M8I63IJO
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+founded:
+  value: 2000
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/forskningsr%C3%A5det-f-milj%C3%B6-areella-n%C3%A4ringar-och-samh%C3%A4llsbyggande/stockholm/offentlig-administration/XF95M8I63IJO
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2000-12-14."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/forskningsr%C3%A5det-f-milj%C3%B6-areella-n%C3%A4ringar-och-samh%C3%A4llsbyggande/stockholm/offentlig-administration/XF95M8I63IJO
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://formas.se/kunskap-och-fordjupning/nyheter/nyheter/2020-11-10-ai-projekt-ska-mota-klimatutmaningen.html
+    kind: program
+    title: "Nyhet 2020-11-10: AI-projekt ska möta klimatutmaningen"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Vinnova och Formas finansierar åtta projekt med sammanlagt 50 miljoner kronor.
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

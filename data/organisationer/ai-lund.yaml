@@ -1,0 +1,89 @@
+id: ai-lund
+
+name:
+  value: AI Lund
+  status: claimed
+  source_url: https://www.ai.lu.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: community
+  status: claimed
+  source_url: https://www.ai.lu.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Öppet nätverk som samordnas av Lunds universitet.
+
+org_number:
+  value: null
+  status: unknown
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Webbplatsen anger inget eget organisationsnummer. Nätverket samordnas av Lunds universitet.
+
+website: https://www.ai.lu.se
+
+description:
+  value: Öppet nätverk vid Lunds universitet för forskning, utbildning och innovation inom AI. Arrangerar seminarier och publicerar inspelningar från evenemang sedan 2018.
+  status: claimed
+  source_url: https://www.ai.lu.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [community, forskning, utbildning]
+  status: claimed
+  source_url: https://www.ai.lu.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://www.ai.lu.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1281"
+  status: claimed
+  source_url: https://www.ai.lu.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Lund enligt sidfoten på webbplatsen. Inget registerutdrag, eftersom nätverket saknar eget organisationsnummer.
+
+active:
+  value: true
+  status: claimed
+  source_url: https://www.ai.lu.se/events
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommande evenemang listade i oktober 2026.
+
+evidence:
+  - url: https://www.ai.lu.se/events
+    kind: program
+    title: Kalender över öppna seminarier, symposier och workshops
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://www.ai.lu.se/tv
+    kind: resurs
+    title: "AI Lund TV: inspelningar och material från evenemang sedan 2018"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/ai-lund/
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

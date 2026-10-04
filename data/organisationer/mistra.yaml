@@ -1,0 +1,103 @@
+id: mistra
+
+name:
+  value: Mistra
+  status: claimed
+  source_url: https://mistra.org/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Stiftelsen för miljöstrategisk forskning
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/stiftelsen-f%C3%B6r-milj%C3%B6strategisk-forskning/stockholm/forskning/3ON09Z0I5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: finansiar
+  status: claimed
+  source_url: https://mistra.org/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Forskningsstiftelse. Bolagsform enligt allabolag.se: Övriga stiftelser eller fonder."
+
+org_number:
+  value: "802017-9324"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/stiftelsen-f%C3%B6r-milj%C3%B6strategisk-forskning/stockholm/forskning/3ON09Z0I5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Visas även på https://mistra.org/kontaktaoss/.
+
+website: https://mistra.org
+
+description:
+  value: Forskningsstiftelse för miljöstrategisk forskning. Har bland annat finansierat en superdatoranläggning för digital skogsforskning där forskare utvecklar kartor med laserdata och AI.
+  status: claimed
+  source_url: https://mistra.org/nyheter/utvecklar-digitala-kartor-med-ai-och-data-fran-nasa/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [finansiering]
+  status: claimed
+  source_url: https://mistra.org/nyheter/utvecklar-digitala-kartor-med-ai-och-data-fran-nasa/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [jordbruk_skog, energi_klimat]
+  status: claimed
+  source_url: https://mistra.org/nyheter/utvecklar-digitala-kartor-med-ai-och-data-fran-nasa/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/stiftelsen-f%C3%B6r-milj%C3%B6strategisk-forskning/stockholm/forskning/3ON09Z0I5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+founded:
+  value: 1994
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/stiftelsen-f%C3%B6r-milj%C3%B6strategisk-forskning/stockholm/forskning/3ON09Z0I5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 1994-03-05. Mistra beskriver sig som nybildad 1994 på https://mistra.org/historien-bakom-mistra/."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/stiftelsen-f%C3%B6r-milj%C3%B6strategisk-forskning/stockholm/forskning/3ON09Z0I5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://mistra.org/nyheter/utvecklar-digitala-kartor-med-ai-och-data-fran-nasa/
+    kind: case
+    title: "Nyhet 2025-11-19: Utvecklar digitala kartor med AI och data från Nasa"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Anläggningen Computational Forestry Lab vid Umeå universitet finansierades med medel från Mistra Digital Forest och Kempestiftelsen.
+
+links:
+  linkedin: https://www.linkedin.com/company/mistra-stiftelsen-f-r-milj-strategisk-forskning
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

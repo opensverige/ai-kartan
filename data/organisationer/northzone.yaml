@@ -1,0 +1,105 @@
+id: northzone
+
+name:
+  value: Northzone
+  status: claimed
+  source_url: https://www.northzone.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Northzone Ventures Sweden AB
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/northzone-ventures-sweden-ab/stockholm/finansbolag-finansiella-tj%C3%A4nster/2K31P3CI5YE9Q
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kopplingen till varumärket bygger på namn och säte. Northzone.com anger inte juridisk person på de sidor som granskats.
+
+type:
+  value: finansiar
+  status: claimed
+  source_url: https://www.northzone.com/about
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Beskriver sig som en venture capital-fond som investerar från seed till tillväxtfas.
+
+org_number:
+  value: "556800-6216"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/northzone-ventures-sweden-ab/stockholm/finansbolag-finansiella-tj%C3%A4nster/2K31P3CI5YE9Q
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Avser Northzone Ventures Sweden AB. Kopplingen till varumärket bygger på namn och säte.
+
+website: https://www.northzone.com
+
+description:
+  value: Riskkapitalbolag med kontor i Stockholm som investerar i bolag i Europa och USA, bland annat AI-bolagen Black Forest Labs, Cusp AI och Tandem Health.
+  status: claimed
+  source_url: https://www.northzone.com/portfolio
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kontor och investeringsregioner framgår av https://www.northzone.com/ och https://www.northzone.com/about.
+
+offers:
+  value: [finansiering]
+  status: claimed
+  source_url: https://www.northzone.com/portfolio
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://www.northzone.com/portfolio
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/northzone-ventures-sweden-ab/stockholm/finansbolag-finansiella-tj%C3%A4nster/2K31P3CI5YE9Q
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+founded:
+  value: 1996
+  status: claimed
+  source_url: https://www.northzone.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Webbplatsen anger verksamhet och investeringar sedan 1996. Northzone Ventures Sweden AB registrerades 2010 enligt allabolag.se.
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/northzone-ventures-sweden-ab/stockholm/finansbolag-finansiella-tj%C3%A4nster/2K31P3CI5YE9Q
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.northzone.com/portfolio
+    kind: portfolj
+    title: Portfölj med AI-bolag som Black Forest Labs, Cusp AI och Tandem Health
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Portföljsidan har ett filter för kategorin AI.
+
+links:
+  linkedin: https://www.linkedin.com/company/northzone/
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

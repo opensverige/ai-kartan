@@ -1,0 +1,90 @@
+id: marianne-och-marcus-wallenbergs-stiftelse
+
+name:
+  value: Marianne och Marcus Wallenbergs Stiftelse
+  status: claimed
+  source_url: https://mmw.wallenberg.org/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: finansiar
+  status: claimed
+  source_url: https://mmw.wallenberg.org/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Stiftelse som stödjer forskning och utbildning inom samhällsvetenskaperna. Bolagsform enligt allabolag.se: Övriga stiftelser eller fonder."
+
+org_number:
+  value: "802004-4270"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/marianne-och-marcus-wallenbergs-stiftelse/stockholm/finansbolag-finansiella-tj%C3%A4nster/3OMXDRII5YE9Q
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://mmw.wallenberg.org
+
+description:
+  value: Forskningsstiftelse inom samhällsvetenskaperna som tillsammans med en annan stiftelse finansierar WASP-HS, ett forskningsprogram om AI, teknik, människa och samhälle.
+  status: claimed
+  source_url: https://mmw.wallenberg.org/projekt/wasp-hs-forskning-om-ai-teknik-manniska-och-samhalle
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [finansiering]
+  status: claimed
+  source_url: https://mmw.wallenberg.org/projekt/wasp-hs-forskning-om-ai-teknik-manniska-och-samhalle
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://mmw.wallenberg.org/projekt/wasp-hs-forskning-om-ai-teknik-manniska-och-samhalle
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/marianne-och-marcus-wallenbergs-stiftelse/stockholm/finansbolag-finansiella-tj%C3%A4nster/3OMXDRII5YE9Q
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+founded:
+  value: 1963
+  status: claimed
+  source_url: https://mmw.wallenberg.org/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Startsidan anger att stiftelsen grundades 1963. Allabolag.se anger registreringsdatum 1971-01-01.
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/marianne-och-marcus-wallenbergs-stiftelse/stockholm/finansbolag-finansiella-tj%C3%A4nster/3OMXDRII5YE9Q
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://mmw.wallenberg.org/projekt/wasp-hs-forskning-om-ai-teknik-manniska-och-samhalle
+    kind: program
+    title: "WASP-HS: forskningsprogram om AI, teknik, människa och samhälle"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

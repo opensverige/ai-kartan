@@ -1,0 +1,103 @@
+id: industrifonden
+
+name:
+  value: Industrifonden
+  status: claimed
+  source_url: https://industrifonden.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Stiftelsen Industrifonden
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/stiftelsen-industrifonden/stockholm/finansbolag-finansiella-tj%C3%A4nster/3OMYD43I5YE9Q
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: finansiar
+  status: claimed
+  source_url: https://industrifonden.com/our-story
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Riskkapitalfond i stiftelseform. Bolagsform enligt allabolag.se: Övriga stiftelser eller fonder."
+
+org_number:
+  value: "802009-0083"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/stiftelsen-industrifonden/stockholm/finansbolag-finansiella-tj%C3%A4nster/3OMYD43I5YE9Q
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://industrifonden.com
+
+description:
+  value: Riskkapitalfond i stiftelseform som investerar i bolag inom bland annat mjukvara, life science och deep tech. Portföljen omfattar AI-bolag som Hopsworks, Apica och Viking Analytics.
+  status: claimed
+  source_url: https://industrifonden.com/portfolio
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Stiftelseformen framgår av https://industrifonden.com/our-story och strategierna (mjukvara, life science, deep tech) av https://industrifonden.com/.
+
+offers:
+  value: [finansiering]
+  status: claimed
+  source_url: https://industrifonden.com/portfolio
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell, industri]
+  status: claimed
+  source_url: https://industrifonden.com/portfolio
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/stiftelsen-industrifonden/stockholm/finansbolag-finansiella-tj%C3%A4nster/3OMYD43I5YE9Q
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+founded:
+  value: 1979
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/stiftelsen-industrifonden/stockholm/finansbolag-finansiella-tj%C3%A4nster/3OMYD43I5YE9Q
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 1979-01-01. Stämmer med Industrifondens egen uppgift om grundande 1979 på https://industrifonden.com/our-story."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/stiftelsen-industrifonden/stockholm/finansbolag-finansiella-tj%C3%A4nster/3OMYD43I5YE9Q
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://industrifonden.com/portfolio
+    kind: portfolj
+    title: Portfölj med AI-bolag som Hopsworks, Apica och Viking Analytics
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Sidan beskriver Apica som byggt på AI/ML-flöden och AI-agenter, Hopsworks som plattform för dataintensiv AI och Viking Analytics som AI-baserad maskinövervakning.
+
+links:
+  linkedin: https://www.linkedin.com/company/industrifonden/
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

@@ -1,0 +1,100 @@
+id: kth-ventures
+
+name:
+  value: KTH Ventures
+  status: claimed
+  source_url: https://kthventures.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: KTH Ventures Aktiebolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/kth-ventures-aktiebolag/stockholm/forskning/2K18UEFI5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Webbplatsen skriver KTH Ventures AB. kthholding.se omdirigerar till kthventures.se.
+
+type:
+  value: finansiar
+  status: claimed
+  source_url: https://kthventures.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Beskriver sig som KTH:s venture capital-bolag.
+
+org_number:
+  value: "556498-0455"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/kth-ventures-aktiebolag/stockholm/forskning/2K18UEFI5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://kthventures.se
+
+description:
+  value: KTH:s riskkapitalbolag som investerar i bolag byggda på KTH:s forskning, bland annat AI-bolag som Amun AI och Orb DB.
+  status: claimed
+  source_url: https://kthventures.se/en/portfolio
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [finansiering]
+  status: claimed
+  source_url: https://kthventures.se/en/portfolio
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://kthventures.se/en/portfolio
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/kth-ventures-aktiebolag/stockholm/forskning/2K18UEFI5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+founded:
+  value: 1994
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/kth-ventures-aktiebolag/stockholm/forskning/2K18UEFI5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 1994-11-03."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/kth-ventures-aktiebolag/stockholm/forskning/2K18UEFI5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://kthventures.se/en/portfolio
+    kind: portfolj
+    title: Portfölj med AI-bolag som Amun AI och Orb DB
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Portföljsidan har kategorin Artificial Intelligence.
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

@@ -1,0 +1,95 @@
+id: creandum
+
+name:
+  value: Creandum
+  status: claimed
+  source_url: https://creandum.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Creandum Fund Manager AB
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/creandum-fund-manager-ab/stockholm/finansbolag-finansiella-tj%C3%A4nster/2KIPWIMI5YE9Q
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Förvaltare av Creandums svenska fonder enligt https://creandum.com/misc/legals/. Äldre fonder är hemmahörande på Guernsey.
+
+type:
+  value: finansiar
+  status: claimed
+  source_url: https://creandum.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Riskkapitalbolag som stödjer tidiga bolag enligt webbplatsen.
+
+org_number:
+  value: "559432-9822"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/creandum-fund-manager-ab/stockholm/finansbolag-finansiella-tj%C3%A4nster/2KIPWIMI5YE9Q
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Avser Creandum Fund Manager AB (förvaltare av de svenska fonderna enligt https://creandum.com/misc/legals/). Stockholmskontoret anges på https://creandum.com/contact/ som Creandum VII Advisor AB, ej kontrollerat mot register.
+
+website: https://creandum.com
+
+description:
+  value: Riskkapitalbolag med kontor i Stockholm som investerar i tidiga bolag, bland annat AI-infrastrukturbolaget Hosted·ai.
+  status: claimed
+  source_url: https://creandum.com/stories/backing-hosted-ai-the-neoclouds-silver-lining/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Tidiga bolag och kontor i Stockholm framgår av https://creandum.com/.
+
+offers:
+  value: [finansiering]
+  status: claimed
+  source_url: https://creandum.com/stories/backing-hosted-ai-the-neoclouds-silver-lining/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://creandum.com/stories/backing-hosted-ai-the-neoclouds-silver-lining/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/creandum-fund-manager-ab/stockholm/finansbolag-finansiella-tj%C3%A4nster/2KIPWIMI5YE9Q
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/creandum-fund-manager-ab/stockholm/finansbolag-finansiella-tj%C3%A4nster/2KIPWIMI5YE9Q
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://creandum.com/stories/backing-hosted-ai-the-neoclouds-silver-lining/
+    kind: case
+    title: Creandum om investeringen i Hosted·ai, mjukvara för GPU-virtualisering
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/creandum/
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

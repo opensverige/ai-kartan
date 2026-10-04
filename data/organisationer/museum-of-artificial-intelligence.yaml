@@ -1,0 +1,100 @@
+id: museum-of-artificial-intelligence
+
+name:
+  value: Museum of Artificial Intelligence
+  status: claimed
+  source_url: https://aimuseum.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Museet för artificiell intelligens
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/museet-f%C3%B6r-artificiell-intelligens/stockholm/f%C3%B6reningar/3OQ5ENJI63IGG
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Föreningen använder det engelska namnet på sin webbplats.
+
+type:
+  value: community
+  status: claimed
+  source_url: https://aimuseum.se/pages/about.html
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Beskriver sig som en ideell förening med medlemmar. Ideell förening enligt allabolag.se.
+
+org_number:
+  value: "802545-7519"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/museet-f%C3%B6r-artificiell-intelligens/stockholm/f%C3%B6reningar/3OQ5ENJI63IGG
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://aimuseum.se
+
+description:
+  value: Ideell förening som ger föredrag, seminarier och workshops om AI. Publicerar varje dag en AI-genererad nyhetssammanfattning och en essä om datorhistoria.
+  status: claimed
+  source_url: https://aimuseum.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [utbildning, community]
+  status: claimed
+  source_url: https://aimuseum.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://aimuseum.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/museet-f%C3%B6r-artificiell-intelligens/stockholm/f%C3%B6reningar/3OQ5ENJI63IGG
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+founded:
+  value: 2023
+  status: claimed
+  source_url: https://aimuseum.se/pages/about.html
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Föreningen anger själv att den grundades 2023. Allabolag.se anger registreringsdatum 2024-01-12.
+
+active:
+  value: true
+  status: claimed
+  source_url: https://aimuseum.se/pages/daily.html
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Dagliga inlägg publicerade till och med 2026-10-04.
+
+evidence:
+  - url: https://aimuseum.se/pages/daily.html
+    kind: produkt
+    title: "Daily AI: automatiskt publicerade AI-nyheter och essäer om datorhistoria"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Startsidan anger att innehållet tas fram dagligen av museets egen AI-agent.
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

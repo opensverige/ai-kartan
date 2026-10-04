@@ -1,0 +1,100 @@
+id: sting
+
+name:
+  value: Sting
+  status: claimed
+  source_url: https://www.sting.co/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Stockholm Innovation & Growth AB
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/stockholm-innovation-growth-ab/stockholm/f%C3%B6retagsutveckling/2K16ZITI5YEHU
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Anges i sidfoten på sting.co och på https://www.sting.co/about.
+
+type:
+  value: finansiar
+  status: claimed
+  source_url: https://www.sting.co/about
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Startupaccelerator och inkubator enligt webbplatsen.
+
+org_number:
+  value: "556489-3781"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/stockholm-innovation-growth-ab/stockholm/f%C3%B6retagsutveckling/2K16ZITI5YEHU
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://www.sting.co
+
+description:
+  value: Startupaccelerator som ger coachning, nätverk och möjlig investering till startups. Programmet Digital Society & AI stödjer startups inom bland annat AI, edtech, regtech och fintech.
+  status: claimed
+  source_url: https://www.sting.co/our-priorities/digital-society-and-ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [finansiering, community]
+  status: claimed
+  source_url: https://www.sting.co/our-priorities/digital-society-and-ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://www.sting.co/our-priorities/digital-society-and-ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/stockholm-innovation-growth-ab/stockholm/f%C3%B6retagsutveckling/2K16ZITI5YEHU
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+founded:
+  value: 2002
+  status: claimed
+  source_url: https://www.sting.co/about
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Webbplatsen anger verksamhet sedan 2002. Allabolag.se anger registreringsdatum 1994-08-03 för Stockholm Innovation & Growth AB.
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/stockholm-innovation-growth-ab/stockholm/f%C3%B6retagsutveckling/2K16ZITI5YEHU
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.sting.co/our-priorities/digital-society-and-ai
+    kind: program
+    title: "Startupprogram: Digital Society & AI"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: AI är en av flera branscher i programmet.
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04
