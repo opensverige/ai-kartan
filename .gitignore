@@ -10,3 +10,6 @@ Thumbs.db
 
 # lokal förhandsvisning
 .claude/launch.json
+
+# genereras av scripts/kopiera-maplibre-worker.mjs
+public/vendor/

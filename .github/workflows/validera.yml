@@ -43,7 +43,7 @@ jobs:
         run: node scripts/andringar.mjs
 
       - name: Bygg sajten
-        run: npx astro build
+        run: npm run build
         env:
           SITE_URL: https://karta.opensverige.se
 

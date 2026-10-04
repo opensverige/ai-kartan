@@ -10,7 +10,9 @@
     "node": ">=22.12.0"
   },
   "scripts": {
+    "predev": "node scripts/kopiera-maplibre-worker.mjs",
     "dev": "astro dev",
+    "prebuild": "node scripts/kopiera-maplibre-worker.mjs",
     "build": "node scripts/validera.mjs && astro build",
     "preview": "astro preview",
     "check": "astro check",

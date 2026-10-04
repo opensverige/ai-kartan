@@ -18,7 +18,7 @@ const etiketter = {
 const lanMedPoster = d.lan.filter((l) => d.statistik.per_lan[l.kod]);
 ---
 
-<div class="app" data-lage={lage} data-api={url('/api/karta.json')} data-orgbas={url('/organisation/')}>
+<div class="app" data-lage={lage} data-api={url('/api/karta.json')} data-orgbas={url('/organisation/')} data-worker={url('/vendor/maplibre/maplibre-gl-worker.mjs')}>
   <aside class="panel">
     <form class="filter" id="filter" role="search" aria-label="Filtrera organisationer">
       <label class="visuellt-dold" for="q">Sök</label>
@@ -102,7 +102,7 @@ const lanMedPoster = d.lan.filter((l) => d.statistik.per_lan[l.kod]);
 <script type="application/json" id="etiketter" set:html={JSON.stringify(etiketter)} />
 
 <script>
-  import { Map as MapLibreMap, Popup, NavigationControl, type GeoJSONSource, type ExpressionSpecification } from 'maplibre-gl';
+  import { Map as MapLibreMap, Popup, NavigationControl, setWorkerUrl, type GeoJSONSource, type ExpressionSpecification } from 'maplibre-gl';
 
   type Post = {
     id: string; n: string; t: string; o: string[]; a: string[]; k: string | null; kn: string | null;
@@ -273,6 +273,8 @@ const lanMedPoster = d.lan.filter((l) => d.statistik.per_lan[l.kod]);
     function startaKarta() {
       const el = document.getElementById('karta');
       if (!el) return;
+      // Workern serveras från sajten; se scripts/kopiera-maplibre-worker.mjs.
+      if (app.dataset.worker) setWorkerUrl(new URL(app.dataset.worker, location.href).href);
       karta = new MapLibreMap({
         container: el,
         style: 'https://tiles.openfreemap.org/styles/positron',
