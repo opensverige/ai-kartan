@@ -1,0 +1,95 @@
+id: interspectral
+
+name:
+  value: "Interspectral"
+  status: claimed
+  source_url: https://interspectral.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "Interspectral AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/5569805186
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5569805186
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "556980-5186"
+  status: confirmed
+  source_url: https://www.allabolag.se/5569805186
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Sidfoten på interspectral.com anger Interspectral AB men inget organisationsnummer."
+
+website: https://interspectral.com
+
+description:
+  value: "Utvecklar AM Explorer, en plattform för additiv tillverkning med AI-moduler som upptäcker avvikelser i tillverkningen och visualiserar produktionsdata."
+  status: claimed
+  source_url: https://interspectral.com/ai-additive-manufacturing/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://interspectral.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [industri]
+  status: claimed
+  source_url: https://interspectral.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0581"
+  status: confirmed
+  source_url: https://www.allabolag.se/5569805186
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+founded:
+  value: 2014
+  status: confirmed
+  source_url: https://www.allabolag.se/5569805186
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5569805186
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+evidence:
+  - url: https://interspectral.com/ai-additive-manufacturing/
+    kind: produkt
+    title: "AI i AM Explorer för additiv tillverkning"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

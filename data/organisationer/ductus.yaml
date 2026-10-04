@@ -1,0 +1,102 @@
+id: ductus
+
+name:
+  value: "Ductus"
+  status: claimed
+  source_url: https://ductus.global/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "Data Ductus AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/5565042941
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5565042941
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "556504-2941"
+  status: confirmed
+  source_url: https://www.allabolag.se/5565042941
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registrerat som Data Ductus AB. Egen sida anger att Ductus tidigare hette Data Ductus och att Data Ductus AB är personuppgiftsansvarigt bolag."
+
+website: https://ductus.global
+
+description:
+  value: "IT-konsult som bygger AI- och dataanalyslösningar åt kunder, till exempel bildanalys för kvalitetskontroll i tillverkning och AI-prediktion för energiflöden i industrin."
+  status: claimed
+  source_url: https://ductus.global/ai-data-analysis/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [utveckling]
+  status: claimed
+  source_url: https://ductus.global/ai-data-analysis/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell, datorseende, industri, energi_klimat]
+  status: claimed
+  source_url: https://ductus.global/ai-data-analysis/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "2482"
+  status: confirmed
+  source_url: https://www.allabolag.se/5565042941
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+founded:
+  value: 1995
+  status: confirmed
+  source_url: https://www.allabolag.se/5565042941
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsår för bolaget i registret. Egen sida anger att Ductus grundades i Skellefteå 1989 under namnet Data Ductus."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5565042941
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+evidence:
+  - url: https://ductus.global/cases/autonomous-detection-of-faulty-bottles/
+    kind: case
+    title: "Case: AI-baserad detektering av felaktiga flaskor i tillverkning"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://ductus.global/news/using-ai-prediction-to-reduce-environmental-impact-by-improving-joint-decision-making-in-steel-and-energy-industries/
+    kind: case
+    title: "Nyhet: AI-prediktion för energiflöden i projektet EnVisA"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

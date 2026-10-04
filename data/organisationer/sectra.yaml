@@ -1,0 +1,104 @@
+id: sectra
+
+name:
+  value: "Sectra"
+  status: claimed
+  source_url: https://sectra.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "SECTRA Aktiebolag"
+  status: confirmed
+  source_url: https://www.allabolag.se/5560648304
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5560648304
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "556064-8304"
+  status: confirmed
+  source_url: https://www.allabolag.se/5560648304
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Allabolag anger www.sectra.com som bolagets hemsida. Sidfoten på sectra.com anger Sectra AB men inget organisationsnummer."
+
+website: https://sectra.com
+
+description:
+  value: "Utvecklar IT-system för medicinsk bildhantering med AI inbyggd i röntgenrapporteringen, och bedriver forskning om AI för bilddiagnostik."
+  status: claimed
+  source_url: https://medical.sectra.com/solutionarea/radiology-ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt, forskning]
+  status: claimed
+  source_url: https://medical.sectra.com/solutionarea/radiology-ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Forskning enligt medical.sectra.com/research-at-sectra/."
+
+areas:
+  value: [halsa, datorseende]
+  status: claimed
+  source_url: https://medical.sectra.com/solutionarea/radiology-ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0580"
+  status: confirmed
+  source_url: https://www.allabolag.se/5560648304
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+founded:
+  value: 1957
+  status: confirmed
+  source_url: https://www.allabolag.se/5560648304
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsår för bolaget i registret. Egen sida anger att verksamheten växte fram ur Linköpings tekniska högskola sent på 1970-talet."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5560648304
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+evidence:
+  - url: https://medical.sectra.com/solutionarea/radiology-ai/
+    kind: produkt
+    title: "Radiologi-AI inbyggd i Sectra IDS7"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: "Sidan beskriver AI för rapportering och visningsprotokoll i Sectra IDS7 samt partnerapplikationer via Sectra Amplifier Marketplace."
+  - url: https://medical.sectra.com/research-at-sectra/
+    kind: publikation
+    title: "Forskning på Sectra med publikationslista om AI och bildanalys"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

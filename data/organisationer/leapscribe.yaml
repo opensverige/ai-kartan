@@ -1,0 +1,96 @@
+id: leapscribe
+
+name:
+  value: "Leapscribe"
+  status: claimed
+  source_url: https://leapscribe.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "LeapScribe Sverige AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/5594272972
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5594272972
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "559427-2972"
+  status: confirmed
+  source_url: https://www.allabolag.se/5594272972
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Numret anges också i integritetspolicyn på leapscribe.se."
+
+website: https://leapscribe.se
+
+description:
+  value: "Utvecklar en AI-assistent som spelar in patientbesök och skriver journalunderlag, remisser och sjukintyg åt vårdpersonal."
+  status: claimed
+  source_url: https://leapscribe.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Sajten anger att Leapscribe numera är en del av Cambio."
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://leapscribe.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [halsa, sprakteknik]
+  status: claimed
+  source_url: https://leapscribe.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "2480"
+  status: confirmed
+  source_url: https://www.allabolag.se/5594272972
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+founded:
+  value: 2023
+  status: confirmed
+  source_url: https://www.allabolag.se/5594272972
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5594272972
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+evidence:
+  - url: https://leapscribe.se/
+    kind: produkt
+    title: "Leapscribe: AI-assistent för självskrivande journalunderlag"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

@@ -1,0 +1,96 @@
+id: univrses
+
+name:
+  value: "Univrses"
+  status: claimed
+  source_url: https://univrses.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "Univrses AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/5590037874
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5590037874
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "559003-7874"
+  status: confirmed
+  source_url: https://www.allabolag.se/5590037874
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Numret anges också i strukturerad data (JSON-LD) på startsidan univrses.com."
+
+website: https://univrses.com
+
+description:
+  value: "Utvecklar AI och datorseende för att kartlägga vägars skick och vägtillgångar från bilder som samlas in under vanlig körning (3DAI), samt AI för fordonsindustrin."
+  status: claimed
+  source_url: https://univrses.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt, utveckling]
+  status: claimed
+  source_url: https://univrses.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [transport_mobilitet, datorseende]
+  status: claimed
+  source_url: https://univrses.com/about
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0486"
+  status: confirmed
+  source_url: https://www.allabolag.se/5590037874
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Säte enligt allabolag (SCB, Bolagsverket); Bolagsfakta anger också säte Strängnäs. Båda anger postadress i Linköping och egen webbplats anger kontor i Stockholm. Kontrollera sätet mot Bolagsverket."
+
+founded:
+  value: 2015
+  status: confirmed
+  source_url: https://www.allabolag.se/5590037874
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5590037874
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+evidence:
+  - url: https://univrses.com/3dai/road-inspection
+    kind: produkt
+    title: "3DAI: AI-baserad vägbesiktning"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

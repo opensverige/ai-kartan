@@ -1,0 +1,104 @@
+id: fair-ai-data
+
+name:
+  value: "Fair AI Data"
+  status: claimed
+  source_url: https://fairaidata.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "Fair AI Data AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/5594402199
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5594402199
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "559440-2199"
+  status: confirmed
+  source_url: https://www.allabolag.se/5594402199
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Webbplatsen anger inget organisationsnummer; kopplingen bygger på samma bolagsnamn (Fair AI Data AB)."
+
+website: https://fairaidata.com
+
+description:
+  value: "Tar fram verktyg som upptäcker snedfördelning och bias i träningsdata och syntetisk data och dokumenterar datamängder, och erbjuder datagranskning, rådgivning och utbildning."
+  status: claimed
+  source_url: https://fairaidata.com/services/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Sidan Om oss anger att bolaget är en avknoppning från Linköpings universitet."
+
+offers:
+  value: [produkt, data, forskning, utbildning]
+  status: claimed
+  source_url: https://fairaidata.com/services/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Forskning: se fairaidata.com/dataimbalances."
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://fairaidata.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0581"
+  status: confirmed
+  source_url: https://www.allabolag.se/5594402199
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+founded:
+  value: 2023
+  status: confirmed
+  source_url: https://www.allabolag.se/5594402199
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5594402199
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+evidence:
+  - url: https://fairaidata.com/dataimbalances
+    kind: publikation
+    title: "Forskning om orimliga kombinationer i syntetiska data (intersectional hallucinations)"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: "Sidan beskriver en studie vid Linköpings universitet och länkar till en artikel i AI & Society."
+  - url: https://fairaidata.com/services/
+    kind: produkt
+    title: "Verktyg för analys och dokumentation av syntetiska data (FAiD Analyzer, README Creator)"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

@@ -1,0 +1,95 @@
+id: spotscale
+
+name:
+  value: "Spotscale"
+  status: claimed
+  source_url: https://www.spotscale.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "Spotscale AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/5566314463
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5566314463
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "556631-4463"
+  status: confirmed
+  source_url: https://www.allabolag.se/5566314463
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Sidfoten på spotscale.com anger Spotscale AB men inget organisationsnummer."
+
+website: https://www.spotscale.com
+
+description:
+  value: "Utvecklar Redetect AI, programvara som med fotogrammetri och AI analyserar bilder av betongkonstruktioner och identifierar sprickor och andra skador, till exempel i broar, dammar och kyltorn."
+  status: claimed
+  source_url: https://www.spotscale.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.spotscale.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [fastighet_bygg, datorseende]
+  status: claimed
+  source_url: https://www.spotscale.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0580"
+  status: confirmed
+  source_url: https://www.allabolag.se/5566314463
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+founded:
+  value: 2002
+  status: confirmed
+  source_url: https://www.allabolag.se/5566314463
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5566314463
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+evidence:
+  - url: https://www.spotscale.com/
+    kind: produkt
+    title: "Redetect AI för inspektion av betongskador"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

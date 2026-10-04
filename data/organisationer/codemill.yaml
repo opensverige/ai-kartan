@@ -1,0 +1,102 @@
+id: codemill
+
+name:
+  value: "Codemill"
+  status: claimed
+  source_url: https://www.codemill.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "CodeMill AB (publ)"
+  status: confirmed
+  source_url: https://www.allabolag.se/5567623839
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5567623839
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "556762-3839"
+  status: confirmed
+  source_url: https://www.allabolag.se/5567623839
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Integritetspolicyn på codemill.se anger ett annat nummer (556810-0779, Cantemo AB, som enligt Syna är upplöst genom fusion). Numret här gäller CodeMill AB (publ)."
+
+website: https://www.codemill.se
+
+description:
+  value: "Utvecklar Accurate.Video och Cantemo, molnbaserade verktyg för mediaflöden, med bland annat en AI-assistent för kvalitetskontroll (QC Assistant) i Accurate.Video Validate."
+  status: claimed
+  source_url: https://www.codemill.se/post/designing-agentic-media-workflows-humans-can-trust
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "AI är ett mindre inslag. QC Assistant beskrivs i ett blogginlägg; produktsidan för Accurate.Video nämner AI-genererad metadata som indata."
+
+offers:
+  value: [produkt, utveckling]
+  status: claimed
+  source_url: https://www.codemill.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [media_kreativt]
+  status: claimed
+  source_url: https://www.codemill.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "2480"
+  status: confirmed
+  source_url: https://www.allabolag.se/5567623839
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+founded:
+  value: 2008
+  status: confirmed
+  source_url: https://www.allabolag.se/5567623839
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5567623839
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+evidence:
+  - url: https://www.codemill.se/post/designing-agentic-media-workflows-humans-can-trust
+    kind: publikation
+    title: "Blogginlägg som beskriver QC Assistant i Accurate.Video Validate"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://www.codemill.se/accuratevideo
+    kind: produkt
+    title: "Accurate.Video: produktsvit för mediaflöden"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

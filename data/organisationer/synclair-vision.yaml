@@ -1,0 +1,95 @@
+id: synclair-vision
+
+name:
+  value: "Synclair Vision"
+  status: claimed
+  source_url: https://www.synclairvision.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "Synclair Vision AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/5593905242
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5593905242
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "559390-5242"
+  status: confirmed
+  source_url: https://www.allabolag.se/5593905242
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Användarvillkoren på synclairvision.com anger Synclair Vision AB som ägare av webbplatsen men inget organisationsnummer."
+
+website: https://www.synclairvision.com
+
+description:
+  value: "Utvecklar kamerasystem för drönare där programvara korrigerar vidvinkelbilder och AI analyserar videon i realtid för att upptäcka avvikelser och följa mål."
+  status: claimed
+  source_url: https://www.synclairvision.com/technology?feature=ai-driven-analysis
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.synclairvision.com/technology?feature=ai-driven-analysis
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [forsvar_sakerhet, datorseende]
+  status: claimed
+  source_url: https://www.synclairvision.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0580"
+  status: confirmed
+  source_url: https://www.allabolag.se/5593905242
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+founded:
+  value: 2022
+  status: confirmed
+  source_url: https://www.allabolag.se/5593905242
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5593905242
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+evidence:
+  - url: https://www.synclairvision.com/technology?feature=ai-driven-analysis
+    kind: produkt
+    title: "Teknik: AI-driven analys i kamerasystem för drönare"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

@@ -1,0 +1,101 @@
+id: visage-technologies
+
+name:
+  value: "Visage Technologies"
+  status: claimed
+  source_url: https://visagetechnologies.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "Visage Technologies AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/5566286919
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5566286919
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "556628-6919"
+  status: confirmed
+  source_url: https://www.allabolag.se/5566286919
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Integritetsmeddelandet på visagetechnologies.com anger Visage Technologies AB som ansvarigt bolag men inget organisationsnummer."
+
+website: https://visagetechnologies.com
+
+description:
+  value: "Utvecklar visage|SDK för ansiktsspårning, ansiktsanalys och ansiktsigenkänning och tar fram AI- och maskininlärningslösningar åt kunder, bland annat perception för fordon."
+  status: claimed
+  source_url: https://visagetechnologies.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt, utveckling]
+  status: claimed
+  source_url: https://visagetechnologies.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [datorseende, transport_mobilitet, industri]
+  status: claimed
+  source_url: https://visagetechnologies.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0580"
+  status: confirmed
+  source_url: https://www.allabolag.se/5566286919
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+founded:
+  value: 2002
+  status: confirmed
+  source_url: https://www.allabolag.se/5566286919
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5566286919
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+evidence:
+  - url: https://visagetechnologies.com/case-studies/
+    kind: case
+    title: "Kundcase inom AI och datorseende"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://visagetechnologies.com/machine-learning/
+    kind: produkt
+    title: "Skräddarsydda maskininlärningslösningar och datorseende"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

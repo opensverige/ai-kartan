@@ -1,0 +1,97 @@
+id: ifs
+
+name:
+  value: "IFS"
+  status: claimed
+  source_url: https://www.ifs.com/en/about
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "IFS World Operations AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/5560406042
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5560406042
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "556040-6042"
+  status: confirmed
+  source_url: https://www.allabolag.se/5560406042
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Numret gäller IFS World Operations AB (Linköping), vars ändamål i registret är industri- och finansapplikationer. Sajten anger varken bolagsnamn eller organisationsnummer."
+
+website: https://www.ifs.com
+
+description:
+  value: "Utvecklar företagsprogramvara med industriell AI (IFS.ai) för bland annat prediktivt underhåll och automatisering av arbetsflöden hos företag som tillverkar och förvaltar komplexa tillgångar."
+  status: claimed
+  source_url: https://www.ifs.com/en/products/ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.ifs.com/en/products/ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [industri, agenter_automation]
+  status: claimed
+  source_url: https://www.ifs.com/en/products/ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0580"
+  status: confirmed
+  source_url: https://www.allabolag.se/5560406042
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+founded:
+  value: 1941
+  status: confirmed
+  source_url: https://www.allabolag.se/5560406042
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsår för det juridiska bolaget i registret. Siffran anger inte nödvändigtvis när IFS som verksamhet startade; sajten anger inget grundarår."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5560406042
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+evidence:
+  - url: https://www.ifs.com/en/products/ai
+    kind: produkt
+    title: "IFS.ai: industriell AI i IFS Cloud"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: "Sajten svarar HTTP 429 på enkla klienter men laddar i webbläsare."
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

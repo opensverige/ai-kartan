@@ -1,0 +1,107 @@
+id: dyno-robotics
+
+name:
+  value: "Dyno Robotics"
+  status: claimed
+  source_url: https://dynorobotics.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "Dyno Robotics AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/5591788020
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5591788020
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "559178-8020"
+  status: confirmed
+  source_url: https://www.allabolag.se/5591788020
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Momsnumret i sidfoten på dynorobotics.se (SE559178802001) stämmer med organisationsnumret."
+
+website: https://dynorobotics.se
+
+description:
+  value: "Utvecklar skräddarsydda robot- och AI-lösningar åt företag, bland annat autonom styrning, datorseende och navigering, och håller kurser i ROS 2."
+  status: claimed
+  source_url: https://dynorobotics.se/robotics-ai-technologies/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [utveckling, produkt, utbildning]
+  status: claimed
+  source_url: https://dynorobotics.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Produkter: dynorobotics.se/products/. Kurser: dynorobotics.se/courses/."
+
+areas:
+  value: [robotik, jordbruk_skog, transport_mobilitet]
+  status: claimed
+  source_url: https://dynorobotics.se/featured-projects/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0580"
+  status: confirmed
+  source_url: https://www.allabolag.se/5591788020
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+founded:
+  value: 2018
+  status: confirmed
+  source_url: https://www.allabolag.se/5591788020
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5591788020
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+evidence:
+  - url: https://dynorobotics.se/featured-projects/
+    kind: portfolj
+    title: "Utvalda projekt inom robotik och AI"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: "Bland projekten finns autonom styrning av en traktor, en autonom leveransrobot och en AI-guide för ett museum."
+  - url: https://github.com/DynoRobotics
+    kind: repo
+    title: "GitHub-organisation med publika kodförråd för robotik (ROS 2, Unity)"
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: "Bland förråden finns en integration mellan ROS och Googles Dialogflow."
+
+links:
+  github: https://github.com/DynoRobotics
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

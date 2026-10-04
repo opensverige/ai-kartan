@@ -1,0 +1,97 @@
+id: algoryx
+
+name:
+  value: "Algoryx"
+  status: claimed
+  source_url: https://www.algoryx.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "Algoryx Simulation AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/5566059290
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5566059290
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "556605-9290"
+  status: confirmed
+  source_url: https://www.allabolag.se/5566059290
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Sidan Om oss och integritetspolicyn på algoryx.se anger Algoryx Simulation AB men inget organisationsnummer."
+
+website: https://www.algoryx.se
+
+description:
+  value: "Utvecklar AGX Dynamics, en fysikmotor för simulering av maskiner som används för att träna och testa AI för robotar och arbetsmaskiner, och visar bland annat en robot styrd med förstärkningsinlärning."
+  status: claimed
+  source_url: https://www.algoryx.se/ai-machine-learning/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt, forskning]
+  status: claimed
+  source_url: https://www.algoryx.se/ai-machine-learning/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [robotik, industri]
+  status: claimed
+  source_url: https://www.algoryx.se/ai-machine-learning/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "2480"
+  status: confirmed
+  source_url: https://www.allabolag.se/5566059290
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+founded:
+  value: 2001
+  status: confirmed
+  source_url: https://www.allabolag.se/5566059290
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsår för bolaget i registret. Egen sida anger att Algoryx grundades 2007 av forskare vid Umeå universitet."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5566059290
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+evidence:
+  - url: https://www.algoryx.se/ai-machine-learning/
+    kind: demo
+    title: "AI och maskininlärning: robot styrd med djup förstärkningsinlärning, simulerad i AGX Dynamics for Unity"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: "Sidan beskriver också ett forskningsprojekt med Umeå universitet om autonom lastning i gruva."
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

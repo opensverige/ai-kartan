@@ -1,0 +1,96 @@
+id: amra-medical
+
+name:
+  value: "AMRA Medical"
+  status: claimed
+  source_url: https://amramedical.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "AMRA Medical AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/5568043227
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5568043227
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "556804-3227"
+  status: confirmed
+  source_url: https://www.allabolag.se/5568043227
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Numret anges också i integritetspolicyn på amramedical.com."
+
+website: https://amramedical.com
+
+description:
+  value: "Tar fram metoder som med maskininlärning och automatisk bildanalys mäter fett och muskler i helkropps-MR, för läkemedelsstudier och klinisk användning."
+  status: claimed
+  source_url: https://amramedical.com/science/how-we-do-it/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt, forskning]
+  status: claimed
+  source_url: https://amramedical.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [halsa, datorseende]
+  status: claimed
+  source_url: https://amramedical.com/science/how-we-do-it/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0580"
+  status: confirmed
+  source_url: https://www.allabolag.se/5568043227
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+founded:
+  value: 2010
+  status: confirmed
+  source_url: https://www.allabolag.se/5568043227
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5568043227
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+evidence:
+  - url: https://amramedical.com/science/how-we-do-it/
+    kind: produkt
+    title: "Beskrivning av AMRA:s analys av helkropps-MR med maskininlärning och automation"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: "AI nämns kortfattat: sidan anger att metoden drivs av maskininlärning och automation och beskriver automatisk segmentering av fett och muskler."
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04
