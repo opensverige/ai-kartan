@@ -1,0 +1,106 @@
+id: callista-enterprise
+
+name:
+  value: Callista Enterprise
+  status: claimed
+  source_url: https://callistaenterprise.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Callista Enterprise AB
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/callista-enterprise-ab/g%C3%B6teborg/konsulter/2K1R537I5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/callista-enterprise-ab/g%C3%B6teborg/konsulter/2K1R537I5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "556583-4115"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/callista-enterprise-ab/g%C3%B6teborg/konsulter/2K1R537I5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Sidfoten anger Callista Enterprise AB. Organisationsnumret anges inte på sidorna som lästes.
+
+website: https://callistaenterprise.se
+
+description:
+  value: IT-konsultbolag som utvecklar programvara åt kunder, bland annat en AI-baserad supportchattbot med RAG och agentarkitektur som beskrivs i ett publikt uppdrag.
+  status: claimed
+  source_url: https://callistaenterprise.se/uppdrag/2025-10-13-AI-chattbot/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [utveckling, utbildning]
+  status: claimed
+  source_url: https://callistaenterprise.se/erbjudanden/ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: AI-erbjudandet omfattar stöd vid införande, integration med AI och kundanpassade kurser.
+
+areas:
+  value: [agenter_automation, sprakteknik]
+  status: claimed
+  source_url: https://callistaenterprise.se/uppdrag/2025-10-13-AI-chattbot/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1480"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/callista-enterprise-ab/g%C3%B6teborg/konsulter/2K1R537I5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Göteborg."
+
+founded:
+  value: 2000
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/callista-enterprise-ab/g%C3%B6teborg/konsulter/2K1R537I5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2000-01-10."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/callista-enterprise-ab/g%C3%B6teborg/konsulter/2K1R537I5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://callistaenterprise.se/uppdrag/2025-10-13-AI-chattbot/
+    kind: case
+    title: "Uppdrag: AI-baserad chattbot med RAG och agentarkitektur"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://callistaenterprise.se/blogg/teknik/2026/09/16/ai-review/
+    kind: publikation
+    title: "Artikel: AI-granskning med agentgrafer och lokal språkmodell i Kotlin"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

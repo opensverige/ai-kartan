@@ -1,0 +1,117 @@
+id: zenseact
+
+name:
+  value: Zenseact
+  status: claimed
+  source_url: https://zenseact.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Zenseact AB
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/zenseact-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2KHI632I5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: allabolag.se skriver namnet med versaler (ZENSEACT AB). Bolaget skriver Zenseact AB i sin sekretesspolicy.
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/zenseact-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2KHI632I5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559228-9358"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/zenseact-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2KHI632I5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Numret anges även i sekretesspolicyn: https://zenseact.com/privacy-policy/"
+
+website: https://zenseact.com
+
+description:
+  value: Utvecklar programvara för förarassistans och autonom körning där AI är en central del. Publicerar forskning och Zenseact Open Dataset, en öppen datamängd för autonom körning.
+  status: claimed
+  source_url: https://zenseact.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt, forskning, data, oppen_kallkod]
+  status: claimed
+  source_url: https://zenseact.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Datamängden publiceras under CC BY-SA 4.0 (https://zod.zenseact.com/) och verktygspaketet under MIT-licens (https://github.com/zenseact/zod).
+
+areas:
+  value: [transport_mobilitet, datorseende]
+  status: claimed
+  source_url: https://zenseact.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1480"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/zenseact-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2KHI632I5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Göteborg."
+
+founded:
+  value: 2019
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/zenseact-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2KHI632I5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2019-11-29."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/zenseact-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2KHI632I5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://github.com/zenseact/zod
+    kind: repo
+    title: "ZOD: verktygspaket för Zenseact Open Dataset, datamängd för autonom körning"
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://zod.zenseact.com/
+    kind: dataset
+    title: "Zenseact Open Dataset: multimodal datamängd för autonom körning"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://zenseact.com/our-software/
+    kind: produkt
+    title: Programvara för förarassistans och autonom körning
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  github: https://github.com/zenseact
+  linkedin: https://www.linkedin.com/company/zenseact/
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

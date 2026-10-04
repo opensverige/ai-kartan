@@ -1,0 +1,110 @@
+id: synteda
+
+name:
+  value: Synteda
+  status: claimed
+  source_url: https://synteda.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Synteda AB
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/synteda-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2KH7J8AI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/synteda-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2KH7J8AI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559179-3178"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/synteda-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2KH7J8AI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Sidfoten anger Synteda AB. Organisationsnumret anges inte på sidorna som lästes.
+
+website: https://synteda.com
+
+description:
+  value: Konsultbolag som bygger skräddarsydda lösningar med maskininlärning och datorseende, har egna AI-produkter som Personas för matchning av kandidater och uppdrag, och erbjuder utbildning i AI.
+  status: claimed
+  source_url: https://synteda.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Produkter: https://synteda.com/products-s/"
+
+offers:
+  value: [utveckling, produkt, utbildning, forskning]
+  status: claimed
+  source_url: https://synteda.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Forskningsprojekt: https://synteda.com/research-and-development/target/ Utbildning: https://synteda.com/training/"
+
+areas:
+  value: [generell, datorseende]
+  status: claimed
+  source_url: https://synteda.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1402"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/synteda-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2KH7J8AI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Partille. Registrets postadress ligger i Göteborg."
+
+founded:
+  value: 2018
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/synteda-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2KH7J8AI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2018-11-08."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/synteda-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2KH7J8AI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://synteda.com/products-s/
+    kind: produkt
+    title: Produkter med maskininlärning, bland annat Personas för matchning av kandidater och uppdrag
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://personas-ai.se/
+    kind: produkt
+    title: "Personas: AI-verktyg för matchning av kandidater och uppdrag"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://se.linkedin.com/company/synteda-ab
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

@@ -1,0 +1,99 @@
+id: cognivity-ai
+
+name:
+  value: Cognivity.AI
+  status: claimed
+  source_url: https://www.cognivity.ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Cognivity AI Sweden AB
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/cognivity-ai-sweden-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2KINTM1I5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/cognivity-ai-sweden-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2KINTM1I5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559423-2745"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/cognivity-ai-sweden-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2KINTM1I5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Webbplatsen anger inget bolagsnamn. Kopplingen bygger på namnet och på att efn.se (2026-06-22) nämner Cognivity bland bolag som flyttar in hos AI Gothenburg, där bolaget har sin c/o-adress enligt allabolag.se.
+
+website: https://www.cognivity.ai
+
+description:
+  value: Utvecklar TrinityBMS, en AI-baserad batterihanteringsprogramvara som körs på batteriet och kombinerar djupinlärning med fysikbaserade modeller för att uppskatta tillstånd och styra drift.
+  status: claimed
+  source_url: https://www.cognivity.ai/solution
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.cognivity.ai/solution
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [energi_klimat, transport_mobilitet]
+  status: claimed
+  source_url: https://www.cognivity.ai/solution
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1481"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/cognivity-ai-sweden-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2KINTM1I5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Mölndal. Registrets säte är Mölndal. Webbplatsen anger Göteborg som plats."
+
+founded:
+  value: 2023
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/cognivity-ai-sweden-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2KINTM1I5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2023-02-22."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/cognivity-ai-sweden-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2KINTM1I5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.cognivity.ai/solution
+    kind: produkt
+    title: "TrinityBMS: AI-baserad batterihantering som körs på batteriet"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

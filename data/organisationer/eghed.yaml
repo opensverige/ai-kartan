@@ -1,0 +1,99 @@
+id: eghed
+
+name:
+  value: eghed
+  status: claimed
+  source_url: https://eghed.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Eghed Group AB
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/eghed-group-ab/g%C3%B6teborg/-/2KJ99WYI0000
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/eghed-group-ab/g%C3%B6teborg/-/2KJ99WYI0000
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559523-3650"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/eghed-group-ab/g%C3%B6teborg/-/2KJ99WYI0000
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Webbplatsen anger inget bolagsnamn. Eghed Group AB är moderbolag och adressen i registret motsvarar webbplatsens. Verksamheten drivs i dotterbolaget Eghed Göteborg AB (559385-4986), registrerat 2022-06-17 enligt allabolag.se.
+
+website: https://eghed.se
+
+description:
+  value: Konsultbolag som bygger AI- och datavetenskapslösningar för tillverkande industri, bland annat datorseende för kvalitetskontroll, prediktiv analys och språkmodeller.
+  status: claimed
+  source_url: https://eghed.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [utveckling]
+  status: claimed
+  source_url: https://eghed.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [industri, datorseende]
+  status: claimed
+  source_url: https://eghed.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1480"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/eghed-group-ab/g%C3%B6teborg/-/2KJ99WYI0000
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Göteborg."
+
+founded:
+  value: 2022
+  status: claimed
+  source_url: https://eghed.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Webbplatsen anger "Sedan starten 2022". Eghed Group AB registrerades 2025-03-14 enligt allabolag.se.
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/eghed-group-ab/g%C3%B6teborg/-/2KJ99WYI0000
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Registrerad. Ingen konkurs eller likvidation anges."
+
+evidence:
+  - url: https://eghed.se/projekt/
+    kind: case
+    title: "Projekt: AI-lösningar för industri, bland annat datorseende och prediktiv analys"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

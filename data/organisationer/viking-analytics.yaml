@@ -1,0 +1,100 @@
+id: viking-analytics
+
+name:
+  value: Viking Analytics
+  status: claimed
+  source_url: https://www.vikinganalytics.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Viking Analytics AB
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/viking-analytics-ab/g%C3%B6teborg/datacenters/2K3OJE0I5YDLG
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/viking-analytics-ab/g%C3%B6teborg/datacenters/2K3OJE0I5YDLG
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "556907-1912"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/viking-analytics-ab/g%C3%B6teborg/datacenters/2K3OJE0I5YDLG
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Sekretesspolicyn anger Viking Analytics AB som personuppgiftsansvarig: https://www.vikinganalytics.se/privacy"
+
+website: https://www.vikinganalytics.se
+
+description:
+  value: Bygger MultiViz, en AI-baserad plattform som analyserar vibrationsdata från sensorer för tillståndsövervakning och prediktivt underhåll i industrin.
+  status: claimed
+  source_url: https://www.vikinganalytics.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt, oppen_kallkod]
+  status: claimed
+  source_url: https://www.vikinganalytics.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Öppen källkod: Daeploy (GPL-3.0), ett verktyg för driftsättning av programvara, https://github.com/vikinganalytics/daeploy"
+
+areas:
+  value: [industri]
+  status: claimed
+  source_url: https://www.vikinganalytics.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1484"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/viking-analytics-ab/g%C3%B6teborg/datacenters/2K3OJE0I5YDLG
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Lysekil. Registrets säte är Lysekil. Webbplatsen anger Göteborg som huvudkontor."
+
+founded:
+  value: 2012
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/viking-analytics-ab/g%C3%B6teborg/datacenters/2K3OJE0I5YDLG
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2012-10-18. Webbplatsen anger att Viking Analytics grundades 2017."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/viking-analytics-ab/g%C3%B6teborg/datacenters/2K3OJE0I5YDLG
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.vikinganalytics.se/
+    kind: produkt
+    title: "MultiViz: AI-baserad vibrationsanalys för prediktivt underhåll"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

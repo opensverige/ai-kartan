@@ -1,0 +1,106 @@
+id: sleep-cycle
+
+name:
+  value: Sleep Cycle
+  status: claimed
+  source_url: https://sleepcycle.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Sleep Cycle AB (publ)
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/sleep-cycle-ab-publ/g%C3%B6teborg/konsulter/2K1XUSOI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/sleep-cycle-ab-publ/g%C3%B6teborg/konsulter/2K1XUSOI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Publikt aktiebolag."
+
+org_number:
+  value: "556614-7368"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/sleep-cycle-ab-publ/g%C3%B6teborg/konsulter/2K1XUSOI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Numret anges även i integritetspolicyn: https://sleepcycle.com/privacy-policy"
+
+website: https://sleepcycle.com
+
+description:
+  value: Utvecklar sömnappen Sleep Cycle för sömnspårning och Luma, en AI-baserad sömncoach i appen som använder AI-modeller för att ge personliga råd utifrån registrerade nätter.
+  status: claimed
+  source_url: https://sleepcycle.com/luma
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://sleepcycle.com/luma
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [halsa]
+  status: claimed
+  source_url: https://sleepcycle.com/luma
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1480"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/sleep-cycle-ab-publ/g%C3%B6teborg/konsulter/2K1XUSOI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Göteborg."
+
+founded:
+  value: 2001
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/sleep-cycle-ab-publ/g%C3%B6teborg/konsulter/2K1XUSOI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2001-09-03. Newsroom-sidan anger 2009 som grundår för Sleep Cycle."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/sleep-cycle-ab-publ/g%C3%B6teborg/konsulter/2K1XUSOI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://sleepcycle.com/luma
+    kind: produkt
+    title: "Luma: AI-baserad sömncoach i Sleep Cycle-appen"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://sleepcycle.com/newsroom/press-release/cambridge-study-uses-sleep-cycles-technology-to-link-air-pollution-and-nighttime-coughing-worldwide
+    kind: publikation
+    title: Pressmeddelande om Cambridge-studie som använder Sleep Cycles hostdetektion
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Sidan anger att ljud bearbetas lokalt av en AI-algoritm på enheten.
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

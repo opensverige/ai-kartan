@@ -1,0 +1,119 @@
+id: embedl
+
+name:
+  value: Embedl
+  status: claimed
+  source_url: https://www.embedl.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Embedl AB
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/embedl-ab/g%C3%B6teborg/konsulter/2KH3LDPI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: allabolag.se skriver namnet med versaler (EMBEDL AB). Bolaget skriver Embedl AB i sin sekretesspolicy.
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/embedl-ab/g%C3%B6teborg/konsulter/2KH3LDPI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559160-9341"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/embedl-ab/g%C3%B6teborg/konsulter/2KH3LDPI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Sekretesspolicyn anger Embedl AB som bolag enligt svensk lag: https://www.embedl.com/privacy-policy"
+
+website: https://www.embedl.com
+
+description:
+  value: Utvecklar verktyg och optimerade modeller för att konvertera, kvantisera och köra AI-modeller på inbyggd edge-hårdvara för fordon, försvar och robotik.
+  status: claimed
+  source_url: https://www.embedl.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt, forskning]
+  status: claimed
+  source_url: https://www.embedl.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Forskning: https://www.embedl.com/research. Modeller och kod publiceras under Embedl Models Community License, en egen licens med begränsningar, och anges därför inte som öppen källkod."
+
+areas:
+  value: [generell, transport_mobilitet, forsvar_sakerhet, robotik]
+  status: claimed
+  source_url: https://www.embedl.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1480"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/embedl-ab/g%C3%B6teborg/konsulter/2KH3LDPI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Göteborg."
+
+founded:
+  value: 2018
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/embedl-ab/g%C3%B6teborg/konsulter/2KH3LDPI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2018-05-31."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/embedl-ab/g%C3%B6teborg/konsulter/2KH3LDPI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://huggingface.co/embedl
+    kind: modell
+    title: Optimerade modeller för edge-hårdvara på Hugging Face
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Organisationsprofilen på Hugging Face länkar till embedl.com och listar modeller publicerade av Embedl.
+  - url: https://github.com/embedl/flash-head
+    kind: repo
+    title: "FlashHead: ersättning för klassificeringshuvudet vid inferens med språkmodeller"
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://www.embedl.com/
+    kind: produkt
+    title: Embedl Hub, Embedl Models och Embedl Deploy för edge-AI
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  github: https://github.com/embedl
+  huggingface: https://huggingface.co/embedl
+  linkedin: https://www.linkedin.com/company/13991327
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

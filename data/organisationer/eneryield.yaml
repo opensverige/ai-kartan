@@ -1,0 +1,102 @@
+id: eneryield
+
+name:
+  value: Eneryield
+  status: claimed
+  source_url: https://eneryield.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Eneryield AB
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/eneryield-ab/g%C3%B6teborg/teknikkonsulter/2KHC4S7I5YHXW
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/eneryield-ab/g%C3%B6teborg/teknikkonsulter/2KHC4S7I5YHXW
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559200-7735"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/eneryield-ab/g%C3%B6teborg/teknikkonsulter/2KHC4S7I5YHXW
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Sekretesspolicyn anger Eneryield AB som personuppgiftsansvarig: https://eneryield.com/privacy/"
+
+website: https://eneryield.com
+
+description:
+  value: Bygger Eneryield IntelliView, en plattform med fysikbaserad AI som analyserar störningsskrivningar från ställverk för att förutsäga fel i elnät innan de leder till avbrott.
+  status: claimed
+  source_url: https://eneryield.com/solution/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://eneryield.com/solution/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [energi_klimat]
+  status: claimed
+  source_url: https://eneryield.com/solution/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1480"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/eneryield-ab/g%C3%B6teborg/teknikkonsulter/2KHC4S7I5YHXW
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Göteborg."
+
+founded:
+  value: 2019
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/eneryield-ab/g%C3%B6teborg/teknikkonsulter/2KHC4S7I5YHXW
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2019-04-01. Webbplatsen anger också grundår 2019."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/eneryield-ab/g%C3%B6teborg/teknikkonsulter/2KHC4S7I5YHXW
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://eneryield.com/solution/
+    kind: produkt
+    title: "Eneryield IntelliView: AI för felförutsägelse i elnät"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/eneryieldofficial
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

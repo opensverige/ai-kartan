@@ -1,0 +1,102 @@
+id: atlas-ai
+
+name:
+  value: Atlas AI
+  status: claimed
+  source_url: https://atlasai.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Atlas AI AB
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/atlas-ai-ab/m%C3%B6lnlycke/konsulter/2KJKN8EI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/atlas-ai-ab/m%C3%B6lnlycke/konsulter/2KJKN8EI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559576-4126"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/atlas-ai-ab/m%C3%B6lnlycke/konsulter/2KJKN8EI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Numret anges även i sidfoten: https://atlasai.se/kontakt"
+
+website: https://atlasai.se
+
+description:
+  value: AI-byrå som bygger och driftar skräddarsydda AI-agenter och automationer åt företag, bland annat för offerter, leverantörsfakturor och dokumentsökning samt ritningsjämförelse och bygglovsgranskning.
+  status: claimed
+  source_url: https://atlasai.se/byggen
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [utveckling]
+  status: claimed
+  source_url: https://atlasai.se/byggen
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [agenter_automation, fastighet_bygg]
+  status: claimed
+  source_url: https://atlasai.se/byggen
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1401"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/atlas-ai-ab/m%C3%B6lnlycke/konsulter/2KJKN8EI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Härryda. Webbplatsen anger samma säte och beskriver sig som byrå i Göteborg."
+
+founded:
+  value: 2026
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/atlas-ai-ab/m%C3%B6lnlycke/konsulter/2KJKN8EI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2026-03-11. Webbplatsen anger april 2026 som tidpunkt för grundandet."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/atlas-ai-ab/m%C3%B6lnlycke/konsulter/2KJKN8EI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://atlasai.se/byggen
+    kind: case
+    title: "Byggen: egna AI-system och automationer byggda åt kunder"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/atlas-ai-ab
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

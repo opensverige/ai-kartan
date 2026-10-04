@@ -1,0 +1,102 @@
+id: qamcom
+
+name:
+  value: Qamcom
+  status: claimed
+  source_url: https://www.qamcom.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Qamcom Research and Technology AB
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/qamcom-research-and-technology-ab/g%C3%B6teborg/konsulter/2K30NW3I5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/qamcom-research-and-technology-ab/g%C3%B6teborg/konsulter/2K30NW3I5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "556795-8003"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/qamcom-research-and-technology-ab/g%C3%B6teborg/konsulter/2K30NW3I5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Sidfoten på webbplatsen anger Qamcom Research and Technology AB. Organisationsnumret anges inte på sidorna som lästes.
+
+website: https://www.qamcom.com
+
+description:
+  value: Deep tech-bolag som utvecklar AI- och maskininlärningslösningar åt kunder, med en egen AI-plattform för objektdetektering, spårning och räkning samt case inom brandupptäckt och skogsövervakning.
+  status: claimed
+  source_url: https://www.qamcom.com/our-offerings/industrial-ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [utveckling, forskning]
+  status: claimed
+  source_url: https://www.qamcom.com/our-offerings/industrial-ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [industri, datorseende, jordbruk_skog, halsa]
+  status: claimed
+  source_url: https://www.qamcom.com/our-offerings/industrial-ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1480"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/qamcom-research-and-technology-ab/g%C3%B6teborg/konsulter/2K30NW3I5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Göteborg."
+
+founded:
+  value: 2009
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/qamcom-research-and-technology-ab/g%C3%B6teborg/konsulter/2K30NW3I5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2009-12-02. Webbplatsen anger att Qamcom grundades 2001."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/qamcom-research-and-technology-ab/g%C3%B6teborg/konsulter/2K30NW3I5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.qamcom.com/our-offerings/industrial-ai
+    kind: case
+    title: "Industrial AI: AI-plattform och kundcase med maskininlärning på sensordata"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/qamcom
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

@@ -1,0 +1,102 @@
+id: paliscope
+
+name:
+  value: Paliscope
+  status: claimed
+  source_url: https://www.paliscope.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Paliscope AB
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/paliscope-ab/g%C3%B6teborg/datautveckling-systemutveckling-programutveckling/2K28HCWI5YDOJ
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/paliscope-ab/g%C3%B6teborg/datautveckling-systemutveckling-programutveckling/2K28HCWI5YDOJ
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "556664-3168"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/paliscope-ab/g%C3%B6teborg/datautveckling-systemutveckling-programutveckling/2K28HCWI5YDOJ
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Numret anges även i användarvillkoren: https://www.paliscope.com/terms-and-conditions/"
+
+website: https://www.paliscope.com
+
+description:
+  value: Bygger programvara för utredningar med AI som körs i kundens eget nätverk och söker i text, bilder, ansikten och metadata, med moduler för ansiktsigenkänning, registreringsskyltar och tal till text.
+  status: claimed
+  source_url: https://www.paliscope.com/product/find/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.paliscope.com/product/find/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [forsvar_sakerhet, datorseende]
+  status: claimed
+  source_url: https://www.paliscope.com/product/find/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1480"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/paliscope-ab/g%C3%B6teborg/datautveckling-systemutveckling-programutveckling/2K28HCWI5YDOJ
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Göteborg."
+
+founded:
+  value: 2004
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/paliscope-ab/g%C3%B6teborg/datautveckling-systemutveckling-programutveckling/2K28HCWI5YDOJ
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2004-07-22."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/paliscope-ab/g%C3%B6teborg/datautveckling-systemutveckling-programutveckling/2K28HCWI5YDOJ
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.paliscope.com/product/find/
+    kind: produkt
+    title: "Paliscope Find: AI för sökning och analys i text-, bild- och ljudmaterial"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/paliscope/
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

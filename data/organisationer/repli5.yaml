@@ -1,0 +1,103 @@
+id: repli5
+
+name:
+  value: Repli5
+  status: claimed
+  source_url: https://www.repli5.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Repli5 AB
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/repli5-ab/g%C3%B6teborg/konsulter/2KGVDDYI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/repli5-ab/g%C3%B6teborg/konsulter/2KGVDDYI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559122-5734"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/repli5-ab/g%C3%B6teborg/konsulter/2KGVDDYI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Webbplatsen anger inget bolagsnamn eller organisationsnummer. Adressen i sidfoten stämmer med den som visas för bolaget på allabolag.se.
+
+website: https://www.repli5.com
+
+description:
+  value: Bygger en plattform som genererar syntetiska, automatiskt annoterade träningsdata för datorseende med 3D-simulering och generativ AI. Plattformen finns i sluten beta.
+  status: claimed
+  source_url: https://www.repli5.com/platform
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt, data]
+  status: claimed
+  source_url: https://www.repli5.com/platform
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [datorseende, industri, transport_mobilitet, forsvar_sakerhet]
+  status: claimed
+  source_url: https://www.repli5.com/platform
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1480"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/repli5-ab/g%C3%B6teborg/konsulter/2KGVDDYI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Göteborg."
+
+founded:
+  value: 2017
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/repli5-ab/g%C3%B6teborg/konsulter/2KGVDDYI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2017-08-23."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/repli5-ab/g%C3%B6teborg/konsulter/2KGVDDYI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.repli5.com/platform
+    kind: produkt
+    title: "Repli5 Data Engine: syntetiska träningsdata för datorseende"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Enligt sidan är plattformen i sluten beta med tidig åtkomst.
+
+links:
+  linkedin: https://www.linkedin.com/company/repli5/
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

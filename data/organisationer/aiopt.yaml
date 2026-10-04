@@ -1,0 +1,103 @@
+id: aiopt
+
+name:
+  value: AIOpt
+  status: claimed
+  source_url: https://aiopt.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: AIOpt AB
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/aiopt-ab/g%C3%B6teborg/telekommunikation-teleoperat%C3%B6rer/2KJ2L64I5YI0B
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/aiopt-ab/g%C3%B6teborg/telekommunikation-teleoperat%C3%B6rer/2KJ2L64I5YI0B
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559492-1644"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/aiopt-ab/g%C3%B6teborg/telekommunikation-teleoperat%C3%B6rer/2KJ2L64I5YI0B
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Numret anges även i sidfoten: https://aiopt.se/"
+
+website: https://aiopt.se
+
+description:
+  value: Bygger ett säkerhets- och bevislager för AI-styrda ändringar i mobilnät. Föreslagna åtgärder prövas mot sju deterministiska regler innan de körs, och varje beslut signeras som verifierbart bevis.
+  status: claimed
+  source_url: https://aiopt.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://aiopt.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [agenter_automation]
+  status: claimed
+  source_url: https://aiopt.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1480"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/aiopt-ab/g%C3%B6teborg/telekommunikation-teleoperat%C3%B6rer/2KJ2L64I5YI0B
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Göteborg."
+
+founded:
+  value: 2024
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/aiopt-ab/g%C3%B6teborg/telekommunikation-teleoperat%C3%B6rer/2KJ2L64I5YI0B
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2024-08-07."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/aiopt-ab/g%C3%B6teborg/telekommunikation-teleoperat%C3%B6rer/2KJ2L64I5YI0B
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://aiopt.se/
+    kind: produkt
+    title: Säkerhets- och bevislager för AI-styrda ändringar i mobilnät
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Enligt sidan finns ännu ingen driftsättning hos en operatör. Plattformen har körts mot en 5G-programvarustack i egen labbmiljö.
+
+links:
+  linkedin: https://www.linkedin.com/company/aiopt/
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

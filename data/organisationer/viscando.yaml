@@ -1,0 +1,99 @@
+id: viscando
+
+name:
+  value: Viscando
+  status: claimed
+  source_url: https://viscando.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Viscando AB
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/viscando-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2K3JB7JI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/viscando-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2K3JB7JI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "556882-8031"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/viscando-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2K3JB7JI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Webbplatsen anger inget organisationsnummer. Adressen på kontaktsidan stämmer med den som visas för bolaget på allabolag.se.
+
+website: https://viscando.com
+
+description:
+  value: Bygger 3D- och AI-baserade sensorer som följer fotgängare, cyklister och fordon i realtid för analys av trafikflöden och rörelsemönster, samt säkerhetsanalys i fabriker och lager.
+  status: claimed
+  source_url: https://viscando.com/technology/3d-ai-sensing/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://viscando.com/technology/3d-ai-sensing/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [transport_mobilitet, datorseende, industri]
+  status: claimed
+  source_url: https://viscando.com/technology/3d-ai-sensing/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1480"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/viscando-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2K3JB7JI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Göteborg."
+
+founded:
+  value: 2012
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/viscando-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2K3JB7JI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2012-02-01. Webbplatsen anger att Viscando grundades 2014."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/viscando-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2K3JB7JI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://viscando.com/technology/3d-ai-sensing/
+    kind: produkt
+    title: "OTUS3D: 3D- och AI-sensor för spårning av trafikanter"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

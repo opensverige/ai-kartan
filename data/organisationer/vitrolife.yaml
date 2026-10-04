@@ -1,0 +1,102 @@
+id: vitrolife
+
+name:
+  value: Vitrolife
+  status: claimed
+  source_url: https://www.vitrolife.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Vitrolife AB
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/vitrolife-ab/v%C3%A4stra-fr%C3%B6lunda/finansbolag-finansiella-tj%C3%A4nster/2K0E1LOI5YE9Q
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/vitrolife-ab/v%C3%A4stra-fr%C3%B6lunda/finansbolag-finansiella-tj%C3%A4nster/2K0E1LOI5YE9Q
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Publikt aktiebolag."
+
+org_number:
+  value: "556354-3452"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/vitrolife-ab/v%C3%A4stra-fr%C3%B6lunda/finansbolag-finansiella-tj%C3%A4nster/2K0E1LOI5YE9Q
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Sekretesspolicyn anger Vitrolife AB som svenskt bolag: https://www.vitrolife.com/customer-service/privacy-policy/. Cookiesidan anger Vitrolife Sweden AB (annat organisationsnummer) som webbplatsens ägare."
+
+website: https://www.vitrolife.com
+
+description:
+  value: Tillhandahåller time-lapse-system för IVF med AI-baserade beslutsstöd för embryoutvärdering, bland annat iDAScore som använder djupinlärning, och Guided Annotation.
+  status: claimed
+  source_url: https://www.vitrolife.com/products/time-lapse-systems/embryo-decision-support-tools/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.vitrolife.com/products/time-lapse-systems/embryo-decision-support-tools/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [halsa, datorseende]
+  status: claimed
+  source_url: https://www.vitrolife.com/products/time-lapse-systems/embryo-decision-support-tools/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1480"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/vitrolife-ab/v%C3%A4stra-fr%C3%B6lunda/finansbolag-finansiella-tj%C3%A4nster/2K0E1LOI5YE9Q
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Göteborg."
+
+founded:
+  value: 1989
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/vitrolife-ab/v%C3%A4stra-fr%C3%B6lunda/finansbolag-finansiella-tj%C3%A4nster/2K0E1LOI5YE9Q
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 1989-03-02."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/vitrolife-ab/v%C3%A4stra-fr%C3%B6lunda/finansbolag-finansiella-tj%C3%A4nster/2K0E1LOI5YE9Q
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.vitrolife.com/products/time-lapse-systems/embryo-decision-support-tools/
+    kind: produkt
+    title: "iDAScore och Guided Annotation: AI-baserade beslutsstöd för embryoutvärdering"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/vitrolife
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

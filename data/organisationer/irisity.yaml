@@ -1,0 +1,99 @@
+id: irisity
+
+name:
+  value: Irisity
+  status: claimed
+  source_url: https://irisity.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Irisity AB (publ)
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/irisity-ab-publ/g%C3%B6teborg/bevakningsf%C3%B6retag/2K2HASRI5YCZJ
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/irisity-ab-publ/g%C3%B6teborg/bevakningsf%C3%B6retag/2K2HASRI5YCZJ
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Publikt aktiebolag."
+
+org_number:
+  value: "556705-4571"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/irisity-ab-publ/g%C3%B6teborg/bevakningsf%C3%B6retag/2K2HASRI5YCZJ
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Numret anges även på bolagets IR-sida: https://irisity.com/company-investor-relations/communication-and-reports/"
+
+website: https://irisity.com
+
+description:
+  value: Utvecklar programvara för AI-baserad videoanalys som i realtid upptäcker bland annat intrång, vistelse i begränsade zoner, kvarlämnade föremål samt rök och brand i kamerabilder.
+  status: claimed
+  source_url: https://irisity.com/ai-video-analytics/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://irisity.com/ai-video-analytics/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [forsvar_sakerhet, datorseende]
+  status: claimed
+  source_url: https://irisity.com/ai-video-analytics/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1480"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/irisity-ab-publ/g%C3%B6teborg/bevakningsf%C3%B6retag/2K2HASRI5YCZJ
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Göteborg."
+
+founded:
+  value: 2006
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/irisity-ab-publ/g%C3%B6teborg/bevakningsf%C3%B6retag/2K2HASRI5YCZJ
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2006-06-12. Webbplatsen anger också grundår 2006."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/irisity-ab-publ/g%C3%B6teborg/bevakningsf%C3%B6retag/2K2HASRI5YCZJ
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://irisity.com/ai-video-analytics/
+    kind: produkt
+    title: AI-baserad videoanalys med detektionsagenter för säkerhet och övervakning
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04
