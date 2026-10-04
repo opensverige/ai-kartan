@@ -1,0 +1,73 @@
+id: caisr-hh
+
+name:
+  value: Center for Applied Intelligent Systems Research (CAISR), Högskolan i Halmstad
+  status: claimed
+  source_url: https://www.hh.se/caisr
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: larosate
+  status: confirmed
+  source_url: https://www.allabolag.se/2021003203
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Centrum inom Högskolan i Halmstad, som är en statlig enhet enligt allabolag.
+
+org_number:
+  value: "202100-3203"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021003203
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Organisationsnummer för Högskolan i Halmstad, som centret ingår i.
+
+website: https://www.hh.se/caisr
+
+description:
+  value: Forskningscentrum vid Högskolan i Halmstad för tillämpad AI och maskininlärning med fokus på medvetna intelligenta system, med tillämpningar inom informationsdriven vård och intelligenta fordon.
+  status: claimed
+  source_url: https://www.hh.se/caisr
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [forskning, utveckling]
+  status: claimed
+  source_url: https://www.hh.se/caisr
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [halsa, transport_mobilitet, industri]
+  status: claimed
+  source_url: https://www.hh.se/caisr
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1380"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021003203
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Säte för Högskolan i Halmstad enligt allabolag; centret ingår i högskolan.
+
+evidence:
+  - url: https://www.hh.se/english/research/our-research/research-at-the-school-of-information-technology/center-for-applied-intelligent-systems-research-caisr/publications-caisr.html
+    kind: publikation
+    title: "CAISR:s publikationer i DiVA, bland annat dataset för autonoma fordon"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

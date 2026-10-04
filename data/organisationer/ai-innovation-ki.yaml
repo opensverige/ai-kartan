@@ -1,0 +1,73 @@
+id: ai-innovation-ki
+
+name:
+  value: Centrum för AI Innovation, Karolinska Institutet
+  status: claimed
+  source_url: https://ki.se/forskning/forskningsomraden-centrum-och-natverk/forskningscentrum/centrum-for-ai-innovation
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: larosate
+  status: confirmed
+  source_url: https://www.allabolag.se/2021002973
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Centrum inom Karolinska Institutet, som är en statlig enhet enligt allabolag.
+
+org_number:
+  value: "202100-2973"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021002973
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Organisationsnummer för Karolinska Institutet, som centret ingår i.
+
+website: https://ki.se/forskning/forskningsomraden-centrum-och-natverk/forskningscentrum/centrum-for-ai-innovation
+
+description:
+  value: Karolinska Institutets centrum för att främja utveckling och användning av AI i medicinsk forskning och hälso- och sjukvård. Leder den svenska noden av TEF-Health, en testanläggning för hälso-AI och robotik.
+  status: claimed
+  source_url: https://ki.se/forskning/forskningsomraden-centrum-och-natverk/forskningscentrum/centrum-for-ai-innovation
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [forskning, community, infrastruktur]
+  status: claimed
+  source_url: https://ki.se/forskning/forskningsomraden-centrum-och-natverk/forskningscentrum/centrum-for-ai-innovation
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [halsa]
+  status: claimed
+  source_url: https://ki.se/forskning/forskningsomraden-centrum-och-natverk/forskningscentrum/centrum-for-ai-innovation
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0184"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021002973
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Säte för Karolinska Institutet enligt allabolag (Solna). Centrets egen lokalisering anges inte på sidan.
+
+evidence:
+  - url: https://ki.se/en/research/research-areas-centres-and-networks/research-centres/centre-for-ai-innovation/tef-health-sweden
+    kind: resurs
+    title: "TEF-Health Sweden: testmiljöer och tjänster för hälso-AI och robotik"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

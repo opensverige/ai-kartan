@@ -1,0 +1,83 @@
+id: dsv-su
+
+name:
+  value: Institutionen för data- och systemvetenskap (DSV), Stockholms universitet
+  status: claimed
+  source_url: https://www.su.se/enheter/institutionen-for-data--och-systemvetenskap
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: larosate
+  status: confirmed
+  source_url: https://www.allabolag.se/2021003062
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Institution inom Stockholms universitet, som är en statlig enhet enligt allabolag.
+
+org_number:
+  value: "202100-3062"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021003062
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Organisationsnummer för Stockholms universitet, som institutionen ingår i.
+
+website: https://www.su.se/enheter/institutionen-for-data--och-systemvetenskap
+
+description:
+  value: Institution vid Stockholms universitet i Kista med tolv forskargrupper inom bland annat AI, språkteknologi och hälsoinformatik.
+  status: claimed
+  source_url: https://www.su.se/enheter/institutionen-for-data--och-systemvetenskap/forskning/forskargrupper
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Campus Kista enligt institutionens startsida.
+
+offers:
+  value: [forskning, utbildning]
+  status: claimed
+  source_url: https://www.su.se/enheter/institutionen-for-data--och-systemvetenskap
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell, sprakteknik, halsa]
+  status: claimed
+  source_url: https://www.su.se/enheter/institutionen-for-data--och-systemvetenskap/forskning/forskargrupper
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021003062
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Säte för Stockholms universitet enligt allabolag. Institutionen utgör universitetets campus i Kista, som ligger i Stockholms kommun.
+
+evidence:
+  - url: https://www.su.se/enheter/institutionen-for-data--och-systemvetenskap/forskning/forskargrupper
+    kind: case
+    title: Forskargrupper vid DSV med AI, språkteknologi och hälsoinformatik
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://github.com/dsv-data-science
+    kind: repo
+    title: Öppna repon från datavetenskapsgruppen, bland annat benchmark för automatisk rättning
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  github: https://github.com/dsv-data-science
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

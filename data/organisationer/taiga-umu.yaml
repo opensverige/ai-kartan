@@ -1,0 +1,73 @@
+id: taiga-umu
+
+name:
+  value: TAIGA – Centrum för transdisciplinär AI, Umeå universitet
+  status: claimed
+  source_url: https://www.umu.se/centrum-for-transdisciplinar-ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: larosate
+  status: confirmed
+  source_url: https://www.allabolag.se/2021002874
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Centrum inom Umeå universitet, som är en statlig enhet enligt allabolag.
+
+org_number:
+  value: "202100-2874"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021002874
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Organisationsnummer för Umeå universitet, som centret ingår i.
+
+website: https://www.umu.se/centrum-for-transdisciplinar-ai/
+
+description:
+  value: Fakultetsövergripande centrum vid Umeå universitet för transdisciplinär AI-forskning, med fokusområden som AI inom medicin och hälsa och förklarbar AI, samt mikroprojekt som får forskningsmedel.
+  status: claimed
+  source_url: https://www.umu.se/centrum-for-transdisciplinar-ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [forskning, finansiering, community, utbildning]
+  status: claimed
+  source_url: https://www.umu.se/centrum-for-transdisciplinar-ai/forskning/mikroprojekt/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell, halsa, utbildning]
+  status: claimed
+  source_url: https://www.umu.se/centrum-for-transdisciplinar-ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "2480"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021002874
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Säte för Umeå universitet enligt allabolag; centret ingår i universitetet.
+
+evidence:
+  - url: https://www.umu.se/centrum-for-transdisciplinar-ai/forskning/mikroprojekt/
+    kind: program
+    title: Beviljade mikroprojekt inom transdisciplinär AI, med rapporter
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

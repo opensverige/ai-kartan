@@ -1,0 +1,73 @@
+id: sail-his
+
+name:
+  value: Skövde Artificial Intelligence Lab (SAIL), Högskolan i Skövde
+  status: claimed
+  source_url: https://www.his.se/en/research/informatics/skovde-artificial-intelligence-lab/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: larosate
+  status: confirmed
+  source_url: https://www.allabolag.se/2021003146
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Forskargrupp inom Högskolan i Skövde, som är en statlig enhet enligt allabolag.
+
+org_number:
+  value: "202100-3146"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021003146
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Organisationsnummer för Högskolan i Skövde, som forskargruppen ingår i.
+
+website: https://www.his.se/en/research/informatics/skovde-artificial-intelligence-lab/
+
+description:
+  value: Forskargrupp vid Högskolan i Skövde för tillämpad AI i samverkan med industrin, med fokus på djupinlärning, resonemang under osäkerhet, visuell analys och transparent beslutsstöd. Ansvarar för masterprogrammet i data science.
+  status: claimed
+  source_url: https://www.his.se/en/research/informatics/skovde-artificial-intelligence-lab/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [forskning, utbildning]
+  status: claimed
+  source_url: https://www.his.se/en/research/informatics/skovde-artificial-intelligence-lab/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell, industri]
+  status: claimed
+  source_url: https://www.his.se/en/research/informatics/skovde-artificial-intelligence-lab/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1496"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021003146
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Säte för Högskolan i Skövde enligt allabolag; forskargruppen ingår i högskolan.
+
+evidence:
+  - url: https://www.his.se/en/research/informatics/skovde-artificial-intelligence-lab/
+    kind: case
+    title: "SAIL:s forskningsområden och projekt, bland annat AI för prediktivt underhåll"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

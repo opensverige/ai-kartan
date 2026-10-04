@@ -1,0 +1,79 @@
+id: chair-chalmers
+
+name:
+  value: Chalmers AI Research Centre (CHAIR)
+  status: claimed
+  source_url: https://www.chalmers.se/en/centres/chair/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: larosate
+  status: confirmed
+  source_url: https://www.allabolag.se/5564795598
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Centrum inom Chalmers tekniska högskola AB (SNI 85400 universitets- eller högskoleutbildning enligt allabolag).
+
+org_number:
+  value: "556479-5598"
+  status: confirmed
+  source_url: https://www.allabolag.se/5564795598
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Avser Chalmers tekniska högskola AB, som centret ingår i. Numret står även i Chalmers sidfot.
+
+website: https://www.chalmers.se/en/centres/chair/
+
+description:
+  value: Forskningscentrum vid Chalmers som stöder AI-forskning inom tre spår (AI-grunder, AI för vetenskap och AI-tillämpningar) genom tematiska initiativ, bland annat om AI för vetenskaplig dataanalys och matematiska grunder för AI.
+  status: claimed
+  source_url: https://www.chalmers.se/en/centres/chair/about-us/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [forskning, finansiering, community]
+  status: claimed
+  source_url: https://www.chalmers.se/en/centres/chair/about-us/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://www.chalmers.se/en/centres/chair/research/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1480"
+  status: confirmed
+  source_url: https://www.allabolag.se/5564795598
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Säte för Chalmers tekniska högskola AB enligt allabolag. CHAIR har mötesplats på Campus Johanneberg enligt egen sida.
+
+evidence:
+  - url: https://www.chalmers.se/en/centres/chair/faculty/neurips-conference-papers/
+    kind: publikation
+    title: Chalmers bidrag vid NeurIPS-konferensen, sammanställda av CHAIR
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://www.chalmers.se/en/centres/chair/research/
+    kind: program
+    title: Forskningsteman och spår inom AI
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

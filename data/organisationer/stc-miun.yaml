@@ -1,0 +1,73 @@
+id: stc-miun
+
+name:
+  value: STC – Sensible Things that Communicate, Mittuniversitetet
+  status: claimed
+  source_url: https://www.miun.se/Forskning/forskningscentra/stc/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: larosate
+  status: confirmed
+  source_url: https://www.allabolag.se/2021004524
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Forskningscentrum inom Mittuniversitetet, som är en statlig enhet enligt allabolag.
+
+org_number:
+  value: "202100-4524"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021004524
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Organisationsnummer för Mittuniversitetet, som centret ingår i.
+
+website: https://www.miun.se/Forskning/forskningscentra/stc/
+
+description:
+  value: Forskningscentrum vid Mittuniversitetet som utvecklar sensorbaserade system och tjänster för sakernas internet och AI, med fokus på smarta industrier, nästa generations mätsystem och funktionella ytor.
+  status: claimed
+  source_url: https://www.miun.se/Forskning/forskningscentra/stc/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [forskning, utveckling]
+  status: claimed
+  source_url: https://www.miun.se/Forskning/forskningscentra/stc/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [industri, energi_klimat, generell]
+  status: claimed
+  source_url: https://www.miun.se/Forskning/forskningscentra/stc/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "2281"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021004524
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Säte för Mittuniversitetet enligt allabolag; centrets campus anges inte på startsidan.
+
+evidence:
+  - url: https://www.miun.se/en/Research/research-centers/stc/Publications/
+    kind: publikation
+    title: Lista över publikationer, artiklar och avhandlingar från STC
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

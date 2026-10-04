@@ -1,0 +1,116 @@
+id: rise
+
+name:
+  value: RISE Research Institutes of Sweden
+  status: claimed
+  source_url: https://github.com/RI-SE
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: RISE Research Institutes of Sweden AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5564646874
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: larosate
+  status: confirmed
+  source_url: https://www.allabolag.se/5564646874
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Aktiebolag. Verksamhetsföremål enligt allabolag: industriforskning i institutform, provning, certifiering och utbildning."
+
+org_number:
+  value: "556464-6874"
+  status: confirmed
+  source_url: https://www.allabolag.se/5564646874
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://www.ri.se
+
+description:
+  value: Forskningsinstitut i aktiebolagsform som publicerar öppen kod för maskininlärning, bland annat SAVANT för videoannotering, SMIRK för kvalitetssäkring av ML i fordon och EXPLib för förklarbar djupinlärning.
+  status: claimed
+  source_url: https://github.com/RI-SE
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Webbplatsen ri.se går inte att läsa automatiskt (bot-kontroll). Beskrivningen bygger på RISE:s verifierade GitHub-organisation och bolagsregistret."
+
+offers:
+  value: [forskning, utveckling, oppen_kallkod]
+  status: claimed
+  source_url: https://github.com/RI-SE
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Forskning och utveckling enligt verksamhetsföremålet i allabolag; öppen kod enligt GitHub-organisationen.
+
+areas:
+  value: [generell, transport_mobilitet, datorseende]
+  status: claimed
+  source_url: https://github.com/RI-SE
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1480"
+  status: confirmed
+  source_url: https://www.allabolag.se/5564646874
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Registrerat säte Göteborg enligt allabolag. Bolagets adress anges i Borås; ri.se gick inte att läsa för att jämföra.
+
+founded:
+  value: 1993
+  status: confirmed
+  source_url: https://www.allabolag.se/5564646874
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Registreringsår för bolaget enligt allabolag (tidigare SP).
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5564646874
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Status Aktiv enligt allabolag.
+
+evidence:
+  - url: https://github.com/RI-SE
+    kind: repo
+    title: RISE öppna kod på GitHub, bland annat SAVANT, SMIRK och EXPLib
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://github.com/RI-SE/smirk
+    kind: repo
+    title: "SMIRK: experimentellt ADAS för fotgängarnödbromsning med maskininlärning"
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://www.ai.se/en/project/gpt-sw3
+    kind: modell
+    title: "GPT-SW3, utvecklad av AI Sweden i samarbete med RISE och WARA Media & Language"
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  github: https://github.com/RI-SE
+  linkedin: https://www.linkedin.com/company/rise-research-institutes-of-sweden
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

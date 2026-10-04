@@ -1,0 +1,73 @@
+id: jail-ju
+
+name:
+  value: Jönköping AI Lab (JAIL), Jönköping University
+  status: claimed
+  source_url: https://ju.se/en/about-us/school-of-engineering/organisation/computing/research.html
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: larosate
+  status: confirmed
+  source_url: https://www.allabolag.se/5564872751
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Labb inom Tekniska Högskolan i Jönköping AB (SNI 85400 universitets- eller högskoleutbildning enligt allabolag), som ingår i Jönköping University.
+
+org_number:
+  value: "556487-2751"
+  status: confirmed
+  source_url: https://www.allabolag.se/5564872751
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Avser Tekniska Högskolan i Jönköping AB (School of Engineering), som institutionen för datavetenskap ingår i. Bolaget ägs av Stiftelsen Högskolan i Jönköping (826001-7333).
+
+website: https://ju.se/en/about-us/school-of-engineering/organisation/computing/research.html
+
+description:
+  value: Forskningslabb vid Jönköping University som arbetar med maskininlärning, datautvinning, ontologier och förklarbar AI i projekt tillsammans med företag.
+  status: claimed
+  source_url: https://ju.se/en/about-us/school-of-engineering/organisation/computing/research.html
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [forskning, utveckling]
+  status: claimed
+  source_url: https://ju.se/en/about-us/school-of-engineering/organisation/computing/research.html
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [industri, fastighet_bygg, halsa, jordbruk_skog, forsvar_sakerhet]
+  status: claimed
+  source_url: https://ju.se/en/about-us/school-of-engineering/organisation/computing/research.html
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0680"
+  status: confirmed
+  source_url: https://www.allabolag.se/5564872751
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Säte för Tekniska Högskolan i Jönköping AB enligt allabolag; labbet ingår i institutionen för datavetenskap vid Jönköping University.
+
+evidence:
+  - url: https://ju.se/en/about-us/school-of-engineering/organisation/computing/research.html
+    kind: case
+    title: "JAIL:s kompetensområden och forskningsprojekt"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

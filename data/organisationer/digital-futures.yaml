@@ -1,0 +1,83 @@
+id: digital-futures
+
+name:
+  value: Digital Futures
+  status: claimed
+  source_url: https://www.digitalfutures.kth.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: larosate
+  status: claimed
+  source_url: https://www.digitalfutures.kth.se/about/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Forskningscentrum som drivs gemensamt av KTH, Stockholms universitet och RISE.
+
+org_number:
+  value: "202100-3054"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021003054
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Avser KTH, som är värd (centrets lokaler och styrning ligger vid KTH). Centret drivs av KTH, Stockholms universitet och RISE och redovisar inget eget organisationsnummer.
+
+website: https://www.digitalfutures.kth.se/
+
+description:
+  value: Tvärvetenskapligt forskningscentrum som drivs av KTH, Stockholms universitet och RISE och finansierar strategiska forskningsprojekt inom digital omställning, bland annat inom AI och maskininlärning.
+  status: claimed
+  source_url: https://www.digitalfutures.kth.se/about/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Finansiering och AI-teman enligt /research/. AI är ett av flera teman.
+
+offers:
+  value: [forskning, finansiering, community]
+  status: claimed
+  source_url: https://www.digitalfutures.kth.se/research/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell, industri, utbildning, halsa]
+  status: claimed
+  source_url: https://www.digitalfutures.kth.se/research/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021003054
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Säte för KTH enligt allabolag. Centrets lokaler ligger vid KTH i Stockholm enligt dess kontaktsida.
+
+founded:
+  value: 2020
+  status: claimed
+  source_url: https://www.digitalfutures.kth.se/about/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Etablerat 2020 enligt egen webbplats.
+
+evidence:
+  - url: https://www.digitalfutures.kth.se/research/
+    kind: program
+    title: Forskningsprojekt och utlysningar, med flera AI-baserade projekt
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

@@ -1,0 +1,84 @@
+id: wasp-hs
+
+name:
+  value: WASP-HS – Humanity and Society
+  status: claimed
+  source_url: https://wasp-hs.org/about/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Fullständigt namn: Wallenberg AI, Autonomous Systems and Software Program – Humanity and Society."
+
+type:
+  value: larosate
+  status: claimed
+  source_url: https://wasp-hs.org/about/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Forskningsprogram som samordnas av Umeå universitet.
+
+org_number:
+  value: "202100-2874"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021002874
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Avser Umeå universitet (statlig enhet), som samordnar programmet enligt umu.se. Programmet redovisar inget eget organisationsnummer.
+
+website: https://wasp-hs.org/
+
+description:
+  value: Nationellt forskningsprogram om hur AI och autonoma system påverkar människa och samhälle, med forskningsmiljöer, forskarskola och postdoktorprogram vid flera universitet. Samordnas av Umeå universitet.
+  status: claimed
+  source_url: https://wasp-hs.org/about/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [forskning, finansiering, utbildning, community]
+  status: claimed
+  source_url: https://wasp-hs.org/about/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell, offentlig_sektor, juridik, robotik]
+  status: claimed
+  source_url: https://wasp-hs.org/research-environments/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "2480"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021002874
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Säte för Umeå universitet enligt allabolag. Programmet samordnas av Umeå universitet enligt umu.se.
+
+evidence:
+  - url: https://wasp-hs.org/publications/
+    kind: publikation
+    title: Publikationer från forskning om AI och samhälle inom WASP-HS
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Humanistisk och samhällsvetenskaplig forskning om AI och autonoma system, till exempel om AI i offentlig upphandling och i utbildning.
+  - url: https://wasp-hs.org/research-environments/
+    kind: program
+    title: "Forskningsmiljöer om AI:s påverkan på människa och samhälle"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/wasp-hs/
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

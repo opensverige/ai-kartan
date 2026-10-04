@@ -1,0 +1,82 @@
+id: aass-oru
+
+name:
+  value: Centre for Applied Autonomous Sensor Systems (AASS), Örebro universitet
+  status: claimed
+  source_url: https://www.oru.se/aass
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: larosate
+  status: confirmed
+  source_url: https://www.allabolag.se/2021002924
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Centrum inom Örebro universitet, som är en statlig enhet enligt allabolag.
+
+org_number:
+  value: "202100-2924"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021002924
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Organisationsnummer för Örebro universitet, som centret ingår i.
+
+website: https://www.oru.se/aass
+
+description:
+  value: Forskningscentrum vid Örebro universitet för autonoma system med fokus på perception och kognition, bland annat AI och robotik för autonoma arbetsfordon och äldreomsorg.
+  status: claimed
+  source_url: https://www.oru.se/aass
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [forskning, utveckling]
+  status: claimed
+  source_url: https://www.oru.se/aass
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [robotik, industri, halsa]
+  status: claimed
+  source_url: https://www.oru.se/aass
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1880"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021002924
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Säte för Örebro universitet enligt allabolag; centret ingår i universitetet.
+
+founded:
+  value: 1998
+  status: claimed
+  source_url: https://www.oru.se/aass
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Centret grundades 1998 enligt egen sida.
+
+evidence:
+  - url: https://www.oru.se/english/research/research-environments/ent/AASS/projects-at-aass/
+    kind: case
+    title: Projektlista för AASS, bland annat AI-baserade planeringsverktyg för gruvfordon
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

@@ -1,0 +1,73 @@
+id: hints-bth
+
+name:
+  value: "HINTS: Human-Centered Intelligent Realities, Blekinge Tekniska Högskola"
+  status: claimed
+  source_url: https://www.bth.se/forskningsmiljoer/hints-human-centered-intelligent-realities/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: larosate
+  status: confirmed
+  source_url: https://www.allabolag.se/2021004011
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Forskningsprofil inom Blekinge tekniska högskola, som är en statlig enhet enligt allabolag.
+
+org_number:
+  value: "202100-4011"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021004011
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Organisationsnummer för Blekinge tekniska högskola, som forskningsprofilen ingår i.
+
+website: https://www.bth.se/forskningsmiljoer/hints-human-centered-intelligent-realities/
+
+description:
+  value: Forskningsprofil vid Blekinge tekniska högskola som utvecklar metoder, algoritmer och verktyg för människocentrerade intelligenta miljöer med AI och XR, tillsammans med företag och samhälle.
+  status: claimed
+  source_url: https://www.bth.se/forskningsmiljoer/hints-human-centered-intelligent-realities/about
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [forskning, utveckling]
+  status: claimed
+  source_url: https://www.bth.se/forskningsmiljoer/hints-human-centered-intelligent-realities/about
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell, media_kreativt]
+  status: claimed
+  source_url: https://www.bth.se/forskningsmiljoer/hints-human-centered-intelligent-realities/about
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1080"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021004011
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Säte för Blekinge tekniska högskola enligt allabolag; forskningsprofilen ingår i högskolan.
+
+evidence:
+  - url: https://www.bth.se/forskningsmiljoer/hints-human-centered-intelligent-realities/
+    kind: case
+    title: Forskningsprofilen HINTS med mål, teman och nyheter om accepterade artiklar
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

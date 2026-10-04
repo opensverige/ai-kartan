@@ -1,0 +1,73 @@
+id: dista-lnu
+
+name:
+  value: Data Intensive Software Technologies and Applications (DISTA), Linnéuniversitetet
+  status: claimed
+  source_url: https://www.lnu.se/dista/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: larosate
+  status: confirmed
+  source_url: https://www.allabolag.se/2021006271
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Forskargrupp inom Linnéuniversitetet, som är en statlig enhet enligt allabolag.
+
+org_number:
+  value: "202100-6271"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021006271
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Organisationsnummer för Linnéuniversitetet, som forskargruppen ingår i.
+
+website: https://www.lnu.se/dista/
+
+description:
+  value: Forskargrupp vid Linnéuniversitetet som studerar datastyrda metoder som maskininlärning, AI och big data för att automatisera och förbättra programutveckling.
+  status: claimed
+  source_url: https://www.lnu.se/dista/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [forskning]
+  status: claimed
+  source_url: https://www.lnu.se/dista/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://www.lnu.se/dista/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0780"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021006271
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Säte för Linnéuniversitetet enligt allabolag. Universitetet har campus i Växjö och Kalmar; gruppens campus anges inte på sidan.
+
+evidence:
+  - url: https://www.lnu.se/dista/
+    kind: case
+    title: "DISTA:s forskning, projekt och publikationer, bland annat generativa AI-verktyg"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

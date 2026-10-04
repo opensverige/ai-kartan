@@ -1,0 +1,78 @@
+id: rpl-kth
+
+name:
+  value: Institutionen för robotik, perception och lärande (RPL), KTH
+  status: claimed
+  source_url: https://www.kth.se/rpl/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Engelskt namn: Department of Robotics, Perception and Learning."
+
+type:
+  value: larosate
+  status: confirmed
+  source_url: https://www.allabolag.se/2021003054
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Institution inom Kungliga Tekniska högskolan, som är en statlig enhet enligt allabolag.
+
+org_number:
+  value: "202100-3054"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021003054
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Organisationsnummer för Kungliga Tekniska högskolan, som institutionen ingår i.
+
+website: https://www.kth.se/rpl/
+
+description:
+  value: Institution vid KTH som forskar om robotik, datorseende och maskininlärning och publicerar öppen kod, bland annat för 3D-perception, scenflöde och kartläggning.
+  status: claimed
+  source_url: https://www.kth.se/rpl/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Öppen kod enligt github.com/KTH-RPL.
+
+offers:
+  value: [forskning, oppen_kallkod]
+  status: claimed
+  source_url: https://github.com/KTH-RPL
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [robotik, datorseende]
+  status: claimed
+  source_url: https://www.kth.se/rpl/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021003054
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Säte för Kungliga Tekniska högskolan enligt allabolag. Institutionens GitHub-profil anger Stockholm.
+
+evidence:
+  - url: https://github.com/KTH-RPL
+    kind: repo
+    title: Öppen kod från RPL på GitHub, till exempel DynamicMap_Benchmark, DUFOMap och OpenSceneFlow
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  github: https://github.com/KTH-RPL
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

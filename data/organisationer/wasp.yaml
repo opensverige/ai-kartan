@@ -1,0 +1,97 @@
+id: wasp
+
+name:
+  value: WASP – Wallenberg AI, Autonomous Systems and Software Program
+  status: claimed
+  source_url: https://wasp-sweden.org/about-us/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: larosate
+  status: claimed
+  source_url: https://wasp-sweden.org/about-us/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Forskningsprogram med Linköpings universitet som värd.
+
+org_number:
+  value: "202100-3096"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021003096
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Avser värduniversitetet Linköpings universitet (statlig enhet). Programmet redovisar inget eget organisationsnummer. Värd enligt Knut och Alice Wallenbergs Stiftelse och liu.se.
+
+website: https://wasp-sweden.org/
+
+description:
+  value: Nationellt forskningsprogram för AI, autonoma system och mjukvara med forskningsprojekt, forskarskola och rekrytering av forskare vid sex partneruniversitet. Finansieras av Knut och Alice Wallenbergs Stiftelse och har Linköpings universitet som värd.
+  status: claimed
+  source_url: https://wasp-sweden.org/about-us/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [forskning, finansiering, utbildning, community, infrastruktur]
+  status: claimed
+  source_url: https://wasp-sweden.org/about-us/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell, robotik]
+  status: claimed
+  source_url: https://wasp-sweden.org/research/research-arenas/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0580"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021003096
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Säte för värduniversitetet Linköpings universitet enligt allabolag. Värd enligt kaw.wallenberg.org och liu.se.
+
+founded:
+  value: 2015
+  status: confirmed
+  source_url: https://kaw.wallenberg.org/en/research/wasp-mission-build-national-expertise-ai-software-and-autonomous-systems
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Programmet startade 2015 enligt Knut och Alice Wallenbergs Stiftelse.
+
+evidence:
+  - url: https://wasp-sweden.org/publications/
+    kind: publikation
+    title: Publikationslista för doktorander och postdoktorer inom WASP
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://wasp-sweden.org/research/research-arenas/
+    kind: resurs
+    title: "WARA: forskningsarenor med gemensamma dataset och infrastruktur"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://wasp-sweden.org/theses/
+    kind: publikation
+    title: Doktorsavhandlingar inom WASP
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/wasp-wallenberg-ai-autonomous-systems-and-software-program/
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

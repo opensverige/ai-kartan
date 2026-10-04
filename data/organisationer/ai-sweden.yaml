@@ -1,0 +1,83 @@
+id: ai-sweden
+
+name:
+  value: AI Sweden
+  status: claimed
+  source_url: https://www.ai.se/sv
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: larosate
+  status: claimed
+  source_url: https://www.ai.se/sv
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Nationellt centrum för tillämpad AI med Lindholmen Science Park AB som formell huvudvärd.
+
+org_number:
+  value: "556568-6366"
+  status: confirmed
+  source_url: https://www.allabolag.se/5565686366
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Avser Lindholmen Science Park AB, som enligt ai.se är AI Swedens formella huvudvärd. AI Sweden redovisar inget eget organisationsnummer.
+
+website: https://www.ai.se/sv
+
+description:
+  value: Nationellt centrum för tillämpad AI som driver samverkansprojekt, publicerar öppna språkmodeller som GPT-SW3 och erbjuder dataset, testbädd och kurser. Har Lindholmen Science Park AB som formell huvudvärd.
+  status: claimed
+  source_url: https://www.ai.se/sv
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [forskning, utveckling, data, community, utbildning, oppen_kallkod, infrastruktur]
+  status: claimed
+  source_url: https://www.ai.se/sv
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Öppna modeller på huggingface.co/AI-Sweden-Models; dataset och testbädd under Research & Innovation på ai.se."
+
+areas:
+  value: [generell, sprakteknik, offentlig_sektor, halsa]
+  status: claimed
+  source_url: https://www.ai.se/sv
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1480"
+  status: confirmed
+  source_url: https://www.allabolag.se/5565686366
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Säte för Lindholmen Science Park AB enligt allabolag. Huvudkontoret ligger på Lindholmen i Göteborg enligt ai.se, med kontor på flera orter.
+
+evidence:
+  - url: https://huggingface.co/AI-Sweden-Models
+    kind: modell
+    title: "AI-Sweden-Models på Hugging Face: GPT-SW3 och fler modeller"
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://www.ai.se/en/project/gpt-sw3
+    kind: modell
+    title: Projektsida för språkmodellen GPT-SW3
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  huggingface: https://huggingface.co/AI-Sweden-Models
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

@@ -1,0 +1,74 @@
+id: ai-for-research-uu
+
+name:
+  value: AI for Research, Uppsala universitet
+  status: claimed
+  source_url: https://www.uu.se/en/disciplinary-domain/science-and-technology/research/our-research-strengths/ai-for-research
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Efterföljare till projektet AI4Research, som enligt en nyhet på uu.se (2026-03-10) avslutades vid årsskiftet 2025/26.
+
+type:
+  value: larosate
+  status: confirmed
+  source_url: https://www.allabolag.se/2021002932
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Satsning inom Uppsala universitet, som är en statlig enhet enligt allabolag.
+
+org_number:
+  value: "202100-2932"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021002932
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Organisationsnummer för Uppsala universitet, som satsningen ingår i.
+
+website: https://www.uu.se/en/disciplinary-domain/science-and-technology/research/our-research-strengths/ai-for-research
+
+description:
+  value: Uppsala universitets satsning på AI och maskininlärning som forskningsverktyg inom naturvetenskap, medicin och humaniora, med utlysningar av forskningsmedel för AI-projekt.
+  status: claimed
+  source_url: https://www.uu.se/en/disciplinary-domain/science-and-technology/research/our-research-strengths/ai-for-research
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [forskning, finansiering]
+  status: claimed
+  source_url: https://www.uu.se/en/disciplinary-domain/science-and-technology/research/our-research-strengths/ai-for-research
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell, halsa]
+  status: claimed
+  source_url: https://www.uu.se/en/disciplinary-domain/science-and-technology/research/our-research-strengths/ai-for-research
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0380"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021002932
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Säte för Uppsala universitet enligt allabolag. Satsningen har ett labb vid Carolina Rediviva i Uppsala enligt egen sida.
+
+evidence:
+  - url: https://www.uu.se/en/disciplinary-domain/science-and-technology/research/our-research-strengths/ai-for-research
+    kind: case
+    title: Projekt som använder AI som forskningsverktyg, till exempel för batterielektrolyter och sjukdomsrisk
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04
