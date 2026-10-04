@@ -1,0 +1,103 @@
+id: arkion
+
+name:
+  value: Arkion
+  status: claimed
+  source_url: https://www.arkion.co/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: skyqraft.com leder vidare till arkion.co.
+
+legal_name:
+  value: Arkion Solutions AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5591864482
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5591864482
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559186-4482"
+  status: confirmed
+  source_url: https://www.allabolag.se/5591864482
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Numret anges även i sidfoten på https://www.arkion.co/
+
+website: https://www.arkion.co
+
+description:
+  value: Utvecklar en AI-plattform som analyserar inspektionsdata från elnät, bland annat bilder, för att hitta fel på komponenter och växtlighet nära ledningar.
+  status: claimed
+  source_url: https://www.arkion.co/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.arkion.co/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [energi_klimat, datorseende]
+  status: claimed
+  source_url: https://www.arkion.co/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5591864482
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+founded:
+  value: 2018
+  status: confirmed
+  source_url: https://www.allabolag.se/5591864482
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2018-12-17. Webbplatsen anger 2019 som grundår (https://www.arkion.co/about)."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5591864482
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.arkion.co/product/defect-detection
+    kind: produkt
+    title: AI-baserad felupptäckt i elnät
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/arkionsolutions/
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

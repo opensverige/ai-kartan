@@ -1,0 +1,110 @@
+id: rerun
+
+name:
+  value: Rerun
+  status: claimed
+  source_url: https://rerun.io
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Rerun Technologies AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5593648644
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5593648644
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559364-8644"
+  status: confirmed
+  source_url: https://www.allabolag.se/5593648644
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Numret anges även i användarvillkoren: https://rerun.io/terms. Villkoren nämner också Rerun Technologies Inc. (Delaware). Numret gäller det svenska bolaget."
+
+website: https://rerun.io
+
+description:
+  value: Utvecklar ett öppet verktyg för att logga, visualisera och ställa frågor mot multimodal data inom robotik och fysisk AI.
+  status: claimed
+  source_url: https://rerun.io
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt, oppen_kallkod]
+  status: claimed
+  source_url: https://rerun.io
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Öppen källkod enligt kodförrådet https://github.com/rerun-io/rerun (Apache-2.0 och MIT).
+
+areas:
+  value: [robotik, datorseende]
+  status: claimed
+  source_url: https://rerun.io
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5593648644
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+founded:
+  value: 2022
+  status: confirmed
+  source_url: https://www.allabolag.se/5593648644
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2022-02-09."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5593648644
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://github.com/rerun-io/rerun
+    kind: repo
+    title: "Kodförråd: öppen SDK och visare för multimodal data (Apache-2.0 och MIT)"
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: GitHub-organisationen rerun-io länkar till rerun.io.
+  - url: https://rerun.io
+    kind: produkt
+    title: "Rerun: datalager för fysisk AI"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  github: https://github.com/rerun-io
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

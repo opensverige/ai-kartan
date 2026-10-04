@@ -1,0 +1,103 @@
+id: contextvision
+
+name:
+  value: ContextVision
+  status: claimed
+  source_url: https://www.contextvision.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: ContextVision AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5563778900
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5563778900
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Publikt aktiebolag."
+
+org_number:
+  value: "556377-8900"
+  status: confirmed
+  source_url: https://www.allabolag.se/5563778900
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Numret anges även i https://www.contextvision.se/privacy-notice/
+
+website: https://www.contextvision.se
+
+description:
+  value: Utvecklar programvara för bildförbättring och AI-baserad bildanalys inom ultraljud, MR, röntgen och digital patologi.
+  status: claimed
+  source_url: https://www.contextvision.se/ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt, forskning]
+  status: claimed
+  source_url: https://www.contextvision.se/ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Forskning: se https://www.contextvision.se/research-development/ (egen FoU-grupp inom bildanalys och AI)."
+
+areas:
+  value: [halsa, datorseende]
+  status: claimed
+  source_url: https://www.contextvision.se/ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0580"
+  status: confirmed
+  source_url: https://www.allabolag.se/5563778900
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Linköping. Webbplatsen anger huvudkontor i Stockholm och FoU-kontor i Linköping (https://www.contextvision.se/contact/). Registrets säte är Linköping."
+
+founded:
+  value: 1989
+  status: confirmed
+  source_url: https://www.allabolag.se/5563778900
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 1989-11-16."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5563778900
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.contextvision.se/ai/
+    kind: produkt
+    title: AI-baserade produkter för medicinsk bildanalys
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/contextvision-ab/
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

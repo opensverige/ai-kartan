@@ -1,0 +1,102 @@
+id: imagimob
+
+name:
+  value: Imagimob
+  status: claimed
+  source_url: https://www.imagimob.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Webbplatsen anger Infineon som moderbolag. Produktmärket är DEEPCRAFT.
+
+legal_name:
+  value: Imagimob AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5569374092
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5569374092
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "556937-4092"
+  status: confirmed
+  source_url: https://www.allabolag.se/5569374092
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://www.imagimob.com
+
+description:
+  value: Utvecklar verktyg och färdiga modeller för att bygga, optimera och köra maskininlärningsmodeller på inbyggda enheter (edge AI).
+  status: claimed
+  source_url: https://www.imagimob.com/products
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.imagimob.com/products
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell, industri]
+  status: claimed
+  source_url: https://www.imagimob.com/products
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5569374092
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+founded:
+  value: 2013
+  status: confirmed
+  source_url: https://www.allabolag.se/5569374092
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2013-07-15."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5569374092
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.imagimob.com/products
+    kind: produkt
+    title: DEEPCRAFT Studio och färdiga modeller för edge AI
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/imagimob-ab
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

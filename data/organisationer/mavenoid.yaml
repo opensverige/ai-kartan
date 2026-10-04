@@ -1,0 +1,101 @@
+id: mavenoid
+
+name:
+  value: Mavenoid
+  status: claimed
+  source_url: https://www.mavenoid.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Mavenoid AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5590575170
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5590575170
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559057-5170"
+  status: confirmed
+  source_url: https://www.allabolag.se/5590575170
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://www.mavenoid.com
+
+description:
+  value: Utvecklar en AI-agent för produktsupport som löser kundärenden med text, röst, bild och video.
+  status: claimed
+  source_url: https://www.mavenoid.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.mavenoid.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [agenter_automation, industri]
+  status: claimed
+  source_url: https://www.mavenoid.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5590575170
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+founded:
+  value: 2016
+  status: confirmed
+  source_url: https://www.allabolag.se/5590575170
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2016-04-05."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5590575170
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.mavenoid.com
+    kind: produkt
+    title: AI-agent för produktsupport
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/mavenoid/
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

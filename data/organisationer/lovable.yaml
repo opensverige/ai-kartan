@@ -1,0 +1,99 @@
+id: lovable
+
+name:
+  value: Lovable
+  status: claimed
+  source_url: https://docs.lovable.dev/introduction/welcome
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Lovable Labs Sweden AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5595061739
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5595061739
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559506-1739"
+  status: confirmed
+  source_url: https://www.allabolag.se/5595061739
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Gäller Lovable Labs Sweden AB. Användarvillkoren (https://lovable.dev/terms) nämner Lovable Labs Incorporated som avtalspart. Integritetspolicyn (https://lovable.dev/privacy) anger huvudsäte i Stockholm och Lovable Labs Sweden AB som ansvarigt bolag.
+
+website: https://lovable.dev
+
+description:
+  value: Utvecklar en AI-plattform där användare skapar och publicerar webbapplikationer genom att beskriva dem med naturligt språk.
+  status: claimed
+  source_url: https://docs.lovable.dev/introduction/welcome
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://docs.lovable.dev/introduction/welcome
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell, agenter_automation]
+  status: claimed
+  source_url: https://docs.lovable.dev/introduction/welcome
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5595061739
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+founded:
+  value: 2024
+  status: confirmed
+  source_url: https://www.allabolag.se/5595061739
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2024-11-21. Gäller Lovable Labs Sweden AB."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5595061739
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://docs.lovable.dev/introduction/welcome
+    kind: produkt
+    title: "Dokumentation: AI-plattform för att bygga webbapplikationer med text"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

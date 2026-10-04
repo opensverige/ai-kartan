@@ -1,0 +1,103 @@
+id: doctrin
+
+name:
+  value: Doctrin
+  status: claimed
+  source_url: https://doctrin.se
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Doctrin AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5590601877
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5590601877
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Publikt aktiebolag."
+
+org_number:
+  value: "559060-1877"
+  status: confirmed
+  source_url: https://www.allabolag.se/5590601877
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Numret anges även i integritetspolicyn: https://doctrin.com/privacy-policy/"
+
+website: https://doctrin.se
+
+description:
+  value: Bygger en kommunikationsplattform för vården med AI-stöd i patientärenden, bland annat chattstöd som rättar text och anpassar tonen.
+  status: claimed
+  source_url: https://doctrin.se/ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://doctrin.se/ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [halsa]
+  status: claimed
+  source_url: https://doctrin.se/ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5590601877
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+founded:
+  value: 2016
+  status: confirmed
+  source_url: https://www.allabolag.se/5590601877
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2016-04-21."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5590601877
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://doctrin.se/ai/
+    kind: produkt
+    title: AI-stöd i kommunikationsplattformen
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Sidan beskriver chattstöd och överföring till AI-assistent. AI-sammanfattning anges som kommande.
+
+links:
+  linkedin: https://www.linkedin.com/company/doctrin
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

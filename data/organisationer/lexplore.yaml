@@ -1,0 +1,100 @@
+id: lexplore
+
+name:
+  value: Lexplore
+  status: claimed
+  source_url: https://lexplore.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Lexplore AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5590691811
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5590691811
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559069-1811"
+  status: confirmed
+  source_url: https://www.allabolag.se/5590691811
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Numret anges även i integritetspolicyn: https://lexplore.com/privacy-policy"
+
+website: https://lexplore.com
+
+description:
+  value: Bygger en tjänst som med ögonrörelsemätning och maskininlärning bedömer elevers läsförmåga och rekommenderar läsaktiviteter.
+  status: claimed
+  source_url: https://lexplore.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt, forskning]
+  status: claimed
+  source_url: https://lexplore.com/research-reading-ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Forskning: sidan beskriver forskningen bakom bedömningen och forskningssamarbeten."
+
+areas:
+  value: [utbildning]
+  status: claimed
+  source_url: https://lexplore.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5590691811
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+founded:
+  value: 2016
+  status: confirmed
+  source_url: https://www.allabolag.se/5590691811
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2016-07-05. Webbplatsen anger 2017 som startår (https://lexplore.com/research-reading-ai)."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5590691811
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://lexplore.com/research-reading-ai
+    kind: produkt
+    title: Forskningen och maskininlärningen bakom läsbedömningen
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

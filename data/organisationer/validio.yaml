@@ -1,0 +1,102 @@
+id: validio
+
+name:
+  value: Validio
+  status: claimed
+  source_url: https://validio.io
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Validio AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5591923049
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5591923049
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559192-3049"
+  status: confirmed
+  source_url: https://www.allabolag.se/5591923049
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Numret anges även i integritetspolicyn: https://validio.io/privacy-policy"
+
+website: https://validio.io
+
+description:
+  value: Bygger en plattform för datakvalitet och observerbarhet som använder AI-baserad avvikelsedetektering och AI-agenter för att hitta fel i företagsdata.
+  status: claimed
+  source_url: https://validio.io/platform
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://validio.io/platform
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://validio.io/platform
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5591923049
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+founded:
+  value: 2019
+  status: confirmed
+  source_url: https://www.allabolag.se/5591923049
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2019-01-24."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5591923049
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://validio.io/platform
+    kind: produkt
+    title: "Plattformen: datakvalitet med AI-baserad avvikelsedetektering"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/validio-ab/
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

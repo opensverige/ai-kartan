@@ -1,0 +1,99 @@
+id: xensam
+
+name:
+  value: Xensam
+  status: claimed
+  source_url: https://xensam.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Xensam AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5591832760
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5591832760
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559183-2760"
+  status: confirmed
+  source_url: https://www.allabolag.se/5591832760
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://xensam.com
+
+description:
+  value: Utvecklar programvara som kartlägger och hanterar företags mjukvarulicenser och IT-tillgångar, med egna AI-modeller som känner igen applikationer i rådata.
+  status: claimed
+  source_url: https://xensam.com/technology/xam-ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://xensam.com/technology/xam-ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://xensam.com/technology/xam-ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0184"
+  status: confirmed
+  source_url: https://www.allabolag.se/5591832760
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Solna."
+
+founded:
+  value: 2018
+  status: confirmed
+  source_url: https://www.allabolag.se/5591832760
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2018-12-04. Webbplatsen anger 2016 som grundår (https://xensam.com/about-us/)."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5591832760
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://xensam.com/technology/xam-ai/
+    kind: produkt
+    title: "Xam AI: modeller för att känna igen programvara i rådata"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Webbplatsen svarar 403 på automatiska hämtningar, så länkkontroller kan ge falsklarm.
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04
