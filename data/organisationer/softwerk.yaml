@@ -1,0 +1,107 @@
+id: softwerk
+
+name:
+  value: Softwerk
+  status: claimed
+  source_url: https://softwerk.se
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Softwerk AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5567140503
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5567140503
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "556714-0503"
+  status: confirmed
+  source_url: https://www.allabolag.se/5567140503
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Samma org.nr anges i sidfoten på bolagets webbplats."
+
+website: https://softwerk.se
+
+description:
+  value: "Mjukvarubolag som bygger appar, system och produkter. Egna produkter inkluderar InfoCrawler, som samlar in jobbdata med AI-drivna robotar, och bolaget har utvecklat AI-algoritmerna i appen AIMO."
+  status: claimed
+  source_url: https://softwerk.se/en/products
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "AIMO-fallet beskrivs på softwerk.se/en/projects/client/aimo/4."
+
+offers:
+  value: [utveckling, produkt]
+  status: claimed
+  source_url: https://softwerk.se
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Startsidan listar utvecklingstjänster inklusive AI och maskininlärning. Produkter finns på softwerk.se/en/products."
+
+areas:
+  value: [generell, halsa]
+  status: claimed
+  source_url: https://softwerk.se/en/projects/client/aimo/4
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "AIMO är en app för rörelseanalys och hälsopoäng. InfoCrawler samlar in jobbdata och har ingen särskild bransch."
+
+kommun:
+  value: "0780"
+  status: confirmed
+  source_url: https://www.allabolag.se/5567140503
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag. Webbplatsen anger Växjö som bas."
+
+founded:
+  value: 2006
+  status: confirmed
+  source_url: https://www.allabolag.se/5567140503
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsår enligt allabolag. Egen webbplats anger att bolaget grundades 2008."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5567140503
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status aktiv enligt allabolag."
+
+evidence:
+  - url: https://softwerk.se/en/projects/client/aimo/4
+    kind: case
+    title: "AIMO: bolaget utvecklade AI-algoritmerna för rörelseanalys i hälsoappen"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://infocrawler.se
+    kind: produkt
+    title: "InfoCrawler: AI-driven lösning som hämtar och strukturerar jobbdata"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

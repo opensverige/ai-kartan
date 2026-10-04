@@ -1,0 +1,97 @@
+id: pavesight
+
+name:
+  value: PaveSight
+  status: claimed
+  source_url: https://pavesight.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Pavesight AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5594504986
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5594504986
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "559450-4986"
+  status: confirmed
+  source_url: https://www.allabolag.se/5594504986
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://pavesight.com
+
+description:
+  value: "Utvecklar fordonsmonterade stereokameror och AI som mäter vägars och ytors skick i realtid, med analys direkt på fordonet."
+  status: claimed
+  source_url: https://pavesight.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://pavesight.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [transport_mobilitet, datorseende]
+  status: claimed
+  source_url: https://pavesight.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1080"
+  status: confirmed
+  source_url: https://www.allabolag.se/5594504986
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag. Webbplatsen anger också Karlskrona som huvudkontor."
+
+founded:
+  value: 2023
+  status: confirmed
+  source_url: https://www.allabolag.se/5594504986
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsår enligt allabolag."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5594504986
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status aktiv enligt allabolag."
+
+evidence:
+  - url: https://pavesight.com
+    kind: produkt
+    title: "AI-baserad övervakning av vägytor med fordonsmonterade stereokameror"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

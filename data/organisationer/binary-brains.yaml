@@ -1,0 +1,106 @@
+id: binary-brains
+
+name:
+  value: Binary Brains
+  status: claimed
+  source_url: https://binarybrains.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Binary Brains AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5563475044
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5563475044
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "556347-5044"
+  status: confirmed
+  source_url: https://www.allabolag.se/5563475044
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kopplad via bolagsnamn och ort: dropworks.ai/about anger Binary Brains AB med säte i Örebro. Webbplatsen anger inget org.nr."
+
+website: https://binarybrains.com
+
+description:
+  value: "Bygger AI-prognoser och beslutsstöd för handel och logistik, bland annat Dropworks för efterfrågeplanering av modekollektioner."
+  status: claimed
+  source_url: https://binarybrains.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Dropworks beskrivs på dropworks.ai."
+
+offers:
+  value: [produkt, utveckling]
+  status: claimed
+  source_url: https://binarybrains.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Startsidan visar egna produkter (Dropworks, Applaud) samt AI-prognoser, lageroptimering och utveckling åt kunder."
+
+areas:
+  value: [handel, generell]
+  status: claimed
+  source_url: https://binarybrains.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1880"
+  status: confirmed
+  source_url: https://www.allabolag.se/5563475044
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag. dropworks.ai/about anger också säte i Örebro."
+
+founded:
+  value: 1989
+  status: confirmed
+  source_url: https://www.allabolag.se/5563475044
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsår enligt allabolag. Egen webbplats (dropworks.ai/about) anger verksamhet inom prediktiv AI sedan 2018."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5563475044
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status aktiv enligt allabolag."
+
+evidence:
+  - url: https://dropworks.ai
+    kind: produkt
+    title: "Dropworks: AI-baserad efterfrågeplanering för modeindustrin"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://binarybrains.com
+    kind: produkt
+    title: "AI-prognoser och optimering för handel och logistik"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

@@ -1,0 +1,97 @@
+id: conifer-vision
+
+name:
+  value: Conifer Vision
+  status: claimed
+  source_url: https://conifervision.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Conifer Vision AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5592141211
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5592141211
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "559214-1211"
+  status: confirmed
+  source_url: https://www.allabolag.se/5592141211
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://conifervision.com
+
+description:
+  value: "Analyserar skog med drönarbilder och AI och skapar digitala tvillingar av enskilda träd för skoglig inventering och skadeanalys."
+  status: claimed
+  source_url: https://conifervision.com/solutions
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://conifervision.com/solutions
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [jordbruk_skog, datorseende]
+  status: claimed
+  source_url: https://conifervision.com/solutions
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "2482"
+  status: confirmed
+  source_url: https://www.allabolag.se/5592141211
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag."
+
+founded:
+  value: 2019
+  status: confirmed
+  source_url: https://www.allabolag.se/5592141211
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsår enligt allabolag."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5592141211
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status aktiv enligt allabolag."
+
+evidence:
+  - url: https://conifervision.com/solutions
+    kind: produkt
+    title: "Lösningar: AI-analys av drönarbilder och digitala tvillingar av träd"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

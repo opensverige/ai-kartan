@@ -1,0 +1,105 @@
+id: nuiteq
+
+name:
+  value: NUITEQ
+  status: claimed
+  source_url: https://nuiteq.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Natural User Interface Technologies AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5567311344
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5567311344
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "556731-1344"
+  status: confirmed
+  source_url: https://www.allabolag.se/5567311344
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Samma org.nr anges på bolagets kontaktsida (nuiteq.com/contact/)."
+
+website: https://nuiteq.com
+
+description:
+  value: "Utvecklar programvara för undervisning och samarbete på interaktiva skärmar, bland annat plattformen Chorus med AI-stödd generering av lektionsplaner."
+  status: claimed
+  source_url: https://chorus.nuiteq.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Allmän produktbeskrivning finns även på nuiteq.com."
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://nuiteq.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [utbildning]
+  status: claimed
+  source_url: https://nuiteq.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "2482"
+  status: confirmed
+  source_url: https://www.allabolag.se/5567311344
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag. Kontaktsidan anger också Skellefteå som huvudkontor."
+
+founded:
+  value: 2007
+  status: confirmed
+  source_url: https://www.allabolag.se/5567311344
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsår enligt allabolag."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5567311344
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status aktiv enligt allabolag."
+
+evidence:
+  - url: https://chorus.nuiteq.com
+    kind: produkt
+    title: "Chorus: lärplattform med AI-stödd generering av lektionsplaner, lektioner och omröstningar"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://nuiteq.com/
+    kind: produkt
+    title: "Produktöversikt: AI-stödda lösningar för utbildning och digital skyltning"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

@@ -1,0 +1,111 @@
+id: scaleout-systems
+
+name:
+  value: Scaleout Systems
+  status: claimed
+  source_url: https://www.scaleoutsystems.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Webbplatsen använder kortformen Scaleout."
+
+legal_name:
+  value: Scaleout Systems AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5590956438
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5590956438
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "559095-6438"
+  status: confirmed
+  source_url: https://www.allabolag.se/5590956438
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://www.scaleoutsystems.com
+
+description:
+  value: "Utvecklar plattformen Scaleout Edge för federerad maskininlärning på edge-enheter, byggd på ramverket FEDn. SDK:n finns som öppen källkod (Apache-2.0) på GitHub."
+  status: claimed
+  source_url: https://github.com/scaleoutsystems/scaleout-client
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Uppgiften kommer från README i bolagets eget kodförråd."
+
+offers:
+  value: [produkt, oppen_kallkod, forskning]
+  status: claimed
+  source_url: https://github.com/scaleoutsystems/scaleout-client
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Forskning enligt www.scaleoutsystems.com/company: bolaget grundades av forskare vid Uppsala universitet och anger över 100 publicerade artiklar."
+
+areas:
+  value: [generell, forsvar_sakerhet]
+  status: claimed
+  source_url: https://www.scaleoutsystems.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Startsidan nämner bland annat federerad inlärning för försvarsändamål, taktiskt datorseende och AI för drönare."
+
+kommun:
+  value: "0380"
+  status: confirmed
+  source_url: https://www.allabolag.se/5590956438
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag."
+
+founded:
+  value: 2017
+  status: confirmed
+  source_url: https://www.allabolag.se/5590956438
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsår enligt allabolag. Egen webbplats anger att bolaget grundades 2018."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5590956438
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status aktiv enligt allabolag."
+
+evidence:
+  - url: https://github.com/scaleoutsystems/scaleout-client
+    kind: repo
+    title: "Scaleout Edge SDK för federerad maskininlärning (Apache-2.0)"
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: "Publikt kodförråd under bolagets GitHub-organisation. Adressen github.com/scaleoutsystems/fedn omdirigeras hit."
+  - url: https://www.scaleoutsystems.com
+    kind: produkt
+    title: "Scaleout Edge: plattform för att bygga och driva AI på edge-enheter"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  github: https://github.com/scaleoutsystems
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

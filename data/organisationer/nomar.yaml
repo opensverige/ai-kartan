@@ -1,0 +1,104 @@
+id: nomar
+
+name:
+  value: Nomar
+  status: claimed
+  source_url: https://www.nomar.se
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Nomar Tech AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5595529586
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5595529586
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "559552-9586"
+  status: confirmed
+  source_url: https://www.allabolag.se/5595529586
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Samma org.nr anges i bolagets allmänna villkor (nomar.se/juridik/allmanna-villkor)."
+
+website: https://www.nomar.se
+
+description:
+  value: "Utvecklar AI-agenten Alma som hanterar missade samtal, webbchatt och e-post i företags kundkommunikation."
+  status: claimed
+  source_url: https://www.nomar.se
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.nomar.se
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [agenter_automation]
+  status: claimed
+  source_url: https://www.nomar.se
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1980"
+  status: confirmed
+  source_url: https://www.allabolag.se/5595529586
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag."
+
+founded:
+  value: 2025
+  status: confirmed
+  source_url: https://www.allabolag.se/5595529586
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsår enligt allabolag."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5595529586
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status aktiv enligt allabolag."
+
+evidence:
+  - url: https://www.nomar.se/missade-samtal
+    kind: produkt
+    title: "Alma: AI-agent som svarar på missade samtal via SMS och chatt"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://www.nomar.se/kundcase
+    kind: case
+    title: "Kundcase där Alma svarar på missade samtal och webbtrafik"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

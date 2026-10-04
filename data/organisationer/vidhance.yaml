@@ -1,0 +1,101 @@
+id: vidhance
+
+name:
+  value: Vidhance
+  status: claimed
+  source_url: https://vidhance.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Vidhance AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5567309751
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5567309751
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "556730-9751"
+  status: confirmed
+  source_url: https://www.allabolag.se/5567309751
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://vidhance.com
+
+description:
+  value: "Utvecklar AI-baserad programvara för videoförbättring, stabilisering samt objektdetektering och spårning direkt på enheten, bland annat för mobila enheter, drönare och sjukvård."
+  status: claimed
+  source_url: https://vidhance.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://vidhance.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [datorseende, forsvar_sakerhet, halsa]
+  status: claimed
+  source_url: https://vidhance.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Webbplatsen anger tre fokusområden: konsumentenheter, hälso- och sjukvård samt försvar."
+
+kommun:
+  value: "0380"
+  status: confirmed
+  source_url: https://www.allabolag.se/5567309751
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag."
+
+founded:
+  value: 2007
+  status: confirmed
+  source_url: https://www.allabolag.se/5567309751
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsår enligt allabolag."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5567309751
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status aktiv enligt allabolag."
+
+evidence:
+  - url: https://vidhance.com/products/detection-and-tracking/
+    kind: produkt
+    title: "Objektdetektering och spårning med neurala nätverk för edge-enheter"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  github: https://github.com/vidhance
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

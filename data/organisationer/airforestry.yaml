@@ -1,0 +1,98 @@
+id: airforestry
+
+name:
+  value: AirForestry
+  status: claimed
+  source_url: https://airforestry.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: AirForestry AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5592468085
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5592468085
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "559246-8085"
+  status: confirmed
+  source_url: https://www.allabolag.se/5592468085
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://airforestry.com
+
+description:
+  value: "Utvecklar autonoma elektriska drönare som gallrar skog från luften. Drönarna identifierar och väljer träd med AI och datorseende."
+  status: claimed
+  source_url: https://airforestry.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "AI och datorseende nämns som ett steg i systembeskrivningen (trädidentifiering) på startsidan."
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://airforestry.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [jordbruk_skog, robotik, datorseende]
+  status: claimed
+  source_url: https://airforestry.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0380"
+  status: confirmed
+  source_url: https://www.allabolag.se/5592468085
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag."
+
+founded:
+  value: 2020
+  status: confirmed
+  source_url: https://www.allabolag.se/5592468085
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsår enligt allabolag."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5592468085
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status aktiv enligt allabolag."
+
+evidence:
+  - url: https://airforestry.com/
+    kind: produkt
+    title: "Drönarsystem för gallring där träd väljs med AI och datorseende"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

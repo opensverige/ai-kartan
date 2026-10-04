@@ -1,0 +1,106 @@
+id: retenua
+
+name:
+  value: Retenua
+  status: claimed
+  source_url: https://retenua.com/en/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Retenua AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5590080197
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5590080197
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "559008-0197"
+  status: confirmed
+  source_url: https://www.allabolag.se/5590080197
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://retenua.com/en/
+
+description:
+  value: "Utvecklar sensorsystem och programvara för mobila robotar och fordon, bland annat AI-baserad bildanalys som upptäcker personer vid tunga fordon, och driver forskningsprojekt inom perception."
+  status: claimed
+  source_url: https://retenua.com/en/research/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Produkterna beskrivs på retenua.com/en/products/emitrace/ och retenua.com/en/products/ecceleron/."
+
+offers:
+  value: [produkt, utveckling, forskning]
+  status: claimed
+  source_url: https://retenua.com/en/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Startsidans meny har Products, Consulting och Research."
+
+areas:
+  value: [robotik, industri, datorseende]
+  status: claimed
+  source_url: https://retenua.com/en/research/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Forskningssidan nämner gruvor, byggarbetsplatser och logistik."
+
+kommun:
+  value: "1880"
+  status: confirmed
+  source_url: https://www.allabolag.se/5590080197
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag."
+
+founded:
+  value: 2015
+  status: confirmed
+  source_url: https://www.allabolag.se/5590080197
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsår enligt allabolag."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5590080197
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status aktiv enligt allabolag."
+
+evidence:
+  - url: https://retenua.com/en/products/emitrace/
+    kind: produkt
+    title: "emitrace: förarstöd med inbyggd AI-baserad bildanalys som upptäcker personer"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://retenua.com/en/research/
+    kind: case
+    title: "Forskningsprojekt om AI och multimodal perception för autonoma fordon i gruvor"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04
