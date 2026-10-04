@@ -1,0 +1,108 @@
+id: evoma
+
+name:
+  value: Evoma
+  status: claimed
+  source_url: https://evoma.se
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Evoma AB
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/evoma-ab/sk%C3%B6vde/forskning/2K3VEIHI5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/evoma-ab/sk%C3%B6vde/forskning/2K3VEIHI5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "556939-2185"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/evoma-ab/sk%C3%B6vde/forskning/2K3VEIHI5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://evoma.se
+
+description:
+  value: "Bygger simuleringsprogramvaran inFACTS Studio för produktion och logistik, med optimering och ett AI-tillägg där agenter tränas med djup förstärkningsinlärning (DRL) i simuleringsmodeller."
+  status: claimed
+  source_url: https://infacts.se/docs-facts/latest/plugins/ai-tools/index.html
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt, utveckling]
+  status: claimed
+  source_url: https://evoma.se
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [industri]
+  status: claimed
+  source_url: https://evoma.se/infacts-studio/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1496"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/evoma-ab/sk%C3%B6vde/forskning/2K3VEIHI5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Skövde."
+
+founded:
+  value: 2013
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/evoma-ab/sk%C3%B6vde/forskning/2K3VEIHI5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2013-08-14."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/evoma-ab/sk%C3%B6vde/forskning/2K3VEIHI5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://infacts.se/docs-facts/latest/plugins/ai-tools/index.html
+    kind: produkt
+    title: "inFACTS Studio AI-Tools: plugin för djup förstärkningsinlärning i simuleringar"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: "Produktdokumentationen beskriver DRL-agenter som tränas i simuleringsmodeller och en genomgång med exempelkod. Sidan nås från evoma.se."
+  - url: https://evoma.se/infacts-studio/
+    kind: produkt
+    title: "inFACTS Studio: simulering och optimering, med funktioner som beskrivs som AI-baserade"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/evoma-ab/
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

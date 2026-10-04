@@ -1,0 +1,119 @@
+id: klang
+
+name:
+  value: Klang
+  status: claimed
+  source_url: https://klang.ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Klang AI AB
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/klang-ai-ab/helsingborg/internet-konsulter-operat%C3%B6rer/2KIE7SRI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/klang-ai-ab/helsingborg/internet-konsulter-operat%C3%B6rer/2KIE7SRI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559378-4571"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/klang-ai-ab/helsingborg/internet-konsulter-operat%C3%B6rer/2KIE7SRI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Numret anges även i sidfoten på https://klang.ai/contact/"
+
+website: https://klang.ai
+
+description:
+  value: "Bygger AI för transkribering och analys av samtal och har publicerat Klang Pianissimo, en öppen talmodell för svenska, samt ett dataset med svenska dialekter."
+  status: claimed
+  source_url: https://klang.ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Modellen och datasetet finns på Hugging Face, se evidence. Forskningssidan: https://research.klang.ai"
+
+offers:
+  value: [produkt, forskning, data, oppen_kallkod]
+  status: claimed
+  source_url: https://klang.ai/pianissimo/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Forskning: https://research.klang.ai. Data och öppen modell: Hugging Face-sidorna under evidence."
+
+areas:
+  value: [sprakteknik]
+  status: claimed
+  source_url: https://klang.ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1283"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/klang-ai-ab/helsingborg/internet-konsulter-operat%C3%B6rer/2KIE7SRI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Helsingborg."
+
+founded:
+  value: 2022
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/klang-ai-ab/helsingborg/internet-konsulter-operat%C3%B6rer/2KIE7SRI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2022-05-02."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/klang-ai-ab/helsingborg/internet-konsulter-operat%C3%B6rer/2KIE7SRI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://huggingface.co/KlangAI/pianissimo-sv
+    kind: modell
+    title: "KlangAI/pianissimo-sv: öppen talmodell för svenska"
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: "Licens CC BY 4.0 enligt Hugging Face. Finjusterad från NVIDIA Parakeet TDT 0.6B v3."
+  - url: https://huggingface.co/datasets/KlangAI/klang-dialects
+    kind: dataset
+    title: "KlangAI/klang-dialects: dataset med svenska dialekter"
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: "Licens CC BY 4.0 enligt Hugging Face."
+  - url: https://klang.ai
+    kind: produkt
+    title: "Klang: transkribering och analys av samtal"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  github: https://github.com/klang-ai
+  huggingface: https://huggingface.co/KlangAI
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

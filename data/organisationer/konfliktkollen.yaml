@@ -1,0 +1,100 @@
+id: konfliktkollen
+
+name:
+  value: Konfliktkollen
+  status: claimed
+  source_url: https://www.konfliktkollen.se
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Techtical Solutions AB
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/techtical-solutions-ab/gr%C3%A5bo/konsulter/2KH3VUQI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registrerat namn enligt allabolag.se. Integritetspolicyn anger att Konfliktkollen är ett produktprojekt under utveckling av Techtical Solutions AB: https://www.konfliktkollen.se/integritetspolicy/"
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/techtical-solutions-ab/gr%C3%A5bo/konsulter/2KH3VUQI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559162-2914"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/techtical-solutions-ab/gr%C3%A5bo/konsulter/2KH3VUQI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://www.konfliktkollen.se
+
+description:
+  value: "Utvecklar Konfliktkollen, en AI-tjänst som korsjämför ritningar, tekniska beskrivningar och scheman och lyfter motstridiga krav och uppgifter i bygghandlingar före anbud och byggstart."
+  status: claimed
+  source_url: https://www.konfliktkollen.se/ai-granskning-av-bygghandlingar/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.konfliktkollen.se/ai-granskning-av-bygghandlingar/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [fastighet_bygg]
+  status: claimed
+  source_url: https://www.konfliktkollen.se/ai-granskning-av-bygghandlingar/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1480"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/techtical-solutions-ab/gr%C3%A5bo/konsulter/2KH3VUQI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Göteborg. Postadressen anges i Gråbo (Lerums kommun)."
+
+founded:
+  value: 2018
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/techtical-solutions-ab/gr%C3%A5bo/konsulter/2KH3VUQI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2018-06-14."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/techtical-solutions-ab/gr%C3%A5bo/konsulter/2KH3VUQI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.konfliktkollen.se/ai-granskning-av-bygghandlingar/
+    kind: produkt
+    title: "AI-granskning av bygghandlingar i Konfliktkollen"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: "Enligt integritetspolicyn är Konfliktkollen ett produktprojekt under utveckling. Sidan har en intresseanmälan."
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

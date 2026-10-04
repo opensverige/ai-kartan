@@ -1,0 +1,101 @@
+id: cellavision
+
+name:
+  value: CellaVision
+  status: claimed
+  source_url: https://www.cellavision.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: CellaVision AB
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/cellavision-ab/lund/forskning/2K19A92I5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/cellavision-ab/lund/forskning/2K19A92I5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Publikt aktiebolag."
+
+org_number:
+  value: "556500-0998"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/cellavision-ab/lund/forskning/2K19A92I5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://www.cellavision.com
+
+description:
+  value: "Bygger system för digital cellmorfologi, bland annat en applikation för benmärgsutstryk som med AI förklassificerar celler efter utseende."
+  status: claimed
+  source_url: https://www.cellavision.com/cellavisionr-bone-marrow-aspirate-application
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.cellavision.com/cellavisionr-bone-marrow-aspirate-application
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [halsa, datorseende]
+  status: claimed
+  source_url: https://www.cellavision.com/cellavisionr-bone-marrow-aspirate-application
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1281"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/cellavision-ab/lund/forskning/2K19A92I5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Lund."
+
+founded:
+  value: 1994
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/cellavision-ab/lund/forskning/2K19A92I5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 1994-12-14."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/cellavision-ab/lund/forskning/2K19A92I5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.cellavision.com/cellavisionr-bone-marrow-aspirate-application
+    kind: produkt
+    title: "CellaVision Bone Marrow Aspirate Application: AI-baserad förklassificering av celler"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/cellavision
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

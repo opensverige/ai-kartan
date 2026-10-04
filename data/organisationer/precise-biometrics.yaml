@@ -1,0 +1,101 @@
+id: precise-biometrics
+
+name:
+  value: Precise Biometrics
+  status: claimed
+  source_url: https://www.precisebiometrics.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Precise Biometrics AB
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/precise-biometrics-ab/lund/forskning/2K1J1SKI5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/precise-biometrics-ab/lund/forskning/2K1J1SKI5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Publikt aktiebolag."
+
+org_number:
+  value: "556545-6596"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/precise-biometrics-ab/lund/forskning/2K1J1SKI5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://www.precisebiometrics.com
+
+description:
+  value: "Utvecklar biometrisk programvara, bland annat BioLive som med AI och djupinlärning upptäcker förfalskade fingeravtryck och handflator."
+  status: claimed
+  source_url: https://www.precisebiometrics.com/our-solutions/biometric-tech-suite/biolive/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.precisebiometrics.com/our-solutions/biometric-tech-suite/biolive/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [forsvar_sakerhet, datorseende]
+  status: claimed
+  source_url: https://www.precisebiometrics.com/our-solutions/biometric-tech-suite/biolive/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1281"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/precise-biometrics-ab/lund/forskning/2K1J1SKI5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Lund."
+
+founded:
+  value: 1997
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/precise-biometrics-ab/lund/forskning/2K1J1SKI5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 1997-09-04."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/precise-biometrics-ab/lund/forskning/2K1J1SKI5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.precisebiometrics.com/our-solutions/biometric-tech-suite/biolive/
+    kind: produkt
+    title: "Precise BioLive: AI-baserad detektion av förfalskade fingeravtryck och handflator"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/precise-biometrics
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

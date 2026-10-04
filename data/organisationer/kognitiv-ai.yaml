@@ -1,0 +1,114 @@
+id: kognitiv-ai
+
+name:
+  value: Kognitiv AI
+  status: claimed
+  source_url: https://www.kognitiv.se
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Kognitiv AI i Sverige AB
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/kognitiv-ai-i-sverige-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2KJ1GY8I5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/kognitiv-ai-i-sverige-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2KJ1GY8I5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559486-9520"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/kognitiv-ai-i-sverige-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2KJ1GY8I5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://www.kognitiv.se
+
+description:
+  value: "Bygger AI-produkter: agentplattformen Kog, dokumentverktyget Kog Workbench, språkinlärningstjänsten Tala Nu och Swelux, ett planeringsverktyg för utbyte av utomhusbelysning som byggs tillsammans med Lightwise."
+  status: claimed
+  source_url: https://www.kognitiv.se
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.kognitiv.se
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [agenter_automation, sprakteknik, utbildning]
+  status: claimed
+  source_url: https://www.kognitiv.se
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1480"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/kognitiv-ai-i-sverige-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2KJ1GY8I5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Göteborg."
+
+founded:
+  value: 2024
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/kognitiv-ai-i-sverige-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2KJ1GY8I5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2024-06-17."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/kognitiv-ai-i-sverige-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2KJ1GY8I5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.kognitiv.se/workbench
+    kind: produkt
+    title: "Kog Workbench: AI-arbetsyta för dokumenttunga processer"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://swelux.ai/
+    kind: produkt
+    title: "Swelux: AI-baserad planering för utbyte av utomhusbelysning"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: "Enligt sidan byggs Swelux av Kognitiv AI:s AI-ingenjörer tillsammans med Lightwise."
+  - url: https://www.kognitiv.se
+    kind: produkt
+    title: "Kog, Workbench, Tala Nu och Swelux: AI-produkter från Kognitiv AI"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/kognitivai
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

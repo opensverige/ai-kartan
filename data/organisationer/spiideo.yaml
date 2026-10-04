@@ -1,0 +1,102 @@
+id: spiideo
+
+name:
+  value: Spiideo
+  status: claimed
+  source_url: https://www.spiideo.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Spiideo AB
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/spiideo-ab/malm%C3%B6/video-film-inspelning-produktion/2K3JG5FI5YIK9
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/spiideo-ab/malm%C3%B6/video-film-inspelning-produktion/2K3JG5FI5YIK9
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "556883-4435"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/spiideo-ab/malm%C3%B6/video-film-inspelning-produktion/2K3JG5FI5YIK9
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Numret anges även i integritetspolicyn: https://www.spiideo.com/privacy-policy/"
+
+website: https://www.spiideo.com
+
+description:
+  value: "Bygger kamerasystem och molnplattformar för automatisk filmning, sändning och videoanalys av idrott, med AI som automatiskt följer spelet."
+  status: claimed
+  source_url: https://www.spiideo.com/sports-video-camera-systems/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.spiideo.com/sports-video-camera-systems/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [media_kreativt, datorseende]
+  status: claimed
+  source_url: https://www.spiideo.com/sports-video-camera-systems/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1281"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/spiideo-ab/malm%C3%B6/video-film-inspelning-produktion/2K3JG5FI5YIK9
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Lund. Postadressen anges i Malmö."
+
+founded:
+  value: 2012
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/spiideo-ab/malm%C3%B6/video-film-inspelning-produktion/2K3JG5FI5YIK9
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2012-02-07."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/spiideo-ab/malm%C3%B6/video-film-inspelning-produktion/2K3JG5FI5YIK9
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.spiideo.com/sports-video-camera-systems/
+    kind: produkt
+    title: "Kamerasystem med AI för automatisk filmning av idrott"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/spiideo/
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

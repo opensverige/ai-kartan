@@ -1,0 +1,101 @@
+id: winningtemp
+
+name:
+  value: Winningtemp
+  status: claimed
+  source_url: https://www.winningtemp.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: winningtemp AB
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/winningtemp-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2K3EX31I5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/winningtemp-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2K3EX31I5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "556862-3101"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/winningtemp-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2K3EX31I5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://www.winningtemp.com
+
+description:
+  value: Bygger en medarbetarplattform för enkäter och lyssning där AI Conversation för samtal med medarbetare och sammanfattar svaren till insikter på teamnivå.
+  status: claimed
+  source_url: https://www.winningtemp.com/ai-conversation
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.winningtemp.com/ai-conversation
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [sprakteknik]
+  status: claimed
+  source_url: https://www.winningtemp.com/ai-conversation
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1480"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/winningtemp-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2K3EX31I5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Göteborg."
+
+founded:
+  value: 2011
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/winningtemp-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2K3EX31I5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2011-08-24."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/winningtemp-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2K3EX31I5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.winningtemp.com/ai-conversation
+    kind: produkt
+    title: "AI Conversation: AI-stödd lyssning och sammanfattning av medarbetares återkoppling"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/winningtemp/
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

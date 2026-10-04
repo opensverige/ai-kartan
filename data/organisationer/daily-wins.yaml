@@ -1,0 +1,102 @@
+id: daily-wins
+
+name:
+  value: Daily Wins
+  status: claimed
+  source_url: https://dailywins.se
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Daily Wins AB
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/daily-wins-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2KJDIVEI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/daily-wins-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2KJDIVEI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559543-1882"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/daily-wins-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2KJDIVEI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://dailywins.se
+
+description:
+  value: "Bygger skräddarsydda AI-lösningar och automationer åt små och medelstora företag, till exempel ett offertsystem för tillverkande företag, och erbjuder AI-coachning och föreläsningar."
+  status: claimed
+  source_url: https://dailywins.se
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [utveckling, utbildning]
+  status: claimed
+  source_url: https://dailywins.se
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [agenter_automation, industri]
+  status: claimed
+  source_url: https://offert.dailywins.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1480"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/daily-wins-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2KJDIVEI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Göteborg."
+
+founded:
+  value: 2025
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/daily-wins-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2KJDIVEI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2025-09-04."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/daily-wins-ab/g%C3%B6teborg/internet-konsulter-operat%C3%B6rer/2KJDIVEI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://offert.dailywins.se/
+    kind: produkt
+    title: "Daily Wins Offertmotor: offertsystem för tillverkande företag"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: "Enligt sidan föreslår AI hur nya komponentrader ska klassificeras, och användaren godkänner förslaget."
+
+links:
+  linkedin: https://www.linkedin.com/company/dailywins
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

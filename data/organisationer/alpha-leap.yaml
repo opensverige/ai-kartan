@@ -1,0 +1,102 @@
+id: alpha-leap
+
+name:
+  value: Alpha Leap
+  status: claimed
+  source_url: https://www.alphaleap.ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Alpha Leap AB
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/alpha-leap-ab/g%C3%B6teborg/konsulter/2KIXIPHI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/alpha-leap-ab/g%C3%B6teborg/konsulter/2KIXIPHI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559468-5173"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/alpha-leap-ab/g%C3%B6teborg/konsulter/2KIXIPHI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://www.alphaleap.ai
+
+description:
+  value: "Bygger anpassade AI-lösningar och automatiseringsflöden åt små och medelstora företag, med publika exempel som datorseende för kvalitetskontroll i tillverkning."
+  status: claimed
+  source_url: https://www.alphaleap.ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [utveckling]
+  status: claimed
+  source_url: https://www.alphaleap.ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell, agenter_automation, industri]
+  status: claimed
+  source_url: https://www.alphaleap.ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1480"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/alpha-leap-ab/g%C3%B6teborg/konsulter/2KIXIPHI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Göteborg. Orten anges inte på webbplatsen."
+
+founded:
+  value: 2024
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/alpha-leap-ab/g%C3%B6teborg/konsulter/2KIXIPHI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2024-01-18."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/alpha-leap-ab/g%C3%B6teborg/konsulter/2KIXIPHI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.alphaleap.ai/cases/kvalitets%C3%B6vervakning-f%C3%B6r-tillverkning
+    kind: case
+    title: "Kvalitetsövervakning för tillverkning: datorseende som flaggar avvikelser"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: "Sidan beskrivs som ett exempel på lösning och anger omfattning, tidsåtgång och pris. Den namnger ingen kund."
+
+links:
+  linkedin: https://www.linkedin.com/company/alpha-leap-ai/
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

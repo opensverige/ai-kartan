@@ -1,0 +1,101 @@
+id: digital-step
+
+name:
+  value: Digital Step
+  status: claimed
+  source_url: https://www.digitalstep.se
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Digital Step AB
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/digital-step-ab/malm%C3%B6/f%C3%B6retagsutveckling/2KIRWW1I5YEHU
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/digital-step-ab/malm%C3%B6/f%C3%B6retagsutveckling/2KIRWW1I5YEHU
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559442-3617"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/digital-step-ab/malm%C3%B6/f%C3%B6retagsutveckling/2KIRWW1I5YEHU
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://www.digitalstep.se
+
+description:
+  value: "Bygger en AI-portal som omvandlar röstdiktering till strukturerade journalanteckningar och sammanställer dem till månadsrapporter, för journalföring inom socialt arbete och omsorg."
+  status: claimed
+  source_url: https://www.digitalstep.se/services/ai-portal
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.digitalstep.se/services/ai-portal
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [halsa, sprakteknik]
+  status: claimed
+  source_url: https://www.digitalstep.se/services/ai-portal
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1280"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/digital-step-ab/malm%C3%B6/f%C3%B6retagsutveckling/2KIRWW1I5YEHU
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Malmö."
+
+founded:
+  value: 2023
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/digital-step-ab/malm%C3%B6/f%C3%B6retagsutveckling/2KIRWW1I5YEHU
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2023-07-19."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/digital-step-ab/malm%C3%B6/f%C3%B6retagsutveckling/2KIRWW1I5YEHU
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.digitalstep.se/services/ai-portal
+    kind: produkt
+    title: "AI-portalen: AI-driven journalföring för socialt arbete"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/digital-step-ab/
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

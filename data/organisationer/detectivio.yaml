@@ -1,0 +1,108 @@
+id: detectivio
+
+name:
+  value: Detectivio
+  status: claimed
+  source_url: https://www.detectivio.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Detectivio AB
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/detectivio-ab/g%C3%B6teborg/forskning/2KGYI7ZI5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/detectivio-ab/g%C3%B6teborg/forskning/2KGYI7ZI5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559137-1967"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/detectivio-ab/g%C3%B6teborg/forskning/2KGYI7ZI5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://www.detectivio.com
+
+description:
+  value: "Utvecklar AI som mäter vitala tecken som puls och andning kontaktlöst utifrån en kort videoinspelning från mobil eller dator, avsedd för bland annat telemedicin och akutvård."
+  status: claimed
+  source_url: https://www.detectivio.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt, forskning]
+  status: claimed
+  source_url: https://www.detectivio.com/technology-and-research
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [halsa, datorseende]
+  status: claimed
+  source_url: https://www.detectivio.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1480"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/detectivio-ab/g%C3%B6teborg/forskning/2KGYI7ZI5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Göteborg."
+
+founded:
+  value: 2017
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/detectivio-ab/g%C3%B6teborg/forskning/2KGYI7ZI5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2017-12-04."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/detectivio-ab/g%C3%B6teborg/forskning/2KGYI7ZI5YE3M
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.detectivio.com/technology-and-research
+    kind: publikation
+    title: "Teknik och forskning: publikationer om kontaktlös mätning av vitala tecken"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: "Sidan länkar till en klinisk studie i tidskriften Infectious Diseases och en artikel om att mäta puls och andning ur 15 sekunder långa videor."
+  - url: https://www.detectivio.com
+    kind: produkt
+    title: "Detectivio: AI mäter vitala tecken ur en 30 sekunder lång video"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://se.linkedin.com/company/detectivio
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

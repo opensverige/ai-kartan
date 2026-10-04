@@ -1,0 +1,106 @@
+id: winniio
+
+name:
+  value: WINNIIO
+  status: claimed
+  source_url: https://winniio.io
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Winniio AB
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/winniio-ab/g%C3%B6teborg/f%C3%B6retagsutveckling/2KHE5R4I5YEHU
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/winniio-ab/g%C3%B6teborg/f%C3%B6retagsutveckling/2KHE5R4I5YEHU
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559210-2304"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/winniio-ab/g%C3%B6teborg/f%C3%B6retagsutveckling/2KHE5R4I5YEHU
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Numret anges även i sidfoten på https://winniio.io/about"
+
+website: https://winniio.io
+
+description:
+  value: "Studio i Göteborg som bygger digitala tvillingar och autonoma AI-agenter för fysiska tillgångar, bland annat AI-baserad värmestyrning på rumsnivå i en skola."
+  status: claimed
+  source_url: https://winniio.io/work
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [utveckling]
+  status: claimed
+  source_url: https://winniio.io/offering
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [industri, fastighet_bygg, energi_klimat, agenter_automation]
+  status: claimed
+  source_url: https://winniio.io/work
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1480"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/winniio-ab/g%C3%B6teborg/f%C3%B6retagsutveckling/2KHE5R4I5YEHU
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Göteborg."
+
+founded:
+  value: 2019
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/winniio-ab/g%C3%B6teborg/f%C3%B6retagsutveckling/2KHE5R4I5YEHU
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2019-06-26."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/winniio-ab/g%C3%B6teborg/f%C3%B6retagsutveckling/2KHE5R4I5YEHU
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://winniio.io/work
+    kind: case
+    title: "Uppdrag: digitala tvillingar och AI-baserad värmestyrning på rumsnivå"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: "Sidan beskriver bland annat värmestyrning med AI i en skola, finansierad av Energimyndigheten, samt AI-agenter som körs internt i produktion."
+  - url: https://winniio.io/mcp
+    kind: resurs
+    title: "Publik MCP-slutpunkt som AI-agenter kan fråga om bolagets erbjudanden"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

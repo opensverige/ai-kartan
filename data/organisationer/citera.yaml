@@ -1,0 +1,106 @@
+id: citera
+
+name:
+  value: Citera
+  status: claimed
+  source_url: https://citeralabs.ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Rankad AB
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/rankad-ab/trollh%C3%A4ttan/internet-konsulter-operat%C3%B6rer/2KJFDW2I5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registrerat namn enligt allabolag.se. Användarvillkoren på citeralabs.ai anger Rankad AB som avtalspart för Citera: https://citeralabs.ai/policy/terms-conditions"
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/rankad-ab/trollh%C3%A4ttan/internet-konsulter-operat%C3%B6rer/2KJFDW2I5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559551-8738"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/rankad-ab/trollh%C3%A4ttan/internet-konsulter-operat%C3%B6rer/2KJFDW2I5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Numret anges även i användarvillkoren: https://citeralabs.ai/policy/terms-conditions"
+
+website: https://citeralabs.ai
+
+description:
+  value: "Bygger Citera, en AI-agent som skapar, optimerar och distribuerar innehåll för organisk trafik i Google och AI-sökning."
+  status: claimed
+  source_url: https://citeralabs.ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://citeralabs.ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [media_kreativt, agenter_automation]
+  status: claimed
+  source_url: https://citeralabs.ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1496"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/rankad-ab/trollh%C3%A4ttan/internet-konsulter-operat%C3%B6rer/2KJFDW2I5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Skövde. Postadressen anges i Trollhättan."
+
+founded:
+  value: 2025
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/rankad-ab/trollh%C3%A4ttan/internet-konsulter-operat%C3%B6rer/2KJFDW2I5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2025-10-30."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/rankad-ab/trollh%C3%A4ttan/internet-konsulter-operat%C3%B6rer/2KJFDW2I5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://citeralabs.ai
+    kind: produkt
+    title: "Citera: AI-agent för innehåll och organisk trafik"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://citeralabs.ai/customers
+    kind: case
+    title: "Kundberättelser om synlighet i Google och AI-sökning"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04
