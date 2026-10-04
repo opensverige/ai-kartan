@@ -64,7 +64,7 @@ active:
   verified_at: 2026-07-20
   verified_by: manual
 evidence:
-  - url: https://docs.elastx.cloud/docs
+  - url: https://elastx.se/se/openstack
     kind: produkt
     title: Tjänstebeskrivning
     status: claimed

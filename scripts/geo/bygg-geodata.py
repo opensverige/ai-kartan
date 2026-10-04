@@ -252,9 +252,14 @@ def i_delar(lng, lat, delar_ll):
 ENHET = 10_000
 
 
+def kors(a, b, c):
+  """Korsprodukten (b-a) x (c-a), exakt (heltal)."""
+  return (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0])
+
+
 def orient(a, b, c):
-  """Tecken på korsprodukten (b-a) x (c-a): 1 moturs, -1 medurs, 0 på rät linje."""
-  v = (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0])
+  """Tecken på korsprodukten: 1 moturs, -1 medurs, 0 på rät linje."""
+  v = kors(a, b, c)
   return (v > 0) - (v < 0)
 
 
@@ -272,14 +277,10 @@ def skar(p1, p2, p3, p4):
           or (o3 == 0 and pa_stracka(p3, p4, p1)) or (o4 == 0 and pa_stracka(p3, p4, p2)))
 
 
-def stada_ring(ring):
-  """Ring av (lng, lat) -> sluten ring av heltal: avrundad, utan upprepade punkter och utan hörn som
-  ligger exakt på en rät linje mellan grannarna (även nålspetsar). None om färre än 3 hörn återstår."""
-  pts = []
-  for c in (ring[:-1] if ring[0] == ring[-1] else ring):
-    p = (round(c[0] * ENHET), round(c[1] * ENHET))
-    if not pts or p != pts[-1]:
-      pts.append(p)
+def stada_heltal(pts):
+  """Öppen lista av heltalshörn -> sluten ring utan upprepade hörn och utan hörn som ligger exakt på en
+  rät linje mellan grannarna (även nålspetsar). Tom lista om färre än 3 hörn återstår."""
+  pts = [p for k, p in enumerate(pts) if k == 0 or p != pts[k - 1]]
   andrad = True
   while andrad and len(pts) >= 3:
     andrad, i = False, 0
@@ -289,7 +290,13 @@ def stada_ring(ring):
         andrad, i = True, max(i - 1, 0)
       else:
         i += 1
-  return pts + [pts[0]] if len(pts) >= 3 else None
+  return pts + [pts[0]] if len(pts) >= 3 else []
+
+
+def stada_ring(ring):
+  """Ring av (lng, lat) -> sluten ring av heltal i enheten 1e-4 grader, städad enligt stada_heltal."""
+  oppen = ring[:-1] if ring[0] == ring[-1] else ring
+  return stada_heltal([(round(c[0] * ENHET), round(c[1] * ENHET)) for c in oppen])
 
 
 def orientera(ring, moturs):
@@ -299,20 +306,16 @@ def orientera(ring, moturs):
 
 
 def forbered(geom):
-  """Geometri -> lista av polygoner med städade och orienterade heltalsringar."""
-  polygoner = []
-  for poly in delar(geom):
-    ringar = []
-    for i, ring in enumerate(poly):
-      r = stada_ring(ring)
-      if r:
-        ringar.append(orientera(r, i == 0))
-      elif i == 0:  # yttre ringen försvann (mindre än rutnätet): hela delen utgår
-        ringar = []
-        break
-    if ringar:
-      polygoner.append(ringar)
-  return polygoner
+  """Geometri -> lista av polygoner med städade, reparerade och orienterade heltalsringar."""
+  polygoner = [[stada_ring(r) for r in poly] for poly in delar(geom)]
+  platta = [r for p in polygoner for r in p]
+  reparera(platta)
+  it = iter(platta)
+  ut = []
+  for poly in ([next(it) for _ in p] for p in polygoner):
+    if poly[0]:  # yttre ringen försvann om den var mindre än rutnätet: hela delen utgår
+      ut.append([orientera(r, k == 0) for k, r in enumerate(poly) if r])
+  return ut
 
 
 class Segmentnat:
@@ -352,18 +355,43 @@ class Segmentnat:
     return False
 
 
-def korsningar(ringar):
-  """Antal sträckpar i ringlistan som korsar eller berör varandra utan att vara grannar i samma ring."""
-  nat, antal = Segmentnat(ringar), 0
+def konflikter(ringar):
+  """Genererar (r, s, r2, s2) för sträckpar i ringlistan som korsar eller berör varandra utan att vara
+  grannar i samma ring. Tomma ringar hoppas över."""
+  nat = Segmentnat(ringar)
   for r, ring in enumerate(ringar):
     n = len(ring) - 1
     for s in range(n):
-      for r2, s2 in nat.kandidater(ring[s], ring[s + 1]):
+      for r2, s2 in sorted(nat.kandidater(ring[s], ring[s + 1])):
         if (r2, s2) <= (r, s) or (r2 == r and (s2 - s) % n in (1, n - 1)):
           continue
         if skar(ring[s], ring[s + 1], ringar[r2][s2], ringar[r2][s2 + 1]):
-          antal += 1
-  return antal
+          yield r, s, r2, s2
+
+
+def korsningar(ringar):
+  return sum(1 for _ in konflikter(ringar))
+
+
+def reparera(ringar):
+  """Avrundningen kan få smala spetsar och trånga vikar att korsa eller nudda sig själva. Tar bort ett hörn
+  i taget, det med minst triangelarea av konfliktens fyra ändpunkter, tills inga konflikter återstår.
+  Ändrar listan på plats; ringar som försvinner blir tomma."""
+  for _ in range(1000):
+    k = next(konflikter(ringar), None)
+    if k is None:
+      return
+    r, s, r2, s2 = k
+    kand = []
+    for rr, i in ((r, s), (r, s + 1), (r2, s2), (r2, s2 + 1)):
+      ring, n = ringar[rr], len(ringar[rr]) - 1
+      i %= n
+      kand.append((abs(kors(ring[(i - 1) % n], ring[i], ring[(i + 1) % n])), rr, i))
+    _, rr, i = min(kand)
+    oppen = ringar[rr][:-1]
+    del oppen[i]
+    ringar[rr] = stada_heltal(oppen)
+  raise SystemExit("Reparationen av ringar konvergerade inte")
 
 
 def punkt_till_stracka(p, a, b):

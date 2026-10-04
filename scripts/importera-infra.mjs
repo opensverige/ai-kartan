@@ -71,6 +71,23 @@ function hittaKommun(geo, texter) {
   return null;
 }
 
+/** Första adressen i listan som svarar. Döda dokumentationslänkar ska inte bli belägg. */
+async function forstaLevande(urler) {
+  for (const u of urler.filter(Boolean)) {
+    try {
+      const styr = new AbortController();
+      const t = setTimeout(() => styr.abort(), 15000);
+      let svar = await fetch(u, { method: 'HEAD', redirect: 'follow', signal: styr.signal, headers: { 'user-agent': 'ai-kartan-import (opensverige.se)' } });
+      if (!svar.ok) svar = await fetch(u, { method: 'GET', redirect: 'follow', signal: styr.signal, headers: { 'user-agent': 'ai-kartan-import (opensverige.se)' } });
+      clearTimeout(t);
+      if (svar.ok || svar.status === 403 || svar.status === 429) return u;
+    } catch {
+      /* prova nästa */
+    }
+  }
+  return urler.filter(Boolean).at(-1);
+}
+
 function fakta(value, status, source_url, source_type, verified_at, extra = {}) {
   const f = { value, status, source_url, source_type, verified_at, verified_by: 'manual', ...extra };
   if (!source_url) {
@@ -120,7 +137,7 @@ async function huvud() {
     const hqText = p.ownership?.country_hq?.value;
     const kommun = hittaKommun(geo, [hqText, orgnrFakta?.note, p.ownership?.country_hq?.note]);
 
-    const docs = p.api?.docs_url?.value ?? p.pricing?.pricing_page_url?.value ?? p.website;
+    const docs = await forstaLevande([p.api?.docs_url?.value, p.pricing?.pricing_page_url?.value, p.website]);
     const org = {
       id,
       name: fakta(basnamn, 'claimed', p.website, 'own_site', p.record_updated_at ?? IDAG),

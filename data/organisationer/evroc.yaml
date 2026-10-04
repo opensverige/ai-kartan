@@ -65,7 +65,7 @@ active:
   verified_at: 2026-07-05
   verified_by: manual
 evidence:
-  - url: https://docs.evroc.com/products/think/overview.html
+  - url: https://evroc.com
     kind: produkt
     title: Tjänstebeskrivning
     status: claimed

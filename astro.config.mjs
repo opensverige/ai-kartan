@@ -28,6 +28,7 @@ export default defineConfig({
     }),
   ],
   vite: {
-    ssr: { noExternal: [] },
+    // MapLibre är ett stort paket; det laddas bara på kartsidorna.
+    build: { chunkSizeWarningLimit: 1000 },
   },
 });
