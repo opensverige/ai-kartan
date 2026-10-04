@@ -1,0 +1,104 @@
+id: 6g-ai-sweden
+
+name:
+  value: "6G AI Sweden"
+  status: claimed
+  source_url: https://6gai.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "6G AI SWEDEN AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/5591305098
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: "infrastruktur"
+  status: claimed
+  source_url: https://6gai.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "559130-5098"
+  status: confirmed
+  source_url: https://www.allabolag.se/5591305098
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolaget anges som 6G AI Sweden AB på https://6gai.se/about. Webbplatsen anger inget organisationsnummer. Registrerat ändamål omfattar uthyrning av GPU-baserad cloud computing och AI-API:er."
+
+website: https://6gai.se/
+
+description:
+  value: "Erbjuder molnbaserad GPU-kapacitet med NVIDIA H200 för AI-träning och inferens i ett datacenter hos atNorth i Kista, Stockholm."
+  status: claimed
+  source_url: https://6gai.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [infrastruktur, produkt]
+  status: claimed
+  source_url: https://6gai.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://6gai.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5591305098
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm. Webbplatsen anger Kista, Stockholm."
+
+founded:
+  value: 2017
+  status: confirmed
+  source_url: https://www.allabolag.se/5591305098
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2017-10-24."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5591305098
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://6gai.se/infrastructure
+    kind: resurs
+    title: "Infrastruktur: NVIDIA H200-GPU:er i Kista, Stockholm (beskrivning från bolaget)"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://www.datacenterdynamics.com/en/news/atnorth-secures-swedish-ai-cloud-provider-as-customer-in-stockholm-data-center/
+    kind: case
+    title: "DCD: atNorth hyser 6G AI Swedens Nvidia-hårdvara i Stockholm (maj 2025)"
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

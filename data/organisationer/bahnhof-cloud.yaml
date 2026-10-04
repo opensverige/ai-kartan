@@ -1,0 +1,98 @@
+id: bahnhof-cloud
+
+name:
+  value: "Bahnhof Cloud"
+  status: claimed
+  source_url: https://bahnhof.cloud/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "Bahnhof AB (publ)"
+  status: confirmed
+  source_url: https://www.allabolag.se/5565199493
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: "infrastruktur"
+  status: claimed
+  source_url: https://bahnhof.cloud/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "556519-9493"
+  status: confirmed
+  source_url: https://www.allabolag.se/5565199493
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Numret anges även av Bahnhof AB på https://bahnhof.se/om-bahnhof/ (egen webbplats). Bahnhof Cloud är molntjänsten inom Bahnhof AB (publ); bahnhof.cloud anger Bahnhof AB i sidfoten."
+
+website: https://bahnhof.cloud/
+
+description:
+  value: "Svensk internetoperatör vars molntjänst Bahnhof Cloud hyr ut GPU-resurser (NVIDIA RTX Pro 6000) i egna svenska datacenter för AI, maskininlärning och dataanalys."
+  status: claimed
+  source_url: https://bahnhof.cloud/en/accelerated-computing/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [infrastruktur, produkt]
+  status: claimed
+  source_url: https://bahnhof.cloud/en/accelerated-computing/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell, fintech, halsa, offentlig_sektor]
+  status: claimed
+  source_url: https://bahnhof.cloud/en/accelerated-computing/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5565199493
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+founded:
+  value: 1995
+  status: confirmed
+  source_url: https://www.allabolag.se/5565199493
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum för Bahnhof AB (publ) enligt allabolag.se: 1995-07-14. https://bahnhof.cloud/om-bahnhof/ anger leveranser sedan 1994."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5565199493
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://bahnhof.cloud/en/accelerated-computing/
+    kind: produkt
+    title: "Accelerated Computing: GPU-resurser i VPC hos Bahnhof Cloud"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

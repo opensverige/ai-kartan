@@ -1,0 +1,114 @@
+id: atnorth
+
+name:
+  value: "atNorth"
+  status: claimed
+  source_url: https://www.atnorth.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Nordisk koncern. Posten avser verksamheten i Sverige."
+
+legal_name:
+  value: "atNorth AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/5591471395
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: "infrastruktur"
+  status: claimed
+  source_url: https://www.atnorth.com/nordic-data-centers/sweden-data-centers/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "559147-1395"
+  status: confirmed
+  source_url: https://www.allabolag.se/5591471395
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Matchat på namnet atNorth AB: registrerat för värd- och datacentertjänster, och registrets adress i Kista sammanfaller med SWE01 enligt datacenterhawk.com. Webbplatsen anger inget svenskt bolag (integritetspolicyn nämner atNorth ehf). Fler svenska bolag i koncernen, t.ex. atNorth 2 AB (559387-1097)."
+
+website: https://www.atnorth.com/
+
+description:
+  value: "Datacenteroperatör med anläggningar i Norden, i Sverige bland annat SWE01 i Kista, Stockholm. Hyser GPU-infrastruktur för 6G AI Swedens nationella AI-moln."
+  status: claimed
+  source_url: https://www.atnorth.com/news/atnorth-to-host-6g-ai-swedens-cutting-edge-ai-cloud/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [infrastruktur]
+  status: claimed
+  source_url: https://www.atnorth.com/nordic-data-centers/sweden-data-centers/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://www.atnorth.com/nordic-data-centers/sweden-data-centers/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5591471395
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte för atNorth AB enligt allabolag.se: Stockholm. Anläggningen SWE01 ligger i Kista i Stockholm enligt webbplatsen."
+
+founded:
+  value: 2018
+  status: confirmed
+  source_url: https://www.allabolag.se/5591471395
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum för atNorth AB enligt allabolag.se: 2018-01-30."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5591471395
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.atnorth.com/news/atnorth-to-host-6g-ai-swedens-cutting-edge-ai-cloud/
+    kind: case
+    title: "atNorth hyser 6G AI Swedens nationella AI-moln i SWE01 (maj 2025)"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://www.datacenterdynamics.com/en/news/atnorth-secures-swedish-ai-cloud-provider-as-customer-in-stockholm-data-center/
+    kind: case
+    title: "DCD: atNorth får svensk AI-molnleverantör som kund i Stockholm"
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://www.atnorth.com/nordic-data-centers/sweden-data-centers/stockholm-metro-site/
+    kind: resurs
+    title: "SWE01 i Kista: datacenter för högdensitetslaster (anläggningsbeskrivning)"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://is.linkedin.com/company/atnorth
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

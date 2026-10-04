@@ -1,0 +1,97 @@
+id: pdc
+
+name:
+  value: "PDC Center for High Performance Computing"
+  status: claimed
+  source_url: https://www.pdc.kth.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Enhet vid KTH. Webbplatsen anger att PDC fortsätter som en del av det nya KTH Center for Scientific Computing."
+
+type:
+  value: "infrastruktur"
+  status: claimed
+  source_url: https://www.pdc.kth.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "202100-3054"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021003054
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Organisationsnummer för Kungliga Tekniska högskolan (statlig enhet), som PDC tillhör. PDC har inget eget organisationsnummer. Numret anges även på https://www.kth.se/en/om/kontakt."
+
+website: https://www.pdc.kth.se/
+
+description:
+  value: "Centrum vid KTH för högprestandaberäkning (HPC). Har superdatorn Dardel med CPU- och GPU-partition för akademisk forskning och företagsforskning."
+  status: claimed
+  source_url: https://www.pdc.kth.se/hpc-services/computing-systems/about-the-dardel-system-1.1053338
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [infrastruktur, utbildning, forskning]
+  status: claimed
+  source_url: https://www.pdc.kth.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://www.pdc.kth.se/about/what-does-pdc-do-and-how
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021003054
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Säte för värdlärosätet KTH enligt allabolag.se: Stockholm. PDC ligger vid KTH i Stockholm enligt https://www.pdc.kth.se/about/what-does-pdc-do-and-how."
+
+founded:
+  value: 1990
+  status: claimed
+  source_url: https://www.pdc.kth.se/about/what-does-pdc-do-and-how
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Webbplatsen anger att PDC grundades 1990. Invigning 15 januari 1990 enligt https://www.pdc.kth.se/about/history-of-pdc."
+
+active:
+  value: true
+  status: claimed
+  source_url: https://www.pdc.kth.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Webbplatsen visar nyheter och evenemang för hösten 2026."
+
+evidence:
+  - url: https://www.pdc.kth.se/hpc-services/computing-systems/about-the-dardel-system-1.1053338
+    kind: resurs
+    title: "Superdatorn Dardel: CPU- och GPU-partition (beskrivning från PDC)"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://www.top500.org/system/180126/
+    kind: resurs
+    title: "Dardel GPU i TOP500-listan, juni 2026 (KTH)"
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

@@ -1,0 +1,110 @@
+id: ecodatacenter
+
+name:
+  value: "EcoDataCenter"
+  status: claimed
+  source_url: https://ecodatacenter.tech/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "ECODC AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/5569691065
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: "infrastruktur"
+  status: claimed
+  source_url: https://ecodatacenter.tech/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "556969-1065"
+  status: confirmed
+  source_url: https://www.allabolag.se/5569691065
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolaget anges som EcoDC AB i integritetspolicyn på ecodatacenter.tech. Enligt årsredovisning 2025 för EcoDC Holding AB (publ, 559491-2098) är ECODC AB moderbolag till den del av koncernen som har driftsatta datacenter."
+
+website: https://ecodatacenter.tech/
+
+description:
+  value: "Datacenteroperatör med huvudanläggning i Falun för colocation och högprestandaberäkning (HPC), bland annat AI-beräkningar åt bolaget DeepL."
+  status: claimed
+  source_url: https://ecodatacenter.tech/press/ecodatacenter-enables-high-performance-computing-for-ai-company-deepl-3229145
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [infrastruktur]
+  status: claimed
+  source_url: https://ecodatacenter.tech/data-center/ecodatacenter-1
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://ecodatacenter.tech/data-center/ecodatacenter-1
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5569691065
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm. Webbplatsen anger huvudkontor och huvudanläggning i Falun (kommunkod 2080)."
+
+founded:
+  value: 2014
+  status: confirmed
+  source_url: https://www.allabolag.se/5569691065
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum för ECODC AB enligt allabolag.se: 2014-04-17."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5569691065
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://ecodatacenter.tech/data-center/ecodatacenter-1
+    kind: resurs
+    title: "EcoDataCenter 1 i Falun: datacenter för HPC och AI (anläggningsbeskrivning)"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://www.datacenterdynamics.com/en/news/deepl-deploys-nvidia-dgx-superpod-at-ecodatacenter-in-falun-sweden/
+    kind: case
+    title: "DCD: DeepL driftsätter Nvidia DGX SuperPOD hos EcoDataCenter i Falun"
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://ecodatacenter.tech/press/ecodatacenter-enables-high-performance-computing-for-ai-company-deepl-3229145
+    kind: case
+    title: "Pressmeddelande: HPC-tjänster för AI-bolaget DeepL i Falun (2022)"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

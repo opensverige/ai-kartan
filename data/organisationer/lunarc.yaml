@@ -1,0 +1,91 @@
+id: lunarc
+
+name:
+  value: "LUNARC – Centre for Scientific and Technical Computing"
+  status: claimed
+  source_url: https://www.lunarc.lu.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Enhet vid Lunds universitet (LTH). Webbplatsen anger att LUNARC även är en gren av NAISS."
+
+type:
+  value: "infrastruktur"
+  status: claimed
+  source_url: https://www.lunarc.lu.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "202100-3211"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021003211
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Organisationsnummer för Lunds universitet (statlig enhet), som LUNARC tillhör. LUNARC har inget eget organisationsnummer."
+
+website: https://www.lunarc.lu.se/
+
+description:
+  value: "Lunds universitets centrum för vetenskaplig och teknisk beräkning. Driver klustret COSMOS med AMD- och Intel-processorer samt NVIDIA A100- och A40-GPU-noder för forskning."
+  status: claimed
+  source_url: https://www.lunarc.lu.se/systems/cosmos
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [infrastruktur, utbildning]
+  status: claimed
+  source_url: https://www.lunarc.lu.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://www.lunarc.lu.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1281"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021003211
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Säte för värdlärosätet Lunds universitet enligt allabolag.se: Lund. LUNARC anger Lund som ort i webbplatsens sidfot."
+
+founded:
+  value: 1986
+  status: claimed
+  source_url: https://www.lunarc.lu.se/about/history
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Webbplatsen anger att LUNARC bildades 1986 som samarbete mellan forskargrupper och blev ett centrum vid Lunds universitet 1996."
+
+active:
+  value: true
+  status: claimed
+  source_url: https://www.lunarc.lu.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Webbplatsen visar driftnyheter från juli 2026."
+
+evidence:
+  - url: https://www.lunarc.lu.se/systems/cosmos
+    kind: resurs
+    title: "COSMOS: kluster med CPU- och NVIDIA-GPU-noder (systembeskrivning från LUNARC)"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

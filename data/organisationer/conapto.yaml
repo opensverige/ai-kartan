@@ -1,0 +1,113 @@
+id: conapto
+
+name:
+  value: "Conapto"
+  status: claimed
+  source_url: https://www.conapto.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "Conapto AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/5565453981
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: "infrastruktur"
+  status: claimed
+  source_url: https://www.conapto.com/we-are-conapto/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "556545-3981"
+  status: confirmed
+  source_url: https://www.allabolag.se/5565453981
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolaget anges som Conapto AB på https://www.conapto.com/we-are-conapto/ och i integritetspolicyn. Webbplatsen anger inget organisationsnummer."
+
+website: https://www.conapto.com/
+
+description:
+  value: "Datacenteroperatör i Stockholm med fyra anläggningar för colocation. Kunder som Singularity Compute och CoreWeave driftsätter NVIDIA-GPU-kluster för AI i anläggningarna."
+  status: claimed
+  source_url: https://www.conapto.com/nvidia-gpu-cluster-deployed-at-conapto/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [infrastruktur]
+  status: claimed
+  source_url: https://www.conapto.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://www.conapto.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5565453981
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm. Webbplatsen anger huvudkontor i Stockholm."
+
+founded:
+  value: 1997
+  status: confirmed
+  source_url: https://www.allabolag.se/5565453981
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 1997-09-03. Webbplatsen anger att Conapto AB bildades 1 oktober 2018 efter förvärv av Sungard Availability Services svenska verksamhet."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5565453981
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.conapto.com/nvidia-gpu-cluster-deployed-at-conapto/
+    kind: case
+    title: "NVIDIA-GPU-kluster driftsatt hos Conapto av kunden Singularity Compute"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://www.eenewseurope.com/en/coreweave-and-conapto-expand-ai-infrastructure-in-sweden/
+    kind: case
+    title: "eeNews Europe: CoreWeave och Conapto utökar AI-infrastruktur i Sverige"
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://www.conapto.com/datacenters/sthlm-4-south/
+    kind: resurs
+    title: "Stockholm 4 South: datacenter för företags- och AI-last (anläggningsbeskrivning)"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/conapto/
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

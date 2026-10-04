@@ -1,0 +1,91 @@
+id: hpc2n
+
+name:
+  value: "HPC2N – High Performance Computing Center North"
+  status: claimed
+  source_url: https://www.hpc2n.umu.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Enhet vid Umeå universitet enligt sidfoten. Partner enligt https://www.hpc2n.umu.se/about: Luleå tekniska universitet, IRF, SLU och Mittuniversitetet."
+
+type:
+  value: "infrastruktur"
+  status: claimed
+  source_url: https://www.hpc2n.umu.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "202100-2874"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021002874
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Organisationsnummer för Umeå universitet (statlig enhet), som HPC2N tillhör enligt webbplatsens sidfot. HPC2N har inget eget organisationsnummer."
+
+website: https://www.hpc2n.umu.se/
+
+description:
+  value: "Centrum vid Umeå universitet för högprestandaberäkning. Driver superdatorn Kebnekaise med CPU-noder och NVIDIA-GPU-noder för akademisk forskning, främst vid partnerorganisationerna, samt ger kurser och användarutbildning."
+  status: claimed
+  source_url: https://www.hpc2n.umu.se/services
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [infrastruktur, utbildning, forskning]
+  status: claimed
+  source_url: https://www.hpc2n.umu.se/about
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://www.hpc2n.umu.se/about
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "2480"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021002874
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Säte för värdlärosätet Umeå universitet enligt allabolag.se: Umeå. HPC2N anger Umeå universitet, Umeå i webbplatsens sidfot."
+
+founded:
+  value: 1996
+  status: claimed
+  source_url: https://www.hpc2n.umu.se/history
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Webbplatsen anger att HPC2N grundades 1996. Föregångaren SDCN samarbetade sedan 1989."
+
+active:
+  value: true
+  status: claimed
+  source_url: https://www.hpc2n.umu.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Webbplatsen visar nyheter och kurser för hösten 2026."
+
+evidence:
+  - url: https://www.hpc2n.umu.se/resources/hardware/kebnekaise
+    kind: resurs
+    title: "Kebnekaise: CPU- och GPU-noder (maskinvarubeskrivning från HPC2N)"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04
