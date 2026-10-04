@@ -1,6 +1,6 @@
 # Geodata: kommuner och län
 
-Referensdata för AI-kartan: Sveriges 290 kommuner och 21 län med SCB:s koder och namn, slugar, en representativ punkt per enhet samt förenklade gränspolygoner. Filerna i den här mappen och i `public/geo/` är **genererade** av `scripts/geo/bygg-geodata.py`. Redigera dem inte för hand, kör skriptet igen (se längst ned).
+Referensdata för AI-kartan: Sveriges 290 kommuner och 21 län med SCB:s koder och namn, slugar, en punkt per enhet samt förenklade gränspolygoner. Filerna i den här mappen och i `public/geo/` är **genererade** av `scripts/geo/bygg-geodata.py`. Redigera dem inte för hand, kör skriptet igen (se längst ned).
 
 Källorna hämtades **2026-10-04**.
 
@@ -8,21 +8,23 @@ Källorna hämtades **2026-10-04**.
 
 | Fil | Innehåll |
 | --- | --- |
-| `data/geo/kommuner.json` | 290 kommuner sorterade på kod: `kod`, `namn`, `slug`, `lan_kod`, `lan_namn`, `lat`, `lng` |
-| `data/geo/lan.json` | 21 län sorterade på kod: `kod`, `namn`, `slug`, `lat`, `lng` |
+| `data/geo/kommuner.json` | 290 kommuner sorterade på kod: `kod`, `namn`, `slug`, `lan_kod`, `lan_namn`, `lat`, `lng`, `punkt_kalla` |
+| `data/geo/lan.json` | 21 län sorterade på kod: `kod`, `namn`, `slug`, `lat`, `lng`, `punkt_kalla` |
 | `public/geo/kommuner.geojson` | Kommunpolygoner (290 features), egenskaper `kod`, `namn`, `lan_kod` |
 | `public/geo/lan.geojson` | Länspolygoner (21 features), egenskaper `kod`, `namn` |
 | `scripts/geo/bygg-geodata.py` | Bygger alla fyra filerna |
 
 - `kod` är SCB:s kommunkod (4 siffror) respektive länskod (2 siffror), som sträng med ledande nolla. `lan_kod` är kommunkodens två första siffror.
 - `namn` är SCB:s namn utan ordet "kommun" (till exempel "Upplands Väsby", "Malung-Sälen", "Gotland"). Länsnamnen innehåller "län".
-- `lat` och `lng` är WGS84-grader med 4 decimaler (ca 11 m). De är en representativ punkt, inte centralorten och aldrig en adress (se "Punkterna").
+- `lat` och `lng` är WGS84-grader med 4 decimaler (ca 11 m). Punkten är kommunens eller länets plats på kartan, aldrig en adress.
+- `punkt_kalla` anger var punkten kommer ifrån: `wikidata` (koordinaten på kommunens eller länets Wikidata-objekt, oftast centralorten) eller `centroid` (polygonens egen punkt, reserv). Se "Punkterna".
 
 ## Källor och licenser
 
 | Data | Källa | Licens |
 | --- | --- | --- |
 | Koder och namn | SCB, "Län och kommuner i kodnummerordning", 2026 års indelning. <https://www.scb.se/hitta-statistik/regional-statistik-och-kartor/regionala-indelningar/lan-och-kommuner/lan-och-kommuner-i-kodnummerordning/> (SCB publicerar samma lista som Excel och PDF, länkade från sidan) | CC BY 4.0, ange "Källa: SCB" (se nedan) |
+| Punkter | Wikidata, koordinat (P625) på kommunens och länets objekt. Frågor mot <https://query.wikidata.org/sparql> | CC0 1.0 (se nedan) |
 | Kommunpolygoner | geoBoundaries gbOpen, Sverige ADM2. <https://www.geoboundaries.org/api/current/gbOpen/SWE/ADM2/> | CC0 1.0 (se nedan) |
 | Länspolygoner | geoBoundaries gbOpen, Sverige ADM1. <https://www.geoboundaries.org/api/current/gbOpen/SWE/ADM1/> | CC BY 3.0 (se nedan) |
 
@@ -31,6 +33,20 @@ Källorna hämtades **2026-10-04**.
 SCB:s användningsvillkor (<https://www.scb.se/om-scb/om-scb.se-och-anvandningsvillkor/>) skiljer på statistik och geodata som tillgängliggörs som öppna data i statistikdatabasen och geodataplattformen (CC0 1.0) och "allt övrigt material" på webbplatsen (Creative Commons Erkännande 4.0 Internationell, CC BY 4.0, med krav på att ange SCB som källa: "Källa: SCB"). Kodlistan är en vanlig sida på scb.se, inte en tabell i statistikdatabasen, så den säkra tolkningen är CC BY 4.0.
 
 Namnen används som SCB skriver dem. Därför står Falu kommun som "Falun" (SCB:s stavning, kommunen själv skriver Falu kommun) och namnen saknar genitiv-s som finns i de formella namnen ("Österåker" för Österåkers kommun, "Gotland" för Gotlands kommun).
+
+### Wikidata
+
+Wikidatas licenssida (<https://www.wikidata.org/wiki/Wikidata:Licensing>) anger att all strukturerad data (huvud-, egenskaps-, lexem- och EntitySchema-namnrymderna) släpps som public domain under Creative Commons Zero. Koordinaterna är alltså CC0 och kräver ingen källhänvisning.
+
+Två SPARQL-frågor ställs (se `WD_KOMMUNER` och `WD_LAN` i skriptet):
+
+| | Kommuner | Län |
+| --- | --- | --- |
+| Objekt | instans av kommun (Q127448, "municipality of Sweden"), utan "upphört datum" (P576) eller slutdatum (P582) | instans av Sveriges län (Q200547, "county of Sweden") |
+| Nyckel | kommunkod i Sverige (P525) = SCB:s kod | länskod (P507) = SCB:s kod |
+| Värde | geografiska koordinater (P625) | geografiska koordinater (P625) |
+
+Villkoret om upphört datum behövs eftersom Wikidata har gamla objekt med samma kommunkod (till exempel Svegs köping, Trosa stad, Salems landskommun). Med villkoret finns exakt ett nuvarande objekt med koordinat för var och en av SCB:s 290 kommunkoder och 21 länskoder. Finns det noll eller flera används polygonens punkt i stället.
 
 ### Kommungränser: geoBoundaries ADM2
 
@@ -65,11 +81,12 @@ geoBoundaries ber om källhänvisning även för CC0-data (`geoBoundaries-SWE-AD
 
 Använd fil: `geoBoundaries-SWE-ADM1_simplified.geojson` från <https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/SWE/ADM1/geoBoundaries-SWE-ADM1_simplified.geojson> (ca 1,4 MB).
 
-CC BY 3.0 (<https://creativecommons.org/licenses/by/3.0/>) kräver att upphovspersonen anges, att licensen länkas och att det framgår att materialet bearbetats. Det gäller `lan.geojson` och, eftersom länens punkter räknas ur samma polygoner, också `lat` och `lng` i `lan.json`.
+CC BY 3.0 (<https://creativecommons.org/licenses/by/3.0/>) kräver att upphovspersonen anges, att licensen länkas och att det framgår att materialet bearbetats. Det gäller `lan.geojson`. Länens punkter kommer i första hand från Wikidata, men reservpunkterna (`punkt_kalla` = `centroid`) räknas ur samma polygoner.
 
 ### Källhänvisning att visa på webbplatsen
 
 - Koder och namn: "Källa: SCB".
+- Koordinater: Wikidata (CC0, ingen källhänvisning krävs men det är god sed att nämna den).
 - Kommungränser: "Administrative boundaries courtesy of geoBoundaries.org".
 - Länsgränser: "Länsgränser: Erik Frohne, Wikimedia Commons (CC BY 3.0), via geoBoundaries.org. Förenklade."
 
@@ -77,18 +94,39 @@ Filerna ligger i projektets datamapp, men tredjepartsvillkoren ovan gäller äve
 
 ## Punkterna
 
-Per kommun och län:
+Varje kommun och län har en punkt (`lat`, `lng`) och ett fält `punkt_kalla`:
+
+- **`wikidata`:** koordinaten (P625) på kommunens eller länets nuvarande Wikidata-objekt, avrundad till 4 decimaler. Den ligger oftast i eller nära centralorten. Punkten godtas om den ligger inuti kommunens (länets) polygon eller högst 2 500 m utanför.
+- **`centroid`:** polygonens egen punkt, som reserv när Wikidata saknar en entydig koordinat eller koordinaten ligger mer än 2 500 m utanför polygonen. Det är tyngdpunkten av polygonens största del, eller en inre punkt om tyngdpunkten hamnar utanför delen (se nedan).
+
+Vid byggdatum fick **alla 290 kommuner och alla 21 län en Wikidata-punkt** (inga reservpunkter behövdes).
+
+### Varför toleransen
+
+geoBoundaries-polygonerna är grova (i snitt ca 70 hörn per kommun) och ställvis förskjutna. En strikt regel ("förkasta punkter utanför polygonen", `--punkt-tolerans 0`) skulle ge polygonens tyngdpunkt åt 25 kommuner och Stockholms län, trots att Wikidatas punkter ligger i rätt tätort: Stockholm 162 m utanför, Kalmar 0,5 km, Lund 1,5 km, Ystad 2,0 km, Burlöv 2,3 km. I 20 av de 25 fallen ligger närmaste polygonkant åt ett håll mellan nordväst och öster från punkten (oftast nordost), vilket tyder på en förskjutning i polygonkällan, och 16 av dem finns i Skåne och Västra Götaland. Toleransen på 2 500 m täcker polygonernas felmarginal och fångar ändå koordinater som ligger helt fel. Den kan ändras med `--punkt-tolerans`.
+
+### Så väljs Wikidata-punkten
+
+1. Kommunens objekt slås upp via kommunkoden (P525), länets via länskoden (P507), enligt tabellen under "Wikidata".
+2. Finns det inte exakt ett objekt med koordinat används polygonens punkt.
+3. Annars avrundas koordinaten till 4 decimaler och avståndet till polygonen i den skrivna GeoJSON-filen beräknas (0 m om punkten ligger inuti). Är avståndet högst toleransen blir punkten `wikidata`, annars `centroid`.
+
+Wikidata-punkterna ligger i median 8,0 km från polygonernas egna punkter (högst 66 km, Älvdalen) för kommunerna och i median 24,8 km (högst 76 km) för länen.
+
+### Polygonens egen punkt (reserven)
 
 1. Polygonen hämtas från geoBoundaries. Består den av flera delar (öar, skärgård) väljs den **största delen** efter yta, så att punkten hamnar på fastlandet eller huvudön.
 2. Delens tyngdpunkt beräknas med polygonformeln (yttre ring minus hål) i en ytriktig projektion (Lambert azimutal equal-area, centrum 63° N 16° Ö, jordradie 6 371 007,2 m) och räknas tillbaka till WGS84. Ytriktig projektion gör att långa, smala kommuner i norr får rätt tyngdpunkt.
-3. Ligger tyngdpunkten utanför delen (konkava former) används i stället mitten av det längsta intervallet inom delen längs samma breddgrad (samma princip som `ST_PointOnSurface`). Det gäller bara **Norrköping (0581)**, vars kommun kröker sig runt Bråviken: tyngdpunkten (58,6226, 16,2946) hamnar i viken och ersätts av 58,6229, 15,9625, ca 14 km väster om centrum.
+3. Ligger tyngdpunkten utanför delen (konkava former) används i stället mitten av det längsta intervallet inom delen längs samma breddgrad (samma princip som `ST_PointOnSurface`). Det gäller bara **Norrköping (0581)**, vars kommun kröker sig runt Bråviken: tyngdpunkten (58,6226, 16,2946) hamnar i viken och ersätts av 58,6229, 15,9625.
 4. Resultatet avrundas till 4 decimaler.
 
-Punkten är alltså mittpunkten av kommunens polygon, inte centralorten. För stora kommuner kan den ligga långt från orten: Kiruna 40 km, Älvdalen 66 km, Storuman 62 km, Jokkmokk 62 km (jämfört med Wikidatas koordinater, oftast centralorten). Stockholm hamnar 6 km söder om centrum eftersom kommunen sträcker sig långt söderut.
+Reservpunkterna kan skrivas ut för alla enheter med `--utan-wikidata`. De jämfördes vid framtagningen med en oberoende beräkning i shapely och PROJ (högst 6 m skillnad, dvs. avrundningen) och ligger alla inuti sin egen polygon.
 
-Kommunpolygonerna omfattar landyta och insjöar men inte havet (kommunernas sammanlagda yta blir ca 447 000 km²). Ingen landmask har använts, så "på land" betyder "inom kommunens polygon".
+Polygonerna omfattar landyta och insjöar men inte havet (kommunernas sammanlagda yta blir ca 447 000 km²). Ingen landmask har använts.
 
-Kontroller vid framtagningen: tyngdpunkterna jämfördes med en oberoende beräkning i shapely och PROJ (högst 6 m skillnad, dvs. avrundningen), alla 290 kommunpunkter och 21 länspunkter ligger inuti sin egen polygon, och alla 21 länspunkter ligger även inom de sammanslagna kommunerna.
+### Kontroller
+
+Skriptet kontrollerar efter varje bygge att `punkt_kalla` är `wikidata` eller `centroid`, att varje `centroid`-punkt ligger inuti sin polygon och att varje `wikidata`-punkt ligger högst toleransen utanför sin polygon i de skrivna filerna. Vid framtagningen jämfördes dessutom varje `wikidata`-punkt med Wikidatas rådata (samma värde avrundat till 4 decimaler).
 
 ## Namn och slugar
 
@@ -107,8 +145,9 @@ Kontroller vid framtagningen: tyngdpunkterna jämfördes med en oberoende beräk
 
 ## Kända begränsningar
 
-- **Grov geometri.** Kommunpolygonerna har i snitt ca 70 hörn. De räcker för en riksöversikt men inte för inzoomning på kommunnivå.
-- **Lagren passar inte ihop.** Länen kommer från en annan källa och ett annat år (2009, spårade ur en SVG-karta) än kommunerna (2017). Arealerna stämmer inom några procent men formerna är förskjutna: sammanslagna kommuner avviker från länspolygonen med i median 8,5 % av länets yta (högst ca 20 %, Blekinge och Stockholm), tyngdpunkterna ligger i median 2 km ifrån varandra och skärgårdens öar skiljer sig åt. Rita inte lagren över varandra och räkna inte med att länsgränserna följer kommungränserna. Två kommunpunkter ligger strax utanför sitt läns polygon: Uddevalla 0,5 km och Öckerö 0,2 km.
+- **Wikidatas punkter är inte alltid centrum.** Koordinaterna på kommunobjekten kommer från olika importer och redaktörer. 242 av 290 har bågminutsprecision (hela bågminuter, ca 1 till 2 km) och några ligger i kommunens mitt i stället för i centralorten: Malmö kommuns punkt (55,5650, 13,0186) ligger ca 4,5 km söder om Malmö centrum. Wikidata ändras dessutom löpande, så en ny nedladdning kan ge andra koordinater.
+- **Grov geometri.** Kommunpolygonerna har i snitt ca 70 hörn. De räcker för en riksöversikt men inte för inzoomning på kommunnivå, och kanterna kan ligga upp till ca 2 km fel (se "Varför toleransen").
+- **Lagren passar inte ihop.** Länen kommer från en annan källa och ett annat år (2009, spårade ur en SVG-karta) än kommunerna (2017). Arealerna stämmer inom några procent men formerna är förskjutna: sammanslagna kommuner avviker från länspolygonen med i median 8,5 % av länets yta (högst ca 20 %, Blekinge och Stockholm), tyngdpunkterna ligger i median 2 km ifrån varandra och skärgårdens öar skiljer sig åt. Rita inte lagren över varandra och räkna inte med att länsgränserna följer kommungränserna. Sju kommunpunkter ligger utanför sitt läns polygon (Kalmar, Karlskrona, Båstad, Ystad, Strömstad, Härnösand och Piteå), alla vid kusten.
 - **Kommunlagret** har 18 små glapp mellan grannkommuner (sammanlagt 0,43 km², det största 0,21 km²) och försumbara överlapp (sammanlagt 0,001 km²).
 - **Årtal.** Koderna och namnen är SCB:s 2026, polygonerna avser 2017 (kommuner) och 2009 (län). Båda kommunkällorna har 290 kommuner, men eventuella gränsjusteringar efter 2017 finns inte i polygonerna.
 
@@ -122,14 +161,15 @@ python scripts/geo/bygg-geodata.py
 
 Det kräver Python 3 (testat med 3.12) och internet, men inga paket. Skriptet:
 
-1. hämtar SCB-sidan och geoBoundaries-filerna till en cache-mapp utanför projektet (standard `<systemets tempmapp>/ai-kartan-geo`),
-2. matchar namn, beräknar punkter och bygger de fyra filerna,
-3. kontrollerar resultatet (290 och 21 enheter, unika koder och slugar, `lan_kod` finns i `lan.json`, punkter inom Sverige, GeoJSON läsbar med slutna och icke korsande ringar, filstorlekar, punkter inuti sina polygoner) och avslutar med felkod om något inte stämmer.
+1. hämtar SCB-sidan, geoBoundaries-filerna och Wikidata-koordinaterna till en cache-mapp utanför projektet (standard `<systemets tempmapp>/ai-kartan-geo`),
+2. matchar namn, bygger polygonerna, väljer punkter och skriver de fyra filerna (en fil som inte ändrats skrivs inte om),
+3. kontrollerar resultatet (290 och 21 enheter, unika koder och slugar, `lan_kod` finns i `lan.json`, punkter inom Sverige, `punkt_kalla`, GeoJSON läsbar med slutna och icke korsande ringar, filstorlekar, punkter mot sina polygoner) och avslutar med felkod om något inte stämmer.
 
 Flaggor:
 
 - `--cache MAPP` väljer annan cache-mapp.
 - `--ny-nedladdning` hämtar källorna på nytt även om de finns i cachen.
-- `--wikidata` kontrollerar dessutom att alla SCB-koder finns som kommunkod (P525) i Wikidata och visar vilka punkter som ligger längst från Wikidatas koordinater.
+- `--utan-wikidata` hämtar inget från Wikidata och använder polygonernas punkter för alla (`punkt_kalla` blir `centroid`).
+- `--punkt-tolerans METER` ändrar hur långt utanför polygonen en Wikidata-punkt får ligga (standard 2500, `0` betyder strikt inuti).
 
-Samma källor ger exakt samma filer (byte för byte). Skriptet varnar om geoBoundaries har gett ut ett nytt bygge än det som beskrivs här; kontrollera då källa och licens och uppdatera den här filen. Om SCB ändrar sidans struktur eller antalet kommuner stannar skriptet med ett felmeddelande.
+Samma cache ger exakt samma filer (byte för byte). Wikidata-svaret cachas under frågans hash och ändras när någon redigerar koordinaterna, så en ny nedladdning kan flytta enstaka punkter. Skriptet varnar om geoBoundaries har gett ut ett nytt bygge än det som beskrivs här; kontrollera då källa och licens och uppdatera den här filen. Om SCB ändrar sidans struktur eller antalet kommuner stannar skriptet med ett felmeddelande.

@@ -3,147 +3,168 @@
     "kod": "01",
     "namn": "Stockholms län",
     "slug": "stockholms-lan",
-    "lat": 59.4975,
-    "lng": 18.0936
+    "lat": 59.3333,
+    "lng": 18.1667,
+    "punkt_kalla": "wikidata"
   },
   {
     "kod": "03",
     "namn": "Uppsala län",
     "slug": "uppsala-lan",
-    "lat": 60.0546,
-    "lng": 17.5738
+    "lat": 59.8583,
+    "lng": 17.65,
+    "punkt_kalla": "wikidata"
   },
   {
     "kod": "04",
     "namn": "Södermanlands län",
     "slug": "sodermanlands-lan",
-    "lat": 59.0855,
-    "lng": 16.6896
+    "lat": 58.771,
+    "lng": 16.8695,
+    "punkt_kalla": "wikidata"
   },
   {
     "kod": "05",
     "namn": "Östergötlands län",
     "slug": "ostergotlands-lan",
-    "lat": 58.3671,
-    "lng": 15.6569
+    "lat": 58.4106,
+    "lng": 15.6136,
+    "punkt_kalla": "wikidata"
   },
   {
     "kod": "06",
     "namn": "Jönköpings län",
     "slug": "jonkopings-lan",
-    "lat": 57.5384,
-    "lng": 14.4081
+    "lat": 57.75,
+    "lng": 14.2,
+    "punkt_kalla": "wikidata"
   },
   {
     "kod": "07",
     "namn": "Kronobergs län",
     "slug": "kronobergs-lan",
-    "lat": 56.8023,
-    "lng": 14.573
+    "lat": 56.79,
+    "lng": 14.44,
+    "punkt_kalla": "wikidata"
   },
   {
     "kod": "08",
     "namn": "Kalmar län",
     "slug": "kalmar-lan",
-    "lat": 57.2474,
-    "lng": 16.0467
+    "lat": 56.7333,
+    "lng": 15.9,
+    "punkt_kalla": "wikidata"
   },
   {
     "kod": "09",
     "namn": "Gotlands län",
     "slug": "gotlands-lan",
-    "lat": 57.4855,
-    "lng": 18.508
+    "lat": 57.5,
+    "lng": 18.5,
+    "punkt_kalla": "wikidata"
   },
   {
     "kod": "10",
     "namn": "Blekinge län",
     "slug": "blekinge-lan",
-    "lat": 56.2879,
-    "lng": 15.1758
+    "lat": 56.2833,
+    "lng": 15.1167,
+    "punkt_kalla": "wikidata"
   },
   {
     "kod": "12",
     "namn": "Skåne län",
     "slug": "skane-lan",
-    "lat": 55.9519,
-    "lng": 13.5991
+    "lat": 55.9953,
+    "lng": 13.4418,
+    "punkt_kalla": "wikidata"
   },
   {
     "kod": "13",
     "namn": "Hallands län",
     "slug": "hallands-lan",
-    "lat": 56.9584,
-    "lng": 12.8464
+    "lat": 56.75,
+    "lng": 13.0,
+    "punkt_kalla": "wikidata"
   },
   {
     "kod": "14",
     "namn": "Västra Götalands län",
     "slug": "vastra-gotalands-lan",
-    "lat": 58.3167,
-    "lng": 12.8728
+    "lat": 58.217,
+    "lng": 11.7334,
+    "punkt_kalla": "wikidata"
   },
   {
     "kod": "17",
     "namn": "Värmlands län",
     "slug": "varmlands-lan",
-    "lat": 59.7624,
-    "lng": 13.1553
+    "lat": 59.75,
+    "lng": 13.25,
+    "punkt_kalla": "wikidata"
   },
   {
     "kod": "18",
     "namn": "Örebro län",
     "slug": "orebro-lan",
-    "lat": 59.3551,
-    "lng": 14.9776
+    "lat": 59.2667,
+    "lng": 15.2167,
+    "punkt_kalla": "wikidata"
   },
   {
     "kod": "19",
     "namn": "Västmanlands län",
     "slug": "vastmanlands-lan",
-    "lat": 59.7449,
-    "lng": 16.1718
+    "lat": 59.6167,
+    "lng": 16.5333,
+    "punkt_kalla": "wikidata"
   },
   {
     "kod": "20",
     "namn": "Dalarnas län",
     "slug": "dalarnas-lan",
-    "lat": 60.9487,
-    "lng": 14.3741
+    "lat": 60.6786,
+    "lng": 15.6006,
+    "punkt_kalla": "wikidata"
   },
   {
     "kod": "21",
     "namn": "Gävleborgs län",
     "slug": "gavleborgs-lan",
-    "lat": 61.4403,
-    "lng": 16.3079
+    "lat": 60.7806,
+    "lng": 16.6553,
+    "punkt_kalla": "wikidata"
   },
   {
     "kod": "22",
     "namn": "Västernorrlands län",
     "slug": "vasternorrlands-lan",
-    "lat": 63.1,
-    "lng": 17.2591
+    "lat": 62.7397,
+    "lng": 16.93,
+    "punkt_kalla": "wikidata"
   },
   {
     "kod": "23",
     "namn": "Jämtlands län",
     "slug": "jamtlands-lan",
-    "lat": 63.2296,
-    "lng": 14.3001
+    "lat": 63.0,
+    "lng": 14.6667,
+    "punkt_kalla": "wikidata"
   },
   {
     "kod": "24",
     "namn": "Västerbottens län",
     "slug": "vasterbottens-lan",
-    "lat": 64.863,
-    "lng": 17.8419
+    "lat": 64.3447,
+    "lng": 18.3142,
+    "punkt_kalla": "wikidata"
   },
   {
     "kod": "25",
     "namn": "Norrbottens län",
     "slug": "norrbottens-lan",
-    "lat": 66.9339,
-    "lng": 20.0851
+    "lat": 67.0,
+    "lng": 20.0,
+    "punkt_kalla": "wikidata"
   }
 ]

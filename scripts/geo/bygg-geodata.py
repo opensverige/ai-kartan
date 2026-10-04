@@ -5,23 +5,29 @@
 Källor (hämtas till en cache-mapp utanför projektet):
   - SCB, "Län och kommuner i kodnummerordning": koder och officiella namn.
   - geoBoundaries gbOpen, Sverige: ADM2 (kommuner, CC0) och ADM1 (län, CC BY 3.0).
+  - Wikidata (CC0): koordinaten P625 på kommunens och länets objekt.
 
 Skriver, relativt projektroten:
   data/geo/kommuner.json          data/geo/lan.json
   public/geo/kommuner.geojson     public/geo/lan.geojson
 
 Metod i korthet:
-  - Punkt per kommun och län: tyngdpunkten för den största delen (ytriktig projektion). Hamnar den utanför
-    delen används en inre punkt längs samma breddgrad.
+  - Punkt per kommun och län: Wikidatas koordinat (kommuner via kommunkod P525, län via länskod P507) om det
+    finns exakt ett nuvarande objekt och punkten ligger inuti polygonen eller högst PUNKT_TOLERANS_M utanför
+    (polygonerna är grova och förskjutna). Annars polygonens egen punkt: tyngdpunkten för den största delen
+    (ytriktig projektion), eller en inre punkt om tyngdpunkten hamnar utanför delen. Fältet punkt_kalla anger
+    om punkten är "wikidata" eller "centroid".
   - GeoJSON: hörnen avrundas till 4 decimaler (heltal i 1e-4 grader), ringarna städas och repareras så att
     ingen ring korsar sig själv. Är filen ändå för stor förenklas den med Douglas-Peucker, där varje genväg
     kontrolleras mot featurens övriga sträckor (minsta hela tolerans i meter som ryms).
   - Koderna, namnmatchningen, geometrin och de skrivna filerna kontrolleras innan skriptet slutar med "Klart".
 
-Användning:  python scripts/geo/bygg-geodata.py [--cache MAPP] [--ny-nedladdning] [--wikidata]
+Användning:  python scripts/geo/bygg-geodata.py [--cache MAPP] [--ny-nedladdning] [--utan-wikidata]
+                                                [--punkt-tolerans METER]
 Endast Pythons standardbibliotek behövs. Beskrivning och licenser: data/geo/README.md
 """
 import argparse
+import hashlib
 import json
 import math
 import re
@@ -51,6 +57,17 @@ SLUGG_UNDANTAG = {"0305": "haabo"}
 
 BBOX = (55.0, 69.1, 10.9, 24.2)  # lat_min, lat_max, lng_min, lng_max (Sverige)
 MAX_BYTES = {"kommuner": 1_500_000, "lan": 600_000}
+
+WIKIDATA_URL = "https://query.wikidata.org/sparql"
+# Kommuner: nuvarande objekt (kommun i Sverige utan upplösnings- eller slutdatum) med kommunkod P525.
+WD_KOMMUNER = ("SELECT ?k ?kod ?coord WHERE { ?k wdt:P31 wd:Q127448; wdt:P525 ?kod; wdt:P625 ?coord. "
+               "FILTER NOT EXISTS { ?k wdt:P576 [] } FILTER NOT EXISTS { ?k wdt:P582 [] } }")
+# Län: län i Sverige med länskod P507.
+WD_LAN = "SELECT ?k ?kod ?coord WHERE { ?k wdt:P31 wd:Q200547; wdt:P507 ?kod; wdt:P625 ?coord. }"
+# En Wikidata-punkt godtas om den ligger inuti polygonen eller högst så här många meter utanför. Polygonerna
+# från geoBoundaries är grova och ställvis förskjutna (kanten ligger upp till ca 2,3 km från verkliga orter),
+# så en strikt "inuti"-regel skulle förkasta riktiga centralorter (Stockholm, Lund, Ystad, Kalmar). 0 = strikt.
+PUNKT_TOLERANS_M = 2500
 
 
 # ---------------------------------------------------------------------------
@@ -427,6 +444,15 @@ def punkt_till_stracka(p, a, b):
   return math.hypot(p[0] - a[0] - t * dx, p[1] - a[1] - t * dy)
 
 
+def avstand_utanfor(lng, lat, polygoner):
+  """Meter från punkten till närmaste polygon (0 om den ligger inuti någon). Polygoner i grader."""
+  if i_delar(lng, lat, polygoner):
+    return 0.0
+  p = proj(lng, lat)
+  return min(punkt_till_stracka(p, proj(a[0], a[1]), proj(b[0], b[1]))
+             for poly in polygoner for ring in poly for a, b in zip(ring, ring[1:]))
+
+
 def forenkla_ring(k, ring, tol, nat):
   """Douglas-Peucker (tol i meter, avstånd till sträckan) på ring nr k i nätet nat. En genväg godtas bara
   om den inte skär någon annan sträcka i samma feature, så ringarna förblir enkla och delarna överlappar
@@ -512,13 +538,59 @@ def bygg_geojson(namn, kalla, max_bytes):
 
 
 def skriv(sokvag, text):
+  """Skriver filen (UTF-8, LF) om innehållet ändrats. Returnerar True om den skrevs."""
+  if sokvag.exists() and sokvag.read_bytes() == text.encode("utf-8"):
+    return False
   sokvag.parent.mkdir(parents=True, exist_ok=True)
   with open(sokvag, "w", encoding="utf-8", newline="\n") as f:
     f.write(text)
+  return True
 
 
 def json_text(obj):
   return json.dumps(obj, ensure_ascii=False, indent=2) + "\n"
+
+
+# ---------------------------------------------------------------------------
+# Punkter från Wikidata
+# ---------------------------------------------------------------------------
+def hamta_wikidata(fraga, cache, ny):
+  """Kör SPARQL-frågan mot Wikidata (svaret cachas under frågans hash).
+  Returnerar {kod: [(objekt, lat, lng), ...]}."""
+  url = WIKIDATA_URL + "?" + urllib.parse.urlencode({"query": fraga, "format": "json"})
+  fil = cache / f"wikidata-{hashlib.sha1(fraga.encode('utf-8')).hexdigest()[:8]}.json"
+  ut = {}
+  for r in json.loads(hamta(url, fil, ny))["results"]["bindings"]:
+    m = re.match(r"Point\((\S+) (\S+)\)", r["coord"]["value"])
+    if m:
+      ut.setdefault(r["kod"]["value"], []).append((r["k"]["value"], float(m.group(2)), float(m.group(1))))
+  return ut
+
+
+def valj_punkter(poster, polygonpunkter, wd, polygoner, tolerans):
+  """Väljer punkt per post [(kod, namn)]: Wikidatas koordinat om det finns exakt ett nuvarande objekt med
+  koordinat och punkten (avrundad till 4 decimaler) ligger inuti polygonen eller högst tolerans meter utanför,
+  annars polygonens egen punkt. wd är None när Wikidata är avstängt.
+  Returnerar ({kod: (lat, lng, källa)}, reservanmärkningar, [(namn, meter)] för godkända punkter utanför)."""
+  ut, reserv, strax = {}, [], []
+  for kod, namn in poster:
+    lat, lng = polygonpunkter[kod]
+    kalla = "centroid"
+    if wd is not None:
+      kand = wd.get(kod, [])
+      if len({objekt for objekt, _, _ in kand}) != 1:
+        reserv.append(f"{kod} {namn}: {'saknar koordinat' if not kand else 'flera objekt'} i Wikidata")
+      else:
+        d, wlat, wlng = min((avstand_utanfor(round(lo, 4), round(la, 4), polygoner[kod]), round(la, 4), round(lo, 4))
+                            for _, la, lo in kand)
+        if d <= tolerans:
+          lat, lng, kalla = wlat, wlng, "wikidata"
+          if d > 0:
+            strax.append((namn, d))
+        else:
+          reserv.append(f"{kod} {namn}: Wikidatas punkt ligger {d:.0f} m utanför polygonen")
+    ut[kod] = (lat, lng, kalla)
+  return ut, reserv, strax
 
 
 # ---------------------------------------------------------------------------
@@ -530,7 +602,7 @@ def haversine_km(lat1, lng1, lat2, lng2):
   return 12742 * math.asin(math.sqrt(a))
 
 
-def kontrollera(kommuner, lan, kom_fil, lan_fil, lan_geom):
+def kontrollera(kommuner, lan, kom_fil, lan_fil, lan_geom, tolerans):
   """Läser tillbaka de skrivna filerna och kontrollerar dem. Avslutar med fel om något är fel."""
   fel = []
 
@@ -550,6 +622,8 @@ def kontrollera(kommuner, lan, kom_fil, lan_fil, lan_geom):
   la0, la1, lo0, lo1 = BBOX
   kolla(all(la0 <= p["lat"] <= la1 and lo0 <= p["lng"] <= lo1 for p in kommuner + lan),
         f"alla punkter inom Sveriges ruta (lat {la0}-{la1}, lng {lo0}-{lo1})")
+  kolla(all(p["punkt_kalla"] in ("wikidata", "centroid") for p in kommuner + lan),
+        "punkt_kalla är wikidata eller centroid på alla poster")
 
   kom_gj, lan_gj = json.loads(kom_fil.read_text("utf-8")), json.loads(lan_fil.read_text("utf-8"))
   for namn, gj, n, nycklar in (("kommuner.geojson", kom_gj, 290, {"kod", "namn", "lan_kod"}),
@@ -568,38 +642,19 @@ def kontrollera(kommuner, lan, kom_fil, lan_fil, lan_geom):
     kolla(fil.stat().st_size < grans, f"{fil.name}: {fil.stat().st_size} byte (gräns {grans})")
 
   kgeom = {f["properties"]["kod"]: delar(f["geometry"]) for f in kom_gj["features"]}
-  ute = [k["namn"] for k in kommuner if not i_delar(k["lng"], k["lat"], kgeom[k["kod"]])]
-  kolla(not ute, "varje kommunpunkt ligger inuti sin egen polygon i den skrivna filen" + (f" (utanför: {ute})" if ute else ""))
   lgeom = {f["properties"]["kod"]: delar(f["geometry"]) for f in lan_gj["features"]}
-  ute = [p["namn"] for p in lan if not i_delar(p["lng"], p["lat"], lgeom[p["kod"]])]
-  kolla(not ute, "varje länspunkt ligger inuti sin egen polygon i den skrivna filen" + (f" (utanför: {ute})" if ute else ""))
+  for etikett, poster, geom in (("kommunpunkt", kommuner, kgeom), ("länspunkt", lan, lgeom)):
+    ute = [f"{p['namn']} ({d:.0f} m)" for p in poster for d in [avstand_utanfor(p["lng"], p["lat"], geom[p["kod"]])]
+           if d > (tolerans if p["punkt_kalla"] == "wikidata" else 0)]
+    kolla(not ute, f"varje {etikett} ligger inuti sin polygon i den skrivna filen (Wikidata-punkter får ligga "
+                   f"högst {tolerans:.0f} m utanför)" + (f", utanför: {ute}" if ute else ""))
 
   # Kommunpunkt mot länspolygon. Källorna är olika (kommuner 2017, län 2009), därför bara information.
-  fel_lan = [f"{k['namn']} ({k['lan_namn']})" for k in kommuner if not i_delar(k["lng"], k["lat"], lan_geom[k["lan_kod"]])]
-  print(f"  INFO  kommunpunkter utanför sitt läns ADM1-polygon: {len(fel_lan)}" + (f" {fel_lan}" if fel_lan else ""))
+  fel_lan = [f"{k['namn']}" for k in kommuner if not i_delar(k["lng"], k["lat"], lan_geom[k["lan_kod"]])]
+  visa = ", ".join(fel_lan[:12]) + (" ..." if len(fel_lan) > 12 else "")
+  print(f"  INFO  kommunpunkter utanför sitt läns ADM1-polygon: {len(fel_lan)}" + (f" ({visa})" if fel_lan else ""))
   if fel:
     raise SystemExit(f"{len(fel)} kontroll(er) misslyckades")
-
-
-def kontrollera_wikidata(kommuner, cache, ny):
-  """Valfri extra kontroll: finns alla SCB-koder som kommunkod (P525) i Wikidata, och hur långt
-  ligger våra punkter från Wikidatas koordinater (P625)? Stora kommuner kan avvika flera mil."""
-  fraga = "SELECT ?kod ?coord WHERE { ?k wdt:P31 wd:Q127448; wdt:P525 ?kod. OPTIONAL { ?k wdt:P625 ?coord } }"
-  url = "https://query.wikidata.org/sparql?" + urllib.parse.urlencode({"query": fraga, "format": "json"})
-  rader = json.loads(hamta(url, cache / "wikidata-kommuner.json", ny))["results"]["bindings"]
-  koord = {}
-  for r in rader:
-    lista = koord.setdefault(r["kod"]["value"], [])
-    m = re.match(r"Point\((\S+) (\S+)\)", r.get("coord", {}).get("value", ""))
-    if m:
-      lista.append((float(m.group(2)), float(m.group(1))))
-  saknas = [k["kod"] for k in kommuner if k["kod"] not in koord]
-  print(f"  Wikidata: {len(koord)} kommunkoder (inkl. f.d. kommuner); saknas från SCB-listan: {saknas or 'inga'}")
-  avst = sorted(((min(haversine_km(k["lat"], k["lng"], *c) for c in koord[k["kod"]]), k["namn"])
-                 for k in kommuner if koord.get(k["kod"])), reverse=True)
-  print("  Största avstånd till Wikidatas punkt (km): " + ", ".join(f"{n} {d:.0f}" for d, n in avst[:8]))
-  if saknas:
-    raise SystemExit("Koder saknas i Wikidata")
 
 
 # ---------------------------------------------------------------------------
@@ -609,7 +664,10 @@ def main():
   ap.add_argument("--cache", type=Path, default=Path(tempfile.gettempdir()) / "ai-kartan-geo",
                   help="mapp för nedladdade källfiler, utanför projektet (standard: %(default)s)")
   ap.add_argument("--ny-nedladdning", action="store_true", help="hämta källfilerna på nytt även om de finns i cachen")
-  ap.add_argument("--wikidata", action="store_true", help="kontrollera koder och punkter mot Wikidata (valfritt)")
+  ap.add_argument("--utan-wikidata", action="store_true",
+                  help="hämta inget från Wikidata, använd polygonernas punkter (punkt_kalla blir centroid)")
+  ap.add_argument("--punkt-tolerans", type=float, default=PUNKT_TOLERANS_M, metavar="METER",
+                  help="så långt utanför polygonen en Wikidata-punkt får ligga (standard: %(default)s, 0 = strikt inuti)")
   args = ap.parse_args()
   cache, ny = args.cache, args.ny_nedladdning
   cache.mkdir(parents=True, exist_ok=True)
@@ -619,6 +677,9 @@ def main():
   lan_scb, kom_scb = las_scb(hamta(SCB_URL, cache / "scb-kodnummer.html", ny).decode("utf-8"))
   lan_namn = dict(lan_scb)
   gb2, gb1 = las_gb("ADM2", cache, ny), las_gb("ADM1", cache, ny)
+  wd_k = wd_l = None  # None = Wikidata avstängt
+  if not args.utan_wikidata:
+    wd_k, wd_l = hamta_wikidata(WD_KOMMUNER, cache, ny), hamta_wikidata(WD_LAN, cache, ny)
 
   print("Matchar namn")
   f2, anm2 = para_ihop([(k, n) for k, n, _ in kom_scb], gb2, GB_ALIAS)
@@ -630,38 +691,53 @@ def main():
   if krockar:
     raise SystemExit(f"Slugkrock: {krockar}. Lägg till de berörda koderna i SLUGG_UNDANTAG.")
 
-  print("Beräknar punkter")
-  kommuner, lan, reserv = [], [], []
-  for kod, namn, lkod in sorted(kom_scb):
-    lat, lng, metod = representativ_punkt(f2[kod]["geometry"])
-    if metod != "tyngdpunkt":
-      reserv.append(f"{kod} {namn}")
-    kommuner.append({"kod": kod, "namn": namn, "slug": slugg[kod], "lan_kod": lkod,
-                     "lan_namn": lan_namn[lkod], "lat": lat, "lng": lng})
-  for kod, namn in sorted(lan_scb):
-    lat, lng, metod = representativ_punkt(f1[kod]["geometry"])
-    if metod != "tyngdpunkt":
-      reserv.append(f"{kod} {namn}")
-    lan.append({"kod": kod, "namn": namn, "slug": slugga(namn), "lat": lat, "lng": lng})
-  print(f"  punkter där inre punkt används i stället för tyngdpunkten: {reserv or 'inga'}")
+  print("Bygger polygoner")
+  kom_gj = bygg_geojson("kommuner.geojson",
+                        [({"kod": k, "namn": n, "lan_kod": l}, f2[k]["geometry"]) for k, n, l in sorted(kom_scb)],
+                        MAX_BYTES["kommuner"])
+  lan_gj = bygg_geojson("lan.geojson", [({"kod": k, "namn": n}, f1[k]["geometry"]) for k, n in sorted(lan_scb)],
+                        MAX_BYTES["lan"])
+
+  print("Väljer punkter")
+  kgeom = {f["properties"]["kod"]: delar(f["geometry"]) for f in json.loads(kom_gj)["features"]}
+  lgeom = {f["properties"]["kod"]: delar(f["geometry"]) for f in json.loads(lan_gj)["features"]}
+  pk = {k: representativ_punkt(f2[k]["geometry"]) for k, _, _ in kom_scb}  # (lat, lng, metod)
+  pl = {k: representativ_punkt(f1[k]["geometry"]) for k, _ in lan_scb}
+  inre = [f"{k} {n}" for k, n, _ in kom_scb if pk[k][2] != "tyngdpunkt"]
+  inre += [f"{k} {n}" for k, n in lan_scb if pl[k][2] != "tyngdpunkt"]
+  print(f"  polygonpunkter där inre punkt används i stället för tyngdpunkten: {inre or 'inga'}")
+  val_k, reserv_k, strax_k = valj_punkter([(k, n) for k, n, _ in kom_scb], {k: v[:2] for k, v in pk.items()},
+                                          wd_k, kgeom, args.punkt_tolerans)
+  val_l, reserv_l, strax_l = valj_punkter(lan_scb, {k: v[:2] for k, v in pl.items()},
+                                          wd_l, lgeom, args.punkt_tolerans)
+  kommuner = [{"kod": kod, "namn": namn, "slug": slugg[kod], "lan_kod": lkod, "lan_namn": lan_namn[lkod],
+               "lat": val_k[kod][0], "lng": val_k[kod][1], "punkt_kalla": val_k[kod][2]}
+              for kod, namn, lkod in sorted(kom_scb)]
+  lan = [{"kod": kod, "namn": namn, "slug": slugga(namn), "lat": val_l[kod][0], "lng": val_l[kod][1],
+          "punkt_kalla": val_l[kod][2]} for kod, namn in sorted(lan_scb)]
+  for etikett, lista, pp, reserv, strax in (("kommuner", kommuner, pk, reserv_k, strax_k),
+                                            ("län", lan, pl, reserv_l, strax_l)):
+    wd = [p for p in lista if p["punkt_kalla"] == "wikidata"]
+    flytt = sorted(haversine_km(pp[p["kod"]][0], pp[p["kod"]][1], p["lat"], p["lng"]) for p in wd)
+    print(f"  {etikett}: {len(wd)} av {len(lista)} med Wikidata-punkt, {len(lista) - len(wd)} med polygonens punkt")
+    if wd:
+      print(f"    Wikidata-punkten ligger i median {flytt[len(flytt) // 2]:.1f} km och högst {flytt[-1]:.0f} km "
+            "från polygonens egen punkt")
+    if strax:
+      print(f"    {len(strax)} Wikidata-punkter ligger utanför polygonen men inom toleransen "
+            f"({args.punkt_tolerans:.0f} m), mest {max(d for _, d in strax):.0f} m")
+    if reserv:
+      print(f"    polygonpunkt i stället för Wikidata: {reserv}")
 
   print("Skriver filer")
-  kom_gj = bygg_geojson("kommuner.geojson",
-                        [({"kod": k["kod"], "namn": k["namn"], "lan_kod": k["lan_kod"]}, f2[k["kod"]]["geometry"])
-                         for k in kommuner], MAX_BYTES["kommuner"])
-  lan_gj = bygg_geojson("lan.geojson",
-                        [({"kod": l["kod"], "namn": l["namn"]}, f1[l["kod"]]["geometry"]) for l in lan],
-                        MAX_BYTES["lan"])
   kom_fil, lan_fil = ROT / "public/geo/kommuner.geojson", ROT / "public/geo/lan.geojson"
-  skriv(ROT / "data/geo/kommuner.json", json_text(kommuner))
-  skriv(ROT / "data/geo/lan.json", json_text(lan))
-  skriv(kom_fil, kom_gj)
-  skriv(lan_fil, lan_gj)
+  for sokvag, text in ((ROT / "data/geo/kommuner.json", json_text(kommuner)),
+                       (ROT / "data/geo/lan.json", json_text(lan)), (kom_fil, kom_gj), (lan_fil, lan_gj)):
+    print(f"  {sokvag.relative_to(ROT).as_posix()}: {'skrevs' if skriv(sokvag, text) else 'oförändrad'}")
 
   print("Kontroller")
-  kontrollera(kommuner, lan, kom_fil, lan_fil, {k: delar(f["geometry"]) for k, f in f1.items()})
-  if args.wikidata:
-    kontrollera_wikidata(kommuner, cache, ny)
+  kontrollera(kommuner, lan, kom_fil, lan_fil, {k: delar(f["geometry"]) for k, f in f1.items()},
+              args.punkt_tolerans)
   print("Klart.")
 
 

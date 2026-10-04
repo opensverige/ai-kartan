@@ -96,6 +96,8 @@ export interface Kommun {
   lan_namn: string;
   lat: number;
   lng: number;
+  /** Varifrån punkten kommer: wikidata (tätortens mittpunkt) eller centroid (polygonens). */
+  punkt_kalla?: 'wikidata' | 'centroid';
 }
 export interface Lan {
   kod: string;
@@ -103,6 +105,7 @@ export interface Lan {
   slug: string;
   lat: number;
   lng: number;
+  punkt_kalla?: 'wikidata' | 'centroid';
 }
 
 export interface AndringsRad {
