@@ -1,0 +1,101 @@
+id: flower
+
+name:
+  value: "Flower"
+  status: claimed
+  source_url: https://www.flower.se/about-us/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "Flower Infrastructure Technologies AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/5592575558
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5592575558
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "559257-5558"
+  status: confirmed
+  source_url: https://www.allabolag.se/5592575558
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://www.flower.se
+
+description:
+  value: "Utvecklar en automatiserad plattform som med AI och maskininlärning optimerar och handlar med flexibla energitillgångar som batterier, sol- och vindkraft samt laddstationer för elbilar."
+  status: claimed
+  source_url: https://www.flower.se/about-us/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.flower.se/about-us/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [energi_klimat]
+  status: claimed
+  source_url: https://www.flower.se/about-us/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0162"
+  status: confirmed
+  source_url: https://www.allabolag.se/5592575558
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registrerat säte är Danderyd enligt allabolag.se och bolagsfakta.se. Huvudkontoret ligger i Stockholm enligt flower.se."
+
+founded:
+  value: 2020
+  status: confirmed
+  source_url: https://www.allabolag.se/5592575558
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5592575558
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+evidence:
+  - url: https://www.flower.se/about-us/
+    kind: produkt
+    title: "Om Flower: AI och maskininlärning för optimering av energitillgångar"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://www.flower.se/green-baseload/
+    kind: produkt
+    title: "Green Baseload: AI-driven optimering av energitillgångar"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

@@ -1,0 +1,95 @@
+id: hypertype
+
+name:
+  value: "Hypertype"
+  status: claimed
+  source_url: https://www.hypertype.ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "Hypertype AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/5593686750
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5593686750
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "559368-6750"
+  status: confirmed
+  source_url: https://www.allabolag.se/5593686750
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Samma organisationsnummer anges på hypertype.ai/legal."
+
+website: https://www.hypertype.ai
+
+description:
+  value: "Bygger en AI-agent för industriföretag som hjälper supportteam att besvara ärenden med stöd av företagets dokumentation och tidigare e-post."
+  status: claimed
+  source_url: https://www.hypertype.ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.hypertype.ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [industri, agenter_automation]
+  status: claimed
+  source_url: https://www.hypertype.ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5593686750
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+founded:
+  value: 2022
+  status: confirmed
+  source_url: https://www.allabolag.se/5593686750
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5593686750
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+evidence:
+  - url: https://www.hypertype.ai/
+    kind: produkt
+    title: "Hypertype: AI-agent för industrisektorn"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

@@ -1,0 +1,95 @@
+id: astrid-education
+
+name:
+  value: "Astrid Education"
+  status: claimed
+  source_url: https://education.withastrid.ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Webbplatsen använder varumärket Astrid. Astrid Education AB är det registrerade bolaget (se legal_name)."
+
+legal_name:
+  value: "Astrid Education AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/5592431364
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5592431364
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "559243-1364"
+  status: confirmed
+  source_url: https://www.allabolag.se/5592431364
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://education.withastrid.ai
+
+description:
+  value: "Utvecklar en AI-baserad app och lärarplattform för engelskträning i skolan, med egen taligenkänning som ger respons på elevers uttal."
+  status: claimed
+  source_url: https://education.withastrid.ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://education.withastrid.ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [utbildning, sprakteknik]
+  status: claimed
+  source_url: https://education.withastrid.ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5592431364
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+founded:
+  value: 2020
+  status: confirmed
+  source_url: https://www.allabolag.se/5592431364
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5592431364
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+evidence:
+  - url: https://education.withastrid.ai/
+    kind: produkt
+    title: "Astrid: AI-app för engelskträning i skolan"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

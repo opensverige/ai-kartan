@@ -1,0 +1,102 @@
+id: filestar
+
+name:
+  value: "Filestar"
+  status: claimed
+  source_url: https://filestar.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "FileStar AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/5591933683
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5591933683
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "559193-3683"
+  status: confirmed
+  source_url: https://www.allabolag.se/5591933683
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Sidfoten på filestar.com anger SE559193368301, vilket är organisationsnumret med momsändelse."
+
+website: https://filestar.com
+
+description:
+  value: "Utvecklar ett filverktyg som konverterar och bearbetar filer och har AI-funktioner som översättning, transkribering och bildbehandling samt arbetsflöden som skapas med AI."
+  status: claimed
+  source_url: https://filestar.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://filestar.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://filestar.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0182"
+  status: confirmed
+  source_url: https://www.allabolag.se/5591933683
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+founded:
+  value: 2019
+  status: confirmed
+  source_url: https://www.allabolag.se/5591933683
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5591933683
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+evidence:
+  - url: https://filestar.com
+    kind: produkt
+    title: "Filestar: filverktyg med AI-funktioner"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://filestar.com/blog/ai-generated-skills-and-recipes
+    kind: publikation
+    title: "Blogginlägg: AI-genererade funktioner och arbetsflöden"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: "Publicerat 2024-03-20."
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

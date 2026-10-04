@@ -1,0 +1,94 @@
+id: workvis
+
+name:
+  value: "WorkVis"
+  status: claimed
+  source_url: https://www.workvis.io/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "WorkVis AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/5593561813
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5593561813
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "559356-1813"
+  status: confirmed
+  source_url: https://www.allabolag.se/5593561813
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://www.workvis.io
+
+description:
+  value: "Utvecklar videoanalys med AI som upptäcker säkerhetsrisker på arbetsplatser, till exempel bristande skyddsutrustning, och skickar larm i realtid."
+  status: claimed
+  source_url: https://www.workvis.io/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.workvis.io/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [industri, datorseende]
+  status: claimed
+  source_url: https://www.workvis.io/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5593561813
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+founded:
+  value: 2021
+  status: confirmed
+  source_url: https://www.allabolag.se/5593561813
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5593561813
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+evidence:
+  - url: https://www.workvis.io/
+    kind: produkt
+    title: "WorkVis: videoanalys och AI för arbetsmiljö"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

@@ -1,0 +1,98 @@
+id: pandionai
+
+name:
+  value: "PandionAI"
+  status: claimed
+  source_url: https://www.pandionai.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "PandionAI AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/5592087984
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5592087984
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "559208-7984"
+  status: confirmed
+  source_url: https://www.allabolag.se/5592087984
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Samma organisationsnummer anges i integritetspolicyn på pandionai.com."
+
+website: https://www.pandionai.com
+
+description:
+  value: "Utvecklar tjänsten AlertSat, som med AI och maskininlärning analyserar satellitdata och levererar larm, till exempel om skogsbrand, skogsförändringar, infrastruktur och sjöövervakning."
+  status: claimed
+  source_url: https://www.pandionai.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.pandionai.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [jordbruk_skog, energi_klimat, datorseende]
+  status: claimed
+  source_url: https://www.pandionai.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5592087984
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+founded:
+  value: 2019
+  status: confirmed
+  source_url: https://www.allabolag.se/5592087984
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5592087984
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+evidence:
+  - url: https://www.pandionai.com
+    kind: produkt
+    title: "AlertSat: larm från satellitdata med AI"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  github: https://github.com/PandionAI
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

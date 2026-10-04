@@ -1,0 +1,95 @@
+id: elekta
+
+name:
+  value: "Elekta"
+  status: claimed
+  source_url: https://www.elekta.com/focus/ai-technology-to-simplify-unity-prostate-workflow/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "Elekta AB (publ)"
+  status: confirmed
+  source_url: https://www.allabolag.se/5561704015
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5561704015
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "556170-4015"
+  status: confirmed
+  source_url: https://www.allabolag.se/5561704015
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://www.elekta.com
+
+description:
+  value: "Utvecklar utrustning och programvara för strålbehandling, bland annat AI-stödd automatisk konturering av prostata i bilder från MR-linac-systemet Unity."
+  status: claimed
+  source_url: https://www.elekta.com/focus/ai-technology-to-simplify-unity-prostate-workflow/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.elekta.com/focus/ai-technology-to-simplify-unity-prostate-workflow/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [halsa, datorseende]
+  status: claimed
+  source_url: https://www.elekta.com/focus/ai-technology-to-simplify-unity-prostate-workflow/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5561704015
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+founded:
+  value: 1972
+  status: confirmed
+  source_url: https://www.allabolag.se/5561704015
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5561704015
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+evidence:
+  - url: https://www.elekta.com/focus/ai-technology-to-simplify-unity-prostate-workflow/
+    kind: publikation
+    title: "Artikel: AI-stödd autokonturering för Unity"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: "Publicerad 2021. Artikeln beskriver en AI-modell (CNN) för autokonturering som då var under utveckling."
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04
