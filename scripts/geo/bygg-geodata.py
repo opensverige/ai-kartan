@@ -246,52 +246,50 @@ def i_delar(lng, lat, delar_ll):
 
 
 # ---------------------------------------------------------------------------
-# Förenkling och skrivning av GeoJSON
+# Förenkling och skrivning av GeoJSON. Hörnen hanteras som heltal i enheten 1e-4 grader
+# (= avrundning till 4 decimaler), så att alla geometritester blir exakta.
 # ---------------------------------------------------------------------------
-def dp_markera(pts, a, b, tol, behall):
-  """Iterativ Douglas-Peucker på den öppna linjen pts[a..b]; markerar punkter att behålla."""
-  stack = [(a, b)]
-  while stack:
-    i, j = stack.pop()
-    (x0, y0), (x1, y1) = pts[i], pts[j]
-    dx, dy = x1 - x0, y1 - y0
-    langd = math.hypot(dx, dy)
-    dmax, k = 0.0, -1
-    for m in range(i + 1, j):
-      x, y = pts[m]
-      d = abs(dy * (x - x0) - dx * (y - y0)) / langd if langd else math.hypot(x - x0, y - y0)
-      if d > dmax:
-        dmax, k = d, m
-    if dmax > tol:
-      behall[k] = True
-      stack += [(i, k), (k, j)]
+ENHET = 10_000
 
 
-def forenkla_ring(ring, tol):
-  """Douglas-Peucker på en sluten ring (tol i meter). Ringen delas vid punkten längst från start."""
-  n = len(ring) - 1  # sista punkten == första
-  if tol <= 0 or n < 5:
-    return ring
-  pts = [proj(*p) for p in ring]
-  k = max(range(1, n), key=lambda i: (pts[i][0] - pts[0][0]) ** 2 + (pts[i][1] - pts[0][1]) ** 2)
-  behall = [False] * (n + 1)
-  behall[0] = behall[k] = behall[n] = True
-  dp_markera(pts, 0, k, tol, behall)
-  dp_markera(pts, k, n, tol, behall)
-  ut = [p for p, b in zip(ring, behall) if b]
-  return ut if len(ut) >= 4 else ring
+def orient(a, b, c):
+  """Tecken på korsprodukten (b-a) x (c-a): 1 moturs, -1 medurs, 0 på rät linje."""
+  v = (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0])
+  return (v > 0) - (v < 0)
 
 
-def avrunda(ring, dec=4):
-  """Avrundar, tar bort upprepade punkter och sluter ringen. None om färre än 4 punkter återstår."""
-  ut = []
-  for c in ring:
-    p = (round(c[0], dec), round(c[1], dec))
-    if not ut or p != ut[-1]:
-      ut.append(p)
-  if ut[0] != ut[-1]:
-    ut.append(ut[0])
-  return ut if len(ut) >= 4 else None
+def pa_stracka(a, b, c):
+  """Ligger c, som redan ligger på linjen a-b, inom sträckan a-b?"""
+  return min(a[0], b[0]) <= c[0] <= max(a[0], b[0]) and min(a[1], b[1]) <= c[1] <= max(a[1], b[1])
+
+
+def skar(p1, p2, p3, p4):
+  """Skär eller berör sträckan p1-p2 sträckan p3-p4?"""
+  o1, o2, o3, o4 = orient(p1, p2, p3), orient(p1, p2, p4), orient(p3, p4, p1), orient(p3, p4, p2)
+  if o1 != o2 and o3 != o4:
+    return True
+  return ((o1 == 0 and pa_stracka(p1, p2, p3)) or (o2 == 0 and pa_stracka(p1, p2, p4))
+          or (o3 == 0 and pa_stracka(p3, p4, p1)) or (o4 == 0 and pa_stracka(p3, p4, p2)))
+
+
+def stada_ring(ring):
+  """Ring av (lng, lat) -> sluten ring av heltal: avrundad, utan upprepade punkter och utan hörn som
+  ligger exakt på en rät linje mellan grannarna (även nålspetsar). None om färre än 3 hörn återstår."""
+  pts = []
+  for c in (ring[:-1] if ring[0] == ring[-1] else ring):
+    p = (round(c[0] * ENHET), round(c[1] * ENHET))
+    if not pts or p != pts[-1]:
+      pts.append(p)
+  andrad = True
+  while andrad and len(pts) >= 3:
+    andrad, i = False, 0
+    while i < len(pts) and len(pts) >= 3:
+      if orient(pts[i - 1], pts[i], pts[(i + 1) % len(pts)]) == 0:
+        del pts[i]
+        andrad, i = True, max(i - 1, 0)
+      else:
+        i += 1
+  return pts + [pts[0]] if len(pts) >= 3 else None
 
 
 def orientera(ring, moturs):
@@ -300,21 +298,115 @@ def orientera(ring, moturs):
   return ring if (a > 0) == moturs else ring[::-1]
 
 
-def forenkla_geom(geom, tol):
-  """Förenklar (tol meter, 0 = ingen), avrundar och orienterar. Returnerar lista av polygoner."""
-  ut = []
+def forbered(geom):
+  """Geometri -> lista av polygoner med städade och orienterade heltalsringar."""
+  polygoner = []
   for poly in delar(geom):
     ringar = []
     for i, ring in enumerate(poly):
-      r = avrunda(forenkla_ring([(c[0], c[1]) for c in ring], tol))
-      ringar.append(orientera(r, i == 0) if r else None)
-    if ringar[0]:  # försvann yttre ringen (liten ö) utgår hela delen
-      ut.append([r for r in ringar if r])
-  return ut
+      r = stada_ring(ring)
+      if r:
+        ringar.append(orientera(r, i == 0))
+      elif i == 0:  # yttre ringen försvann (mindre än rutnätet): hela delen utgår
+        ringar = []
+        break
+    if ringar:
+      polygoner.append(ringar)
+  return polygoner
+
+
+class Segmentnat:
+  """Rutnät över sträckorna i en lista ringar (heltalskoordinater). Används för att hitta sträckor
+  som en ny genväg skulle korsa."""
+  CELL = 64
+
+  def __init__(self, ringar):
+    self.ringar, self.celler = ringar, {}
+    for r, ring in enumerate(ringar):
+      for s in range(len(ring) - 1):
+        for c in self.celler_for(ring[s], ring[s + 1]):
+          self.celler.setdefault(c, []).append((r, s))
+
+  def celler_for(self, a, b):
+    x0, x1 = sorted((a[0] // self.CELL, b[0] // self.CELL))
+    y0, y1 = sorted((a[1] // self.CELL, b[1] // self.CELL))
+    return [(x, y) for x in range(x0, x1 + 1) for y in range(y0, y1 + 1)]
+
+  def kandidater(self, a, b):
+    ut = set()
+    for c in self.celler_for(a, b):
+      ut.update(self.celler.get(c, ()))
+    return ut
+
+  def genvag_korsar(self, r, i, j):
+    """Skär genvägen från hörn i till hörn j i ring r någon sträcka utanför sin egen kedja? Kedjans
+    sträckor och de två grannsträckorna (som delar ändpunkt med genvägen) räknas inte."""
+    ring = self.ringar[r]
+    n = len(ring) - 1
+    a, b = ring[i], ring[j]
+    for r2, s in self.kandidater(a, b):
+      if r2 == r and (i <= s < j or s == (i - 1) % n or s == j % n):
+        continue
+      if skar(a, b, self.ringar[r2][s], self.ringar[r2][s + 1]):
+        return True
+    return False
+
+
+def korsningar(ringar):
+  """Antal sträckpar i ringlistan som korsar eller berör varandra utan att vara grannar i samma ring."""
+  nat, antal = Segmentnat(ringar), 0
+  for r, ring in enumerate(ringar):
+    n = len(ring) - 1
+    for s in range(n):
+      for r2, s2 in nat.kandidater(ring[s], ring[s + 1]):
+        if (r2, s2) <= (r, s) or (r2 == r and (s2 - s) % n in (1, n - 1)):
+          continue
+        if skar(ring[s], ring[s + 1], ringar[r2][s2], ringar[r2][s2 + 1]):
+          antal += 1
+  return antal
+
+
+def punkt_till_stracka(p, a, b):
+  dx, dy = b[0] - a[0], b[1] - a[1]
+  l2 = dx * dx + dy * dy
+  t = max(0.0, min(1.0, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / l2)) if l2 else 0.0
+  return math.hypot(p[0] - a[0] - t * dx, p[1] - a[1] - t * dy)
+
+
+def forenkla_ring(k, ring, tol, nat):
+  """Douglas-Peucker (tol i meter, avstånd till sträckan) på ring nr k i nätet nat. En genväg godtas bara
+  om den inte skär någon annan sträcka i samma feature, så ringarna förblir enkla och delarna överlappar
+  inte. Ringen delas vid hörnet längst från start."""
+  n = len(ring) - 1  # sista hörnet == första
+  if tol <= 0 or n < 5:
+    return ring
+  m = [proj(x / ENHET, y / ENHET) for x, y in ring]
+  s = max(range(1, n), key=lambda i: (m[i][0] - m[0][0]) ** 2 + (m[i][1] - m[0][1]) ** 2)
+  behall = [False] * (n + 1)
+  behall[0] = behall[s] = behall[n] = True
+  stack = [(0, s), (s, n)]
+  while stack:
+    i, j = stack.pop()
+    if j - i < 2:
+      continue
+    dmax, q = max((punkt_till_stracka(m[v], m[i], m[j]), v) for v in range(i + 1, j))
+    if dmax > tol or nat.genvag_korsar(k, i, j):
+      behall[q] = True
+      stack += [(i, q), (q, j)]
+  ut = [p for p, b in zip(ring, behall) if b]
+  return ut if len(ut) >= 4 else ring
+
+
+def forenkla_feature(polygoner, tol, nat):
+  """Förenklar alla ringar i en feature (nat = Segmentnat över featurens ringar i samma ordning)."""
+  enkla = (forenkla_ring(k, r, tol, nat) for k, r in enumerate(r for p in polygoner for r in p))
+  return [[next(enkla) for _ in p] for p in polygoner]
 
 
 def tal(v):
-  return f"{v:.4f}".rstrip("0").rstrip(".")
+  """Heltal i 1e-4 grader -> decimaltal med högst 4 decimaler och utan onödiga nollor."""
+  s = f"{abs(v) // ENHET}.{abs(v) % ENHET:04d}".rstrip("0").rstrip(".")
+  return "-" + s if v < 0 else s
 
 
 def ring_text(ring):
@@ -336,10 +428,16 @@ def geojson_text(poster):
 
 
 def bygg_geojson(namn, kalla, max_bytes):
-  """Bygger GeoJSON-texten med minsta förenklingstolerans (hela meter, Douglas-Peucker) som ger
-  filen under max_bytes. Tolerans 0 betyder bara avrundning till 4 decimaler."""
+  """Bygger GeoJSON-texten med minsta förenklingstolerans (hela meter) som ger filen under max_bytes.
+  Tolerans 0 betyder bara avrundning och städning."""
+  lager = [(egenskaper, forbered(geom)) for egenskaper, geom in kalla]
+  nat = []
+
   def bygg(tol):
-    poster = [(egenskaper, forenkla_geom(geom, tol)) for egenskaper, geom in kalla]
+    if tol > 0 and not nat:  # rutnäten byggs först när förenkling behövs
+      nat.extend(Segmentnat([r for p in polygoner for r in p]) for _, polygoner in lager)
+    poster = [(egenskaper, forenkla_feature(polygoner, tol, nat[f] if nat else None))
+              for f, (egenskaper, polygoner) in enumerate(lager)]
     return poster, geojson_text(poster)
 
   def ryms(tol):
@@ -409,6 +507,9 @@ def kontrollera(kommuner, lan, kom_fil, lan_fil, lan_geom):
     kolla(all(len(r) >= 4 and r[0] == r[-1] for r in ringar), f"{namn}: alla {len(ringar)} ringar är slutna")
     kolla(all(la0 <= y <= la1 and lo0 <= x <= lo1 for r in ringar for x, y in r),
           f"{namn}: alla hörnpunkter inom Sveriges ruta")
+    antal = sum(korsningar([[(round(x * ENHET), round(y * ENHET)) for x, y in ring]
+                            for p in delar(f["geometry"]) for ring in p]) for f in gj["features"])
+    kolla(antal == 0, f"{namn}: inga ringar korsar sig själva eller varandra inom en feature (exakt heltalstest)")
   for fil, grans in ((kom_fil, MAX_BYTES["kommuner"]), (lan_fil, MAX_BYTES["lan"])):
     kolla(fil.stat().st_size < grans, f"{fil.name}: {fil.stat().st_size} byte (gräns {grans})")
 
