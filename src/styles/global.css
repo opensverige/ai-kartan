@@ -173,7 +173,8 @@ hr {
   max-width: 1400px;
 }
 .sektion {
-  padding: 40px 0;
+  padding-top: 40px;
+  padding-bottom: 40px;
 }
 .lasbredd {
   max-width: 68ch;

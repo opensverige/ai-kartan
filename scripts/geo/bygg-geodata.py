@@ -10,6 +10,14 @@ Skriver, relativt projektroten:
   data/geo/kommuner.json          data/geo/lan.json
   public/geo/kommuner.geojson     public/geo/lan.geojson
 
+Metod i korthet:
+  - Punkt per kommun och län: tyngdpunkten för den största delen (ytriktig projektion). Hamnar den utanför
+    delen används en inre punkt längs samma breddgrad.
+  - GeoJSON: hörnen avrundas till 4 decimaler (heltal i 1e-4 grader), ringarna städas och repareras så att
+    ingen ring korsar sig själv. Är filen ändå för stor förenklas den med Douglas-Peucker, där varje genväg
+    kontrolleras mot featurens övriga sträckor (minsta hela tolerans i meter som ryms).
+  - Koderna, namnmatchningen, geometrin och de skrivna filerna kontrolleras innan skriptet slutar med "Klart".
+
 Användning:  python scripts/geo/bygg-geodata.py [--cache MAPP] [--ny-nedladdning] [--wikidata]
 Endast Pythons standardbibliotek behövs. Beskrivning och licenser: data/geo/README.md
 """
@@ -277,6 +285,23 @@ def skar(p1, p2, p3, p4):
           or (o3 == 0 and pa_stracka(p3, p4, p1)) or (o4 == 0 and pa_stracka(p3, p4, p2)))
 
 
+def ror_bara_i_horn(a, b, c, d):
+  """Möts sträckorna a-b och c-d bara i en gemensam ändpunkt, utan att överlappa?"""
+  gem = {a, b} & {c, d}
+  if len(gem) != 1:
+    return False
+  e = gem.pop()
+  u = b if e == a else a
+  v = d if e == c else c
+  return not (orient(e, u, v) == 0 and (u[0] - e[0]) * (v[0] - e[0]) + (u[1] - e[1]) * (v[1] - e[1]) > 0)
+
+
+def konflikt(r, r2, a, b, c, d):
+  """Är sträckorna a-b (ring r) och c-d (ring r2) i konflikt? De skär eller berör varandra, förutom att
+  två olika ringar (delar eller hål) får mötas i ett gemensamt hörn."""
+  return skar(a, b, c, d) and not (r != r2 and ror_bara_i_horn(a, b, c, d))
+
+
 def stada_heltal(pts):
   """Öppen lista av heltalshörn -> sluten ring utan upprepade hörn och utan hörn som ligger exakt på en
   rät linje mellan grannarna (även nålspetsar). Tom lista om färre än 3 hörn återstår."""
@@ -350,13 +375,13 @@ class Segmentnat:
     for r2, s in self.kandidater(a, b):
       if r2 == r and (i <= s < j or s == (i - 1) % n or s == j % n):
         continue
-      if skar(a, b, self.ringar[r2][s], self.ringar[r2][s + 1]):
+      if konflikt(r, r2, a, b, self.ringar[r2][s], self.ringar[r2][s + 1]):
         return True
     return False
 
 
 def konflikter(ringar):
-  """Genererar (r, s, r2, s2) för sträckpar i ringlistan som korsar eller berör varandra utan att vara
+  """Genererar (r, s, r2, s2) för sträckpar i ringlistan som är i konflikt (se konflikt) utan att vara
   grannar i samma ring. Tomma ringar hoppas över."""
   nat = Segmentnat(ringar)
   for r, ring in enumerate(ringar):
@@ -365,11 +390,12 @@ def konflikter(ringar):
       for r2, s2 in sorted(nat.kandidater(ring[s], ring[s + 1])):
         if (r2, s2) <= (r, s) or (r2 == r and (s2 - s) % n in (1, n - 1)):
           continue
-        if skar(ring[s], ring[s + 1], ringar[r2][s2], ringar[r2][s2 + 1]):
+        if konflikt(r, r2, ring[s], ring[s + 1], ringar[r2][s2], ringar[r2][s2 + 1]):
           yield r, s, r2, s2
 
 
 def korsningar(ringar):
+  """Antal konflikter i ringlistan (0 = enkla ringar som inte korsar varandra)."""
   return sum(1 for _ in konflikter(ringar))
 
 
