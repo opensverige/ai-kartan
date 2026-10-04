@@ -1,0 +1,66 @@
+name: Rätta en uppgift
+description: En uppgift om en organisation är fel eller inaktuell. Vi svarar inom 14 dagar.
+title: "Rättelse: "
+labels: ["rättelse"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Vi ändrar aldrig status på begäran, men vi läser gärna bevis. Länka till en publik källa, helst på organisationens egen domän eller i ett register. Organisationen är källa, aldrig författare: en rättelse från er märks som egen uppgift tills den kan bekräftas.
+  - type: input
+    id: organisation
+    attributes:
+      label: Organisationens id
+      description: Sista delen av adressen, t.ex. berget-ai i karta.opensverige.se/organisation/berget-ai
+      placeholder: berget-ai
+    validations:
+      required: true
+  - type: dropdown
+    id: falt
+    attributes:
+      label: Vilket fält gäller det?
+      options:
+        - name (namn)
+        - legal_name (registrerat namn)
+        - type (organisationstyp)
+        - org_number (organisationsnummer)
+        - description (beskrivning)
+        - offers (erbjuder)
+        - areas (områden)
+        - kommun (säte)
+        - founded (grundat)
+        - active (aktiv)
+        - evidence (belägg)
+        - website (webbplats)
+        - links (länkar)
+        - annat
+    validations:
+      required: true
+  - type: textarea
+    id: nuvarande
+    attributes:
+      label: Vad står det nu?
+  - type: textarea
+    id: korrekt
+    attributes:
+      label: Vad ska det stå?
+    validations:
+      required: true
+  - type: input
+    id: kalla
+    attributes:
+      label: Källa som styrker det nya värdet
+      placeholder: https://…
+    validations:
+      required: true
+  - type: textarea
+    id: kommentar
+    attributes:
+      label: Övrigt
+  - type: checkboxes
+    id: roll
+    attributes:
+      label: Vem är du?
+      options:
+        - label: Jag företräder organisationen.
+        - label: Jag är utomstående och har en primärkälla.

@@ -1,0 +1,105 @@
+---
+import { SAJT, url } from '../lib/data';
+const ar = new Date().getFullYear();
+---
+
+<footer class="sidfot">
+  <div class="ram ram--bred">
+    <div class="sidfot__kolumner">
+      <div>
+        <p class="kicker">Kartan</p>
+        <ul>
+          <li><a href={url('/')}>Karta</a></li>
+          <li><a href={url('/organisationer')}>Alla organisationer</a></li>
+          <li><a href={url('/plats')}>Platser: kommuner och län</a></li>
+          <li><a href={url('/andringar')}>Ändringshistorik</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="kicker">Metod</p>
+        <ul>
+          <li><a href={url('/metod')}>Metod och status</a></li>
+          <li><a href={url('/kriterier')}>Kriterier för att vara med</a></li>
+          <li><a href={url('/bidra')}>Lägg till eller rätta</a></li>
+          <li><a href={url('/integritet')}>Personuppgifter</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="kicker">Öppen data · CC BY 4.0</p>
+        <ul>
+          <li><a href={url('/data')}>Ladda ner hela datasetet</a></li>
+          <li><a href={url('/api/data.json')}>JSON</a> · <a href={url('/api/data.csv')}>CSV</a> · <a href={url('/api/data.geojson')}>GeoJSON</a></li>
+          <li><a href={url('/llms.txt')}>llms.txt</a> · <a href={url('/feed.xml')}>Atom-flöde</a></li>
+          <li><a href={`${SAJT.repo}/blob/main/schema/organisation.schema.json`} rel="noopener">JSON Schema</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="kicker">OpenSverige</p>
+        <ul>
+          <li><a href={SAJT.opensverige} rel="noopener">opensverige.se</a></li>
+          <li><a href={SAJT.infra} rel="noopener">AI-Infra: leverantörsöversikten</a></li>
+          <li><a href={SAJT.repo} rel="noopener">Koden och datan på GitHub</a></li>
+        </ul>
+        <a class="knapp knapp--discord knapp--liten" href={SAJT.discord} rel="noopener">Diskutera i Discord</a>
+      </div>
+    </div>
+    <div class="sidfot__botten">
+      <p>
+        <strong>Tech Embassy – Sveriges öppna AI-karta.</strong> Oberoende och inte statlig. Ingen rankning, inga betalplatser.
+        Byggd ideellt inom OpenSverige, ideell förening (org.nr 802557-3422), med samma metod som
+        <a href={SAJT.infra} rel="noopener">infra.opensverige.se</a>.
+      </p>
+      <p class="meta">Kod: AGPL-3.0 · Data: CC BY 4.0 · Kartunderlag: © OpenFreeMap, © OpenMapTiles, data från OpenStreetMap · {ar}</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .sidfot {
+    margin-top: 64px;
+    background: hsl(var(--bg-soft));
+    border-top: 1px solid hsl(var(--rule-soft));
+    padding: 40px 0 28px;
+    font-size: 14px;
+  }
+  .sidfot__kolumner {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 24px;
+  }
+  .sidfot ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 14px;
+  }
+  .sidfot li {
+    margin: 6px 0;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+  }
+  .sidfot a {
+    color: hsl(var(--ink-soft));
+  }
+  .sidfot a:hover {
+    color: hsl(var(--moss));
+  }
+  .sidfot__botten {
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid hsl(var(--rule-soft));
+  }
+  .sidfot__botten p {
+    max-width: 80ch;
+    margin-bottom: 8px;
+  }
+  @media (max-width: 860px) {
+    .sidfot__kolumner {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 480px) {
+    .sidfot__kolumner {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

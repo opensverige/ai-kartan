@@ -1,0 +1,84 @@
+# Gör ett ifyllt ärendeformulär "Lägg till organisation" till en pull request, utan att den som
+# bidrar behöver kunna git. Ärendet läses, en YAML-fil skapas, valideras och läggs i en PR.
+# Misslyckas valideringen skrivs felen som en kommentar i ärendet i stället.
+#
+# PR:er som skapas med GITHUB_TOKEN triggar inte andra flöden. Sätt hemligheten BOT_TOKEN
+# (en finmaskig token med contents + pull-requests) om valideringen ska köras automatiskt på PR:en.
+name: Nytt ärende till pull request
+
+on:
+  issues:
+    types: [opened, edited]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  skapa-pr:
+    if: contains(github.event.issue.labels.*.name, 'ny-organisation')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.BOT_TOKEN || github.token }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Bygg YAML ur ärendet
+        id: bygg
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: node scripts/ny-organisation.mjs --fran-arende
+
+      - name: Validera den nya filen
+        id: validera
+        continue-on-error: true
+        run: node scripts/validera.mjs "${{ steps.bygg.outputs.fil }}" > validering.txt 2>&1; echo "kod=$?" >> "$GITHUB_OUTPUT"; cat validering.txt
+
+      - name: Kommentera fel i ärendet
+        if: steps.validera.outputs.kod != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          {
+            echo "Tack! Formuläret kunde inte bli en pull request automatiskt. Så här sa valideringen:"
+            echo
+            echo '```'
+            cat validering.txt
+            echo '```'
+            echo
+            echo "Redigera ärendet (knappen ••• → Edit) så körs kontrollen igen, eller fråga i Discord."
+          } > kommentar.md
+          gh issue comment "${{ github.event.issue.number }}" --body-file kommentar.md
+
+      - name: Öppna pull request
+        if: steps.validera.outputs.kod == '0'
+        env:
+          GH_TOKEN: ${{ secrets.BOT_TOKEN || github.token }}
+          FIL: ${{ steps.bygg.outputs.fil }}
+          ID: ${{ steps.bygg.outputs.id }}
+          NAMN: ${{ steps.bygg.outputs.namn }}
+        run: |
+          gren="arende/${{ github.event.issue.number }}-$ID"
+          git config user.name "ai-kartan-bot"
+          git config user.email "ai-kartan-bot@users.noreply.github.com"
+          git checkout -B "$gren"
+          git add "$FIL"
+          git commit -m "data: lägg till $NAMN (ärende #${{ github.event.issue.number }})"
+          git push --force -u origin "$gren"
+          if gh pr view "$gren" >/dev/null 2>&1; then
+            gh pr comment "$gren" --body "Uppdaterad efter ändring i ärendet."
+          else
+            gh pr create --head "$gren" --title "Lägg till $NAMN" --body "Skapad automatiskt ur ärende #${{ github.event.issue.number }}. Uppgifterna är inskickade av organisationen själv och märkta som egen uppgift (claimed). Granska mot [kriterierna](https://github.com/${{ github.repository }}/blob/main/kriterier.md) innan merge.
+
+Stänger #${{ github.event.issue.number }} när den mergas."
+          fi
+          gh issue comment "${{ github.event.issue.number }}" --body "Tack! En pull request har skapats: $(gh pr view "$gren" --json url --jq .url). En människa granskar den mot kriterierna."

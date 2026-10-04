@@ -1,0 +1,63 @@
+---
+import Bas from '../../layouts/Bas.astro';
+import OrgKort from '../../components/OrgKort.astro';
+import { hamtaData, url, absolutUrl } from '../../lib/data';
+import type { Plats } from '../../lib/data';
+
+export function getStaticPaths() {
+  return hamtaData().platser.kommuner.map((p) => ({ params: { slug: p.slug }, props: { plats: p } }));
+}
+interface Props {
+  plats: Plats;
+}
+const { plats } = Astro.props;
+const d = hamtaData();
+const n = plats.organisationer.length;
+const perTyp = Object.entries(
+  plats.organisationer.reduce<Record<string, number>>((acc, o) => ((acc[o.type.value] = (acc[o.type.value] ?? 0) + 1), acc), {}),
+).sort((a, b) => b[1] - a[1]);
+const titel = `AI i ${plats.namn}`;
+const beskrivning = `${n} ${n === 1 ? 'organisation' : 'organisationer'} som bygger AI med säte i ${plats.namn} kommun, ${plats.lan_namn}. Med källa och datum på varje uppgift.`;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: titel,
+  description: beskrivning,
+  url: absolutUrl(`/plats/${plats.slug}`),
+  about: { '@type': 'City', name: plats.namn, containedInPlace: { '@type': 'AdministrativeArea', name: plats.lan_namn } },
+  mainEntity: {
+    '@type': 'ItemList',
+    numberOfItems: n,
+    itemListElement: plats.organisationer.slice(0, 50).map((o, i) => ({ '@type': 'ListItem', position: i + 1, url: absolutUrl(`/organisation/${o.id}`), name: o.name.value })),
+  },
+};
+---
+
+<Bas titel={titel} beskrivning={beskrivning} stig={`/plats/${plats.slug}`} jsonLd={jsonLd}>
+  <section class="ram sektion">
+    <nav class="meta" aria-label="Du är här">
+      <a href={url('/plats')}>Platser</a> › {plats.lan_slug && <a href={url(`/lan/${plats.lan_slug}`)}>{plats.lan_namn}</a>} › <span>{plats.namn}</span>
+    </nav>
+    <p class="kicker mt-2">Kommun · {plats.lan_namn}</p>
+    <h1>AI i {plats.namn}</h1>
+    <p class="ingress">
+      {n} {n === 1 ? 'organisation' : 'organisationer'} med säte i {plats.namn} kommun bygger AI: {perTyp.map(([t, c], i) => `${c} ${(d.etikett.typer.get(t)?.plural ?? t).toLowerCase()}${i < perTyp.length - 1 ? ', ' : '.'}`).join('')}
+      Positionen är kommunens mittpunkt, aldrig en gatuadress.
+    </p>
+    <p class="rad">
+      <a class="knapp knapp--liten" href={url(`/?kommun=${plats.kod}`)}>Visa på kartan</a>
+      <a class="knapp knapp--ghost knapp--liten" href={url(`/organisationer?lan=${plats.lan_kod}`)}>Hela {plats.lan_namn}</a>
+    </p>
+    <div class="rutnat mt-3">
+      {plats.organisationer.map((o) => <OrgKort org={o} visaPlats={false} />)}
+    </div>
+    <p class="meta mt-3">Saknas någon? <a href={url('/bidra')}>Lägg till en organisation.</a> Alla data: <a href={url('/data')}>CC BY 4.0</a>.</p>
+  </section>
+</Bas>
+
+<style>
+  .ingress {
+    font-size: 18px;
+    max-width: 62ch;
+  }
+</style>

@@ -1,0 +1,60 @@
+# Publicerar sajten till GitHub Pages. Fungerar när arkivet är publikt (eller org:en har Pages för privata arkiv).
+# Produktionsdomänen pekas i stället på Vercel via vercel.json; detta flöde är reservutgången.
+name: Publicera till GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  bygg:
+    if: github.event.repository.visibility == 'public' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Konfigurera Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Bygg
+        run: |
+          node scripts/andringar.mjs
+          node scripts/validera.mjs
+          npx astro build
+        env:
+          SITE_URL: ${{ steps.pages.outputs.origin }}
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}/
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  publicera:
+    needs: bygg
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

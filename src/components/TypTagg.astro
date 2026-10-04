@@ -1,0 +1,18 @@
+---
+import { hamtaData, url } from '../lib/data';
+
+interface Props {
+  typ: string;
+  lank?: boolean;
+}
+const { typ, lank = true } = Astro.props;
+const d = hamtaData();
+const e = d.etikett.typer.get(typ);
+const href = url(`/organisationer?typ=${typ}`);
+---
+
+{lank ? (
+  <a class="tagg tagg--typ" style={`background: var(--typ-${typ})`} href={href}>{e?.label ?? typ}</a>
+) : (
+  <span class="tagg tagg--typ" style={`background: var(--typ-${typ})`}>{e?.label ?? typ}</span>
+)}

@@ -1,0 +1,57 @@
+---
+import Sida from '../layouts/Sida.astro';
+import { hamtaData, url, absolutUrl, SAJT } from '../lib/data';
+const d = hamtaData();
+const idag = d.byggd;
+---
+
+<Sida
+  titel="Öppen data"
+  kicker="Ladda ner och citera"
+  ingress={`Hela datasetet, ${d.statistik.antal} organisationer med källa och status per fält, under CC BY 4.0. Ett klick, ingen inloggning.`}
+  beskrivning="Ladda ner AI-kartans dataset som JSON, CSV eller GeoJSON under CC BY 4.0. Ändringshistorik, status och llms.txt för svarsmotorer."
+  stig="/data"
+>
+  <table class="tabell">
+    <thead><tr><th>Fil</th><th>Innehåll</th></tr></thead>
+    <tbody>
+      <tr><td><a href={url('/api/data.json')}>data.json</a></td><td>Allt. Varje fält med värde, status, källa, källtyp och datum, plus härledda fält (län, position, färskhet).</td></tr>
+      <tr><td><a href={url('/api/data.csv')}>data.csv</a></td><td>En rad per organisation. Varje fält har kolumner för värde, status, källa och datum. Listor separeras med <code>|</code>.</td></tr>
+      <tr><td><a href={url('/api/data.geojson')}>data.geojson</a></td><td>Punkter på kommunnivå för kartverktyg. Attribut: typ, erbjuder, områden, kommun, län, permalänk.</td></tr>
+      <tr><td><code>/api/data/&lt;id&gt;.json</code></td><td>En organisation med sin ändringshistorik. Exempel: <a href={url('/api/data/opensverige.json')}>opensverige.json</a>.</td></tr>
+      <tr><td><a href={url('/api/andringar.json')}>andringar.json</a></td><td>Varje ändrat fält i datan med datum, gammalt och nytt värde. Append-only.</td></tr>
+      <tr><td><a href={url('/api/status.json')}>status.json</a></td><td>Antal, andel bekräftat, färskhet. För den som vill övervaka kartan.</td></tr>
+      <tr><td><a href={url('/llms.txt')}>llms.txt</a> · <a href={url('/llms-full.txt')}>llms-full.txt</a></td><td>För svarsmotorer och agenter: sammanfattning respektive hela datan som text.</td></tr>
+      <tr><td><a href={url('/feed.xml')}>feed.xml</a></td><td>Atom-flöde över dagliga ändringar.</td></tr>
+      <tr><td><a href={`${SAJT.repo}/blob/main/schema/organisation.schema.json`} rel="noopener">organisation.schema.json</a></td><td>JSON Schema (draft-07) för en post. Samma uppgiftsmodell som infra.opensverige.se.</td></tr>
+      <tr><td><a href={`${SAJT.repo}/tree/main/data/organisationer`} rel="noopener">data/organisationer/</a></td><td>Källan: en YAML-fil per organisation i git, med full historik.</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="licens">Licens</h2>
+  <p>Datasetet, alltså urvalet, strukturen, statusmodellen och berikningen, är licensierat under <a href="https://creativecommons.org/licenses/by/4.0/deed.sv" rel="noopener">CC BY 4.0</a>. Bygg vidare fritt, med attribution: <em>”OpenSverige AI-kartan, karta.opensverige.se”</em>. Två avgränsningar:</p>
+  <ul>
+    <li>Enskilda fakta, som ett organisationsnummer eller en ort, är fria och behöver ingen licens.</li>
+    <li>Uppgifter om enskilda firmor är personuppgifter. De omfattas inte av licensen som sådana och får inte sammanställas vidare. Se <a href={url('/integritet')}>personuppgifter</a>.</li>
+  </ul>
+  <p>Koden är licensierad under <a href={`${SAJT.repo}/blob/main/LICENSE`} rel="noopener">AGPL-3.0</a>.</p>
+
+  <h2 id="citera">Citera</h2>
+  <p>Varje organisation har en permanent adress och varje fält ett ankare. Citera alltid status och datum tillsammans med värdet.</p>
+  <pre><code>{`OpenSverige AI-kartan, ”Berget AI”, organisationsnummer: 559504-7522 (bekräftad, kontrollerad 2026-08-06),
+hämtad ${idag}, ${absolutUrl('/organisation/berget-ai')}#falt-org_number. Data: CC BY 4.0.`}</code></pre>
+
+  <h2 id="stabilitet">Stabilitet</h2>
+  <ul>
+    <li>Permalänkar och <code>id</code> ändras aldrig. Tas en post bort svarar adressen 404 och borttagningen syns i historiken.</li>
+    <li>Fältnamn byter inte betydelse. Nya fält kan tillkomma; ändringar noteras i <a href={url('/andringar')}>ändringshistoriken</a> under ”Vad vi byggt”.</li>
+    <li>Datasetet versioneras med byggdatum i <code>version</code>.</li>
+  </ul>
+
+  <h2 id="exempel">Exempel</h2>
+  <pre><code>{`# Alla organisationer i Uppsala län med bekräftat organisationsnummer
+curl -s ${absolutUrl('/api/data.json')} | jq '
+  .organisationer[]
+  | select(.harlett.lan_kod == "03" and .org_number.status == "confirmed")
+  | {namn: .name.value, orgnr: .org_number.value, kalla: .org_number.source_url}'`}</code></pre>
+</Sida>

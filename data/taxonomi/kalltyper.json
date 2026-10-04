@@ -1,0 +1,11 @@
+[
+  { "id": "company_register", "label": "Företagsregister", "description": "Bolagsverket, SCB, Skatteverket, länsstyrelsen eller utländskt register.", "may_confirm": true },
+  { "id": "regulator", "label": "Myndighet", "description": "Beslut, register eller publikation från en myndighet som inte är organisationen själv.", "may_confirm": true },
+  { "id": "third_party", "label": "Tredje part", "description": "Oberoende källa som speglar register eller dokument, t.ex. allabolag.se, en årsredovisning, ett domstolsbeslut.", "may_confirm": true },
+  { "id": "academic", "label": "Akademisk publikation", "description": "Granskad publikation, avhandling eller publikationsdatabas.", "may_confirm": true },
+  { "id": "infra_dataset", "label": "OpenSverige AI-Infra", "description": "Uppgift hämtad från infra.opensverige.se, med status ärvd därifrån.", "may_confirm": true },
+  { "id": "own_site", "label": "Egen webbplats", "description": "Organisationens egen webbplats.", "may_confirm": false },
+  { "id": "own_docs", "label": "Egen dokumentation", "description": "Organisationens egna dokument, kod, modellkort eller villkor.", "may_confirm": false },
+  { "id": "press", "label": "Press", "description": "Nyhetsartikel eller pressmeddelande.", "may_confirm": false },
+  { "id": "self_submitted", "label": "Eget bidrag", "description": "Uppgift inskickad av organisationen själv via pull request eller ärende.", "may_confirm": false }
+]

@@ -1,0 +1,12 @@
+---
+import Sida from '../layouts/Sida.astro';
+import { url } from '../lib/data';
+---
+
+<Sida titel="Sidan finns inte" kicker="404" ingress="Antingen har adressen aldrig funnits, eller så har en organisation tagits bort. Borttagna poster syns i ändringshistoriken." beskrivning="Sidan finns inte." stig="/404" noindex>
+  <p class="rad">
+    <a class="knapp" href={url('/')}>Till kartan</a>
+    <a class="knapp knapp--ghost" href={url('/organisationer')}>Alla organisationer</a>
+    <a class="knapp knapp--ghost" href={url('/andringar')}>Ändringshistorik</a>
+  </p>
+</Sida>

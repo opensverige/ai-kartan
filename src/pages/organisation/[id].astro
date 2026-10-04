@@ -1,0 +1,258 @@
+---
+import Bas from '../../layouts/Bas.astro';
+import StatusMarke from '../../components/StatusMarke.astro';
+import TypTagg from '../../components/TypTagg.astro';
+import { hamtaData, allaFakta, visaVarde, kalltypEtikett, formateraDatum, url, absolutUrl, SAJT } from '../../lib/data';
+import type { Org } from '../../lib/data';
+
+export function getStaticPaths() {
+  const d = hamtaData();
+  return d.organisationer.map((org) => ({ params: { id: org.id }, props: { org } }));
+}
+
+interface Props {
+  org: Org;
+}
+const { org } = Astro.props;
+const d = hamtaData();
+const fakta = allaFakta(org);
+const typ = d.etikett.typer.get(org.type.value);
+const permalank = absolutUrl(`/organisation/${org.id}`);
+const idag = d.byggd;
+const andringar = d.andringar.rader.filter((r) => r.id === org.id).slice(0, 40);
+const gammal = (org.h.dagar_sedan_kontroll ?? 0) > 180;
+const nedlagd = org.active?.value === false;
+const beskrivning = `${org.name.value}: ${org.description.value} ${typ?.label ?? ''}${org.h.kommun_namn ? ` i ${org.h.kommun_namn}` : ''}. Källa och datum på varje uppgift.`;
+
+const rattelseUrl = `${SAJT.repo}/issues/new?template=rattelse.yml&title=${encodeURIComponent(`Rättelse: ${org.name.value}`)}&organisation=${encodeURIComponent(org.id)}`;
+const borttagningUrl = `${SAJT.repo}/issues/new?template=borttagning.yml&title=${encodeURIComponent(`Borttagning: ${org.name.value}`)}&organisation=${encodeURIComponent(org.id)}`;
+const redigeraUrl = `${SAJT.repo}/edit/main/data/organisationer/${org.id}.yaml`;
+const kallkodUrl = `${SAJT.repo}/blob/main/data/organisationer/${org.id}.yaml`;
+
+const sameAs = [org.links?.github, org.links?.huggingface, org.links?.linkedin, org.links?.wikidata ? `https://www.wikidata.org/wiki/${org.links.wikidata}` : undefined].filter(Boolean);
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: org.name.value,
+  legalName: org.legal_name?.value ?? undefined,
+  url: org.website,
+  description: org.description.value,
+  identifier: org.org_number?.value ? { '@type': 'PropertyValue', propertyID: 'Organisationsnummer', value: org.org_number.value } : undefined,
+  foundingDate: org.founded?.value ? String(org.founded.value) : undefined,
+  address: org.h.kommun_namn ? { '@type': 'PostalAddress', addressLocality: org.h.kommun_namn, addressRegion: org.h.lan_namn, addressCountry: 'SE' } : undefined,
+  sameAs: sameAs.length ? sameAs : undefined,
+  subjectOf: { '@type': 'WebPage', url: permalank, license: 'https://creativecommons.org/licenses/by/4.0/' },
+};
+const citat = `OpenSverige AI-kartan, ”${org.name.value}”, hämtad ${idag}, ${permalank}. Data: CC BY 4.0.`;
+---
+
+<Bas titel={org.name.value} beskrivning={beskrivning} stig={`/organisation/${org.id}`} jsonLd={jsonLd} ogTyp="profile">
+  <article class="ram sektion org">
+    <nav class="meta brod" aria-label="Du är här">
+      <a href={url('/')}>Karta</a> › <a href={url('/organisationer')}>Organisationer</a> › <span>{org.name.value}</span>
+    </nav>
+
+    <header class="org__huvud">
+      <div class="rad">
+        <TypTagg typ={org.type.value} />
+        {org.h.kommun_slug && <a class="tagg" href={url(`/plats/${org.h.kommun_slug}`)}>{org.h.kommun_namn}</a>}
+        {org.h.lan_slug && <a class="tagg" href={url(`/lan/${org.h.lan_slug}`)}>{org.h.lan_namn}</a>}
+        {org.links?.infra_id && <a class="tagg" href={`${SAJT.infra}/leverantor/${org.links.infra_id}`} rel="noopener">Finns på AI-Infra</a>}
+      </div>
+      <h1>{org.name.value}</h1>
+      <p class="org__beskrivning">{org.description.value} <StatusMarke status={org.description.status} kort /></p>
+      <p class="rad">
+        <a class="knapp knapp--ghost knapp--liten" href={org.website} rel="noopener">{org.website.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}</a>
+        {org.h.position && <a class="knapp knapp--ghost knapp--liten ej-utskrift" href={url(`/?org=${org.id}`)}>Visa på kartan</a>}
+        {org.links?.github && <a class="knapp knapp--ghost knapp--liten" href={org.links.github} rel="noopener">GitHub</a>}
+        {org.links?.huggingface && <a class="knapp knapp--ghost knapp--liten" href={org.links.huggingface} rel="noopener">Hugging Face</a>}
+        {org.links?.linkedin && <a class="knapp knapp--ghost knapp--liten" href={org.links.linkedin} rel="noopener">LinkedIn</a>}
+      </p>
+      {nedlagd && <div class="notis notis--rust"><strong>Markerad som nedlagd eller avregistrerad.</strong> Posten ligger kvar tills den tas bort, så att historiken behålls.</div>}
+      {gammal && <div class="notis"><strong>Inte omkontrollerad på över 180 dagar.</strong> Uppgifterna kan vara inaktuella. <a href={rattelseUrl} rel="noopener">Hjälp till att kontrollera.</a></div>}
+    </header>
+
+    <section>
+      <h2 id="uppgifter">Uppgifter, var och en med källa</h2>
+      <p class="meta">Kontrollerad senast {formateraDatum(org.h.senast_verifierad)} · {org.h.antal_bekraftade} av {org.h.antal_fakta} fält bekräftade mot register eller oberoende källa · Posten skapad {formateraDatum(org.record_created_at)}, uppdaterad {formateraDatum(org.record_updated_at)}</p>
+      <div class="tabellram">
+        <table class="tabell fakta">
+          <thead>
+            <tr><th>Uppgift</th><th>Värde</th><th>Status</th><th>Källa</th><th>Datum</th></tr>
+          </thead>
+          <tbody>
+            {fakta.map(({ nyckel, etikett, fakta: f }) => (
+              <tr id={`falt-${nyckel}`}>
+                <th scope="row"><a class="ankare" href={`#falt-${nyckel}`} aria-label={`Länk till ${etikett}`}>#</a> {etikett}</th>
+                <td>
+                  {nyckel === 'offers' ? (
+                    <span class="rad">{(f.value as string[]).map((x) => <a class="tagg" href={url(`/organisationer?erbjuder=${x}`)}>{d.etikett.erbjuder.get(x)?.label ?? x}</a>)}</span>
+                  ) : nyckel === 'areas' ? (
+                    <span class="rad">{(f.value as string[]).map((x) => <a class="tagg" href={url(`/organisationer?omrade=${x}`)}>{d.etikett.omraden.get(x)?.label ?? x}</a>)}</span>
+                  ) : (
+                    visaVarde(d, org, nyckel, f)
+                  )}
+                  {f.note && <div class="meta fakta__not">{f.note}</div>}
+                </td>
+                <td><StatusMarke status={f.status} kort /></td>
+                <td class="fakta__kalla">
+                  {f.source_url ? <a href={f.source_url} rel="noopener nofollow">{kalltypEtikett(d, f.source_type)}</a> : <span class="ljus">–</span>}
+                </td>
+                <td class="meta">{formateraDatum(f.verified_at)}{f.corroborated_at && <span title="Automatiskt bekräftad mot källan vid detta datum"> · styrkt {formateraDatum(f.corroborated_at)}</span>}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2 id="belagg">Belägg: något de byggt med AI</h2>
+      <p class="lasbredd">Kriterium två kräver minst en publik länk till en produkt, ett kodförråd, en modell, en demo eller en publikation. Länken är sin egen källa.</p>
+      <ul class="belagg">
+        {org.evidence.map((b) => (
+          <li class="kort">
+            <div class="rad mellan">
+              <span class="tagg">{d.etikett.belaggstyper.get(b.kind)?.label ?? b.kind}</span>
+              <StatusMarke status={b.status ?? 'claimed'} kort />
+            </div>
+            <a class="belagg__lank" href={b.url} rel="noopener nofollow">{b.title ?? b.url}</a>
+            <div class="meta">{b.url.replace(/^https?:\/\//, '')} · {formateraDatum(b.verified_at)}</div>
+            {b.note && <div class="meta">{b.note}</div>}
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="tvaspalt">
+      <div>
+        <h2 id="citera">Citera</h2>
+        <p class="lasbredd">Permalänken är stabil och går att använda i en upphandling eller rapport. Citera alltid status och datum tillsammans med värdet: en egen uppgift är inte en bekräftad.</p>
+        <pre class="citat" id="citattext">{citat}</pre>
+        <button type="button" class="knapp knapp--ghost knapp--liten ej-utskrift" id="kopiera" data-text={citat}>Kopiera citatet</button>
+        <a class="knapp knapp--ghost knapp--liten" href={url(`/api/data/${org.id}.json`)}>JSON för posten</a>
+      </div>
+      <div>
+        <h2 id="ratta">Rätta eller ta bort</h2>
+        <p class="lasbredd">Fel? Öppna ett ärende med källa, så svarar vi inom 14 dagar. Organisationen är källa, aldrig författare: en rättelse från er märks som egen uppgift tills den kan bekräftas.</p>
+        <p class="rad">
+          <a class="knapp knapp--liten" href={rattelseUrl} rel="noopener">Begär rättelse</a>
+          <a class="knapp knapp--ghost knapp--liten" href={borttagningUrl} rel="noopener">Begär borttagning</a>
+          <a class="knapp knapp--ghost knapp--liten" href={redigeraUrl} rel="noopener">Redigera filen på GitHub</a>
+        </p>
+        <p class="meta">Källfil: <a href={kallkodUrl} rel="noopener">data/organisationer/{org.id}.yaml</a></p>
+      </div>
+    </section>
+
+    <section>
+      <h2 id="andringar">Ändringar för posten</h2>
+      {andringar.length === 0 ? (
+        <p class="ljus">Inga ändringar loggade än. Historiken byggs ur git-historiken vid varje publicering.</p>
+      ) : (
+        <div class="tabellram">
+          <table class="tabell">
+            <thead><tr><th>Datum</th><th>Fält</th><th>Ändring</th><th>Från</th><th>Till</th></tr></thead>
+            <tbody>
+              {andringar.map((r) => (
+                <tr>
+                  <td class="meta">{r.datum}</td>
+                  <td>{r.falt}</td>
+                  <td>{r.andring}</td>
+                  <td class="meta">{r.gammalt === null || r.gammalt === undefined ? '–' : typeof r.gammalt === 'object' ? JSON.stringify(r.gammalt) : String(r.gammalt)}</td>
+                  <td class="meta">{r.nytt === null || r.nytt === undefined ? '–' : typeof r.nytt === 'object' ? JSON.stringify(r.nytt) : String(r.nytt)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+      <p class="meta mt-1"><a href={url('/andringar')}>Hela ändringshistoriken</a></p>
+    </section>
+  </article>
+</Bas>
+
+<script>
+  const knapp = document.getElementById('kopiera') as HTMLButtonElement | null;
+  knapp?.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(knapp.dataset.text || '');
+      knapp.textContent = 'Kopierat';
+      setTimeout(() => (knapp.textContent = 'Kopiera citatet'), 1800);
+    } catch {
+      /* utan clipboard-API får användaren markera texten själv */
+    }
+  });
+</script>
+
+<style>
+  .brod {
+    margin-bottom: 18px;
+  }
+  .brod a {
+    color: hsl(var(--ink-mute));
+  }
+  .org__huvud h1 {
+    margin: 12px 0 10px;
+  }
+  .org__beskrivning {
+    font-size: 19px;
+    max-width: 64ch;
+    color: hsl(var(--ink-soft));
+  }
+  .tabellram {
+    overflow-x: auto;
+  }
+  .fakta th[scope='row'] {
+    font-weight: 600;
+    color: hsl(var(--ink));
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    text-transform: none;
+    letter-spacing: 0;
+    white-space: nowrap;
+    border-bottom: 1px solid hsl(var(--rule-soft));
+  }
+  .ankare {
+    color: hsl(var(--rule));
+    text-decoration: none;
+    margin-right: 2px;
+  }
+  tr:hover .ankare {
+    color: hsl(var(--moss));
+  }
+  .fakta__not {
+    margin-top: 4px;
+    max-width: 48ch;
+  }
+  .fakta__kalla a {
+    word-break: break-word;
+  }
+  .belagg {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+  .belagg__lank {
+    display: block;
+    font-weight: 600;
+    margin: 8px 0 4px;
+    word-break: break-word;
+  }
+  .tvaspalt {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+  .citat {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  @media (max-width: 820px) {
+    .tvaspalt {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

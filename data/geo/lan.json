@@ -1,0 +1,149 @@
+[
+  {
+    "kod": "01",
+    "namn": "Stockholms län",
+    "slug": "stockholms-lan",
+    "lat": 59.4975,
+    "lng": 18.0936
+  },
+  {
+    "kod": "03",
+    "namn": "Uppsala län",
+    "slug": "uppsala-lan",
+    "lat": 60.0546,
+    "lng": 17.5738
+  },
+  {
+    "kod": "04",
+    "namn": "Södermanlands län",
+    "slug": "sodermanlands-lan",
+    "lat": 59.0855,
+    "lng": 16.6896
+  },
+  {
+    "kod": "05",
+    "namn": "Östergötlands län",
+    "slug": "ostergotlands-lan",
+    "lat": 58.3671,
+    "lng": 15.6569
+  },
+  {
+    "kod": "06",
+    "namn": "Jönköpings län",
+    "slug": "jonkopings-lan",
+    "lat": 57.5384,
+    "lng": 14.4081
+  },
+  {
+    "kod": "07",
+    "namn": "Kronobergs län",
+    "slug": "kronobergs-lan",
+    "lat": 56.8023,
+    "lng": 14.573
+  },
+  {
+    "kod": "08",
+    "namn": "Kalmar län",
+    "slug": "kalmar-lan",
+    "lat": 57.2474,
+    "lng": 16.0467
+  },
+  {
+    "kod": "09",
+    "namn": "Gotlands län",
+    "slug": "gotlands-lan",
+    "lat": 57.4855,
+    "lng": 18.508
+  },
+  {
+    "kod": "10",
+    "namn": "Blekinge län",
+    "slug": "blekinge-lan",
+    "lat": 56.2879,
+    "lng": 15.1758
+  },
+  {
+    "kod": "12",
+    "namn": "Skåne län",
+    "slug": "skane-lan",
+    "lat": 55.9519,
+    "lng": 13.5991
+  },
+  {
+    "kod": "13",
+    "namn": "Hallands län",
+    "slug": "hallands-lan",
+    "lat": 56.9584,
+    "lng": 12.8464
+  },
+  {
+    "kod": "14",
+    "namn": "Västra Götalands län",
+    "slug": "vastra-gotalands-lan",
+    "lat": 58.3167,
+    "lng": 12.8728
+  },
+  {
+    "kod": "17",
+    "namn": "Värmlands län",
+    "slug": "varmlands-lan",
+    "lat": 59.7624,
+    "lng": 13.1553
+  },
+  {
+    "kod": "18",
+    "namn": "Örebro län",
+    "slug": "orebro-lan",
+    "lat": 59.3551,
+    "lng": 14.9776
+  },
+  {
+    "kod": "19",
+    "namn": "Västmanlands län",
+    "slug": "vastmanlands-lan",
+    "lat": 59.7449,
+    "lng": 16.1718
+  },
+  {
+    "kod": "20",
+    "namn": "Dalarnas län",
+    "slug": "dalarnas-lan",
+    "lat": 60.9487,
+    "lng": 14.3741
+  },
+  {
+    "kod": "21",
+    "namn": "Gävleborgs län",
+    "slug": "gavleborgs-lan",
+    "lat": 61.4403,
+    "lng": 16.3079
+  },
+  {
+    "kod": "22",
+    "namn": "Västernorrlands län",
+    "slug": "vasternorrlands-lan",
+    "lat": 63.1,
+    "lng": 17.2591
+  },
+  {
+    "kod": "23",
+    "namn": "Jämtlands län",
+    "slug": "jamtlands-lan",
+    "lat": 63.2296,
+    "lng": 14.3001
+  },
+  {
+    "kod": "24",
+    "namn": "Västerbottens län",
+    "slug": "vasterbottens-lan",
+    "lat": 64.863,
+    "lng": 17.8419
+  },
+  {
+    "kod": "25",
+    "namn": "Norrbottens län",
+    "slug": "norrbottens-lan",
+    "lat": 66.9339,
+    "lng": 20.0851
+  }
+]

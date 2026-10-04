@@ -1,0 +1,39 @@
+name: Begär borttagning
+description: Organisationen är nedlagd, vill inte vara med, eller posten är en personuppgift. Vi svarar inom 14 dagar.
+title: "Borttagning: "
+labels: ["borttagning"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        En nedlagd organisation markeras först som inaktiv och tas sedan bort. En enskild firma eller annan personuppgift tas bort på begäran av personen själv, utan diskussion. Borttagningen syns i ändringshistoriken som "hela posten borttagen", utan innehållet.
+  - type: input
+    id: organisation
+    attributes:
+      label: Organisationens id
+      placeholder: berget-ai
+    validations:
+      required: true
+  - type: dropdown
+    id: skal
+    attributes:
+      label: Skäl
+      options:
+        - Organisationen är nedlagd eller avregistrerad
+        - Posten är en personuppgift (enskild firma) och jag är personen
+        - Organisationen vill inte vara med
+        - Dubblett av en annan post
+        - Uppfyller inte kriterierna
+        - Annat
+    validations:
+      required: true
+  - type: textarea
+    id: kommentar
+    attributes:
+      label: Kommentar och eventuell källa
+  - type: checkboxes
+    id: roll
+    attributes:
+      label: Bekräftelse
+      options:
+        - label: Jag företräder organisationen eller är personen posten gäller.

@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Fråga eller diskutera i Discord
+    url: https://discord.gg/ZbV4qB34um
+    about: OpenSveriges Discord är huvudkanalen. Där bygger vi, öppet.
+  - name: Kriterierna för att vara med
+    url: https://github.com/opensverige/ai-kartan/blob/main/kriterier.md
+    about: Tre objektiva kriterier. Varje avslag hänvisar till det kriterium som inte uppfylls.

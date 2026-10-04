@@ -1,0 +1,79 @@
+# Importerad från OpenSverige AI-Infra (https://infra.opensverige.se/leverantor/mimer). Status och källor ärvda därifrån.
+id: sweden-ai-factory
+name:
+  value: Sweden AI Factory
+  status: claimed
+  source_url: https://swedenaifactory.se
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: manual
+type:
+  value: infrastruktur
+  status: claimed
+  source_url: https://infra.opensverige.se/leverantor/mimer
+  source_type: infra_dataset
+  verified_at: 2026-10-04
+  verified_by: manual
+  note: "Kategori på infra: compute_gpu."
+org_number:
+  value: null
+  status: unknown
+  verified_at: 2026-10-04
+  verified_by: manual
+website: https://swedenaifactory.se
+description:
+  value: Tillhandahåller GPU-kapacitet och beräkningskraft för AI-arbetslaster i Sverige.
+  status: claimed
+  source_url: https://infra.opensverige.se/leverantor/mimer
+  source_type: infra_dataset
+  verified_at: 2026-10-04
+  verified_by: manual
+  note: Importerad från OpenSverige AI-Infra.
+offers:
+  value:
+    - infrastruktur
+  status: claimed
+  source_url: https://infra.opensverige.se/leverantor/mimer
+  source_type: infra_dataset
+  verified_at: 2026-10-04
+  verified_by: manual
+areas:
+  value:
+    - generell
+  status: claimed
+  source_url: https://infra.opensverige.se/leverantor/mimer
+  source_type: infra_dataset
+  verified_at: 2026-10-04
+  verified_by: manual
+kommun:
+  value: "0580"
+  status: claimed
+  source_url: https://swedenaifactory.se/about/faq/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: manual
+  note: Ort enligt infra.opensverige.se (Linköping). Kontrollera mot register.
+active:
+  value: true
+  status: claimed
+  source_url: https://swedenaifactory.se/all-services/access-to-compute-resources/
+  source_type: own_site
+  verified_at: 2026-09-23
+  verified_by: manual
+evidence:
+  - url: https://swedenaifactory.se/all-services/access-to-compute-resources/
+    kind: produkt
+    title: Tjänstebeskrivning
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: manual
+  - url: https://infra.opensverige.se/leverantor/mimer
+    kind: case
+    title: Post på OpenSverige AI-Infra med källa per fält
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: manual
+links:
+  infra_id: mimer
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

@@ -1,0 +1,74 @@
+# Färskhetslarm, varje dag. Larmar när ändringsloggen stått still i 10 dagar
+# eller när någon post gått 180 dagar utan omkontroll. Tyst inaktuell data är den största risken.
+#
+# Larmet blir ett GitHub-ärende med etiketten "färskhet" (uppdateras om det redan finns).
+# Finns hemligheten DISCORD_WEBHOOK_URL skickas larmet även till Discord.
+#
+# Obs: GitHub stänger av schemalagda flöden i arkiv utan commits på 60 dagar. Då måste flödet startas om under Actions.
+name: Färskhetslarm
+
+on:
+  schedule:
+    - cron: '30 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  farskhet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Uppdatera historiken lokalt
+        run: node scripts/andringar.mjs
+
+      - name: Kör färskhetskontrollen
+        id: koll
+        run: node scripts/farskhet.mjs --github
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+      - name: Skriv rapporten i sammanfattningen
+        run: |
+          {
+            echo '## Färskhet'
+            echo '```'
+            echo "${{ steps.koll.outputs.rapport }}"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Öppna eller uppdatera larmärendet
+        if: steps.koll.outputs.larm == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RAPPORT: ${{ steps.koll.outputs.rapport }}
+        run: |
+          gh label create "färskhet" --color "926516" --description "Automatiskt färskhetslarm" --force
+          befintligt=$(gh issue list --label "färskhet" --state open --json number --jq '.[0].number')
+          kropp=$(printf 'Automatiskt larm från färskhetskontrollen.\n\n```\n%s\n```\n\nRegler: ändringsloggen får inte stå still mer än 10 dagar, ingen post får gå 180 dagar utan omkontroll. Se [metoden](https://karta.opensverige.se/metod).' "$RAPPORT")
+          if [ -n "$befintligt" ]; then
+            gh issue comment "$befintligt" --body "$kropp"
+          else
+            gh issue create --title "Färskhetslarm: datan behöver omkontroll" --label "färskhet" --body "$kropp"
+          fi
+
+      - name: Stäng larmärendet när allt är grönt
+        if: steps.koll.outputs.larm == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for n in $(gh issue list --label "färskhet" --state open --json number --jq '.[].number'); do
+            gh issue close "$n" --comment "Färskhetskontrollen är grön igen. Stänger automatiskt."
+          done

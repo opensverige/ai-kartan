@@ -1,0 +1,11 @@
+[
+  { "id": "produkt", "label": "Egen produkt", "description": "Säljer eller publicerar en egen AI-produkt eller tjänst: programvara, modell, app eller API." },
+  { "id": "utveckling", "label": "Utveckling åt andra", "description": "Bygger AI-lösningar på uppdrag: konsult, byrå, systemintegratör." },
+  { "id": "infrastruktur", "label": "Infrastruktur och hosting", "description": "Tillhandahåller beräkningskraft, GPU, hosting eller inferens-API." },
+  { "id": "data", "label": "Data", "description": "Samlar in, annoterar, kuraterar eller publicerar data för AI." },
+  { "id": "forskning", "label": "Forskning", "description": "Bedriver och publicerar forskning om eller med AI." },
+  { "id": "utbildning", "label": "Utbildning", "description": "Erbjuder kurser, program eller annan utbildning i AI." },
+  { "id": "community", "label": "Community", "description": "Samlar människor kring AI: träffar, nätverk, hackathon." },
+  { "id": "finansiering", "label": "Finansiering", "description": "Finansierar AI-projekt eller AI-bolag med kapital eller bidrag." },
+  { "id": "oppen_kallkod", "label": "Öppen källkod", "description": "Publicerar modeller, verktyg eller data under öppen licens." }
+]

@@ -1,0 +1,52 @@
+---
+import type { Org } from '../lib/data';
+import { hamtaData, url, formateraDatum } from '../lib/data';
+import TypTagg from './TypTagg.astro';
+
+interface Props {
+  org: Org;
+  visaPlats?: boolean;
+}
+const { org, visaPlats = true } = Astro.props;
+const d = hamtaData();
+const erbjuder = org.offers.value.map((x) => d.etikett.erbjuder.get(x)?.label ?? x);
+---
+
+<article class="kort orgkort">
+  <div class="rad mellan">
+    <TypTagg typ={org.type.value} />
+    <span class="meta">{org.h.antal_bekraftade} av {org.h.antal_fakta} bekräftade</span>
+  </div>
+  <h3><a href={url(`/organisation/${org.id}`)}>{org.name.value}</a></h3>
+  <p class="orgkort__text">{org.description.value}</p>
+  <p class="meta orgkort__meta">
+    {visaPlats && org.h.kommun_namn && <span>{org.h.kommun_namn} · </span>}
+    <span>{erbjuder.join(' · ')}</span>
+  </p>
+  <p class="meta mb-0">Kontrollerad {formateraDatum(org.h.senast_verifierad)}</p>
+</article>
+
+<style>
+  .orgkort h3 {
+    margin: 10px 0 6px;
+    font-size: 18px;
+  }
+  .orgkort h3 a {
+    color: hsl(var(--ink));
+    text-decoration: none;
+  }
+  .orgkort h3 a:hover {
+    color: hsl(var(--moss));
+  }
+  .orgkort__text {
+    font-size: 14.5px;
+    margin-bottom: 8px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .orgkort__meta {
+    margin-bottom: 4px;
+  }
+</style>

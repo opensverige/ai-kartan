@@ -1,0 +1,60 @@
+---
+import Bas from '../../layouts/Bas.astro';
+import OrgKort from '../../components/OrgKort.astro';
+import { hamtaData, url, absolutUrl } from '../../lib/data';
+import type { Plats } from '../../lib/data';
+
+export function getStaticPaths() {
+  return hamtaData().platser.lan.map((p) => ({ params: { slug: p.slug }, props: { plats: p } }));
+}
+interface Props {
+  plats: Plats;
+}
+const { plats } = Astro.props;
+const d = hamtaData();
+const n = plats.organisationer.length;
+const kommuner = d.platser.kommuner.filter((k) => k.lan_kod === plats.kod);
+const titel = `AI i ${plats.namn}`;
+const beskrivning = `${n} ${n === 1 ? 'organisation' : 'organisationer'} som bygger AI i ${plats.namn}, fördelade på ${kommuner.length} kommuner. Med källa och datum på varje uppgift.`;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: titel,
+  description: beskrivning,
+  url: absolutUrl(`/lan/${plats.slug}`),
+  about: { '@type': 'AdministrativeArea', name: plats.namn, containedInPlace: { '@type': 'Country', name: 'Sverige' } },
+};
+---
+
+<Bas titel={titel} beskrivning={beskrivning} stig={`/lan/${plats.slug}`} jsonLd={jsonLd}>
+  <section class="ram sektion">
+    <nav class="meta" aria-label="Du är här"><a href={url('/plats')}>Platser</a> › <span>{plats.namn}</span></nav>
+    <p class="kicker mt-2">Län</p>
+    <h1>AI i {plats.namn}</h1>
+    <p class="ingress">{n} {n === 1 ? 'organisation' : 'organisationer'} i {kommuner.length} {kommuner.length === 1 ? 'kommun' : 'kommuner'}.</p>
+    <p class="rad">
+      <a class="knapp knapp--liten" href={url(`/?lan=${plats.kod}`)}>Visa på kartan</a>
+      <a class="knapp knapp--ghost knapp--liten" href={url(`/organisationer?lan=${plats.kod}`)}>Filtrera listan</a>
+    </p>
+    <h2 id="kommuner">Kommuner</h2>
+    <ul class="rad kommunlista">
+      {kommuner.map((k) => (
+        <li><a class="tagg" href={url(`/plats/${k.slug}`)}>{k.namn} · {k.organisationer.length}</a></li>
+      ))}
+    </ul>
+    <h2 id="organisationer">Organisationer</h2>
+    <div class="rutnat">
+      {plats.organisationer.map((o) => <OrgKort org={o} />)}
+    </div>
+  </section>
+</Bas>
+
+<style>
+  .ingress {
+    font-size: 18px;
+  }
+  .kommunlista {
+    list-style: none;
+    padding: 0;
+  }
+</style>

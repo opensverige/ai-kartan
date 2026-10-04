@@ -1,0 +1,78 @@
+---
+import Sida from '../layouts/Sida.astro';
+import StatusMarke from '../components/StatusMarke.astro';
+import { hamtaData, url, formateraDatum, SAJT } from '../lib/data';
+
+const d = hamtaData();
+const s = d.statistik;
+---
+
+<Sida
+  titel="Metod och status"
+  kicker="Så arbetar kartan"
+  ingress="Varje uppgift bär källa, datum och status. En felaktig ”bekräftad” är värre än en ärlig ”okänd”. Metoden är ärvd från infra.opensverige.se och gäller lika för alla."
+  beskrivning="AI-kartans metod: statusdisciplin (bekräftad, egen uppgift, planerad, okänd), källtyper, färskhetslarm, positioner på kommunnivå och ändringshistorik."
+  stig="/metod"
+>
+  <p class="meta">dataset {d.byggd} · {s.antal} organisationer · senast verifierad {formateraDatum(s.senast_verifierad)} · {s.antal_over_180_dagar} poster över 180 dagar utan omkontroll</p>
+
+  <h2 id="status">Statusdisciplin</h2>
+  <p>Varje fält, inte varje post, har en av fyra statusar. Statusen säger var uppgiften kommer ifrån, inte hur bra organisationen är.</p>
+  <table class="tabell">
+    <thead><tr><th>Status</th><th>Betyder</th></tr></thead>
+    <tbody>
+      {d.taxonomi.status.map((st) => (
+        <tr><td><StatusMarke status={st.id} /></td><td>{st.description}</td></tr>
+      ))}
+    </tbody>
+  </table>
+  <p>Vi ändrar aldrig status på begäran. Men vi läser gärna bevis: publicera dokumentet på en publik adress och skicka länken i ett <a href={`${SAJT.repo}/issues/new/choose`} rel="noopener">ärende</a> eller i <a href={SAJT.discord} rel="noopener">Discord</a>.</p>
+
+  <h2 id="kallor">Källtyper och vad de får bekräfta</h2>
+  <p>Organisationens egen webbplats, egna dokument och eget bidrag ger alltid <em>egen uppgift</em>. Bara register, myndigheter, oberoende tredje part och akademiska källor kan ge <em>bekräftad</em>. Regeln ligger i koden och stoppar en pull request som bryter mot den.</p>
+  <table class="tabell">
+    <thead><tr><th>Källtyp</th><th>Exempel</th><th>Kan ge bekräftad</th></tr></thead>
+    <tbody>
+      {d.taxonomi.kalltyper.map((k) => (
+        <tr><td><code>{k.id}</code><br /><span class="meta">{k.label}</span></td><td>{k.description}</td><td>{k.may_confirm ? 'Ja' : 'Nej, högst egen uppgift'}</td></tr>
+      ))}
+    </tbody>
+  </table>
+
+  <h2 id="kontroll">Hur en uppgift kontrolleras</h2>
+  <ol>
+    <li><strong>Primärkällan läses.</strong> Registret, organisationens egen sida, dokumentet. Aldrig en annan karta eller lista; andra kartor används bara som tips om namn.</li>
+    <li><strong>Uppgiften klassas</strong> enligt statusdisciplinen ovan, utifrån källtypen.</li>
+    <li><strong>Källa och datum sparas per fält</strong>, inte per post. Därför kan en post ha ett bekräftat organisationsnummer och en självrapporterad beskrivning samtidigt.</li>
+    <li><strong>Motsägelser flaggas</strong> och blir ett ärende i stället för att någon gissar.</li>
+  </ol>
+  <p>Den första datamängden, oktober 2026, togs fram med AI-agenter som läste primärkällor enligt reglerna ovan. Sådana uppgifter är märkta <code>verified_by: agent</code>. AI kontrollerar belägg, inte värde: en modell får kontrollera att en länk visar det som påstås, aldrig om en organisation förtjänar att vara med. Kriterierna är <a href={url('/kriterier')}>objektiva och ligger i repot</a>.</p>
+
+  <h2 id="automatik">Vad som kontrolleras automatiskt</h2>
+  <ul>
+    <li><strong>Schema och regler</strong> på varje pull request: ett fält utan käll-URL, datum och status stoppas och kan inte publiceras. Personuppgifter stoppas också.</li>
+    <li><strong>Länkar</strong> i ändrade filer kontrolleras på varje pull request, och alla länkar varje vecka. En källa som försvunnit blir ett ärende.</li>
+    <li><strong>Färskhetslarm</strong> varje dag: om ändringsloggen stått still i 10 dagar, eller om någon post gått 180 dagar utan omkontroll, öppnas ett ärende. Varje organisationssida visar datum för senaste kontroll.</li>
+    <li><strong>Registerberikning</strong> mot Bolagsverket och SCB:s företagsregister är <StatusMarke status="planned" kort />: veckovis status per organisationsnummer, så att en avregistrerad organisation märks inom en vecka.</li>
+  </ul>
+
+  <h2 id="plats">Plats: kommunnivå, aldrig gatuadress</h2>
+  <p>Positionen på kartan är kommunens mittpunkt med en liten, deterministisk förskjutning så att punkter i samma kommun inte täcker varandra. Kartan är ingen adressbok. Två skäl:</p>
+  <ul>
+    <li>En enskild firmas registrerade adress är ofta en bostad, alltså en personuppgift. Enskilda firmor får aldrig exakt position.</li>
+    <li>Sätet enligt register säger var organisationen är registrerad, inte nödvändigtvis var folk arbetar. Kommunnivå är det vi kan belägga.</li>
+  </ul>
+  <p>En organisation som själv publicerar en kontorsadress kan få exakta koordinater, med adressidan som källa. Länet härleds ur kommunkoden.</p>
+
+  <h2 id="historik">Ändringshistoriken är vallgraven</h2>
+  <p>Git-repot är sanningen. Varje ändring, även den automatiska, går via en pull request och får datum, avsändare och diff. Ur historiken byggs <a href={url('/andringar')}>ändringsloggen</a>: varje ändrat fält med gammalt och nytt värde. Den är append-only och går inte att kopiera i efterhand genom att skrapa om kartan i dag.</p>
+
+  <h2 id="roller">Organisationer är källor, aldrig författare</h2>
+  <p>En organisation kan skicka in uppgifter om sig själv, men posten ägs av kartan och uppgifterna märks som egen uppgift tills de bekräftats. Ingen kan köpa synlighet, placering eller ett märke. Listan sorteras alfabetiskt och filtren visar urval, inte betyg.</p>
+
+  <h2 id="licens">Öppen data</h2>
+  <p>Hela datasetet är fritt att citera och återanvända med attribution under <a href="https://creativecommons.org/licenses/by/4.0/deed.sv" rel="noopener">CC BY 4.0</a>. Citera gärna med status och verifieringsdatum: ”egen uppgift” är inte ”bekräftad”. <a href={url('/data')}>Så laddar du ner och citerar.</a></p>
+
+  <h2 id="urval">Vad som inte är ett kriterium</h2>
+  <p>Storlek, ålder, bolagsform, intäkter, finansiering eller om organisationen är konsult. Kvaliteten visas med verifieringsstatus och används aldrig för att stänga ute. Vem som får vara med avgörs av <a href={url('/kriterier')}>tre kriterier</a>, inget annat.</p>
+</Sida>

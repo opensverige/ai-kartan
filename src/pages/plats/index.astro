@@ -1,0 +1,51 @@
+---
+import Sida from '../../layouts/Sida.astro';
+import { hamtaData, url } from '../../lib/data';
+
+const d = hamtaData();
+---
+
+<Sida
+  titel="AI i Sveriges kommuner och län"
+  kicker="Platser"
+  ingress={`${d.platser.kommuner.length} kommuner och ${d.platser.lan.length} län har organisationer på kartan. Varje plats har en egen sida: vem som bygger AI just där.`}
+  beskrivning="Organisationer som bygger AI, per kommun och län i Sverige. Positioner på kommunnivå med källa och datum."
+  stig="/plats"
+  bred
+>
+  <section>
+    <h2 id="lan">Län</h2>
+    <ul class="platslista">
+      {d.platser.lan.map((l) => (
+        <li><a href={url(`/lan/${l.slug}`)}>{l.namn}</a> <span class="meta">{l.organisationer.length}</span></li>
+      ))}
+    </ul>
+  </section>
+  <section>
+    <h2 id="kommuner">Kommuner</h2>
+    <ul class="platslista">
+      {d.platser.kommuner.map((k) => (
+        <li><a href={url(`/plats/${k.slug}`)}>{k.namn}</a> <span class="meta">{k.organisationer.length}</span></li>
+      ))}
+    </ul>
+    {d.statistik.utan_plats > 0 && (
+      <p class="meta">{d.statistik.utan_plats} organisationer saknar känt säte och visas bara i <a href={url('/organisationer')}>listan</a>.</p>
+    )}
+  </section>
+</Sida>
+
+<style>
+  .platslista {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 4px 16px;
+  }
+  .platslista li {
+    padding: 6px 0;
+    border-bottom: 1px solid hsl(var(--rule-soft));
+    display: flex;
+    justify-content: space-between;
+  }
+</style>

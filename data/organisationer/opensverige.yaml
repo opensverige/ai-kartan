@@ -1,0 +1,104 @@
+id: opensverige
+
+name:
+  value: OpenSverige
+  status: claimed
+  source_url: https://opensverige.se
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: self
+
+legal_name:
+  value: opensverige, ideell förening
+  status: claimed
+  source_url: https://opensverige.se/stadgar
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: self
+
+type:
+  value: community
+  status: claimed
+  source_url: https://opensverige.se/stadgar
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: self
+
+org_number:
+  value: "802557-3422"
+  status: claimed
+  source_url: https://opensverige.se/stadgar
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: self
+  note: Registrerad hos Skatteverket enligt föreningen själv. Inte kontrollerad mot register.
+
+website: https://opensverige.se
+
+description:
+  value: Ideell förening för alla som bygger med AI i Sverige. Driver en Discord, återkommande träffar och öppna projekt som agenter, MCP-servrar och den här kartan.
+  status: claimed
+  source_url: https://opensverige.se/varfor
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: self
+
+offers:
+  value: [community, oppen_kallkod]
+  status: claimed
+  source_url: https://github.com/opensverige
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: self
+
+areas:
+  value: [agenter_automation, generell]
+  status: claimed
+  source_url: https://github.com/opensverige
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: self
+
+kommun:
+  value: null
+  status: unknown
+  verified_at: 2026-10-04
+  note: Föreningens säte framgår inte av stadgesidan. Verksamheten är rikstäckande via Discord.
+
+founded:
+  value: 2026
+  status: claimed
+  source_url: https://github.com/opensverige
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: self
+  note: Bildad 23 april 2026 enligt föreningens GitHub-profil.
+
+active:
+  value: true
+  status: claimed
+  source_url: https://opensverige.se
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: self
+
+evidence:
+  - url: https://github.com/opensverige
+    kind: repo
+    title: Öppna projekt på GitHub
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: self
+  - url: https://opensverige.se/showcase
+    kind: portfolj
+    title: Showcase med medlemmarnas byggen
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: self
+
+links:
+  github: https://github.com/opensverige
+
+self_submitted: true
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

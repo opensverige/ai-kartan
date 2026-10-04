@@ -1,0 +1,20 @@
+[
+  { "id": "agenter_automation", "label": "Agenter och automation" },
+  { "id": "datorseende", "label": "Datorseende" },
+  { "id": "energi_klimat", "label": "Energi och klimat" },
+  { "id": "fastighet_bygg", "label": "Fastighet och bygg" },
+  { "id": "fintech", "label": "Finans och försäkring" },
+  { "id": "forsvar_sakerhet", "label": "Försvar och säkerhet" },
+  { "id": "handel", "label": "Handel och e-handel" },
+  { "id": "halsa", "label": "Hälsa och life science" },
+  { "id": "industri", "label": "Industri och tillverkning" },
+  { "id": "jordbruk_skog", "label": "Jordbruk och skog" },
+  { "id": "juridik", "label": "Juridik" },
+  { "id": "media_kreativt", "label": "Media och kreativt" },
+  { "id": "offentlig_sektor", "label": "Offentlig sektor" },
+  { "id": "robotik", "label": "Robotik" },
+  { "id": "sprakteknik", "label": "Språkteknik" },
+  { "id": "transport_mobilitet", "label": "Transport och mobilitet" },
+  { "id": "utbildning", "label": "Utbildning" },
+  { "id": "generell", "label": "Generell AI" }
+]

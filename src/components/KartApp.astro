@@ -1,0 +1,622 @@
+---
+// Karta + filter + lista. Datan hämtas från /api/karta.json i webbläsaren.
+// Filtren speglas i URL:en så att en filtrerad vy går att länka och citera.
+import 'maplibre-gl/dist/maplibre-gl.css';
+import { hamtaData, url } from '../lib/data';
+
+interface Props {
+  lage?: 'karta' | 'lista';
+}
+const { lage = 'karta' } = Astro.props;
+const d = hamtaData();
+const etiketter = {
+  typer: Object.fromEntries(d.taxonomi.typer.map((t) => [t.id, t.label])),
+  erbjuder: Object.fromEntries(d.taxonomi.erbjuder.map((t) => [t.id, t.label])),
+  omraden: Object.fromEntries(d.taxonomi.omraden.map((t) => [t.id, t.label])),
+  lan: Object.fromEntries(d.lan.map((l) => [l.kod, l.namn])),
+};
+const lanMedPoster = d.lan.filter((l) => d.statistik.per_lan[l.kod]);
+---
+
+<div class="app" data-lage={lage} data-api={url('/api/karta.json')} data-orgbas={url('/organisation/')}>
+  <aside class="panel">
+    <form class="filter" id="filter" role="search" aria-label="Filtrera organisationer">
+      <label class="visuellt-dold" for="q">Sök</label>
+      <input id="q" class="sok" type="search" name="q" placeholder="Sök namn eller beskrivning" autocomplete="off" />
+
+      <fieldset class="facett">
+        <legend class="kicker">Erbjuder</legend>
+        <div class="facett__val">
+          {d.taxonomi.erbjuder.map((e) => (
+            <label class="val" title={e.description}>
+              <input type="checkbox" name="erbjuder" value={e.id} />
+              <span>{e.label}</span>
+              <span class="val__antal" data-antal={`erbjuder:${e.id}`}>{d.statistik.per_erbjuder[e.id] ?? 0}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+
+      <fieldset class="facett">
+        <legend class="kicker">Organisationstyp</legend>
+        <div class="facett__val">
+          {d.taxonomi.typer.map((t) => (
+            <label class="val" title={t.description}>
+              <input type="checkbox" name="typ" value={t.id} />
+              <span class="prick" style={`background: var(--typ-${t.id})`} aria-hidden="true"></span>
+              <span>{t.plural ?? t.label}</span>
+              <span class="val__antal" data-antal={`typ:${t.id}`}>{d.statistik.per_typ[t.id] ?? 0}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+
+      <details class="facett facett--detalj">
+        <summary class="kicker">Område</summary>
+        <div class="facett__val">
+          {d.taxonomi.omraden.map((o) => (
+            <label class="val">
+              <input type="checkbox" name="omrade" value={o.id} />
+              <span>{o.label}</span>
+              <span class="val__antal" data-antal={`omrade:${o.id}`}>{d.statistik.per_omrade[o.id] ?? 0}</span>
+            </label>
+          ))}
+        </div>
+      </details>
+
+      <div class="facett">
+        <label class="kicker" for="lan">Län</label>
+        <select id="lan" name="lan" class="valj">
+          <option value="">Hela Sverige</option>
+          {lanMedPoster.map((l) => (
+            <option value={l.kod}>{l.namn} ({d.statistik.per_lan[l.kod]})</option>
+          ))}
+        </select>
+      </div>
+
+      <label class="val val--ensam">
+        <input type="checkbox" name="bekraftat" value="1" />
+        <span>Bara poster med minst ett bekräftat fält</span>
+      </label>
+
+      <div class="rad">
+        <button type="reset" class="knapp knapp--ghost knapp--liten">Rensa filter</button>
+        <a class="knapp knapp--ghost knapp--liten ej-utskrift" id="dela" href="#">Kopiera länk till urvalet</a>
+      </div>
+    </form>
+
+    <div class="resultat" aria-live="polite">
+      <p class="meta" id="antal">Laddar …</p>
+      <ol class="lista" id="lista"></ol>
+    </div>
+  </aside>
+
+  {lage === 'karta' && (
+    <div class="kartyta">
+      <div id="karta" class="karta" role="region" aria-label="Karta över organisationer som bygger AI i Sverige. Listan bredvid innehåller samma urval."></div>
+      <p class="karta__not meta">Positioner visas på kommunnivå, aldrig som gatuadress. <a href={url('/metod#plats')}>Varför?</a></p>
+    </div>
+  )}
+</div>
+
+<script type="application/json" id="etiketter" set:html={JSON.stringify(etiketter)} />
+
+<script>
+  import { Map as MapLibreMap, Popup, NavigationControl, type GeoJSONSource, type ExpressionSpecification } from 'maplibre-gl';
+
+  type Post = {
+    id: string; n: string; t: string; o: string[]; a: string[]; k: string | null; kn: string | null;
+    l: string | null; ln: string | null; lat: number | null; lng: number | null; pt: string | null;
+    d: string; s: string | null; c: number; w: string; i: string | null;
+  };
+
+  const app = document.querySelector<HTMLElement>('.app');
+  if (app) starta(app);
+
+  function starta(app: HTMLElement) {
+    const etiketter = JSON.parse(document.getElementById('etiketter')!.textContent || '{}') as Record<string, Record<string, string>>;
+    const form = app.querySelector<HTMLFormElement>('#filter')!;
+    const lista = app.querySelector<HTMLOListElement>('#lista')!;
+    const antalEl = app.querySelector<HTMLElement>('#antal')!;
+    const delaEl = app.querySelector<HTMLAnchorElement>('#dela')!;
+    const orgbas = app.dataset.orgbas || '/organisation/';
+    const medKarta = app.dataset.lage === 'karta';
+    const FARG: Record<string, string> = {
+      bolag: '#2d492d', enskild_firma: '#478547', myndighet: '#2d2920', kommun_region: '#6d665f',
+      larosate: '#926516', community: '#a35c29', finansiar: '#955023', infrastruktur: '#52667a',
+    };
+
+    let alla: Post[] = [];
+    let urval: Post[] = [];
+    let karta: MapLibreMap | null = null;
+    let kartaKlar = false;
+    let popup: Popup | null = null;
+    const fokusId = new URLSearchParams(location.search).get('org');
+    const kommunFilter = new URLSearchParams(location.search).get('kommun') || '';
+
+    const normalisera = (s: string) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+
+    function lasFilter() {
+      const fd = new FormData(form);
+      return {
+        q: normalisera(String(fd.get('q') || '').trim()),
+        erbjuder: fd.getAll('erbjuder').map(String),
+        typ: fd.getAll('typ').map(String),
+        omrade: fd.getAll('omrade').map(String),
+        lan: String(fd.get('lan') || ''),
+        bekraftat: fd.get('bekraftat') === '1',
+      };
+    }
+
+    function skrivUrl() {
+      const f = lasFilter();
+      const p = new URLSearchParams();
+      if (f.q) p.set('q', f.q);
+      if (f.erbjuder.length) p.set('erbjuder', f.erbjuder.join(','));
+      if (f.typ.length) p.set('typ', f.typ.join(','));
+      if (f.omrade.length) p.set('omrade', f.omrade.join(','));
+      if (f.lan) p.set('lan', f.lan);
+      if (f.bekraftat) p.set('bekraftat', '1');
+      if (kommunFilter) p.set('kommun', kommunFilter);
+      if (fokusId) p.set('org', fokusId);
+      const qs = p.toString();
+      history.replaceState(null, '', qs ? `?${qs}` : location.pathname);
+      delaEl.href = location.href;
+    }
+
+    function lasUrl() {
+      const p = new URLSearchParams(location.search);
+      const satt = (namn: string, varden: string[]) => {
+        form.querySelectorAll<HTMLInputElement>(`input[name="${namn}"]`).forEach((i) => (i.checked = varden.includes(i.value)));
+      };
+      (form.elements.namedItem('q') as HTMLInputElement).value = p.get('q') || '';
+      satt('erbjuder', (p.get('erbjuder') || '').split(',').filter(Boolean));
+      satt('typ', (p.get('typ') || '').split(',').filter(Boolean));
+      satt('omrade', (p.get('omrade') || '').split(',').filter(Boolean));
+      (form.elements.namedItem('lan') as HTMLSelectElement).value = p.get('lan') || '';
+      (form.elements.namedItem('bekraftat') as HTMLInputElement).checked = p.get('bekraftat') === '1';
+      if (p.get('omrade')) form.querySelector<HTMLDetailsElement>('.facett--detalj')!.open = true;
+    }
+
+    function filtrera() {
+      const f = lasFilter();
+      urval = alla.filter((o) => {
+        if (f.q && !normalisera(`${o.n} ${o.d} ${o.kn ?? ''}`).includes(f.q)) return false;
+        if (f.erbjuder.length && !f.erbjuder.some((x) => o.o.includes(x))) return false;
+        if (f.typ.length && !f.typ.includes(o.t)) return false;
+        if (f.omrade.length && !f.omrade.some((x) => o.a.includes(x))) return false;
+        if (f.lan && o.l !== f.lan) return false;
+        if (kommunFilter && o.k !== kommunFilter) return false;
+        if (f.bekraftat && o.c < 1) return false;
+        return true;
+      });
+      renderLista();
+      uppdateraAntal();
+      if (karta && kartaKlar) uppdateraKarta();
+      skrivUrl();
+    }
+
+    function uppdateraAntal() {
+      const utanPlats = urval.filter((o) => o.lat === null).length;
+      const total = alla.length;
+      antalEl.textContent =
+        `${urval.length} av ${total} organisationer` + (utanPlats ? `, ${utanPlats} utan plats på kartan` : '');
+      // Räkna om antalen per val givet övriga filter är en finess; vi visar totalerna.
+    }
+
+    function renderLista() {
+      const frag = document.createDocumentFragment();
+      const sorterade = urval.slice().sort((a, b) => a.n.localeCompare(b.n, 'sv'));
+      for (const o of sorterade) {
+        const li = document.createElement('li');
+        li.className = 'post';
+        li.dataset.id = o.id;
+        const erbjuder = o.o.map((x) => etiketter.erbjuder[x] || x).join(' · ');
+        li.innerHTML =
+          `<a class="post__namn" href="${orgbas}${o.id}">${esc(o.n)}</a>` +
+          `<span class="tagg tagg--typ" style="background:${FARG[o.t] || '#2d492d'}">${esc(etiketter.typer[o.t] || o.t)}</span>` +
+          `<span class="post__meta meta">${esc(o.kn ? o.kn + ' · ' : '')}${esc(erbjuder)}${o.lat === null ? ' · utan plats' : ''}</span>`;
+        if (medKarta && o.lat !== null) {
+          li.title = 'Visa på kartan';
+          li.addEventListener('click', (ev) => {
+            if ((ev.target as HTMLElement).closest('a')) return;
+            fokusera(o);
+          });
+        }
+        frag.appendChild(li);
+      }
+      lista.replaceChildren(frag);
+    }
+
+    function esc(s: string) {
+      return s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
+    }
+
+    function tillGeoJson(poster: Post[]): GeoJSON.FeatureCollection {
+      return {
+        type: 'FeatureCollection',
+        features: poster
+          .filter((o) => o.lat !== null && o.lng !== null)
+          .map((o) => ({
+            type: 'Feature',
+            geometry: { type: 'Point', coordinates: [o.lng as number, o.lat as number] },
+            properties: { id: o.id, n: o.n, t: o.t, kn: o.kn ?? '', pt: o.pt ?? '', o: o.o.join(','), c: o.c },
+          })),
+      };
+    }
+
+    function popupHtml(p: Record<string, string>) {
+      const erbjuder = String(p.o || '').split(',').filter(Boolean).map((x) => etiketter.erbjuder[x] || x).join(' · ');
+      const plats = p.pt === 'kommun' ? `${esc(p.kn)} · position på kommunnivå` : esc(p.kn);
+      return `<div class="popup"><a class="popup__namn" href="${orgbas}${p.id}">${esc(p.n)}</a>` +
+        `<div class="popup__rad"><span class="tagg tagg--typ" style="background:${FARG[p.t] || '#2d492d'}">${esc(etiketter.typer[p.t] || p.t)}</span></div>` +
+        `<div class="meta">${plats}</div><div class="meta">${esc(erbjuder)}</div></div>`;
+    }
+
+    function fokusera(o: Post) {
+      if (!karta || o.lat === null || o.lng === null) return;
+      karta.flyTo({ center: [o.lng, o.lat], zoom: Math.max(karta.getZoom(), 9), essential: true });
+      popup?.remove();
+      popup = new Popup({ offset: 10, maxWidth: '280px' })
+        .setLngLat([o.lng, o.lat])
+        .setHTML(popupHtml({ id: o.id, n: o.n, t: o.t, kn: o.kn ?? '', pt: o.pt ?? '', o: o.o.join(','), c: String(o.c) }))
+        .addTo(karta);
+      lista.querySelectorAll('.post--aktiv').forEach((el) => el.classList.remove('post--aktiv'));
+      lista.querySelector(`[data-id="${CSS.escape(o.id)}"]`)?.classList.add('post--aktiv');
+    }
+
+    function uppdateraKarta() {
+      const src = karta!.getSource('orgs') as GeoJSONSource | undefined;
+      src?.setData(tillGeoJson(urval));
+    }
+
+    function startaKarta() {
+      const el = document.getElementById('karta');
+      if (!el) return;
+      karta = new MapLibreMap({
+        container: el,
+        style: 'https://tiles.openfreemap.org/styles/positron',
+        center: [16.3, 62.4],
+        zoom: 4,
+        minZoom: 3.4,
+        maxZoom: 15,
+        attributionControl: { compact: true },
+        cooperativeGestures: window.matchMedia('(max-width: 940px)').matches,
+      });
+      karta.addControl(new NavigationControl({ showCompass: false }), 'top-right');
+      karta.on('load', () => {
+        karta!.addSource('orgs', { type: 'geojson', data: tillGeoJson(urval), cluster: true, clusterRadius: 44, clusterMaxZoom: 11 });
+        karta!.addLayer({
+          id: 'kluster', type: 'circle', source: 'orgs', filter: ['has', 'point_count'],
+          paint: {
+            'circle-color': '#2d492d',
+            'circle-opacity': 0.9,
+            'circle-radius': ['step', ['get', 'point_count'], 16, 10, 22, 40, 28, 100, 34],
+            'circle-stroke-width': 2,
+            'circle-stroke-color': '#ffffff',
+          },
+        });
+        karta!.addLayer({
+          id: 'kluster-antal', type: 'symbol', source: 'orgs', filter: ['has', 'point_count'],
+          layout: { 'text-field': ['get', 'point_count_abbreviated'], 'text-font': ['Noto Sans Regular'], 'text-size': 13 },
+          paint: { 'text-color': '#ffffff' },
+        });
+        karta!.addLayer({
+          id: 'punkter', type: 'circle', source: 'orgs', filter: ['!', ['has', 'point_count']],
+          paint: {
+            'circle-color': ['match', ['get', 't'], ...Object.entries(FARG).flat(), '#2d492d'] as unknown as ExpressionSpecification,
+            'circle-radius': ['interpolate', ['linear'], ['zoom'], 4, 5, 9, 7, 13, 10],
+            'circle-stroke-width': 1.5,
+            'circle-stroke-color': '#ffffff',
+            'circle-opacity': 0.92,
+          },
+        });
+        karta!.on('click', 'kluster', async (e) => {
+          const f = karta!.queryRenderedFeatures(e.point, { layers: ['kluster'] })[0];
+          const src = karta!.getSource('orgs') as GeoJSONSource;
+          const zoom = await src.getClusterExpansionZoom(f.properties!.cluster_id as number);
+          karta!.easeTo({ center: (f.geometry as GeoJSON.Point).coordinates as [number, number], zoom });
+        });
+        karta!.on('click', 'punkter', (e) => {
+          const f = e.features?.[0];
+          if (!f) return;
+          const koord = (f.geometry as GeoJSON.Point).coordinates.slice() as [number, number];
+          popup?.remove();
+          popup = new Popup({ offset: 10, maxWidth: '280px' }).setLngLat(koord).setHTML(popupHtml(f.properties as Record<string, string>)).addTo(karta!);
+          lista.querySelectorAll('.post--aktiv').forEach((el) => el.classList.remove('post--aktiv'));
+          const rad = lista.querySelector<HTMLElement>(`[data-id="${CSS.escape(String(f.properties!.id))}"]`);
+          rad?.classList.add('post--aktiv');
+          rad?.scrollIntoView({ block: 'nearest' });
+        });
+        for (const lager of ['kluster', 'punkter']) {
+          karta!.on('mouseenter', lager, () => (karta!.getCanvas().style.cursor = 'pointer'));
+          karta!.on('mouseleave', lager, () => (karta!.getCanvas().style.cursor = ''));
+        }
+        kartaKlar = true;
+        if (fokusId) {
+          const o = alla.find((x) => x.id === fokusId);
+          if (o) fokusera(o);
+        }
+      });
+    }
+
+    form.addEventListener('input', filtrera);
+    form.addEventListener('change', filtrera);
+    form.addEventListener('submit', (e) => e.preventDefault());
+    form.addEventListener('reset', () => setTimeout(filtrera, 0));
+    delaEl.addEventListener('click', async (e) => {
+      e.preventDefault();
+      try {
+        await navigator.clipboard.writeText(location.href);
+        delaEl.textContent = 'Länk kopierad';
+        setTimeout(() => (delaEl.textContent = 'Kopiera länk till urvalet'), 1800);
+      } catch {
+        prompt('Kopiera länken:', location.href);
+      }
+    });
+
+    lasUrl();
+    if (medKarta) startaKarta();
+    fetch(app.dataset.api!)
+      .then((r) => r.json())
+      .then((data: { organisationer: Post[] }) => {
+        alla = data.organisationer;
+        filtrera();
+        if (fokusId && kartaKlar) {
+          const o = alla.find((x) => x.id === fokusId);
+          if (o) fokusera(o);
+        }
+      })
+      .catch(() => {
+        antalEl.textContent = 'Kunde inte läsa datan. Ladda om sidan.';
+      });
+  }
+</script>
+
+<style is:global>
+  .app {
+    display: grid;
+    grid-template-columns: minmax(300px, 380px) 1fr;
+    gap: 0;
+    border: 1px solid hsl(var(--rule));
+    border-radius: var(--r-card);
+    overflow: hidden;
+    min-height: 640px;
+    height: calc(100vh - 160px);
+    max-height: 900px;
+    background: hsl(var(--bg));
+  }
+  .app[data-lage='lista'] {
+    grid-template-columns: 1fr;
+    height: auto;
+    max-height: none;
+    min-height: 0;
+  }
+  .panel {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    border-right: 1px solid hsl(var(--rule-soft));
+  }
+  .app[data-lage='lista'] .panel {
+    border-right: 0;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 24px;
+    padding: 16px;
+  }
+  .app[data-lage='lista'] .filter {
+    width: 300px;
+    flex: none;
+    border-bottom: 0;
+    position: sticky;
+    top: 70px;
+  }
+  .app[data-lage='lista'] .resultat {
+    flex: 1;
+    overflow: visible;
+    padding: 0;
+  }
+  .app[data-lage='lista'] .lista {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 8px;
+  }
+  .filter {
+    padding: 14px 16px 10px;
+    border-bottom: 1px solid hsl(var(--rule-soft));
+    background: hsl(var(--bg-soft));
+    overflow: auto;
+    max-height: 56%;
+  }
+  .sok,
+  .valj {
+    width: 100%;
+    font: 15px/1.3 var(--font-sans);
+    padding: 9px 11px;
+    border: 1px solid hsl(var(--rule));
+    border-radius: var(--r-btn);
+    background: hsl(var(--bg));
+    color: hsl(var(--ink));
+    margin-bottom: 10px;
+  }
+  .sok:focus,
+  .valj:focus {
+    outline: 2px solid hsl(var(--moss));
+    outline-offset: 0;
+    border-color: hsl(var(--moss));
+  }
+  .facett {
+    border: 0;
+    padding: 0;
+    margin: 0 0 10px;
+    min-width: 0;
+  }
+  .facett legend,
+  .facett summary,
+  .facett > label.kicker {
+    display: block;
+    margin-bottom: 6px;
+    padding: 0;
+  }
+  .facett summary {
+    cursor: pointer;
+  }
+  .facett__val {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 6px;
+  }
+  .val {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13.5px;
+    padding: 4px 8px 4px 6px;
+    border: 1px solid hsl(var(--rule));
+    border-radius: var(--r-pill);
+    background: hsl(var(--bg));
+    cursor: pointer;
+    user-select: none;
+  }
+  .val:has(input:checked) {
+    border-color: hsl(var(--moss));
+    background: hsl(var(--moss) / 0.08);
+    color: hsl(var(--moss));
+  }
+  .val input {
+    margin: 0;
+    accent-color: hsl(var(--moss));
+  }
+  .val__antal {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: hsl(var(--ink-mute));
+  }
+  .val--ensam {
+    margin: 4px 0 12px;
+    border-radius: var(--r-btn);
+  }
+  .prick {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .resultat {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    padding: 10px 16px 16px;
+  }
+  .resultat > .meta {
+    margin: 0 0 8px;
+  }
+  .lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .post {
+    padding: 9px 10px;
+    border: 1px solid hsl(var(--rule-soft));
+    border-radius: 8px;
+    margin-bottom: 6px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 2px 8px;
+    align-items: center;
+    cursor: pointer;
+    transition: border-color var(--t-fast);
+  }
+  .post:hover,
+  .post--aktiv {
+    border-color: hsl(var(--moss));
+  }
+  .post__namn {
+    font-weight: 600;
+    color: hsl(var(--ink));
+    text-decoration: none;
+    font-size: 15px;
+  }
+  .post__namn:hover {
+    color: hsl(var(--moss));
+  }
+  .post__meta {
+    grid-column: 1 / -1;
+  }
+  .kartyta {
+    position: relative;
+    min-height: 0;
+  }
+  .karta {
+    width: 100%;
+    height: 100%;
+    min-height: 420px;
+    background: hsl(var(--bg-soft));
+  }
+  .karta__not {
+    position: absolute;
+    left: 10px;
+    bottom: 8px;
+    margin: 0;
+    background: hsl(var(--bg) / 0.9);
+    padding: 3px 8px;
+    border-radius: 6px;
+    z-index: 2;
+    max-width: 70%;
+  }
+  .maplibregl-popup-content {
+    font-family: var(--font-sans);
+    border-radius: var(--r-card);
+    padding: 12px 14px;
+    box-shadow: 0 10px 30px -10px hsl(var(--ink) / 0.35);
+  }
+  .popup__namn {
+    font-weight: 700;
+    color: hsl(var(--ink));
+    text-decoration: none;
+    font-size: 15px;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .popup__namn:hover {
+    color: hsl(var(--moss));
+  }
+  .popup__rad {
+    margin-bottom: 6px;
+  }
+  .maplibregl-ctrl-attrib {
+    font-family: var(--font-mono);
+    font-size: 10px;
+  }
+  @media (max-width: 940px) {
+    .app {
+      grid-template-columns: 1fr;
+      height: auto;
+      max-height: none;
+    }
+    .app[data-lage='karta'] .kartyta {
+      order: -1;
+      height: 56vh;
+      min-height: 360px;
+    }
+    .panel {
+      border-right: 0;
+      border-top: 1px solid hsl(var(--rule-soft));
+    }
+    .filter {
+      max-height: none;
+    }
+    .resultat {
+      max-height: 60vh;
+    }
+    .app[data-lage='lista'] .panel {
+      flex-direction: column;
+    }
+    .app[data-lage='lista'] .filter {
+      width: 100%;
+      position: static;
+    }
+  }
+</style>

@@ -1,0 +1,44 @@
+# Länkkontroll varje vecka. En källa som försvunnit ska upptäckas, inte ligga kvar tyst.
+name: Länkkontroll
+
+on:
+  schedule:
+    - cron: '0 5 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  lankar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Kontrollera alla länkar
+        id: koll
+        run: |
+          node scripts/lankkoll.mjs --markdown > rapport.md
+          cat rapport.md >> "$GITHUB_STEP_SUMMARY"
+          if grep -q '| ' rapport.md; then echo "doda=true" >> "$GITHUB_OUTPUT"; else echo "doda=false" >> "$GITHUB_OUTPUT"; fi
+
+      - name: Öppna eller uppdatera ärendet om döda länkar
+        if: steps.koll.outputs.doda == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label create "länkar" --color "a35c29" --description "Länkar som inte svarar" --force
+          befintligt=$(gh issue list --label "länkar" --state open --json number --jq '.[0].number')
+          if [ -n "$befintligt" ]; then
+            gh issue comment "$befintligt" --body-file rapport.md
+          else
+            gh issue create --title "Länkar som inte svarar" --label "länkar" --body-file rapport.md
+          fi

@@ -1,0 +1,5 @@
+[
+  { "datum": "2026-10-04", "text": "Första versionen: karta med filter på erbjuder, typ, område och län; lista; en sida per organisation med källa och datum per fält; sidor per kommun och län; nedladdning som JSON, CSV och GeoJSON; llms.txt och Atom-flöde." },
+  { "datum": "2026-10-04", "text": "Automatik: schemavalidering på varje pull request, länkkontroll, dagligt färskhetslarm, ändringshistorik ur git, och ett ärendeformulär som blir pull request utan git." },
+  { "datum": "2026-10-04", "text": "Import av svenska leverantörer från infra.opensverige.se som organisationer av typen infrastruktur, med status och källor ärvda därifrån." }
+]

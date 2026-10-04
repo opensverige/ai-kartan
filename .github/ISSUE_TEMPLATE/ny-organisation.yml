@@ -1,0 +1,165 @@
+name: Lägg till en organisation
+description: Lägg till dig själv eller en organisation du har primärkälla för. Formuläret blir en pull request automatiskt.
+title: "Lägg till: "
+labels: ["ny-organisation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Tack för att du bygger på kartan. Tre kriterier gäller, inga andra: **svensk koppling**, **något byggt med AI bakom en publik länk** och **finns på riktigt**. Läs dem i [kriterier.md](../blob/main/kriterier.md).
+
+        Uppgifter du lämnar märks som **egen uppgift** tills de kan bekräftas mot register. Det är inte ett betyg, bara ärlig märkning. Lämna inga personuppgifter: inga namn, e-postadresser eller telefonnummer.
+  - type: input
+    id: namn
+    attributes:
+      label: Namn
+      description: Så som organisationen själv skriver det.
+      placeholder: Exempelbolaget
+    validations:
+      required: true
+  - type: input
+    id: webbplats
+    attributes:
+      label: Webbplats
+      placeholder: https://exempelbolaget.se
+    validations:
+      required: true
+  - type: dropdown
+    id: typ
+    attributes:
+      label: Organisationstyp
+      options:
+        - bolag
+        - enskild_firma
+        - myndighet
+        - kommun_region
+        - larosate
+        - community
+        - finansiar
+        - infrastruktur
+    validations:
+      required: true
+  - type: input
+    id: organisationsnummer
+    attributes:
+      label: Organisationsnummer
+      description: Formen 556000-0000. Lämna tomt om det saknas. För enskild firma lämnas det alltid tomt (det är ett personnummer).
+      placeholder: 556000-0000
+  - type: input
+    id: kommun
+    attributes:
+      label: Kommun där organisationen har sitt säte
+      description: Kommunens namn, t.ex. Uppsala. Kartan visar bara kommunnivå, aldrig gatuadress.
+      placeholder: Uppsala
+    validations:
+      required: true
+  - type: textarea
+    id: beskrivning
+    attributes:
+      label: Vad bygger ni med AI?
+      description: En till två neutrala meningar på svenska (max 300 tecken). Beskriv vad som byggs, inte hur bra det är.
+      placeholder: Bygger språkmodeller för svenska myndighetstexter och säljer dem som API.
+    validations:
+      required: true
+  - type: checkboxes
+    id: erbjuder
+    attributes:
+      label: Vad erbjuder ni?
+      options:
+        - label: produkt – egen AI-produkt eller tjänst
+        - label: utveckling – bygger AI-lösningar åt andra
+        - label: infrastruktur – hosting, GPU, inferens
+        - label: data – dataset, annotering, datainsamling
+        - label: forskning
+        - label: utbildning
+        - label: community
+        - label: finansiering
+        - label: oppen_kallkod – publicerar öppna modeller eller verktyg
+  - type: checkboxes
+    id: omraden
+    attributes:
+      label: Områden
+      options:
+        - label: agenter_automation
+        - label: datorseende
+        - label: energi_klimat
+        - label: fastighet_bygg
+        - label: fintech
+        - label: forsvar_sakerhet
+        - label: handel
+        - label: halsa
+        - label: industri
+        - label: jordbruk_skog
+        - label: juridik
+        - label: media_kreativt
+        - label: offentlig_sektor
+        - label: robotik
+        - label: sprakteknik
+        - label: transport_mobilitet
+        - label: utbildning
+        - label: generell
+  - type: input
+    id: belagg_url
+    attributes:
+      label: Belägg – länk till något ni byggt med AI
+      description: Produktsida, kodförråd, modell, demo eller publikation. Att använda AI räcker inte.
+      placeholder: https://github.com/exempelbolaget/svensk-llm
+    validations:
+      required: true
+  - type: dropdown
+    id: belagg_typ
+    attributes:
+      label: Vad är belägget?
+      options:
+        - produkt
+        - repo
+        - modell
+        - dataset
+        - demo
+        - publikation
+        - case
+        - resurs
+        - program
+        - portfolj
+    validations:
+      required: true
+  - type: input
+    id: belagg_titel
+    attributes:
+      label: Rubrik på belägget
+      placeholder: Öppen svensk språkmodell
+  - type: input
+    id: grundat
+    attributes:
+      label: Grundat år
+      placeholder: "2021"
+  - type: input
+    id: github
+    attributes:
+      label: GitHub-organisation (valfritt)
+      placeholder: https://github.com/exempelbolaget
+  - type: input
+    id: huggingface
+    attributes:
+      label: Hugging Face (valfritt)
+      placeholder: https://huggingface.co/exempelbolaget
+  - type: input
+    id: linkedin
+    attributes:
+      label: LinkedIn-sida för organisationen (valfritt, aldrig en personprofil)
+      placeholder: https://www.linkedin.com/company/exempelbolaget
+  - type: input
+    id: kalla
+    attributes:
+      label: Sida där uppgifterna står
+      description: Länk till den sida på er webbplats som styrker beskrivningen. Lämnas den tom används webbplatsens startsida.
+      placeholder: https://exempelbolaget.se/om-oss
+  - type: checkboxes
+    id: samtycke
+    attributes:
+      label: Bekräftelse
+      options:
+        - label: Jag företräder organisationen, eller lämnar uppgifter som har en publik primärkälla. Är det en enskild firma är jag personen själv och förstår att posten är en personuppgift som jag kan få borttagen när som helst.
+          required: true
+        - label: Uppgifterna innehåller inga personuppgifter (namn, e-post, telefon) och får publiceras under CC BY 4.0.
+          required: true

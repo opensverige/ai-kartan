@@ -1,0 +1,40 @@
+---
+import Sida from '../layouts/Sida.astro';
+import { url, SAJT } from '../lib/data';
+---
+
+<Sida
+  titel="Personuppgifter och integritet"
+  kicker="Integritet"
+  ingress="Kartan handlar om organisationer, inte människor. Sajten har inga konton, inga kakor och ingen besöksstatistik."
+  beskrivning="Hur AI-kartan hanterar personuppgifter: inga kakor, ingen spårning, bara organisationsuppgifter, enskilda firmor enbart med samtycke, rättelse och borttagning inom 14 dagar."
+  stig="/integritet"
+>
+  <h2 id="besok">När du besöker sajten</h2>
+  <ul>
+    <li>Sajten är statisk och sätter inga kakor. Ingen besöksstatistik, inga tredjepartsskript för analys.</li>
+    <li>Typsnitt serveras från vår egen domän.</li>
+    <li>Kartbilden hämtas från <a href="https://openfreemap.org/privacy" rel="noopener">OpenFreeMap</a>. När kartan laddas ser deras servrar din IP-adress, som vid vilken bildhämtning som helst. Vill du undvika det finns samma urval som <a href={url('/organisationer')}>lista utan karta</a>.</li>
+    <li>Länkar till GitHub och Discord leder till tjänster med egna villkor.</li>
+  </ul>
+
+  <h2 id="datan">Vad datasetet innehåller</h2>
+  <ul>
+    <li>Uppgifter på organisationsnivå: namn, organisationsnummer, säte på kommunnivå, vad organisationen bygger, publika länkar.</li>
+    <li>Schemat saknar fält för kontaktpersoner, anställda, ägare, e-post och telefon. Den automatiska kontrollen stoppar sådana uppgifter innan de kan publiceras.</li>
+    <li>Positioner visas på kommunnivå, aldrig som gatuadress. Exakta koordinater förekommer bara när organisationen själv publicerar en kontorsadress, och aldrig för enskilda firmor.</li>
+    <li>Bolagsverket visar styrelse och vd med namn. De fälten importeras aldrig.</li>
+  </ul>
+
+  <h2 id="enskild">Enskilda firmor och soloutvecklare</h2>
+  <p>En enskild firma är en person. Sådana poster skapas bara av personen själv, vilket är samtycket, och innehåller aldrig organisationsnumret eftersom det är ett personnummer. Posten tas bort på begäran av personen, utan diskussion, via <a href={`${SAJT.repo}/issues/new?template=borttagning.yml`} rel="noopener">borttagningsärendet</a> eller Discord. Borttagningen syns i historiken som ”hela posten borttagen”, utan innehållet. Uppgifter om enskilda firmor omfattas inte av CC BY-licensen som sådana och får inte sammanställas vidare.</p>
+
+  <h2 id="grund">Rättslig grund</h2>
+  <p>Uppgifter om juridiska personer är inte personuppgifter. När en uppgift ändå kan knytas till en person, som för en enskild firma, är grunden samtycke från personen själv. Namn på bidragsgivare förekommer i git-historiken på GitHub, på samma sätt som i alla öppna projekt; den som bidrar väljer själv vilket GitHub-konto som syns.</p>
+
+  <h2 id="rattigheter">Dina rättigheter</h2>
+  <p>Begär rättelse eller borttagning via <a href={`${SAJT.repo}/issues/new/choose`} rel="noopener">ärendemallarna</a> eller i <a href={SAJT.discord} rel="noopener">Discord</a>. Vi svarar inom 14 dagar. Du kan också vända dig till Integritetsskyddsmyndigheten.</p>
+
+  <h2 id="ansvarig">Personuppgiftsansvarig</h2>
+  <p>opensverige, ideell förening, org.nr 802557-3422. <a href={`${SAJT.opensverige}/integritet`} rel="noopener">Föreningens integritetspolicy</a> gäller för medlemskap och Discord. Den här sidan granskas av jurist före publik lansering och uppdateras då.</p>
+</Sida>

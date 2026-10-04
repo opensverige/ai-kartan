@@ -1,0 +1,58 @@
+# Kontrollerar varje pull request och varje push till main.
+# Ett fält utan källa, datum och status stoppas här och kan inte publiceras.
+name: Validera data och bygg
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validera-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validera:
+    name: Schema, regler och länkar
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Validera organisationsfiler
+        run: node scripts/validera.mjs
+
+      - name: Kontrollera länkar i ändrade filer
+        if: github.event_name == 'pull_request'
+        run: node scripts/lankkoll.mjs --andrade origin/${{ github.base_ref }} --strikt
+
+      - name: Bygg ändringshistorik ur git
+        run: node scripts/andringar.mjs
+
+      - name: Bygg sajten
+        run: npx astro build
+        env:
+          SITE_URL: https://karta.opensverige.se
+
+      - name: Sammanfattning
+        if: always()
+        run: |
+          echo "## Validering" >> "$GITHUB_STEP_SUMMARY"
+          node scripts/validera.mjs --json | node -e '
+            let s=""; process.stdin.on("data",d=>s+=d).on("end",()=>{
+              const j=JSON.parse(s).sammanfattning;
+              console.log(`${j.antal_poster} poster · ${j.antal_fel} fel · ${j.antal_varningar} varningar · ${j.poster_med_minst_ett_bekraftat_falt} med minst ett bekräftat fält (${j.andel_med_bekraftat} %)`);
+            })' >> "$GITHUB_STEP_SUMMARY" || true

@@ -1,0 +1,85 @@
+---
+import '../styles/global.css';
+import Sidhuvud from '../components/Sidhuvud.astro';
+import Sidfot from '../components/Sidfot.astro';
+import { SAJT, absolutUrl, url } from '../lib/data';
+
+interface Props {
+  titel: string;
+  beskrivning: string;
+  /** Sökväg inom sajten, t.ex. /organisation/berget-ai */
+  stig: string;
+  bild?: string;
+  noindex?: boolean;
+  bred?: boolean;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  ogTyp?: string;
+  helTitel?: boolean;
+}
+
+const { titel, beskrivning, stig, bild = '/og-image.jpg', noindex = false, bred = false, jsonLd, ogTyp = 'website', helTitel = false } = Astro.props;
+const fullTitel = helTitel ? titel : `${titel} | ${SAJT.namn}`;
+const kanonisk = absolutUrl(stig);
+const bildUrl = absolutUrl(bild);
+---
+
+<!doctype html>
+<html lang="sv">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitel}</title>
+    <meta name="description" content={beskrivning} />
+    <link rel="canonical" href={kanonisk} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <meta name="theme-color" content="#2d492d" />
+    <meta name="color-scheme" content="light" />
+    <meta property="og:site_name" content={SAJT.namn} />
+    <meta property="og:type" content={ogTyp} />
+    <meta property="og:title" content={fullTitel} />
+    <meta property="og:description" content={beskrivning} />
+    <meta property="og:url" content={kanonisk} />
+    <meta property="og:image" content={bildUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Pixelhand som håller en kartnål. Alla som bygger AI i Sverige." />
+    <meta property="og:locale" content="sv_SE" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href={url('/favicon.ico')} sizes="32x32" />
+    <link rel="icon" href={url('/logo.svg')} type="image/svg+xml" />
+    <link rel="apple-touch-icon" href={url('/apple-touch-icon.png')} />
+    <link rel="manifest" href={url('/site.webmanifest')} />
+    <link rel="alternate" type="application/atom+xml" title="Ändringar på AI-kartan" href={url('/feed.xml')} />
+    <link rel="preload" href={url('/fonts/BricolageGrotesque-latin.woff2')} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={url('/fonts/JetBrainsMono-latin.woff2')} as="font" type="font/woff2" crossorigin />
+    <link rel="sitemap" href={url('/sitemap-index.xml')} />
+    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+  </head>
+  <body>
+    <a class="hoppa visuellt-dold" href="#innehall">Hoppa till innehållet</a>
+    <Sidhuvud />
+    <main id="innehall" class:list={['huvud', { 'huvud--bred': bred }]}>
+      <slot />
+    </main>
+    <Sidfot />
+  </body>
+</html>
+
+<style>
+  .hoppa:focus {
+    position: fixed !important;
+    top: 8px;
+    left: 8px;
+    width: auto;
+    height: auto;
+    clip: auto;
+    padding: 8px 12px;
+    background: hsl(var(--ink));
+    color: #fff;
+    z-index: 100;
+    border-radius: 6px;
+  }
+  .huvud {
+    min-height: 60vh;
+  }
+</style>

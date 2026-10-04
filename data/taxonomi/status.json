@@ -1,0 +1,7 @@
+[
+  { "id": "confirmed", "label": "Bekräftad", "short": "Bekräftat", "description": "Verifierad mot primärkälla: register, myndighet eller oberoende dokument, med källänk och datum.", "color": "moss" },
+  { "id": "claimed", "label": "Egen uppgift", "short": "Egen uppgift", "description": "Organisationens eget ord: webbplats, dokumentation, pressmeddelande eller eget bidrag. Inte verifierat mot register.", "color": "amber" },
+  { "id": "planned", "label": "Planerad", "short": "Planerat", "description": "Ett uttalat mål eller något som är på väg. Förväxlas aldrig med uppnått.", "color": "rust" },
+  { "id": "unknown", "label": "Okänd", "short": "Okänt", "description": "Inte undersökt än. Betyder inte nej. En felaktig bekräftad är värre än en ärlig okänd.", "color": "mute" },
+  { "id": "not_applicable", "label": "Ej tillämplig", "short": "Ej tillämplig", "description": "Fältet gäller inte den här typen av organisation.", "color": "mute" }
+]

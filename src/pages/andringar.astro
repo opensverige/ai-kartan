@@ -1,0 +1,110 @@
+---
+import fs from 'node:fs';
+import path from 'node:path';
+import Sida from '../layouts/Sida.astro';
+import { hamtaData, url, formateraDatum } from '../lib/data';
+import { ROT } from '../../scripts/lib/organisationer.mjs';
+
+const d = hamtaData();
+const byggloggFil = path.join(ROT, 'history', 'bygglogg.json');
+const bygglogg: { datum: string; text: string }[] = fs.existsSync(byggloggFil) ? JSON.parse(fs.readFileSync(byggloggFil, 'utf8')) : [];
+
+const perDag = new Map<string, typeof d.andringar.rader>();
+for (const r of d.andringar.rader) {
+  if (!perDag.has(r.datum)) perDag.set(r.datum, []);
+  perDag.get(r.datum)!.push(r);
+}
+const dagar = [...perDag.keys()].sort().reverse();
+const MAX_RADER = 600;
+let visade = 0;
+const visa = (v: unknown) => (v === null || v === undefined ? '–' : typeof v === 'object' ? JSON.stringify(v) : String(v));
+---
+
+<Sida
+  titel="Ändringshistorik"
+  kicker="Varje ändrat fält, med datum"
+  ingress="Vad vi byggt, och varje uppgift som ändrats i datan. Historiken byggs ur git-historiken och är append-only: det här är delen ingen kan återskapa genom att skrapa om i dag."
+  beskrivning="Varje ändrat fält i AI-kartans data, med datum, gammalt och nytt värde och källa. Append-only, byggt ur git-historiken."
+  stig="/andringar"
+  bred
+>
+  <p class="meta">
+    {d.andringar.rader.length} rader · senaste ändring {formateraDatum(d.andringar.senaste_andring)} ·
+    <a href={url('/api/andringar.json')}>JSON</a> · <a href={url('/feed.xml')}>Atom-flöde</a>
+  </p>
+
+  {bygglogg.length > 0 && (
+    <section>
+      <h2 id="byggt">Vad vi byggt</h2>
+      <ul class="bygglogg">
+        {bygglogg.map((b) => (
+          <li><span class="meta">{b.datum}</span> {b.text}</li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  <section>
+    <h2 id="data">Dataändringar</h2>
+    {dagar.length === 0 && <p class="ljus">Inga dataändringar loggade än. Första raden kommer med första publicerade commiten.</p>}
+    {dagar.map((dag) => {
+      if (visade >= MAX_RADER) return null;
+      const rader = perDag.get(dag)!;
+      visade += rader.length;
+      return (
+        <section class="dag" id={dag}>
+          <h3><a href={`#${dag}`}>{formateraDatum(dag)}</a> <span class="meta">{rader.length} {rader.length === 1 ? 'uppgift' : 'uppgifter'}</span></h3>
+          <div class="tabellram">
+            <table class="tabell">
+              <thead><tr><th>Organisation</th><th>Fält</th><th>Ändring</th><th>Från</th><th>Till</th><th>Status</th><th>Källa</th></tr></thead>
+              <tbody>
+                {rader.map((r) => (
+                  <tr>
+                    <td><a href={url(`/organisation/${r.id}`)}>{r.namn}</a></td>
+                    <td>{r.falt}</td>
+                    <td>{r.andring}</td>
+                    <td class="meta varde">{visa(r.gammalt)}</td>
+                    <td class="meta varde">{visa(r.nytt)}</td>
+                    <td class="meta">{r.status ?? ''}</td>
+                    <td class="meta">{r.kalla ? <a href={r.kalla} rel="noopener nofollow">källa</a> : ''}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      );
+    })}
+    {visade >= MAX_RADER && <p class="meta">Visar de senaste {MAX_RADER} raderna. Hela historiken finns i <a href={url('/api/andringar.json')}>JSON</a>.</p>}
+  </section>
+</Sida>
+
+<style>
+  .bygglogg {
+    list-style: none;
+    padding: 0;
+  }
+  .bygglogg li {
+    padding: 8px 0;
+    border-bottom: 1px solid hsl(var(--rule-soft));
+    max-width: 80ch;
+  }
+  .bygglogg .meta {
+    display: inline-block;
+    min-width: 96px;
+  }
+  .dag {
+    margin-bottom: 28px;
+  }
+  .dag h3 a {
+    color: hsl(var(--ink));
+    text-decoration: none;
+  }
+  .tabellram {
+    overflow-x: auto;
+  }
+  .varde {
+    max-width: 28ch;
+    overflow-wrap: anywhere;
+  }
+</style>

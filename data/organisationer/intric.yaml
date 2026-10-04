@@ -1,0 +1,80 @@
+# Importerad från OpenSverige AI-Infra (https://infra.opensverige.se/leverantor/intric). Status och källor ärvda därifrån.
+id: intric
+name:
+  value: Intric
+  status: claimed
+  source_url: https://www.intric.ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: manual
+type:
+  value: infrastruktur
+  status: claimed
+  source_url: https://infra.opensverige.se/leverantor/intric
+  source_type: infra_dataset
+  verified_at: 2026-10-04
+  verified_by: manual
+  note: "Kategori på infra: platform_assistant."
+org_number:
+  value: 559308-3743
+  status: confirmed
+  source_url: https://www.allabolag.se/5593083743
+  source_type: third_party
+  verified_at: 2026-08-06
+  verified_by: manual
+  note: Via infra.opensverige.se.
+website: https://www.intric.ai
+description:
+  value: Bygger en assistentplattform för organisationer, driftad i Sverige.
+  status: claimed
+  source_url: https://infra.opensverige.se/leverantor/intric
+  source_type: infra_dataset
+  verified_at: 2026-10-04
+  verified_by: manual
+  note: Importerad från OpenSverige AI-Infra.
+offers:
+  value:
+    - produkt
+    - infrastruktur
+  status: claimed
+  source_url: https://infra.opensverige.se/leverantor/intric
+  source_type: infra_dataset
+  verified_at: 2026-10-04
+  verified_by: manual
+areas:
+  value:
+    - generell
+  status: claimed
+  source_url: https://infra.opensverige.se/leverantor/intric
+  source_type: infra_dataset
+  verified_at: 2026-10-04
+  verified_by: manual
+kommun:
+  value: null
+  status: unknown
+  verified_at: 2026-10-04
+  verified_by: manual
+active:
+  value: true
+  status: claimed
+  source_url: https://intric.ai/en/platform
+  source_type: own_site
+  verified_at: 2026-07-11
+  verified_by: manual
+evidence:
+  - url: https://github.com/eneo-ai/eneo
+    kind: produkt
+    title: Tjänstebeskrivning
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: manual
+  - url: https://infra.opensverige.se/leverantor/intric
+    kind: case
+    title: Post på OpenSverige AI-Infra med källa per fält
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: manual
+links:
+  infra_id: intric
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

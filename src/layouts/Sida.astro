@@ -1,0 +1,46 @@
+---
+// Enkel textsida: kicker, rubrik, ingress och innehåll i läsbredd.
+import Bas from './Bas.astro';
+
+interface Props {
+  titel: string;
+  beskrivning: string;
+  stig: string;
+  kicker?: string;
+  ingress?: string;
+  noindex?: boolean;
+  bred?: boolean;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+}
+const { titel, beskrivning, stig, kicker, ingress, noindex, bred = false, jsonLd } = Astro.props;
+---
+
+<Bas titel={titel} beskrivning={beskrivning} stig={stig} noindex={noindex} jsonLd={jsonLd}>
+  <article class:list={['ram', 'sektion', { 'ram--bred': bred }]}>
+    <header class="sidhuvud-text">
+      {kicker && <p class="kicker">{kicker}</p>}
+      <h1>{titel}</h1>
+      {ingress && <p class="ingress">{ingress}</p>}
+    </header>
+    <div class:list={['innehall', { lasbredd: !bred }]}>
+      <slot />
+    </div>
+  </article>
+</Bas>
+
+<style>
+  .sidhuvud-text {
+    margin-bottom: 28px;
+  }
+  .ingress {
+    font-size: 19px;
+    max-width: 62ch;
+    color: hsl(var(--ink-soft));
+  }
+  .innehall :global(h2) {
+    scroll-margin-top: 80px;
+  }
+  .innehall :global(table) {
+    font-size: 14px;
+  }
+</style>

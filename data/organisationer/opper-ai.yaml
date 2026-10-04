@@ -1,0 +1,83 @@
+# Importerad från OpenSverige AI-Infra (https://infra.opensverige.se/leverantor/opper). Status och källor ärvda därifrån.
+id: opper-ai
+name:
+  value: Opper AI
+  status: claimed
+  source_url: https://opper.ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: manual
+type:
+  value: infrastruktur
+  status: claimed
+  source_url: https://infra.opensverige.se/leverantor/opper
+  source_type: infra_dataset
+  verified_at: 2026-10-04
+  verified_by: manual
+  note: "Kategori på infra: gateway_router."
+org_number:
+  value: 559446-3720
+  status: confirmed
+  source_url: https://www.allabolag.se/5594463720
+  source_type: third_party
+  verified_at: 2026-08-06
+  verified_by: manual
+  note: Via infra.opensverige.se.
+website: https://opper.ai
+description:
+  value: Driver en AI-gateway som routar anrop till andras modeller från Sverige.
+  status: claimed
+  source_url: https://infra.opensverige.se/leverantor/opper
+  source_type: infra_dataset
+  verified_at: 2026-10-04
+  verified_by: manual
+  note: Importerad från OpenSverige AI-Infra.
+offers:
+  value:
+    - produkt
+    - infrastruktur
+  status: claimed
+  source_url: https://infra.opensverige.se/leverantor/opper
+  source_type: infra_dataset
+  verified_at: 2026-10-04
+  verified_by: manual
+areas:
+  value:
+    - generell
+  status: claimed
+  source_url: https://infra.opensverige.se/leverantor/opper
+  source_type: infra_dataset
+  verified_at: 2026-10-04
+  verified_by: manual
+kommun:
+  value: "0180"
+  status: claimed
+  source_url: https://www.allabolag.se/5594463720
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: manual
+  note: Ort enligt infra.opensverige.se (Stockholm). Kontrollera mot register.
+active:
+  value: true
+  status: claimed
+  source_url: https://opper.ai/
+  source_type: own_site
+  verified_at: 2026-07-07
+  verified_by: manual
+evidence:
+  - url: https://docs.opper.ai
+    kind: produkt
+    title: Tjänstebeskrivning
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: manual
+  - url: https://infra.opensverige.se/leverantor/opper
+    kind: case
+    title: Post på OpenSverige AI-Infra med källa per fält
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: manual
+links:
+  infra_id: opper
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

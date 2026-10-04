@@ -1,0 +1,64 @@
+---
+import Sida from '../layouts/Sida.astro';
+import { url, SAJT } from '../lib/data';
+---
+
+<Sida
+  titel="Om AI-kartan"
+  kicker="Tech Embassy – Sveriges öppna AI-karta"
+  ingress="En öppen, oberoende karta över vilka som bygger AI i Sverige och vad de gör. Ingen har gett OpenSverige mandatet, och det är poängen: ingen annan håller flaggan."
+  beskrivning="Om Tech Embassy, Sveriges öppna AI-karta: varför den finns, vem som bygger den, vad den inte är, och hur den förhåller sig till andra kartor."
+  stig="/om"
+>
+  <h2 id="problemet">Problemet</h2>
+  <p>Det finns ingen öppen, samlad och oberoende karta över AI i Sverige. Det som finns är uppdelat per sektor och styrs av urval: en karta kräver aktiebolag som är högst tio år gamla, minst två heltidstjänster och en kommittés godkännande. Soloutvecklaren, föreningen, lärosätet, kommunen och det äldre bolaget hamnar utanför. Den som vill förstå svensk AI som helhet får ett kurerat urval eller ingenting. Det gäller kommunen som ska upphandla, det utländska bolaget som etablerar sig och byggaren som letar partner.</p>
+
+  <h2 id="svaret">Svaret</h2>
+  <p>Vi listar alla som kan visa något de byggt. <a href={url('/kriterier')}>Tre objektiva kriterier</a>, inget ansökningsförfarande, ingen kommitté. Varje uppgift har källa, datum och status. Inget rankas och ingen kan köpa en plats. Koden och datan är öppna, och vem som helst kan lägga till sig själv med en pull request.</p>
+
+  <h2 id="principer">Principer</h2>
+  <p>Allt ärvs från <a href={SAJT.infra} rel="noopener">infra.opensverige.se</a>. Bryter en funktion mot en princip, stryks funktionen.</p>
+  <ol>
+    <li>Källa och datum på varje uppgift.</li>
+    <li>Organisationer är källor, aldrig författare.</li>
+    <li>Ingen rankning, inga rekommendationer. Kartan visar vad som finns, inte vad som är bäst.</li>
+    <li>Inga betalplatser. Ingen kan köpa synlighet, placering eller ett märke.</li>
+    <li>Öppen kod, öppen data. Allt går att ladda ner, forka och bygga vidare på.</li>
+    <li>Historiken är vallgraven. Varje ändring loggas publikt.</li>
+    <li>Färskhet bevakas automatiskt. Tyst inaktuell data är den största risken.</li>
+    <li>Inga mörka mönster. Inga e-postspärrar, ingen FOMO, inga påhittade källor.</li>
+    <li>Ordval: vi säger karta eller översikt, inte register, för att inte förväxlas med EU:s AI-förordning.</li>
+  </ol>
+
+  <h2 id="namnet">Namnet</h2>
+  <p>Danmark utsåg 2017 världens första tech-ambassadör. Idén att ett land behöver en kontaktyta mot tech är bra. Vi är inte statliga och förhandlar inte med någon. Vi är en öppen karta, och det står i sidhuvudet: <strong>oberoende och inte statlig</strong>. Vi talar inte för Sverige.</p>
+
+  <h2 id="paraplyet">Paraplyet</h2>
+  <p>Tech Embassy är ett tak. <a href={SAJT.infra} rel="noopener">AI-Infra</a>, OpenSveriges översikt över AI-infrastruktur, är första flygeln och visar att källa och datum per uppgift fungerar i praktiken. Den här kartan är andra flygeln: vem är vem inom svensk AI. Senare flyglar, som var AI faktiskt används och en tidsserie ur ändringsloggen, byggs först när den här håller sina mål.</p>
+
+  <h2 id="inte">Vad kartan inte är</h2>
+  <ul>
+    <li>Ingen rankning eller betyg.</li>
+    <li>Ingen marknadsplats. Inga leads, offerter eller förmedling. Kartan visar, den säljer inte.</li>
+    <li>Inga personuppgifter utan samtycke. Inga kontaktpersoner, inga namn på anställda.</li>
+    <li>Ingen officiell representation.</li>
+    <li>Ingen kritik av andra kartor. Vi länkar gärna till dem och visar bara fakta.</li>
+  </ul>
+
+  <h2 id="forebilder">Förebilder</h2>
+  <p><a href="https://github.com/cncf/landscape" rel="noopener">CNCF Landscape</a> visar att en öppen karta kan underhållas av dem som står på den: en kanonisk datafil, bidrag via pull request, data under CC BY 4.0. Vi lägger till källa och datum per uppgift, inte bara per post. <a href="https://startupmap.one" rel="noopener">StartupMap</a> visar värdet av en karta man förstår direkt och en sida per stad.</p>
+
+  <h2 id="vem">Vem bygger den</h2>
+  <p>Kartan byggs och underhålls ideellt inom <a href={SAJT.opensverige} rel="noopener">OpenSverige</a>, en registrerad ideell förening (org.nr 802557-3422) för alla som bygger med AI i Sverige. Föreningen tar inte emot pengar för att driva någons agenda. Inga affiliate-länkar, ingen sponsrad placering, ingen poängsättning. Specifikationen är skriven av Baltsar inom OpenSverige, med samma metod som AI-Infra.</p>
+
+  <h2 id="kallor">Källor och tack</h2>
+  <ul>
+    <li>Organisationernas egna webbplatser, register och oberoende sidor som speglar register, allt länkat per uppgift.</li>
+    <li>Kartunderlag: <a href="https://openfreemap.org" rel="noopener">OpenFreeMap</a> och <a href="https://openmaptiles.org" rel="noopener">OpenMapTiles</a>, data från <a href="https://www.openstreetmap.org/copyright" rel="noopener">OpenStreetMap</a>-bidragsgivare.</li>
+    <li>Kommun- och länsgränser: <a href="https://www.geoboundaries.org" rel="noopener">geoBoundaries</a> (CC0 respektive CC BY 3.0) och SCB:s kodlista.</li>
+    <li>Typsnitt: Bricolage Grotesque och JetBrains Mono, SIL Open Font License.</li>
+  </ul>
+
+  <h2 id="kontakt">Kontakt</h2>
+  <p>All kontakt går via <a href={SAJT.discord} rel="noopener">Discord</a>, där vi bygger öppet, och via <a href={`${SAJT.repo}/issues`} rel="noopener">ärenden på GitHub</a> när något ska vara spårbart. Rättelser besvaras inom 14 dagar.</p>
+</Sida>

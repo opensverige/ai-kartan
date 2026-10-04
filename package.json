@@ -1,0 +1,36 @@
+{
+  "name": "ai-kartan",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Tech Embassy – Sveriges öppna AI-karta. Alla som bygger AI i Sverige, med källa och datum på varje uppgift.",
+  "license": "AGPL-3.0-only",
+  "homepage": "https://github.com/opensverige/ai-kartan",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "node scripts/validera.mjs && astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "validera": "node scripts/validera.mjs",
+    "andringar": "node scripts/andringar.mjs",
+    "farskhet": "node scripts/farskhet.mjs",
+    "lankkoll": "node scripts/lankkoll.mjs",
+    "importera:infra": "node scripts/importera-infra.mjs",
+    "ny": "node scripts/ny-organisation.mjs"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
+    "astro": "^7.3.5",
+    "maplibre-gl": "^6.12.0",
+    "yaml": "^2.9.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "typescript": "^5.9.3"
+  }
+}

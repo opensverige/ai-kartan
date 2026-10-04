@@ -1,0 +1,19 @@
+---
+import Bas from '../layouts/Bas.astro';
+import KartApp from '../components/KartApp.astro';
+import { hamtaData, url } from '../lib/data';
+
+const d = hamtaData();
+---
+
+<Bas titel="Alla organisationer" beskrivning={`${d.statistik.antal} organisationer som bygger AI i Sverige, filtrerbara på vad de erbjuder, typ, område och län.`} stig="/organisationer" bred>
+  <section class="ram ram--bred sektion">
+    <p class="kicker">Lista</p>
+    <h1>Alla organisationer</h1>
+    <p class="lasbredd">
+      Samma urval som på <a href={url('/')}>kartan</a>, som lista. Filtren speglas i adressfältet, så en filtrerad vy går att länka.
+      Varje organisation har en egen sida med källa och datum per uppgift.
+    </p>
+    <KartApp lage="lista" />
+  </section>
+</Bas>

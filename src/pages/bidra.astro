@@ -1,0 +1,74 @@
+---
+import Sida from '../layouts/Sida.astro';
+import { url, SAJT } from '../lib/data';
+const nyUrl = `${SAJT.repo}/issues/new?template=ny-organisation.yml`;
+const rattaUrl = `${SAJT.repo}/issues/new?template=rattelse.yml`;
+const bortUrl = `${SAJT.repo}/issues/new?template=borttagning.yml`;
+const mallUrl = `${SAJT.repo}/blob/main/data/MALL.yaml`;
+const nyFilUrl = `${SAJT.repo}/new/main/data/organisationer`;
+---
+
+<Sida
+  titel="Lägg till, rätta eller ta bort"
+  kicker="Bidra"
+  ingress="Vem som helst kan lägga till sig själv eller en organisation med primärkälla. Det kostar inget, kan inte köpas och kräver inget konto hos oss, bara ett GitHub-konto."
+  beskrivning="Så lägger du till en organisation på AI-kartan: via ett formulär som blir en pull request, eller direkt med en YAML-fil. Så rättar du en uppgift eller begär borttagning."
+  stig="/bidra"
+>
+  <h2 id="formular">Enklast: fyll i formuläret</h2>
+  <p>Formuläret på GitHub blir en pull request automatiskt. Du behöver inte kunna git. En människa granskar mot <a href={url('/kriterier')}>kriterierna</a> och svarar inom 14 dagar.</p>
+  <p><a class="knapp" href={nyUrl} rel="noopener">Lägg till en organisation</a></p>
+  <p>Allt du skickar in märks som <em>egen uppgift</em>. Vill du att något ska bli <em>bekräftat</em>, länka till ett register eller ett oberoende dokument, så kontrollerar vi.</p>
+
+  <h2 id="pr">För den som vill: en fil per organisation</h2>
+  <ol>
+    <li>Kopiera <a href={mallUrl} rel="noopener">mallen</a>.</li>
+    <li><a href={nyFilUrl} rel="noopener">Skapa filen</a> <code>data/organisationer/&lt;id&gt;.yaml</code> direkt i GitHubs webbgränssnitt. <code>id</code> är ett permanent slug-namn, till exempel <code>berget-ai</code>.</li>
+    <li>Ge varje uppgift <code>source_url</code>, <code>verified_at</code> och <code>status</code>. Kommunkoden står inom citattecken, listan finns i <code>data/geo/kommuner.json</code>.</li>
+    <li>Öppna en pull request. CI validerar schemat, reglerna och länkarna. Felmeddelandena är på svenska och säger vad som saknas.</li>
+  </ol>
+  <pre><code>{`id: exempelbolaget
+name:
+  value: Exempelbolaget
+  status: claimed
+  source_url: https://exempelbolaget.se
+  source_type: own_site
+  verified_at: 2026-10-04
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5560000000
+  source_type: third_party
+  verified_at: 2026-10-04
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5560000000
+  source_type: third_party
+  verified_at: 2026-10-04
+evidence:
+  - url: https://github.com/exempelbolaget/svensk-llm
+    kind: repo
+    verified_at: 2026-10-04`}</code></pre>
+
+  <h2 id="regler">Reglerna i korthet</h2>
+  <ul>
+    <li><strong>Källa och datum på varje uppgift.</strong> Utan det stoppar CI publiceringen.</li>
+    <li><strong>Egen webbplats ger egen uppgift.</strong> Bara register, myndigheter, oberoende tredje part och akademiska källor ger bekräftad.</li>
+    <li><strong>Inga personuppgifter.</strong> Inga namn, e-postadresser, telefonnummer eller gatuadresser. Enskilda firmor läggs bara till av personen själv.</li>
+    <li><strong>Neutral beskrivning.</strong> Skriv vad som byggs, inte hur bra det är. Kartan är källa, inte marknadsföring.</li>
+    <li><strong>En organisation, en post.</strong> Flera tjänster beskrivs i samma post.</li>
+  </ul>
+
+  <h2 id="ratta">Rätta en uppgift</h2>
+  <p>Fel? <a href={rattaUrl} rel="noopener">Öppna ett rättelseärende</a> med källa. Varje organisationssida har också knappen ”Begär rättelse” förifylld. Vi ändrar aldrig status på begäran, men vi läser bevis.</p>
+
+  <h2 id="ta-bort">Begär borttagning</h2>
+  <p>Nedlagd, dubblett, eller vill ni inte vara med? <a href={bortUrl} rel="noopener">Öppna ett borttagningsärende</a>. En enskild firma tas bort på begäran av personen själv, utan diskussion. Borttagningen syns i historiken som ”hela posten borttagen”, utan innehållet.</p>
+
+  <h2 id="verifiera">Hjälp till att verifiera</h2>
+  <p>Det mest värdefulla bidraget är att höja en uppgift från egen uppgift till bekräftad. Välj en post, slå upp organisationsnumret i ett register eller på en oberoende sida som speglar registret, och öppna en pull request som byter källa, källtyp och status. Målet är att minst 25 procent av posterna har minst ett bekräftat fält tre månader efter lansering.</p>
+
+  <h2 id="discord">Prata med oss</h2>
+  <p>All diskussion sker öppet i <a href={SAJT.discord} rel="noopener">OpenSveriges Discord</a>. Spårbara ärenden i <a href={`${SAJT.repo}/issues`} rel="noopener">GitHub Issues</a>. Koden och datan ligger i <a href={SAJT.repo} rel="noopener">opensverige/ai-kartan</a>.</p>
+</Sida>

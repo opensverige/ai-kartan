@@ -1,0 +1,15 @@
+---
+import { hamtaData } from '../lib/data';
+
+interface Props {
+  status: string;
+  kort?: boolean;
+  title?: string;
+}
+const { status, kort = false, title } = Astro.props;
+const d = hamtaData();
+const e = d.etikett.status.get(status);
+const text = kort ? (e?.short ?? e?.label ?? status) : (e?.label ?? status);
+---
+
+<span class={`status status--${status}`} title={title ?? e?.description}>{text}</span>

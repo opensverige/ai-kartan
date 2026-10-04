@@ -1,0 +1,12 @@
+[
+  { "id": "produkt", "label": "Produkt eller tjänst" },
+  { "id": "repo", "label": "Kodförråd" },
+  { "id": "modell", "label": "Publicerad modell" },
+  { "id": "dataset", "label": "Publicerat dataset" },
+  { "id": "demo", "label": "Demo" },
+  { "id": "publikation", "label": "Publikation" },
+  { "id": "case", "label": "Dokumenterat case" },
+  { "id": "resurs", "label": "Resurs eller infrastruktur" },
+  { "id": "program", "label": "Program eller utlysning" },
+  { "id": "portfolj", "label": "Portfölj" }
+]

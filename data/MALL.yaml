@@ -1,0 +1,100 @@
+# Mall för en ny organisation på AI-kartan.
+#
+# Kopiera filen till data/organisationer/<id>.yaml, där <id> är ett permanent slug-namn
+# med små bokstäver, siffror och bindestreck (t.ex. berget-ai). Ta bort kommentarerna om du vill.
+#
+# Varje uppgift bär sin egen källa, sitt datum och sin status:
+#   confirmed  = bekräftad mot register, myndighet eller oberoende dokument
+#   claimed    = egen uppgift: organisationens webbplats, dokument eller eget bidrag
+#   planned    = uttalat mål, inte uppnått
+#   unknown    = inte undersökt (värdet lämnas som null)
+# Källtyper: company_register, regulator, third_party, academic, infra_dataset,
+#            own_site, own_docs, press, self_submitted
+# Egen webbplats och eget bidrag ger högst status "claimed". Det är inte ett betyg,
+# bara en ärlig markering av var uppgiften kommer ifrån.
+#
+# Schemat har inga fält för kontaktpersoner, anställda eller e-post. Lägg inte till sådana.
+# Enskilda firmor läggs bara till av personen själv (self_submitted: true) och får ingen exakt position.
+
+id: exempelbolaget
+
+name:
+  value: Exempelbolaget
+  status: claimed
+  source_url: https://exempelbolaget.se
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: self
+
+legal_name:
+  value: Exempelbolaget i Sverige AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5560000000
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: manual
+
+type:
+  value: bolag              # bolag | enskild_firma | myndighet | kommun_region | larosate | community | finansiar | infrastruktur
+  status: confirmed
+  source_url: https://www.allabolag.se/5560000000
+  source_type: third_party
+  verified_at: 2026-10-04
+
+org_number:
+  value: "556000-0000"
+  status: confirmed
+  source_url: https://www.allabolag.se/5560000000
+  source_type: third_party
+  verified_at: 2026-10-04
+
+website: https://exempelbolaget.se
+
+description:
+  value: Bygger språkmodeller för svenska myndighetstexter och säljer dem som API.
+  status: claimed
+  source_url: https://exempelbolaget.se/om-oss
+  source_type: own_site
+  verified_at: 2026-10-04
+
+offers:
+  value: [produkt, oppen_kallkod]   # produkt | utveckling | infrastruktur | data | forskning | utbildning | community | finansiering | oppen_kallkod
+  status: claimed
+  source_url: https://exempelbolaget.se
+  source_type: own_site
+  verified_at: 2026-10-04
+
+areas:
+  value: [sprakteknik, offentlig_sektor]
+  status: claimed
+  source_url: https://exempelbolaget.se
+  source_type: own_site
+  verified_at: 2026-10-04
+
+kommun:
+  value: "0180"            # SCB:s kommunkod, alltid inom citattecken. Lista: data/geo/kommuner.json
+  status: confirmed
+  source_url: https://www.allabolag.se/5560000000
+  source_type: third_party
+  verified_at: 2026-10-04
+
+founded:
+  value: 2021
+  status: claimed
+  source_url: https://exempelbolaget.se/om-oss
+  source_type: own_site
+  verified_at: 2026-10-04
+
+evidence:                  # Minst ett belägg: en publik länk till något ni byggt med AI.
+  - url: https://github.com/exempelbolaget/svensk-llm
+    kind: repo             # produkt | repo | modell | dataset | demo | publikation | case | resurs | program | portfolj
+    title: Öppen svensk språkmodell
+    status: claimed
+    verified_at: 2026-10-04
+
+links:
+  github: https://github.com/exempelbolaget
+
+self_submitted: true
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

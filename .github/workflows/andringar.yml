@@ -1,0 +1,48 @@
+# Bygger om history/changelog.json ur git-historiken när data ändras på main och committar filen.
+# Historiken är kartans vallgrav: varje ändrat fält med datum, i en fil som ingen kan återskapa genom att skrapa om.
+name: Uppdatera ändringshistorik
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'data/organisationer/**'
+      - 'scripts/andringar.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: andringar
+  cancel-in-progress: false
+
+jobs:
+  andringar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Generera history/changelog.json
+        run: node scripts/andringar.mjs
+
+      - name: Committa om något ändrats
+        run: |
+          if git diff --quiet -- history/changelog.json; then
+            echo "Ingen ändring."
+            exit 0
+          fi
+          git config user.name "ai-kartan-bot"
+          git config user.email "ai-kartan-bot@users.noreply.github.com"
+          git add history/changelog.json
+          git commit -m "chore(historik): uppdatera ändringshistoriken [skip ci]"
+          git push

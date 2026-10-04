@@ -1,0 +1,177 @@
+---
+import { SAJT, url } from '../lib/data';
+
+const stig = Astro.url.pathname.replace(import.meta.env.BASE_URL.replace(/\/$/, ''), '') || '/';
+const lankar = [
+  { href: '/', text: 'Karta' },
+  { href: '/organisationer', text: 'Organisationer' },
+  { href: '/plats', text: 'Platser' },
+  { href: '/andringar', text: 'Ändringar' },
+  { href: '/metod', text: 'Metod' },
+  { href: '/bidra', text: 'Bidra' },
+  { href: '/om', text: 'Om' },
+];
+function aktiv(href: string) {
+  if (href === '/') return stig === '/' || stig === '';
+  return stig === href || stig.startsWith(`${href}/`);
+}
+---
+
+<header class="sidhuvud">
+  <div class="ram ram--bred sidhuvud__rad">
+    <a class="marke" href={url('/')} aria-label={`${SAJT.namn}, till kartan`}>
+      <img src={url('/logo.svg')} alt="" width="30" height="30" class="marke__bild" />
+      <span class="marke__namn">OpenSverige</span>
+      <span class="marke__pill">AI-kartan</span>
+    </a>
+    <nav class="nav" aria-label="Huvudmeny">
+      <ul class="nav__lista">
+        {lankar.map((l) => (
+          <li>
+            <a href={url(l.href)} aria-current={aktiv(l.href) ? 'page' : undefined}>{l.text}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+    <details class="meny">
+      <summary class="meny__knapp" aria-label="Öppna menyn">Meny</summary>
+      <ul class="meny__lista">
+        {lankar.map((l) => (
+          <li>
+            <a href={url(l.href)} aria-current={aktiv(l.href) ? 'page' : undefined}>{l.text}</a>
+          </li>
+        ))}
+        <li>
+          <a href={SAJT.discord} rel="noopener">Discord</a>
+        </li>
+      </ul>
+    </details>
+  </div>
+</header>
+
+<style>
+  .sidhuvud {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: hsl(var(--bg-soft) / 0.86);
+    backdrop-filter: blur(14px) saturate(160%);
+    -webkit-backdrop-filter: blur(14px) saturate(160%);
+    border-bottom: 1px solid hsl(var(--rule-soft));
+  }
+  .sidhuvud__rad {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    min-height: 58px;
+  }
+  .marke {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    text-decoration: none;
+    color: hsl(var(--ink));
+  }
+  .marke__bild {
+    width: 30px;
+    height: 30px;
+    image-rendering: pixelated;
+    transition: transform var(--t-fast);
+  }
+  .marke:hover .marke__bild {
+    transform: rotate(-9deg);
+  }
+  .marke__namn {
+    font-weight: 700;
+    font-size: 21px;
+    letter-spacing: -0.03em;
+  }
+  .marke__pill {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: hsl(var(--moss));
+    background: hsl(var(--moss) / 0.07);
+    border: 1px solid hsl(var(--moss) / 0.25);
+    border-radius: var(--r-tag);
+    padding: 3px 6px;
+  }
+  .nav {
+    margin-left: auto;
+  }
+  .nav__lista,
+  .meny__lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 4px;
+  }
+  .nav a,
+  .meny a {
+    display: inline-block;
+    padding: 8px 10px;
+    border-radius: 6px;
+    color: hsl(var(--ink-soft));
+    text-decoration: none;
+    font-size: 14.5px;
+    font-weight: 500;
+  }
+  .nav a:hover,
+  .meny a:hover {
+    color: hsl(var(--moss));
+    background: hsl(var(--moss) / 0.07);
+  }
+  .nav a[aria-current='page'],
+  .meny a[aria-current='page'] {
+    color: hsl(var(--moss));
+    box-shadow: inset 0 -2px 0 hsl(var(--moss));
+    border-radius: 6px 6px 0 0;
+  }
+  .meny {
+    display: none;
+    margin-left: auto;
+    position: relative;
+  }
+  .meny__knapp {
+    list-style: none;
+    cursor: pointer;
+    font: 600 14px/1 var(--font-sans);
+    padding: 9px 12px;
+    border: 1px solid hsl(var(--rule));
+    border-radius: var(--r-btn);
+    color: hsl(var(--ink));
+    background: hsl(var(--bg));
+  }
+  .meny__knapp::-webkit-details-marker {
+    display: none;
+  }
+  .meny[open] .meny__knapp {
+    border-color: hsl(var(--moss));
+  }
+  .meny__lista {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 8px);
+    flex-direction: column;
+    gap: 2px;
+    min-width: 220px;
+    background: hsl(var(--bg));
+    border: 1px solid hsl(var(--rule));
+    border-radius: var(--r-card);
+    padding: 8px;
+    box-shadow: 0 18px 40px -18px hsl(var(--ink) / 0.35);
+  }
+  .meny a {
+    display: block;
+  }
+  @media (max-width: 940px) {
+    .nav {
+      display: none;
+    }
+    .meny {
+      display: block;
+    }
+  }
+</style>
