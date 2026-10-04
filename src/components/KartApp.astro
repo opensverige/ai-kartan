@@ -278,14 +278,16 @@ const lanMedPoster = d.lan.filter((l) => d.statistik.per_lan[l.kod]);
       karta = new MapLibreMap({
         container: el,
         style: 'https://tiles.openfreemap.org/styles/positron',
-        center: [16.3, 62.4],
-        zoom: 4,
-        minZoom: 3.4,
+        // Hela Sverige i bild oavsett skärmstorlek.
+        bounds: [[10.6, 55.1], [24.4, 69.2]],
+        fitBoundsOptions: { padding: 16 },
+        minZoom: 3,
         maxZoom: 15,
         attributionControl: { compact: true },
         cooperativeGestures: window.matchMedia('(max-width: 940px)').matches,
       });
       karta.addControl(new NavigationControl({ showCompass: false }), 'top-right');
+      (window as unknown as { aiKartan?: unknown }).aiKartan = { karta };
       karta.on('load', () => {
         karta!.addSource('orgs', { type: 'geojson', data: tillGeoJson(urval), cluster: true, clusterRadius: 44, clusterMaxZoom: 11 });
         karta!.addLayer({

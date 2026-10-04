@@ -23,13 +23,15 @@ const jsonLd = {
 
 <Bas titel={`${SAJT.titel} | ${SAJT.namn}`} helTitel beskrivning={`${SAJT.tagline} ${s.antal} organisationer med källa och datum på varje uppgift. Ingen rankning, inga betalplatser.`} stig="/" bred jsonLd={jsonLd}>
   <section class="hero">
-    <div class="ram ram--bred">
-      <p class="kicker">Tech Embassy · oberoende, inte statlig · <a href={url('/metod')}>källa och datum på varje uppgift</a></p>
-      <h1>Alla som bygger <em>AI</em> i Sverige.</h1>
-      <p class="hero__lead">
-        Inte bara de som en kommitté har godkänt. Soloutvecklaren, föreningen, kommunen och lärosätet syns bredvid bolagen.
-        Inget rankas och ingen kan köpa en plats. <a href={url('/bidra')}>Lägg till dig själv med en pull request.</a>
-      </p>
+    <div class="ram ram--bred hero__rad">
+      <div>
+        <p class="kicker">Tech Embassy · oberoende, inte statlig · <a href={url('/metod')}>källa och datum på varje uppgift</a></p>
+        <h1>Alla som bygger <em>AI</em> i Sverige.</h1>
+        <p class="hero__lead">
+          Inte bara de som en kommitté har godkänt. Soloutvecklaren, föreningen, kommunen och lärosätet syns bredvid bolagen.
+          Inget rankas och ingen kan köpa en plats. <a href={url('/bidra')}>Lägg till dig själv med en pull request.</a>
+        </p>
+      </div>
       <dl class="nyckeltal">
         <div><dt>Organisationer</dt><dd>{s.antal}</dd></div>
         <div><dt>Med minst ett bekräftat fält</dt><dd>{s.andel_med_bekraftat} %</dd></div>
@@ -63,28 +65,35 @@ const jsonLd = {
 
 <style>
   .hero {
-    padding: 36px 0 22px;
+    padding: 26px 0 16px;
+  }
+  .hero__rad {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: 16px 40px;
+    align-items: end;
   }
   .hero h1 {
-    font-size: clamp(40px, 7.5vw, 84px);
+    font-size: clamp(34px, 5.2vw, 62px);
     line-height: 0.98;
-    letter-spacing: -0.04em;
-    max-width: 14ch;
-    margin: 10px 0 14px;
+    letter-spacing: -0.035em;
+    max-width: 16ch;
+    margin: 8px 0 10px;
   }
   .hero h1 em {
     font-style: normal;
     color: hsl(var(--moss));
   }
   .hero__lead {
-    font-size: 18px;
-    max-width: 62ch;
+    font-size: 16.5px;
+    max-width: 60ch;
+    margin-bottom: 0;
   }
   .nyckeltal {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px 32px;
-    margin: 18px 0 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px 24px;
+    margin: 0;
   }
   .nyckeltal div {
     display: flex;
@@ -99,7 +108,7 @@ const jsonLd = {
   }
   .nyckeltal dd {
     margin: 0;
-    font-size: 26px;
+    font-size: 24px;
     font-weight: 700;
     color: hsl(var(--ink));
     letter-spacing: -0.02em;
@@ -113,8 +122,12 @@ const jsonLd = {
     font-size: 20px;
   }
   @media (max-width: 860px) {
-    .tre {
+    .tre,
+    .hero__rad {
       grid-template-columns: 1fr;
+    }
+    .nyckeltal {
+      margin-top: 6px;
     }
   }
 </style>
