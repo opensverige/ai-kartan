@@ -1,0 +1,91 @@
+id: nsc
+
+name:
+  value: National Supercomputer Centre (NSC), Linköping University
+  status: claimed
+  source_url: https://www.nsc.liu.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: infrastruktur
+  status: claimed
+  source_url: https://www.nsc.liu.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "202100-3096"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021003096
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Organisationsnumret tillhör Linköpings universitet. NSC är en oberoende enhet vid universitetet och har inget eget organisationsnummer. Numret står även på https://www.nsc.liu.se/about/addresses/.
+
+website: https://www.nsc.liu.se/
+
+description:
+  value: Superdatorcentrum vid Linköpings universitet som driver Berzelius, ett GPU-kluster för AI och maskininlärning som byggts med donationer från Knut och Alice Wallenbergs Stiftelse. Används av svenska akademiska forskargrupper.
+  status: claimed
+  source_url: https://www.nsc.liu.se/systems/berzelius/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [infrastruktur]
+  status: claimed
+  source_url: https://www.nsc.liu.se/systems/berzelius/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://www.nsc.liu.se/systems/berzelius/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0580"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021003096
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte för Linköpings universitet enligt allabolag.se. NSC anger Linköping i sin adress.
+
+founded:
+  value: 1989
+  status: claimed
+  source_url: https://www.nsc.liu.se/about/history/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Historiksidan anger att NSC 1989 blev Sveriges första superdatorcentrum.
+
+active:
+  value: true
+  status: claimed
+  source_url: https://www.nsc.liu.se/systems/berzelius/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Berzelius utökades 2023 och 2025 enligt webbplatsen.
+
+evidence:
+  - url: https://www.nsc.liu.se/systems/berzelius/
+    kind: resurs
+    title: "Berzelius: GPU-kluster för AI och maskininlärning (NVIDIA DGX)"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Dokumentationen flyttar till https://hpc.pages.naiss.se/user-documentation/berzelius-docs/.
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

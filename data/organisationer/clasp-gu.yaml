@@ -1,0 +1,109 @@
+id: clasp-gu
+
+name:
+  value: CLASP – Centrum för språkteori och sannolikhetsstudier, Göteborgs universitet
+  status: claimed
+  source_url: https://www.gu.se/clasp
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: larosate
+  status: claimed
+  source_url: https://www.gu.se/clasp
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "202100-3153"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021003153
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Organisationsnumret tillhör Göteborgs universitet, som CLASP är en del av. Numret står även i sidfoten på https://www.gu.se/clasp.
+
+website: https://www.gu.se/clasp
+
+description:
+  value: Centrum vid Göteborgs universitet som tillämpar probabilistiska och informationsteoretiska metoder på naturligt språk och utvecklar språkteknologi, i gränslandet mellan datalingvistik, teoretisk lingvistik och kognitionsvetenskap.
+  status: claimed
+  source_url: https://gu-clasp.github.io/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [forskning, utbildning, oppen_kallkod]
+  status: claimed
+  source_url: https://www.gu.se/en/clasp/research/research-groups
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Forskargrupper och doktorandkurser enligt sidan. Öppen källkod enligt organisationens GitHub, https://github.com/GU-CLASP.
+
+areas:
+  value: [sprakteknik]
+  status: claimed
+  source_url: https://gu-clasp.github.io/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1480"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021003153
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte för Göteborgs universitet enligt allabolag.se. CLASP anger Göteborg på sin webbplats.
+
+founded:
+  value: 2015
+  status: claimed
+  source_url: https://www.gu.se/en/clasp/news-and-events
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Webbplatsen anger att CLASP ordnat seminarier och workshoppar sedan starten hösten 2015.
+
+active:
+  value: true
+  status: claimed
+  source_url: https://gu-clasp.github.io/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Vetenskapsrådets tioåriga anslag gäller 2015–2025. Webbplatsen listar en avslutningskonferens 2026-10-05 och seminarier hösten 2026.
+
+evidence:
+  - url: https://github.com/GU-CLASP/TypedFlow
+    kind: repo
+    title: "TypedFlow: typat gränssnitt till TensorFlow för djupinlärning (LGPL-3.0)"
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Kodförrådet ägs av organisationen GU-CLASP på GitHub. Senaste ändring 2022.
+  - url: https://github.com/GU-CLASP/coherence-driven-humans
+    kind: repo
+    title: Kod för studie av narrativ koherens hos människor och bild-språkmodeller (MIT)
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Kodförrådet ägs av organisationen GU-CLASP på GitHub.
+  - url: https://github.com/GU-CLASP/shami-corpus
+    kind: dataset
+    title: Shami Dialect Corpus (SDC), korpus med arabiska dialekter
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Kodförrådet ägs av organisationen GU-CLASP på GitHub (Apache-2.0).
+
+links:
+  github: https://github.com/GU-CLASP
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

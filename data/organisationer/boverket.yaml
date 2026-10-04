@@ -1,0 +1,83 @@
+id: boverket
+
+name:
+  value: Boverket
+  status: claimed
+  source_url: https://www.boverket.se/sv/om-boverket/personuppgifter/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: myndighet
+  status: confirmed
+  source_url: https://www.allabolag.se/2021003989
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Statlig enhet enligt allabolag.se.
+
+org_number:
+  value: "202100-3989"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021003989
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Organisationsnummer enligt allabolag.se. Står även på https://www.boverket.se/sv/om-boverket/personuppgifter/.
+
+website: https://www.boverket.se/
+
+description:
+  value: Har tagit fram prototyper för en chattbot om klimatdeklarationer och för AI-kontroll av beräkningsunderlag, som körs lokalt på egna servrar. Prototyperna kommer från lärprojekt 2024–2025 och är inte i full drift.
+  status: claimed
+  source_url: https://www.boverket.se/globalassets/publikationer/dokument/2025/anvandning-av-artificiell-intelligens.pdf
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [utveckling]
+  status: claimed
+  source_url: https://www.boverket.se/globalassets/publikationer/dokument/2025/anvandning-av-artificiell-intelligens.pdf
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [fastighet_bygg, offentlig_sektor]
+  status: claimed
+  source_url: https://www.boverket.se/globalassets/publikationer/dokument/2025/anvandning-av-artificiell-intelligens.pdf
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1080"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021003989
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte enligt allabolag.se.
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/2021003989
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Status Aktiv enligt allabolag.se.
+
+evidence:
+  - url: https://www.boverket.se/globalassets/publikationer/dokument/2025/anvandning-av-artificiell-intelligens.pdf
+    kind: publikation
+    title: "Rapport: Användning av artificiell intelligens (Boverket, juni 2025)"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Avsnitt 3.2 och 3.3 beskriver prototypen för chattbot om klimatdeklarationer och AI-kontrollen av beräkningsunderlag. Chattboten används i en avgränsad testgrupp.
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

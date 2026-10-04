@@ -1,0 +1,84 @@
+id: foi
+
+name:
+  value: Totalförsvarets forskningsinstitut
+  status: claimed
+  source_url: https://www.foi.se/om-foi.html
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Förkortas FOI.
+
+type:
+  value: myndighet
+  status: confirmed
+  source_url: https://www.allabolag.se/2021005182
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Statlig enhet enligt allabolag.se.
+
+org_number:
+  value: "202100-5182"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021005182
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Organisationsnummer enligt allabolag.se. Står även på https://www.foi.se/om-foi.html.
+
+website: https://www.foi.se/
+
+description:
+  value: Har på uppdrag av Försvarsmakten tagit fram ett språkmodellbaserat AI-verktyg för militär taktisk planering och testat det i studier med officerare. Verktyget bygger på kommersiellt tillgängliga språkmodeller.
+  status: claimed
+  source_url: https://www.foi.se/nyheter-och-press/nyheter/2026-04-13-sprakmodeller-kan-vara-ett-stod-vid-militar-taktisk-planering.html
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [forskning, utveckling]
+  status: claimed
+  source_url: https://www.foi.se/nyheter-och-press/nyheter/2026-04-13-sprakmodeller-kan-vara-ett-stod-vid-militar-taktisk-planering.html
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [forsvar_sakerhet, sprakteknik]
+  status: claimed
+  source_url: https://www.foi.se/nyheter-och-press/nyheter/2026-04-13-sprakmodeller-kan-vara-ett-stod-vid-militar-taktisk-planering.html
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021005182
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte Stockholm enligt allabolag.se. Adressen ligger i Kista, som tillhör Stockholms kommun.
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/2021005182
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Status Aktiv enligt allabolag.se.
+
+evidence:
+  - url: https://www.foi.se/nyheter-och-press/nyheter/2026-04-13-sprakmodeller-kan-vara-ett-stod-vid-militar-taktisk-planering.html
+    kind: case
+    title: Språkmodell för militär taktisk planering, studier med officerare (13 april 2026)
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Sidan beskriver att FOI-forskare på uppdrag av Försvarsmakten skapade verktyget utifrån kommersiellt tillgängliga språkmodeller, och att två studier gjorts med officerare.
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

@@ -1,0 +1,96 @@
+id: c3se
+
+name:
+  value: C3SE – Chalmers e-Commons e-infrastrukturgrupp
+  status: claimed
+  source_url: https://www.c3se.chalmers.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Förkortningen C3SE stod tidigare för Chalmers Centre for Computational Science and Engineering enligt https://www.c3se.chalmers.se/about/C3SE/.
+
+type:
+  value: infrastruktur
+  status: claimed
+  source_url: https://www.c3se.chalmers.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "556479-5598"
+  status: confirmed
+  source_url: https://www.allabolag.se/5564795598
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Organisationsnumret tillhör Chalmers tekniska högskola AB. C3SE är en grupp vid Chalmers och har inget eget organisationsnummer. Numret står även på https://www.chalmers.se/en/.
+
+website: https://www.c3se.chalmers.se/
+
+description:
+  value: Chalmers e-infrastrukturgrupp som driver beräkningsklustret Vera och drev det nationella AI-klustret Alvis, vars GPU-noder flyttats till Vera. Tillhandahåller även en chattbot och en MCP-server för sin dokumentation.
+  status: claimed
+  source_url: https://www.c3se.chalmers.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [infrastruktur]
+  status: claimed
+  source_url: https://www.c3se.chalmers.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://www.c3se.chalmers.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1480"
+  status: confirmed
+  source_url: https://www.allabolag.se/5564795598
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte för Chalmers tekniska högskola AB enligt allabolag.se. C3SE anger Chalmers i Göteborg.
+
+active:
+  value: true
+  status: claimed
+  source_url: https://www.c3se.chalmers.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Startsidan har nyheter från oktober 2026.
+
+evidence:
+  - url: https://www.c3se.chalmers.se/
+    kind: resurs
+    title: "C3SE: Vera-klustret med GPU-noder samt chattbot och MCP-server för dokumentationen"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://www.c3se.chalmers.se/about/Alvis/
+    kind: resurs
+    title: "Alvis: nationellt GPU-kluster för AI och maskininlärning (avvecklat)"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Startsidan anger att Alvis är avvecklat och att GPU-noder flyttats till Vera 2026-10-01.
+  - url: https://www.naiss.se/resource/alvis/
+    kind: resurs
+    title: NAISS beskriver Alvis som nationell AI-resurs med C3SE som värd
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Beskrivning från NAISS, inte från C3SE.
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

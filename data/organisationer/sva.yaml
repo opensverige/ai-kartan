@@ -1,0 +1,92 @@
+id: sva
+
+name:
+  value: Statens veterinärmedicinska anstalt
+  status: claimed
+  source_url: https://www.sva.se/om-sva/upphandling-och-fakturor/skicka-e-faktura-till-sva/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Förkortas SVA.
+
+type:
+  value: myndighet
+  status: confirmed
+  source_url: https://www.allabolag.se/2021001868
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Statlig enhet enligt allabolag.se.
+
+org_number:
+  value: "202100-1868"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021001868
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Organisationsnummer enligt allabolag.se. Står även på https://www.sva.se/om-sva/upphandling-och-fakturor/skicka-e-faktura-till-sva/ (utan bindestreck).
+
+website: https://www.sva.se/
+
+description:
+  value: Har tränat en AI-modell för artbestämning av fästingar på över 15 000 bilder från medborgarrapporteringen Rapportera Fästing. Studien är publicerad i Scientific Reports och modellen kan på sikt stödja övervakningen av fästingarter.
+  status: claimed
+  source_url: https://www.sva.se/aktuellt/nyhetsarkiv/pressmeddelanden/ny-ai-modell-kan-identifiera-faestingarter-till-svas-oevervakning/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [forskning, data]
+  status: claimed
+  source_url: https://www.sva.se/aktuellt/nyhetsarkiv/pressmeddelanden/ny-ai-modell-kan-identifiera-faestingarter-till-svas-oevervakning/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bilderna samlades in av allmänheten via verktyget Rapportera Fästing och användes för att träna modellen.
+
+areas:
+  value: [halsa, datorseende]
+  status: claimed
+  source_url: https://www.sva.se/aktuellt/nyhetsarkiv/pressmeddelanden/ny-ai-modell-kan-identifiera-faestingarter-till-svas-oevervakning/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0380"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021001868
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte enligt allabolag.se.
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/2021001868
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Status Aktiv enligt allabolag.se.
+
+evidence:
+  - url: https://www.nature.com/articles/s41598-025-10265-x
+    kind: publikation
+    title: "Scientific Reports 2025: Automated tick classification using deep learning"
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Artikel i Scientific Reports, publicerad 2025-07-10, med författare vid SVA och flera universitet. Modellerna utvecklades, tränades och utvärderades på bilder från Rapportera Fästing.
+  - url: https://www.sva.se/aktuellt/nyhetsarkiv/pressmeddelanden/ny-ai-modell-kan-identifiera-faestingarter-till-svas-oevervakning/
+    kind: case
+    title: "Pressmeddelande 2025-11-12: Ny AI-modell kan identifiera fästingarter"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Pressmeddelandet beskriver modellen som ett möjligt verktyg för att övervaka fästingar i realtid. Det anger inte att den används i den ordinarie övervakningen.
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

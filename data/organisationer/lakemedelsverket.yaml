@@ -1,0 +1,92 @@
+id: lakemedelsverket
+
+name:
+  value: Läkemedelsverket
+  status: claimed
+  source_url: https://www.lakemedelsverket.se/sv/om-lakemedelsverket/administration/artificiell-intelligens-pa-lakemedelsverket
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Sidan kräver JavaScript. Innehållet har lästs via webbplatsens eget innehålls-API.
+
+type:
+  value: myndighet
+  status: confirmed
+  source_url: https://www.allabolag.se/2021004078
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Statlig enhet enligt allabolag.se.
+
+org_number:
+  value: "202100-4078"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021004078
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Organisationsnummer enligt allabolag.se (källa: SCB, Bolagsverket, Skatteverket). Står även på https://www.lakemedelsverket.se/sv/om-lakemedelsverket/administration/fakturor/."
+
+website: https://www.lakemedelsverket.se/
+
+description:
+  value: Har utvecklat REGULUS, ett eget system för generativ AI, och andra AI-verktyg för bland annat semantisk sökning och datorseende. Verktygen erbjuds även läkemedelsmyndigheter inom EU/EES.
+  status: claimed
+  source_url: https://via.tt.se/pressmeddelande/3992902/lakemedelsverket-erbjuder-generativ-ai-till-lakemedelsmyndigheter-i-eu
+  source_type: press
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt, infrastruktur]
+  status: claimed
+  source_url: https://via.tt.se/pressmeddelande/3992902/lakemedelsverket-erbjuder-generativ-ai-till-lakemedelsmyndigheter-i-eu
+  source_type: press
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Verktygen ligger i myndighetens molntjänst AI@MPA toolbox och görs tillgängliga för andra läkemedelsmyndigheter.
+
+areas:
+  value: [halsa, offentlig_sektor, sprakteknik, datorseende]
+  status: claimed
+  source_url: https://via.tt.se/pressmeddelande/3992902/lakemedelsverket-erbjuder-generativ-ai-till-lakemedelsmyndigheter-i-eu
+  source_type: press
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0380"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021004078
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte enligt allabolag.se.
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/2021004078
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Status Aktiv enligt allabolag.se.
+
+evidence:
+  - url: https://via.tt.se/pressmeddelande/3992902/lakemedelsverket-erbjuder-generativ-ai-till-lakemedelsmyndigheter-i-eu
+    kind: produkt
+    title: "Pressmeddelande 2025-07-07: REGULUS, egenutvecklat system för generativ AI"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Pressmeddelande från Läkemedelsverket, spritt via TT:s tjänst Via.
+  - url: https://www.lakemedelsverket.se/sv/om-lakemedelsverket/administration/artificiell-intelligens-pa-lakemedelsverket
+    kind: case
+    title: Artificiell intelligens på Läkemedelsverket
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Anger att myndigheten anpassar modeller med öppna vikter med egna träningsdata. Sidan kräver JavaScript för att visas.
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

@@ -1,0 +1,98 @@
+id: ange-kommun
+
+name:
+  value: Ånge kommun
+  status: claimed
+  source_url: https://invanare.ange.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: kommun_region
+  status: confirmed
+  source_url: https://www.allabolag.se/2120002387
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Kommun enligt allabolag.se.
+
+org_number:
+  value: "212000-2387"
+  status: confirmed
+  source_url: https://www.allabolag.se/2120002387
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Organisationsnummer enligt allabolag.se. Står även på https://invanare.ange.se/.
+
+website: https://www.ange.se/
+
+description:
+  value: Har tillsammans med Sundsvalls kommun utvecklat Eneo, en öppen plattform för generativ AI i offentlig sektor som publiceras som öppen källkod.
+  status: claimed
+  source_url: https://utveckling.sundsvall.se/digital-infrastruktur/ai-plattformen-eneo
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Uppgiften kommer från Sundsvalls kommun, medutvecklare av Eneo, och från projektets README. Ånge har ingen egen sida om Eneo.
+
+offers:
+  value: [utveckling, oppen_kallkod]
+  status: claimed
+  source_url: https://utveckling.sundsvall.se/digital-infrastruktur/ai-plattformen-eneo
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [offentlig_sektor, agenter_automation]
+  status: claimed
+  source_url: https://utveckling.sundsvall.se/digital-infrastruktur/ai-plattformen-eneo
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "2260"
+  status: confirmed
+  source_url: https://www.allabolag.se/2120002387
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte enligt allabolag.se.
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/2120002387
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Status Aktiv enligt allabolag.se.
+
+evidence:
+  - url: https://github.com/eneo-ai/eneo
+    kind: repo
+    title: "Eneo på GitHub: öppen AI-plattform för offentlig sektor (AGPL-3.0)"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Kodförrådet ägs av organisationen eneo-ai. READMEn anger Ånge och Sundsvalls kommuner som ursprungliga utvecklare.
+  - url: https://utveckling.sundsvall.se/digital-infrastruktur/ai-plattformen-eneo
+    kind: produkt
+    title: "Sundsvalls sida om Eneo: plattformen har utvecklats av Sundsvalls och Ånge kommuner"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Sidan publiceras av Sundsvalls kommun, inte av Ånge.
+  - url: https://invanare.ange.se/om-webbplatsen/nyhetsarkiv/nyhetsarkiv/2025-09-19-framtidens-valfard-mots-med-ai-och-digitalisering.html
+    kind: case
+    title: Ånge och fyra kommuner bygger öppna digitala lösningar och AI-tjänster tillsammans (2025-09-19)
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Nyhet på Ånges egen webbplats om samarbetet mellan Sundsvall, Hudiksvall, Ånge, Nordanstig och Ljusdal.
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

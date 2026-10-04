@@ -1,0 +1,90 @@
+id: riksbanken
+
+name:
+  value: Sveriges Riksbank
+  status: claimed
+  source_url: https://www.riksbank.se/sv/om-riksbanken/kontakt/fakturauppgifter/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kallas även Riksbanken.
+
+type:
+  value: myndighet
+  status: confirmed
+  source_url: https://www.allabolag.se/2021002684
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Statlig enhet enligt allabolag.se.
+
+org_number:
+  value: "202100-2684"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021002684
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Organisationsnummer enligt allabolag.se. Står även på https://www.riksbank.se/sv/om-riksbanken/kontakt/fakturauppgifter/.
+
+website: https://www.riksbank.se/
+
+description:
+  value: Har utvecklat och utvärderat AI-baserade prognosmodeller, bland annat random forests och neurala nätverk, för svensk BNP och inflation. Resultaten är publicerade som staff memo.
+  status: claimed
+  source_url: https://www.riksbank.se/globalassets/media/rapporter/staff-memo/engelska/2025/ai-based-forecasting-in-sweden.pdf
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [forskning]
+  status: claimed
+  source_url: https://www.riksbank.se/globalassets/media/rapporter/staff-memo/engelska/2025/ai-based-forecasting-in-sweden.pdf
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [fintech]
+  status: claimed
+  source_url: https://www.riksbank.se/globalassets/media/rapporter/staff-memo/engelska/2025/ai-based-forecasting-in-sweden.pdf
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021002684
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte enligt allabolag.se.
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/2021002684
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Status Aktiv enligt allabolag.se.
+
+evidence:
+  - url: https://www.riksbank.se/globalassets/media/rapporter/staff-memo/engelska/2025/ai-based-forecasting-in-sweden.pdf
+    kind: publikation
+    title: "Staff memo: AI-based forecasting in Sweden (april 2025)"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Tjänstemannapublikation från Riksbankens penningpolitiska avdelning. Modellerna jämförs med traditionella prognosmodeller.
+  - url: https://www.riksbank.se/sv/press-och-publicerat/nyheter-och-pressmeddelanden/nyheter/2025/battre-prognoser-med-ai-baserade-modeller/
+    kind: publikation
+    title: "Nyhet 2025-04-02: Bättre prognoser med AI-baserade modeller"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

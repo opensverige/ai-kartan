@@ -1,0 +1,88 @@
+id: naiss
+
+name:
+  value: NAISS – National Academic Infrastructure for Supercomputing in Sweden
+  status: claimed
+  source_url: https://www.naiss.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: infrastruktur
+  status: claimed
+  source_url: https://www.naiss.se/about-us/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "202100-3096"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021003096
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Organisationsnumret tillhör Linköpings universitet, som är värd för NAISS enligt https://www.naiss.se/about-us/. NAISS har inget eget organisationsnummer. Numret står även på https://www.nsc.liu.se/about/addresses/.
+
+website: https://www.naiss.se/
+
+description:
+  value: Nationell infrastruktur för superdatorer, AI och datatjänster för forskning vid ett trettiotal lärosäten och institut, med Linköpings universitet som värd. Tillhandahåller bland annat GPU-resurser för träning av språkmodeller.
+  status: claimed
+  source_url: https://www.naiss.se/about-us/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [infrastruktur, utbildning]
+  status: claimed
+  source_url: https://www.naiss.se/about-us/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://www.naiss.se/about-us/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0580"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021003096
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte för värduniversitetet Linköpings universitet enligt allabolag.se. NAISS anger Linköping i sidfoten.
+
+active:
+  value: true
+  status: claimed
+  source_url: https://www.naiss.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Startsidan har nyheter från september 2026.
+
+evidence:
+  - url: https://www.naiss.se/resource/arrhenius/
+    kind: resurs
+    title: "Arrhenius: superdator med 382 GPU-noder, i produktion sedan maj 2026"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://www.naiss.se/resource/alvis/
+    kind: resurs
+    title: "Alvis: nationell GPU-resurs för AI och maskininlärning (avvecklad)"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Drevs av C3SE vid Chalmers. Sidan anger att Alvis är avvecklad som NAISS-resurs och att användarna flyttat till Arrhenius.
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

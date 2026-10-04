@@ -1,0 +1,100 @@
+id: sundsvalls-kommun
+
+name:
+  value: Sundsvalls kommun
+  status: claimed
+  source_url: https://sundsvall.se/kommun/kommun-och-politik/kontakta-oss-pa-kommunen
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: kommun_region
+  status: confirmed
+  source_url: https://www.allabolag.se/2120002411
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Kommun enligt allabolag.se.
+
+org_number:
+  value: "212000-2411"
+  status: confirmed
+  source_url: https://www.allabolag.se/2120002411
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Organisationsnummer enligt allabolag.se. Står även på https://sundsvall.se/kommun/kommun-och-politik/kontakta-oss-pa-kommunen.
+
+website: https://sundsvall.se/
+
+description:
+  value: Har tillsammans med Ånge kommun utvecklat Eneo, en öppen plattform för generativ AI i offentlig sektor, och publicerar källkoden som öppen källkod. Eneo används bland annat inom vård och omsorg, administration, skola och elnät.
+  status: claimed
+  source_url: https://utveckling.sundsvall.se/digital-infrastruktur/ai-plattformen-eneo
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [utveckling, oppen_kallkod, community]
+  status: claimed
+  source_url: https://utveckling.sundsvall.se/digital-infrastruktur/ai-plattformen-eneo
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Öppen källkod (AGPL-3.0) enligt https://github.com/eneo-ai/eneo. Användarförening för offentliga aktörer enligt https://utveckling.sundsvall.se/inlagg/inlagg/2025-09-25-eneo---ett-steg-mot-en-hallbar-och-demokratisk-ai.
+
+areas:
+  value: [offentlig_sektor, agenter_automation]
+  status: claimed
+  source_url: https://utveckling.sundsvall.se/digital-infrastruktur/ai-plattformen-eneo
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "2281"
+  status: confirmed
+  source_url: https://www.allabolag.se/2120002411
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte enligt allabolag.se.
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/2120002411
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Status Aktiv enligt allabolag.se.
+
+evidence:
+  - url: https://utveckling.sundsvall.se/digital-infrastruktur/ai-plattformen-eneo
+    kind: produkt
+    title: "Eneo: öppen plattform för generativ AI, utvecklad av Sundsvalls och Ånge kommuner"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://github.com/eneo-ai/eneo
+    kind: repo
+    title: "Eneo på GitHub: öppen AI-plattform för offentlig sektor (AGPL-3.0)"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Kodförrådet ägs av organisationen eneo-ai. READMEn anger Sundsvalls och Ånge kommuner som ursprungliga utvecklare.
+  - url: https://utveckling.sundsvall.se/inlagg/inlagg/2024-11-18-ai-plattformen-intric-slappt-som-oppen-kallkod
+    kind: case
+    title: Sundsvall delar AI-plattformen Intric som öppen källkod (2024-11-18)
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Utvecklad med startupbolaget Inoo Labs, där kommunen var kravställare. Kommunen gick 2025 vidare under namnet Eneo, se https://utveckling.sundsvall.se/inlagg/inlagg/2025-09-25-eneo---ett-steg-mot-en-hallbar-och-demokratisk-ai.
+
+links:
+  github: https://github.com/Sundsvallskommun
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

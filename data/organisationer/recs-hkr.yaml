@@ -1,0 +1,80 @@
+id: recs-hkr
+
+name:
+  value: Research environment of Computer science (RECS), Högskolan Kristianstad
+  status: claimed
+  source_url: https://www.hkr.se/en/research/research-environment-of-computer-science/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: larosate
+  status: claimed
+  source_url: https://www.hkr.se/en/research/research-environment-of-computer-science/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "202100-3195"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021003195
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Organisationsnumret tillhör Högskolan Kristianstad, som RECS är en del av. RECS har inget eget organisationsnummer. Numret står även på https://www.hkr.se/om-hkr/kontakt/.
+
+website: https://www.hkr.se/en/research/research-environment-of-computer-science/
+
+description:
+  value: Forskningsmiljö vid Högskolan Kristianstad som samlar forskare inom datavetenskap, kognitionsvetenskap samt elektronik och kommunikationsteknik. Forskningsområden är bland annat maskininlärning, AI, sakernas internet och datasäkerhet.
+  status: claimed
+  source_url: https://www.hkr.se/en/research/research-environment-of-computer-science/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [forskning]
+  status: claimed
+  source_url: https://www.hkr.se/en/research/research-environment-of-computer-science/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://www.hkr.se/en/research/research-environment-of-computer-science/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1290"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021003195
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte för Högskolan Kristianstad enligt allabolag.se. RECS har inget eget säte.
+
+evidence:
+  - url: https://pmc.ncbi.nlm.nih.gov/articles/PMC10058758/
+    kind: publikation
+    title: "Öppen artikel (Sensors, 2023): AI-baserat system för översvämningsprognos"
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Skriven vid institutionen för datavetenskap, Högskolan Kristianstad, med Vinnova-finansiering via IoT Sverige, samma program som RECS-projektet SmartVA. Artikeln nämner inte RECS.
+  - url: https://www.hkr.se/en/research/research-environment-of-computer-science/research-projects/drinking-water-quality/
+    kind: case
+    title: "RECS-projekt 2019–2021: maskininlärning för analys av bakterier i dricksvatten"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Projektet är avslutat.
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

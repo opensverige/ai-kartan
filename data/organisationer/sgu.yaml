@@ -1,0 +1,91 @@
+id: sgu
+
+name:
+  value: Sveriges geologiska undersökning
+  status: claimed
+  source_url: https://www.sgu.se/om-sgu/kontakta-oss/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Förkortas SGU.
+
+type:
+  value: myndighet
+  status: confirmed
+  source_url: https://www.allabolag.se/2021002528
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Statlig enhet enligt allabolag.se.
+
+org_number:
+  value: "202100-2528"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021002528
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Organisationsnummer enligt allabolag.se. Står även på https://www.sgu.se/om-sgu/kontakta-oss/.
+
+website: https://www.sgu.se/
+
+description:
+  value: Använder maskininlärning och ett eget modelleringsramverk (Melody) för att ta fram geologiska och biologiska kartor, bland annat artutbredning på havsbotten. Har även publicerat metodutveckling för modellering av kloridhalter i grundvatten.
+  status: claimed
+  source_url: https://www.sgu.se/globalassets/produkter/publikationer/2024/kartering-namdo-skargard.pdf
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Andra meningen bygger på SGU-rapport 2021:06, som finns bland beläggen.
+
+offers:
+  value: [utveckling]
+  status: claimed
+  source_url: https://www.sgu.se/globalassets/produkter/publikationer/2024/kartering-namdo-skargard.pdf
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [energi_klimat, offentlig_sektor]
+  status: claimed
+  source_url: https://resource.sgu.se/dokument/publikation/sgurapport/sgurapport202106rapport/s2106-rapport.pdf
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0380"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021002528
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte enligt allabolag.se.
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/2021002528
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Status Aktiv enligt allabolag.se.
+
+evidence:
+  - url: https://resource.sgu.se/dokument/publikation/sgurapport/sgurapport202106rapport/s2106-rapport.pdf
+    kind: publikation
+    title: "SGU-rapport 2021:06: modellering av kloridhalter i grundvatten med maskininlärning"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Metodutveckling från enheten Samhällsplanering Jord. Modellerna använder bland annat Random Forest och Extreme Gradient Boosting.
+  - url: https://www.sgu.se/globalassets/produkter/publikationer/2024/kartering-namdo-skargard.pdf
+    kind: publikation
+    title: "SGU-rapport 2024:05: kartering av Nämdö skärgård med maskininlärning och ramverket Melody"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

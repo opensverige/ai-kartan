@@ -1,0 +1,95 @@
+id: helsingborgs-stad
+
+name:
+  value: Helsingborgs stad
+  status: claimed
+  source_url: https://helsingborg.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Helsingborgs kommun
+  status: confirmed
+  source_url: https://www.allabolag.se/2120001157
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Registrerat namn enligt allabolag.se. Staden skriver Helsingborgs stad på sin webbplats.
+
+type:
+  value: kommun_region
+  status: confirmed
+  source_url: https://www.allabolag.se/2120001157
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Kommun enligt allabolag.se.
+
+org_number:
+  value: "212000-1157"
+  status: confirmed
+  source_url: https://www.allabolag.se/2120001157
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Organisationsnummer enligt allabolag.se. Står även på https://helsingborg.se/.
+
+website: https://helsingborg.se/
+
+description:
+  value: Utvecklar och publicerar öppen källkod för Folkets AI (F-AI), en AI-applikation för bland annat assistenter och chatt mot språkmodeller, under MIT-licens.
+  status: claimed
+  source_url: https://github.com/helsingborg-stad/F-AI
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [utveckling, oppen_kallkod]
+  status: claimed
+  source_url: https://github.com/helsingborg-stad/F-AI
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [offentlig_sektor, agenter_automation]
+  status: claimed
+  source_url: https://github.com/helsingborg-stad/F-AI
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1283"
+  status: confirmed
+  source_url: https://www.allabolag.se/2120001157
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte enligt allabolag.se.
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/2120001157
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Status Aktiv enligt allabolag.se.
+
+evidence:
+  - url: https://github.com/helsingborg-stad/F-AI
+    kind: repo
+    title: "Folkets AI (F-AI): öppen källkod för AI-applikation med assistenter och chatt (MIT)"
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Kodförrådet ägs av organisationen helsingborg-stad på GitHub. Backend hanterar LLM-anrop, assistenter och chattkonversationer.
+
+links:
+  github: https://github.com/helsingborg-stad
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

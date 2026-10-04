@@ -1,0 +1,99 @@
+id: domstolsverket
+
+name:
+  value: Domstolsverket
+  status: claimed
+  source_url: https://www.domstol.se/domstolsverket/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Sveriges domstolar
+  status: confirmed
+  source_url: https://www.allabolag.se/2021002742
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Organisationsnumret är registrerat under namnet Sveriges domstolar enligt allabolag.se, med postadress c/o Domstolsverket. Domstolsverket är myndighetens eget namn.
+
+type:
+  value: myndighet
+  status: confirmed
+  source_url: https://www.allabolag.se/2021002742
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Statlig enhet enligt allabolag.se.
+
+org_number:
+  value: "202100-2742"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021002742
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Organisationsnummer enligt allabolag.se. Står även på https://www.domstol.se/domstolsverket/oppettider-och-kontakt/.
+
+website: https://www.domstol.se/domstolsverket/
+
+description:
+  value: Har utvecklat en AI-baserad maskningstjänst som föreslår vilka sekretessbelagda uppgifter som ska döljas i handlingar, samt en AI-översättningsapplikation tränad på juridik. Tjänsterna erbjuds domstolar och nämnder.
+  status: claimed
+  source_url: https://www.domstol.se/om-sveriges-domstolar/utveckling-och-innovation/sekretessbelagda-uppgifter-maskeras-med-hjalp-av-ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [utveckling]
+  status: claimed
+  source_url: https://www.domstol.se/om-sveriges-domstolar/utveckling-och-innovation/sekretessbelagda-uppgifter-maskeras-med-hjalp-av-ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Domstolsverket tillhandahåller maskningstjänsten åt domstolarna på deras uppdrag enligt sidan.
+
+areas:
+  value: [juridik, sprakteknik]
+  status: claimed
+  source_url: https://www.domstol.se/om-sveriges-domstolar/utveckling-och-innovation/sekretessbelagda-uppgifter-maskeras-med-hjalp-av-ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0680"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021002742
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte enligt allabolag.se. Huvudkontoret ligger i Jönköping enligt https://www.domstol.se/domstolsverket/oppettider-och-kontakt/.
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/2021002742
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Status Aktiv enligt allabolag.se.
+
+evidence:
+  - url: https://www.domstol.se/om-sveriges-domstolar/utveckling-och-innovation/sekretessbelagda-uppgifter-maskeras-med-hjalp-av-ai/
+    kind: produkt
+    title: Maskningstjänst med AI för sekretessbelagda uppgifter, lanserad juni 2024
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Tjänsten erbjuds 80 domstolar och nämnder enligt sidan.
+  - url: https://www.domstol.se/om-sveriges-domstolar/utveckling-och-innovation/oversattning-med-ai/
+    kind: produkt
+    title: Översättningsapplikation med AI, tränad att förstå juridik, på över 60 språk
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

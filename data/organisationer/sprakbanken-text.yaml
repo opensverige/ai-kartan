@@ -1,0 +1,103 @@
+id: sprakbanken-text
+
+name:
+  value: Språkbanken Text, Göteborgs universitet
+  status: claimed
+  source_url: https://spraakbanken.gu.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Enligt webbplatsen flyttar infrastrukturen till sprakbanken.se och avdelningen vid Göteborgs universitet kallas framöver Språkbanken, inte Språkbanken Text.
+
+type:
+  value: larosate
+  status: claimed
+  source_url: https://spraakbanken.gu.se/en/about
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "202100-3153"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021003153
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Organisationsnumret tillhör Göteborgs universitet, som Språkbanken Text är en del av. Enheten har inget eget organisationsnummer.
+
+website: https://spraakbanken.gu.se/
+
+description:
+  value: Forskningsenhet och infrastruktur för språkdata vid Göteborgs universitet. Utvecklar och delar fria språkresurser och analysverktyg som Korp, Karp och Sparv samt forskar i språkteknologi, inklusive språkbaserad AI.
+  status: claimed
+  source_url: https://spraakbanken.gu.se/en/about
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [data, forskning, infrastruktur, oppen_kallkod, utbildning]
+  status: claimed
+  source_url: https://spraakbanken.gu.se/en/about
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Öppen källkod enligt kodförrådet https://github.com/spraakbanken/sparv (MIT-licens). Utbildning enligt menyn på sidan: doktorandprogram och kurser."
+
+areas:
+  value: [sprakteknik]
+  status: claimed
+  source_url: https://spraakbanken.gu.se/en/about
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1480"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021003153
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte för Göteborgs universitet enligt allabolag.se.
+
+founded:
+  value: 1975
+  status: claimed
+  source_url: https://spraakbanken.gu.se/en/about
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Webbplatsen anger att Språkbanken inrättades 1975.
+
+active:
+  value: true
+  status: claimed
+  source_url: https://spraakbanken.gu.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Webbplatsen listar pågående externfinansierade projekt med slutdatum 2027–2028.
+
+evidence:
+  - url: https://github.com/spraakbanken/sparv
+    kind: repo
+    title: Sparv, Språkbankens verktyg för textanalys (MIT-licens)
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Kodförrådet ägs av organisationen spraakbanken på GitHub. Verktyget körs från kommandoraden.
+  - url: https://sprakbanken.se/en/resources/multigec
+    kind: dataset
+    title: "MultiGEC: dataset för grammatisk felrättning på 12 europeiska språk"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Webbplatsen flyttar till sprakbanken.se; adressen spraakbanken.gu.se/en/resources/multigec leder dit.
+
+links:
+  github: https://github.com/spraakbanken
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

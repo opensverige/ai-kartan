@@ -1,0 +1,92 @@
+id: digg
+
+name:
+  value: Myndigheten för digital förvaltning
+  status: claimed
+  source_url: https://www.digg.se/om-oss/kontakta-oss
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Förkortas Digg.
+
+type:
+  value: myndighet
+  status: confirmed
+  source_url: https://www.allabolag.se/2021006883
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Statlig enhet enligt allabolag.se.
+
+org_number:
+  value: "202100-6883"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021006883
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Organisationsnummer enligt allabolag.se. Står även på https://www.digg.se/om-oss/kontakta-oss.
+
+website: https://www.digg.se/
+
+description:
+  value: Leder det nordiska projektet Nordic DigiGov Lab (2024–2026), där en generativ AI-assistent som hjälper medborgare vid dödsfall och arv pilottestas och utvecklas tillsammans med norska myndigheter.
+  status: claimed
+  source_url: https://www.digg.se/en/management-and-coordination/nordic-digigov-lab/ai-powered-seamless-service
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Att Digg leder Nordic DigiGov Lab framgår av https://www.digg.se/en/management-and-coordination/nordic-digigov-lab/about-nordic-digigov-lab.
+
+offers:
+  value: [utveckling, community]
+  status: claimed
+  source_url: https://www.digg.se/en/management-and-coordination/nordic-digigov-lab/ai-powered-seamless-service
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Enligt https://www.digg.se/en/management-and-coordination/nordic-digigov-lab/about-nordic-digigov-lab genomförs projektet av digitaliseringsmyndigheterna i Sverige, Norge och Finland.
+
+areas:
+  value: [offentlig_sektor, agenter_automation]
+  status: claimed
+  source_url: https://www.digg.se/en/management-and-coordination/nordic-digigov-lab/ai-powered-seamless-service
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "2281"
+  status: claimed
+  source_url: https://www.digg.se/om-oss/kontakta-oss
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Postadress och ett av två besöksställen i Sundsvall, det andra är i Stockholm. Allabolag.se anger kommunsäte Stockholm men adressen Sundsvall.
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/2021006883
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Status Aktiv enligt allabolag.se.
+
+evidence:
+  - url: https://www.digg.se/en/management-and-coordination/nordic-digigov-lab/ai-powered-seamless-service
+    kind: case
+    title: "Nordic DigiGov Lab: generativ AI-assistent för tjänster vid dödsfall och arv (pilot)"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Assistenten utvecklas i samarbete med den norska arbets- och välfärdsförvaltningen NAV och den norska skatteförvaltningen enligt sidan.
+  - url: https://www.digg.se/en/management-and-coordination/nordic-digigov-lab/about-nordic-digigov-lab
+    kind: program
+    title: Nordic DigiGov Lab 2024–2026, ett nordiskt samarbetsprojekt lett av Digg
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

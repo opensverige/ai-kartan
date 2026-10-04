@@ -1,0 +1,91 @@
+id: svenska-kraftnat
+
+name:
+  value: Svenska kraftnät
+  status: claimed
+  source_url: https://www.svk.se/sakerhet-och-beredskap/sakerhetsskydd/information-om-svenska-kraftnats-behandling-av-personuppgifter/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Svenska kraftnät är ett statligt affärsverk enligt https://www.svk.se/om-oss/.
+
+type:
+  value: myndighet
+  status: confirmed
+  source_url: https://www.allabolag.se/2021004284
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Statlig enhet enligt allabolag.se.
+
+org_number:
+  value: "202100-4284"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021004284
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Organisationsnummer enligt allabolag.se. Står även på https://www.svk.se/sakerhet-och-beredskap/sakerhetsskydd/information-om-svenska-kraftnats-behandling-av-personuppgifter/.
+
+website: https://www.svk.se/
+
+description:
+  value: Utvecklar tillsammans med SMHI en AI-modell för kortsiktiga prognoser för moln, vind och vindkraft i ett forskningsprojekt som finansieras av Rymdstyrelsen och pågår till slutet av 2027.
+  status: claimed
+  source_url: https://www.svk.se/press-och-nyheter/nyheter/allmanna-nyheter/2026/ny-ai-modell-for-battre-vindkraftprognoser/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [forskning, utveckling]
+  status: claimed
+  source_url: https://www.svk.se/press-och-nyheter/nyheter/allmanna-nyheter/2026/ny-ai-modell-for-battre-vindkraftprognoser/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [energi_klimat]
+  status: claimed
+  source_url: https://www.svk.se/press-och-nyheter/nyheter/allmanna-nyheter/2026/ny-ai-modell-for-battre-vindkraftprognoser/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0183"
+  status: claimed
+  source_url: https://www.svk.se/sakerhet-och-beredskap/sakerhetsskydd/information-om-svenska-kraftnats-behandling-av-personuppgifter/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Postadress i Sundbyberg enligt sidfoten. Allabolag.se anger kommunsäte Stockholm men adressen Sundbyberg.
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/2021004284
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Status Aktiv enligt allabolag.se.
+
+evidence:
+  - url: https://www.svk.se/press-och-nyheter/nyheter/allmanna-nyheter/2026/ny-ai-modell-for-battre-vindkraftprognoser/
+    kind: case
+    title: "Ny AI-modell för bättre vindkraftprognoser: forskningsprojekt med SMHI"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Modellen är under utveckling; projektet pågår till slutet av 2027. Bygger vidare på en europeisk AI-modell och tränas på Svenska kraftnäts egna data.
+  - url: https://www.smhi.se/nyheter/nyheter/2026-01-28-ny-ai-modell-siktar-mot-att-forbattra-prognoser-for-moln-och-vind
+    kind: case
+    title: "SMHI: ny AI-modell siktar mot att förbättra prognoser för moln och vind"
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Publicerad av SMHI, som är projektpartner.
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

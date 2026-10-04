@@ -1,0 +1,90 @@
+id: trafikverket
+
+name:
+  value: Trafikverket
+  status: claimed
+  source_url: https://www.trafikverket.se/om-oss/kontakta-oss/fakturor-till-trafikverket/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: myndighet
+  status: confirmed
+  source_url: https://www.allabolag.se/2021006297
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Statlig enhet enligt allabolag.se.
+
+org_number:
+  value: "202100-6297"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021006297
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Organisationsnummer enligt allabolag.se. Står även på https://www.trafikverket.se/om-oss/kontakta-oss/fakturor-till-trafikverket/.
+
+website: https://www.trafikverket.se/
+
+description:
+  value: Testar och utvecklar AI i den slutna testmiljön Trafikverket Labs, bland annat en språkmodell som tränats som chattbot för riskdata, och använder AI-baserad bildanalys för digital besiktning av järnvägens slipers.
+  status: claimed
+  source_url: https://www.trafikverket.se/om-oss/nyheter/nationella-nyheter/2024/december/ai-fokus-pa-trafikverket-och-ingenjorsdagen/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [utveckling]
+  status: claimed
+  source_url: https://www.trafikverket.se/om-oss/nyheter/nationella-nyheter/2024/december/ai-fokus-pa-trafikverket-och-ingenjorsdagen/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [transport_mobilitet, datorseende, sprakteknik]
+  status: claimed
+  source_url: https://www.trafikverket.se/om-oss/nyheter/nationella-nyheter/2024/december/ai-fokus-pa-trafikverket-och-ingenjorsdagen/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "2081"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021006297
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte enligt allabolag.se.
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/2021006297
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Status Aktiv enligt allabolag.se.
+
+evidence:
+  - url: https://www.trafikverket.se/om-oss/nyheter/nationella-nyheter/2024/december/ai-fokus-pa-trafikverket-och-ingenjorsdagen/
+    kind: case
+    title: "AI-fokus på Trafikverket: språkmodell som chattbot för riskdata och AI-bildanalys av slipers (dec 2024)"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Nyheten beskriver en video från Trafikverket Labs och Analysfabrikens bildanalys.
+  - url: https://bransch.trafikverket.se/om-oss/aktuellt-for-dig-i-branschen3/aktuellt-for-dig-i-branschen/2025/2005-04/ett-abc-om-digital-besiktning-av-def--jarnvagspodden-avsnitt-5-2025/
+    kind: case
+    title: Digital besiktning av slipers med AI-genererade bildanalyser (program DUVA, 2025)
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Arbetet bedrivs av Analysfabriken, en enhet inom Trafikverkets underhåll.
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

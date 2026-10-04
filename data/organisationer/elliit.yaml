@@ -1,0 +1,92 @@
+id: elliit
+
+name:
+  value: ELLIIT – Excellence Center at Linköping–Lund in Information Technology
+  status: claimed
+  source_url: https://elliit.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: larosate
+  status: claimed
+  source_url: https://elliit.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "202100-3096"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021003096
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Organisationsnumret tillhör Linköpings universitet, värduniversitet enligt Högskolan i Halmstad. ELLIIT är gemensamt med Lunds universitet, Högskolan i Halmstad och BTH och har inget eget organisationsnummer.
+
+website: https://elliit.se/
+
+description:
+  value: Strategisk forskningsmiljö inom informationsteknik och mobil kommunikation vid Linköpings universitet, Lunds universitet, Högskolan i Halmstad och Blekinge tekniska högskola. Forskningen omfattar bland annat AI och robotik.
+  status: claimed
+  source_url: https://elliit.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [forskning, finansiering, community]
+  status: claimed
+  source_url: https://elliit.se/strategy/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Finansiering av projekt och rekrytering enligt strategisidan. Evenemang och fokusperioder enligt startsidan.
+
+areas:
+  value: [generell, robotik]
+  status: claimed
+  source_url: https://elliit.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0580"
+  status: claimed
+  source_url: https://www.hh.se/english/collaboration/networks-and-collaboration-partners/elliit---strategic-research-environment.html
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Värduniversitet är Linköpings universitet enligt Högskolan i Halmstad. ELLIIT är gemensamt med Lunds universitet och anger inget eget säte, så kommunen är osäker.
+
+founded:
+  value: 2010
+  status: claimed
+  source_url: https://elliit.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Webbplatsen anger att regeringen finansierade ELLIIT 2010.
+
+active:
+  value: true
+  status: claimed
+  source_url: https://elliit.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Startsidan har nyheter från september 2026.
+
+evidence:
+  - url: https://elliit.se/research/scientific-publications/
+    kind: publikation
+    title: Vetenskapliga publikationer från ELLIIT-forskare, bland annat om maskininlärning
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: AI är ett av flera ämnen i listan, som även omfattar kommunikation och reglerteknik.
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

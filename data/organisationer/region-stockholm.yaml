@@ -1,0 +1,86 @@
+id: region-stockholm
+
+name:
+  value: Region Stockholm
+  status: claimed
+  source_url: https://www.regionstockholm.se/om-region-stockholm/inkop-och-upphandling/fakturera-region-stockholm/fakturor-till-region-stockholms-enheter/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: kommun_region
+  status: confirmed
+  source_url: https://www.allabolag.se/2321000016
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Landsting enligt allabolag.se.
+
+org_number:
+  value: "232100-0016"
+  status: confirmed
+  source_url: https://www.allabolag.se/2321000016
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Organisationsnummer enligt allabolag.se. Står även på https://www.regionstockholm.se/om-region-stockholm/inkop-och-upphandling/fakturera-region-stockholm/fakturor-till-region-stockholms-enheter/.
+
+website: https://www.regionstockholm.se/
+
+description:
+  value: Publicerar som öppen källkod Textverktyget, ett webbverktyg som bearbetar texter till klarspråk med generativ AI och fördefinierade promptar.
+  status: claimed
+  source_url: https://github.com/regionstockholm/textverktyget
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [utveckling, oppen_kallkod]
+  status: claimed
+  source_url: https://github.com/regionstockholm/textverktyget
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [offentlig_sektor, sprakteknik]
+  status: claimed
+  source_url: https://github.com/regionstockholm/textverktyget
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/2321000016
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte enligt allabolag.se.
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/2321000016
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Status Aktiv enligt allabolag.se.
+
+evidence:
+  - url: https://github.com/regionstockholm/textverktyget
+    kind: repo
+    title: "Textverktyget: webbverktyg som bearbetar texter till klarspråk med generativ AI (MIT)"
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Kodförrådet ägs av organisationen regionstockholm på GitHub. Verktyget anropar Google Gemini via API.
+
+links:
+  github: https://github.com/regionstockholm
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04
