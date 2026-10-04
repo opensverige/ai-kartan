@@ -1,0 +1,92 @@
+id: lund-ai-society
+
+name:
+  value: Lund AI Society
+  status: claimed
+  source_url: https://lundaisociety.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: community
+  status: confirmed
+  source_url: https://www.allabolag.se/8025555700
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Ideell förening enligt allabolag.
+
+org_number:
+  value: "802555-5700"
+  status: confirmed
+  source_url: https://www.allabolag.se/8025555700
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Samma nummer visas i webbplatsens sidfot. Organisationsnummer enligt allabolag.
+
+website: https://lundaisociety.com
+
+description:
+  value: Studentledd ideell förening i Lund som arrangerar AI-evenemang och hackathons och driver ett fellowship där studenter bygger AI-lösningar med öppen källkod åt ideella organisationer.
+  status: claimed
+  source_url: https://lundaisociety.com/about
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [community, utbildning, oppen_kallkod]
+  status: claimed
+  source_url: https://lundaisociety.com/fellowship
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Fellowship-projekten är öppen källkod från första commit enligt sidan. Inga publika förråd hittades på GitHub vid kontrollen.
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://lundaisociety.com/about
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1281"
+  status: confirmed
+  source_url: https://www.allabolag.se/8025555700
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte enligt allabolag.
+
+founded:
+  value: 2026
+  status: confirmed
+  source_url: https://www.allabolag.se/8025555700
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Registreringsår enligt allabolag (2026-02-20).
+
+active:
+  value: true
+  status: claimed
+  source_url: https://lundaisociety.com/about
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Webbplatsen beskriver pågående program: evenemang, fellowship och forskningsspår."
+
+evidence:
+  - url: https://lundaisociety.com/fellowship
+    kind: program
+    title: "Fellowship: studenter bygger AI-lösningar med öppen källkod åt ideella organisationer"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

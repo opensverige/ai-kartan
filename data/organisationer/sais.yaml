@@ -1,0 +1,107 @@
+id: sais
+
+name:
+  value: Swedish Artificial Intelligence Society (SAIS)
+  status: claimed
+  source_url: https://sais.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Sv Artificiell Intelligens Sällskapet (SAIS)
+  status: confirmed
+  source_url: https://www.allabolag.se/8220020740
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Registrerat namn enligt allabolag, där namnet skrivs med versaler.
+
+type:
+  value: community
+  status: confirmed
+  source_url: https://www.allabolag.se/8220020740
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Ideell förening enligt allabolag.
+
+org_number:
+  value: "822002-0740"
+  status: confirmed
+  source_url: https://www.allabolag.se/8220020740
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Organisationsnummer enligt allabolag (källa: SCB, Bolagsverket, Skatteverket)."
+
+website: https://sais.se
+
+description:
+  value: Sällskap som främjar forskning om och tillämpning av AI i Sverige, arrangerar en årlig workshop och medverkar i den skandinaviska konferensen SCAI.
+  status: claimed
+  source_url: https://sais.se/about-sais/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [community, forskning]
+  status: claimed
+  source_url: https://sais.se/events/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Årlig SAIS-workshop och konferensen SCAI, vars förhandlingar ges ut i Linköping Electronic Conference Proceedings.
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://sais.se/about-sais/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0580"
+  status: confirmed
+  source_url: https://www.allabolag.se/8220020740
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte enligt allabolag.
+
+founded:
+  value: 1982
+  status: claimed
+  source_url: https://sais.se/about-sais/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Webbplatsen anger att SAIS bildades 1982. Allabolag anger registreringsdatum 1991-04-09.
+
+active:
+  value: true
+  status: claimed
+  source_url: https://sais.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Nyheter från september 2026 på startsidan.
+
+evidence:
+  - url: https://ecp.ep.liu.se/index.php/sais
+    kind: publikation
+    title: "SCAI 2024: konferensförhandlingar utgivna med SAIS i Linköping Electronic Conference Proceedings"
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://sais.se/events/
+    kind: program
+    title: "Events: SAIS-workshop 2025 och konferensen SCAI 2024"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

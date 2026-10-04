@@ -1,0 +1,95 @@
+id: kungliga-biblioteket
+
+name:
+  value: Kungliga biblioteket
+  status: confirmed
+  source_url: https://www.allabolag.se/2021001710
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Registrerat namn KUNGLIGA BIBLIOTEKET enligt allabolag. Webbplatsen kb.se skyddas av en bot-kontroll och kunde inte läsas maskinellt.
+
+type:
+  value: myndighet
+  status: confirmed
+  source_url: https://www.allabolag.se/2021001710
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Statlig enhet enligt allabolag.
+
+org_number:
+  value: "202100-1710"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021001710
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Organisationsnummer enligt allabolag (källa: SCB, Bolagsverket, Skatteverket)."
+
+website: https://www.kb.se
+
+description:
+  value: Genom KBLab tränar och publicerar biblioteket svenska språkmodeller och taligenkänningsmodeller, bland annat KB-BERT och KB-Whisper, tränade på data från bibliotekets samlingar.
+  status: claimed
+  source_url: https://huggingface.co/KBLab
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: KBLab beskriver sig som nationell forskningsinfrastruktur vid Kungliga biblioteket. Källa är KBLabs organisationssida på Hugging Face.
+
+offers:
+  value: [forskning, data, oppen_kallkod]
+  status: claimed
+  source_url: https://huggingface.co/KBLab
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Modeller och dataset på Hugging Face, kod på GitHub. Licenser enligt dessa sidor: bland annat Apache-2.0, MIT och CC0."
+
+areas:
+  value: [sprakteknik]
+  status: claimed
+  source_url: https://huggingface.co/KBLab
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021001710
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte enligt allabolag.
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/2021001710
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Status Aktiv enligt allabolag.
+
+evidence:
+  - url: https://huggingface.co/KBLab
+    kind: modell
+    title: "KBLab på Hugging Face: svenska språk- och taligenkänningsmodeller samt dataset"
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://github.com/kb-labb
+    kind: repo
+    title: "KBLab på GitHub: kod för taligenkänning, textjustering och modellträning"
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  github: https://github.com/kb-labb
+  huggingface: https://huggingface.co/KBLab
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

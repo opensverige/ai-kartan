@@ -1,0 +1,98 @@
+id: dataforeningen
+
+name:
+  value: Dataföreningen i Sverige
+  status: claimed
+  source_url: https://dfs.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: community
+  status: confirmed
+  source_url: https://www.allabolag.se/8020066349
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Ideell förening enligt allabolag.
+
+org_number:
+  value: "802006-6349"
+  status: confirmed
+  source_url: https://www.allabolag.se/8020066349
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Organisationsnummer enligt allabolag (källa: SCB, Bolagsverket, Skatteverket)."
+
+website: https://dfs.se
+
+description:
+  value: Ideell förening för IT och digitalisering som arrangerar föreläsningar och nätverksträffar om AI och erbjuder utbildningen AI-körkortet tillsammans med NXT Learning.
+  status: claimed
+  source_url: https://dfs.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [community, utbildning]
+  status: claimed
+  source_url: https://dfs.se/lokala-foreningar/ostra/ai-korkortet/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: AI-körkortet är en utbildning om att använda AI i yrkesrollen. Föreningen arrangerar även AI-föreläsningar.
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://dfs.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/8020066349
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte enligt allabolag. Stadgarna anger att riksföreningen har sitt säte i Stockholm.
+
+founded:
+  value: 1949
+  status: claimed
+  source_url: https://dfs.se/om/fran-halkort-till-ai-sedan-1949/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Föreningens historia går tillbaka till 1949 enligt egen sida, nuvarande namn från 1990. Allabolag anger registreringsdatum 1976-01-01.
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/8020066349
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Status Aktiv enligt allabolag.
+
+evidence:
+  - url: https://dfs.se/lokala-foreningar/ostra/ai-korkortet/
+    kind: program
+    title: "AI-körkortet: utbildning i AI tillsammans med NXT Learning"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://dfs.se/pa_gang/sakerhetsfredag-ai-laget-och-ai-ledningssystem-2026/
+    kind: program
+    title: "Säkerhetsfredag 2026: AI-läget och AI-ledningssystem"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

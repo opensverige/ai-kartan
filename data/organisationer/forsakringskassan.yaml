@@ -1,0 +1,89 @@
+id: forsakringskassan
+
+name:
+  value: Försäkringskassan
+  status: claimed
+  source_url: https://www.forsakringskassan.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: myndighet
+  status: confirmed
+  source_url: https://www.allabolag.se/2021005521
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Statlig enhet enligt allabolag.
+
+org_number:
+  value: "202100-5521"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021005521
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Samma nummer anges på webbplatsens sida Behandling av personuppgifter.
+
+website: https://www.forsakringskassan.se
+
+description:
+  value: Har utvecklat AI-stöd som hittar information i läkarintyg och tolkar maskin- och handskriven text i inskannade blanketter. Etablerar tillsammans med Skatteverket AI-verkstaden för offentlig sektor.
+  status: claimed
+  source_url: https://www.forsakringskassan.se/om-forsakringskassan/sa-jobbar-vi-med-vart-uppdrag/forsakringskassan-och-ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [utveckling, infrastruktur]
+  status: claimed
+  source_url: https://www.forsakringskassan.se/om-forsakringskassan/sa-jobbar-vi-med-vart-uppdrag/forsakringskassan-och-ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Egen AI-utveckling för handläggningen. AI-verkstaden beskrivs på Försäkringskassans sida om verkstaden som gemensam teknisk infrastruktur för offentlig sektor, med pilotfas 2026.
+
+areas:
+  value: [offentlig_sektor, datorseende, sprakteknik]
+  status: claimed
+  source_url: https://www.forsakringskassan.se/om-forsakringskassan/sa-jobbar-vi-med-vart-uppdrag/forsakringskassan-och-ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021005521
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte enligt allabolag.
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/2021005521
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Status Aktiv enligt allabolag.
+
+evidence:
+  - url: https://www.forsakringskassan.se/om-forsakringskassan/sa-jobbar-vi-med-vart-uppdrag/forsakringskassan-och-ai
+    kind: case
+    title: "Försäkringskassan och AI: stöd i handläggningen, tolkning av blanketter och AI-verkstaden"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://www.forsakringskassan.se/om-forsakringskassan/sa-jobbar-vi-med-vart-uppdrag/forsakringskassan-och-ai/mojligheterna-med-ai-ar-stora
+    kind: case
+    title: "Möjligheterna med AI är stora: AI-system mot fusk med tandvårdsbilder och skydd av personuppgifter"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

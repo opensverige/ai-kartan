@@ -1,0 +1,93 @@
+id: chalmers-ai-society
+
+name:
+  value: Chalmers AI Society (CAIS)
+  status: claimed
+  source_url: https://chalmersaisociety.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: community
+  status: confirmed
+  source_url: https://www.allabolag.se/8025524797
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Ideell förening enligt allabolag.
+
+org_number:
+  value: "802552-4797"
+  status: confirmed
+  source_url: https://www.allabolag.se/8025524797
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Organisationsnummer enligt allabolag (källa: SCB, Bolagsverket, Skatteverket)."
+
+website: https://chalmersaisociety.com
+
+description:
+  value: Studentförening vid Chalmers som arrangerar hackathons, buildathons, lunchföreläsningar och workshops om AI tillsammans med företag.
+  status: claimed
+  source_url: https://chalmersaisociety.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Webbplatsen är en JavaScript-app. Texten är verifierad i sidans JS-paket, där event och föreningsbeskrivning finns på svenska och engelska.
+
+offers:
+  value: [community, utbildning]
+  status: claimed
+  source_url: https://chalmersaisociety.com/events
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Hackathons, buildathon, lunchföreläsningar och workshops enligt eventtexterna i sidans JS-paket.
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://chalmersaisociety.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1480"
+  status: confirmed
+  source_url: https://www.allabolag.se/8025524797
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte enligt allabolag.
+
+founded:
+  value: 2025
+  status: confirmed
+  source_url: https://www.allabolag.se/8025524797
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Registreringsår enligt allabolag (2025-07-04).
+
+active:
+  value: true
+  status: claimed
+  source_url: https://chalmersaisociety.com/events
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Evenemang 2026 enligt eventtexterna i sidans JS-paket.
+
+evidence:
+  - url: https://chalmersaisociety.com/events
+    kind: program
+    title: "Events: hackathons, buildathon och lunchföreläsningar (JavaScript-app)"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

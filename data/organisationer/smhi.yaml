@@ -1,0 +1,87 @@
+id: smhi
+
+name:
+  value: Sveriges meteorologiska och hydrologiska institut
+  status: claimed
+  source_url: https://www.smhi.se/om-smhi
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Förkortas SMHI.
+
+type:
+  value: myndighet
+  status: confirmed
+  source_url: https://www.allabolag.se/2021000696
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Statlig enhet enligt allabolag.
+
+org_number:
+  value: "202100-0696"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021000696
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Organisationsnummer enligt allabolag (källa: SCB, Bolagsverket, Skatteverket)."
+
+website: https://www.smhi.se
+
+description:
+  value: Har tränat och infört AI-modellen CHIMP, som ursprungligen utvecklats vid Chalmers, i nederbördsprognosen för att förbättra nulägesanalysen av nederbörd över ett större område än radarnätverket täcker.
+  status: claimed
+  source_url: https://www.smhi.se/nyheter/nyheter/2025-11-05-ai-verktyg-oppnar-dorren-for-annu-battre-nederbordsprognos
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [forskning, produkt]
+  status: claimed
+  source_url: https://www.smhi.se/nyheter/nyheter/2025-11-05-ai-verktyg-oppnar-dorren-for-annu-battre-nederbordsprognos
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Forskning och utveckling av CHIMP ingår i en större satsning på nederbördsprognoser. CHIMP används i kartfunktionen Nederbörd i väderappen. Enligt SMHI-nyhet 2026-01-28 pågår även ett forskningsprojekt med Svenska kraftnät om en AI-modell för moln och vind.
+
+areas:
+  value: [energi_klimat]
+  status: claimed
+  source_url: https://www.smhi.se/nyheter/nyheter/2025-11-05-ai-verktyg-oppnar-dorren-for-annu-battre-nederbordsprognos
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0581"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021000696
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte enligt allabolag.
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/2021000696
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Status Aktiv enligt allabolag.
+
+evidence:
+  - url: https://www.smhi.se/nyheter/nyheter/2025-11-05-ai-verktyg-oppnar-dorren-for-annu-battre-nederbordsprognos
+    kind: case
+    title: "AI-verktyg öppnar dörren för ännu bättre nederbördsprognos: AI-modellen CHIMP"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  github: https://github.com/smhi
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

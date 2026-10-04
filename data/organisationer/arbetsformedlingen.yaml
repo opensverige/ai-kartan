@@ -1,0 +1,97 @@
+id: arbetsformedlingen
+
+name:
+  value: Arbetsförmedlingen
+  status: claimed
+  source_url: https://arbetsformedlingen.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: myndighet
+  status: confirmed
+  source_url: https://www.allabolag.se/2021002114
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Statlig enhet enligt allabolag.
+
+org_number:
+  value: "202100-2114"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021002114
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Samma nummer anges på webbplatsens sida Växel och huvudkontor.
+
+website: https://arbetsformedlingen.se
+
+description:
+  value: "Publicerar via JobTech Development API:et JobAd Enrichments, som med en tränad modell hittar yrken, kompetenser och orter i jobbannonser. Källkoden ligger öppet på GitLab."
+  status: claimed
+  source_url: https://gitlab.com/arbetsformedlingen/enrichment/jobtech-jobad-enrichments
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: JobTech Development anger på github.com/JobtechSwe att koden flyttat till Arbetsförmedlingens GitLab. Förråden i GitLab-gruppen omfattar modellfiler (TF Serving) och modellträning för tjänsten.
+
+offers:
+  value: [produkt, oppen_kallkod]
+  status: claimed
+  source_url: https://gitlab.com/arbetsformedlingen/enrichment/jobtech-jobad-enrichments
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Öppet API och källkod under Apache License 2.0 enligt GitLab-sidan.
+
+areas:
+  value: [offentlig_sektor, sprakteknik]
+  status: claimed
+  source_url: https://jobad-enrichments-api.jobtechdev.se/
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "API:et extraherar yrken, kompetenser, egenskaper och geografiska termer ur jobbannonstexter."
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021002114
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte enligt allabolag. Huvudkontorets besöksadress ligger i Solna enligt arbetsformedlingen.se.
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/2021002114
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Status Aktiv enligt allabolag.
+
+evidence:
+  - url: https://jobad-enrichments-api.jobtechdev.se/
+    kind: produkt
+    title: "JobAd Enrichments API: berikning av jobbannonser, dokumentation och Swagger"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://gitlab.com/arbetsformedlingen/enrichment/jobtech-jobad-enrichments
+    kind: repo
+    title: Källkod för JobAd Enrichments API på GitLab (Apache 2.0)
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://gitlab.com/arbetsformedlingen/enrichment/jobtech-jobad-enrichments-tf-serving
+    kind: modell
+    title: Modellfiler för JobAd Enrichments (TF Serving) på GitLab
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

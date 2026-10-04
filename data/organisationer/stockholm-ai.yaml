@@ -1,0 +1,101 @@
+id: stockholm-ai
+
+name:
+  value: Stockholm AI
+  status: claimed
+  source_url: https://www.stockholm.ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: community
+  status: confirmed
+  source_url: https://www.allabolag.se/8025067110
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Ideell förening enligt allabolag.
+
+org_number:
+  value: "802506-7110"
+  status: confirmed
+  source_url: https://www.allabolag.se/8025067110
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Organisationsnummer enligt allabolag (källa: SCB, Bolagsverket, Skatteverket)."
+
+website: https://www.stockholm.ai
+
+description:
+  value: Ideell förening som arrangerar föredrag, kodworkshops, läsgrupper och mentorskap om AI för yrkesverksamma, forskare och studenter i Stockholm.
+  status: claimed
+  source_url: https://www.stockholm.ai/what-we-do
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [community, utbildning]
+  status: claimed
+  source_url: https://www.stockholm.ai/what-we-do
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Summits, Distilling AI (kodworkshops med notebooks), akademiska läsgrupper och mentorsprogram enligt sidan Vad vi gör.
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://www.stockholm.ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/8025067110
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte enligt allabolag. Föreningens stadgar på stockholm.ai/statutes anger säte Stockholm.
+
+founded:
+  value: 2017
+  status: confirmed
+  source_url: https://www.allabolag.se/8025067110
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Registreringsår enligt allabolag (2017-01-19). Stadgarna antogs vid konstitutionsmöte i januari 2017.
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/8025067110
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Status Aktiv enligt allabolag.
+
+evidence:
+  - url: https://www.stockholm.ai/what-we-do
+    kind: program
+    title: "Aktiviteter: summits, kodworkshops, akademiska läsgrupper och mentorsprogram"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://github.com/Stockholm-AI
+    kind: repo
+    title: Stockholm AI på GitHub, bland annat startförråd för hackathonet AgentCofounder
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  github: https://github.com/Stockholm-AI
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

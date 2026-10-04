@@ -1,0 +1,92 @@
+id: kodcentrum
+
+name:
+  value: Kodcentrum
+  status: claimed
+  source_url: https://kodcentrum.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: community
+  status: confirmed
+  source_url: https://www.allabolag.se/8024772777
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Ideell förening enligt allabolag.
+
+org_number:
+  value: "802477-2777"
+  status: confirmed
+  source_url: https://www.allabolag.se/8024772777
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Organisationsnummer enligt allabolag (källa: SCB, Bolagsverket, Skatteverket)."
+
+website: https://kodcentrum.se
+
+description:
+  value: Ideell förening som lär barn och unga programmering och digitalt skapande och erbjuder lärare AI-material, webbinarier och klassrumsbesök i programmet Koll på AI.
+  status: claimed
+  source_url: https://kodcentrum.se/koll-pa-ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [utbildning, community]
+  status: claimed
+  source_url: https://kodcentrum.se/koll-pa-ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Lektionsmaterial, webbinarier för lärare och klassrumsbesök om AI, framtaget med Tieto. Föreningen verkar med hjälp av ideella krafter enligt sidan Om Kodcentrum.
+
+areas:
+  value: [utbildning]
+  status: claimed
+  source_url: https://kodcentrum.se/koll-pa-ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/8024772777
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte enligt allabolag.
+
+founded:
+  value: 2014
+  status: confirmed
+  source_url: https://www.allabolag.se/8024772777
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Registreringsår enligt allabolag (2014-03-13). Webbplatsen anger att föreningen verkat sedan 2014.
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/8024772777
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Status Aktiv enligt allabolag.
+
+evidence:
+  - url: https://kodcentrum.se/koll-pa-ai
+    kind: program
+    title: "Koll på AI: lektionsmaterial, webbinarier och klassrumsbesök om AI"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

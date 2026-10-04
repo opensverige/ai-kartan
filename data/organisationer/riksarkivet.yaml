@@ -1,0 +1,109 @@
+id: riksarkivet
+
+name:
+  value: Riksarkivet
+  status: claimed
+  source_url: https://riksarkivet.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: myndighet
+  status: confirmed
+  source_url: https://www.allabolag.se/2021001074
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Statlig enhet enligt allabolag.
+
+org_number:
+  value: "202100-1074"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021001074
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Samma nummer anges på webbplatsens sida Fakturering.
+
+website: https://riksarkivet.se
+
+description:
+  value: Riksarkivets AI-labb tränar och publicerar modeller, träningsdata och öppen kod för handskriftsigenkänning (HTR), bland annat HTRflow, samt tar fram AI-verktyg för sökning i arkivens samlingar.
+  status: claimed
+  source_url: https://huggingface.co/Riksarkivet
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Källa är AI-labbets organisationssida på Hugging Face. Riksarkivet beskriver också en MCP-server för AI-assistenter på riksarkivet.se/utveckla-och-samarbeta/ai-och-arkiv.
+
+offers:
+  value: [produkt, data, oppen_kallkod]
+  status: claimed
+  source_url: https://huggingface.co/Riksarkivet
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Modeller och träningsdata på Hugging Face, kod på GitHub (bland annat EUPL-1.2 och Apache-2.0).
+
+areas:
+  value: [datorseende, sprakteknik]
+  status: claimed
+  source_url: https://huggingface.co/Riksarkivet
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021001074
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte enligt allabolag. Postadressen på webbplatsen anger Täby.
+
+founded:
+  value: 1618
+  status: claimed
+  source_url: https://riksarkivet.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Webbplatsens startsida anger samhällsviktig information sedan 1618.
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/2021001074
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Status Aktiv enligt allabolag.
+
+evidence:
+  - url: https://riksarkivet.se/utveckla-och-samarbeta/ai-och-arkiv
+    kind: case
+    title: "Artificiell intelligens och arkiv: AI-sök, MCP-server och AI-stöd i digitaliseringen"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://huggingface.co/Riksarkivet
+    kind: modell
+    title: AI-labbets modeller och träningsdata för handskriftsigenkänning på Hugging Face
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://github.com/AI-Riksarkivet/htrflow
+    kind: repo
+    title: "HTRflow: kodförråd för Riksarkivets pipeline för handskriftsigenkänning"
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  github: https://github.com/AI-Riksarkivet
+  huggingface: https://huggingface.co/Riksarkivet
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

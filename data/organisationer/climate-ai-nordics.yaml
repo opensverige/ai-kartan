@@ -1,0 +1,86 @@
+id: climate-ai-nordics
+
+name:
+  value: Climate AI Nordics
+  status: claimed
+  source_url: https://climateainordics.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: community
+  status: confirmed
+  source_url: https://www.allabolag.se/8025574271
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Ideell förening enligt allabolag.
+
+org_number:
+  value: "802557-4271"
+  status: confirmed
+  source_url: https://www.allabolag.se/8025574271
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Samma nummer anges på webbplatsens sida About. Organisationsnummer enligt allabolag.
+
+website: https://climateainordics.com
+
+description:
+  value: Ideell förening och nordiskt forskarnätverk som arrangerar workshops om AI för klimat och naturvård och lyfter fram medlemmarnas projekt och artiklar.
+  status: claimed
+  source_url: https://climateainordics.com/about/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [community, forskning]
+  status: claimed
+  source_url: https://climateainordics.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Nätverk av forskare, workshops och månadsvis utvalda projekt och artiklar från medlemmar.
+
+areas:
+  value: [energi_klimat]
+  status: claimed
+  source_url: https://climateainordics.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1402"
+  status: confirmed
+  source_url: https://www.allabolag.se/8025574271
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte enligt allabolag. Föreningen är registrerad i Sverige och nätverket verkar i hela Norden.
+
+active:
+  value: true
+  status: claimed
+  source_url: https://climateainordics.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Nyheter och evenemang från september 2026 på startsidan.
+
+evidence:
+  - url: https://climateainordics.com/featured-works/
+    kind: publikation
+    title: Utvalda projekt och artiklar från medlemmar inom AI och klimat
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  github: https://github.com/climateainordics
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

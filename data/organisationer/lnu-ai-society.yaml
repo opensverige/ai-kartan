@@ -1,0 +1,92 @@
+id: lnu-ai-society
+
+name:
+  value: LNU AI Society
+  status: claimed
+  source_url: https://lnuais.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: community
+  status: confirmed
+  source_url: https://www.allabolag.se/8025522056
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Ideell förening enligt allabolag.
+
+org_number:
+  value: "802552-2056"
+  status: confirmed
+  source_url: https://www.allabolag.se/8025522056
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Organisationsnummer enligt allabolag (källa: SCB, Bolagsverket, Skatteverket)."
+
+website: https://lnuais.com
+
+description:
+  value: Studentförening vid Linnéuniversitetet som arrangerar AI-workshops, hackathons, läsgrupper och företagsbesök för studenter.
+  status: claimed
+  source_url: https://lnuais.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [community, utbildning]
+  status: claimed
+  source_url: https://lnuais.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Workshops, hackathons, gästföredrag och företagsbesök enligt startsidans eventlista.
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://lnuais.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0780"
+  status: confirmed
+  source_url: https://www.allabolag.se/8025522056
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte enligt allabolag.
+
+founded:
+  value: 2025
+  status: confirmed
+  source_url: https://www.allabolag.se/8025522056
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Registreringsår enligt allabolag (2025-06-13).
+
+active:
+  value: true
+  status: claimed
+  source_url: https://lnuais.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Evenemang i september 2026 enligt startsidan.
+
+evidence:
+  - url: https://lnuais.com/
+    kind: program
+    title: "Eventlista på startsidan: hackathons, företagsbesök och workshops"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

@@ -1,0 +1,84 @@
+id: skatteverket
+
+name:
+  value: Skatteverket
+  status: claimed
+  source_url: https://www.skatteverket.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: myndighet
+  status: confirmed
+  source_url: https://www.allabolag.se/2021005448
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Statlig enhet enligt allabolag.
+
+org_number:
+  value: "202100-5448"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021005448
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Samma nummer anges på webbplatsens sida E-faktura till Skatteverket.
+
+website: https://www.skatteverket.se
+
+description:
+  value: Har byggt en egen AI-plattform där myndigheten tränar modeller för bland annat textklassificering, riskmodeller, översättning, transkribering och anonymisering. Etablerar tillsammans med Försäkringskassan AI-verkstaden för offentlig sektor.
+  status: claimed
+  source_url: https://www.skatteverket.se/omoss/jobbahososs/jobbamedithososs/skatteverketsarbetemedai.4.13948c0e18e810bfa0c6d0c.html
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [utveckling, infrastruktur]
+  status: claimed
+  source_url: https://www.skatteverket.se/omoss/jobbahososs/jobbamedithososs/skatteverketsarbetemedai.4.13948c0e18e810bfa0c6d0c.html
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Egen AI-plattform och, tillsammans med Försäkringskassan, uppdraget att etablera AI-verkstaden för offentlig sektor. Tjänsterna för transkribering, översättning och anonymisering används av de egna medarbetarna.
+
+areas:
+  value: [offentlig_sektor, sprakteknik, datorseende]
+  status: claimed
+  source_url: https://www.skatteverket.se/omoss/jobbahososs/jobbamedithososs/skatteverketsarbetemedai.4.13948c0e18e810bfa0c6d0c.html
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Sidan nämner klassificering av texter, översättning, tolkning av bild till text och transkribering av ljud till text.
+
+kommun:
+  value: "0183"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021005448
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte enligt allabolag.
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/2021005448
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Status Aktiv enligt allabolag.
+
+evidence:
+  - url: https://www.skatteverket.se/omoss/jobbahososs/jobbamedithososs/skatteverketsarbetemedai.4.13948c0e18e810bfa0c6d0c.html
+    kind: case
+    title: "Skatteverkets arbete med AI: egen AI-plattform, riskmodeller och språktjänster"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

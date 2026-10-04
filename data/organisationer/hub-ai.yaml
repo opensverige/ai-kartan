@@ -1,0 +1,92 @@
+id: hub-ai
+
+name:
+  value: Hub AI
+  status: claimed
+  source_url: https://hubai.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: community
+  status: confirmed
+  source_url: https://www.allabolag.se/8025330641
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Ideell förening enligt allabolag.
+
+org_number:
+  value: "802533-0641"
+  status: confirmed
+  source_url: https://www.allabolag.se/8025330641
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Organisationsnummer enligt allabolag (källa: SCB, Bolagsverket, Skatteverket)."
+
+website: https://hubai.se
+
+description:
+  value: Studentförening vid Lunds universitet som arrangerar AI-föreläsningar, paneldiskussioner och Python-workshops för studenter från olika ämnesområden.
+  status: claimed
+  source_url: https://hubai.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [community, utbildning]
+  status: claimed
+  source_url: https://hubai.se/events/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Python-workshops, workshop i datorseende, föreläsningar och paneler enligt eventsidan.
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://hubai.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1281"
+  status: confirmed
+  source_url: https://www.allabolag.se/8025330641
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte enligt allabolag.
+
+founded:
+  value: 2020
+  status: confirmed
+  source_url: https://www.allabolag.se/8025330641
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Registreringsår enligt allabolag (2020-11-13).
+
+active:
+  value: true
+  status: claimed
+  source_url: https://hubai.se/events/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Evenemang 2026 enligt eventsidan.
+
+evidence:
+  - url: https://hubai.se/events/
+    kind: program
+    title: "Events: Python-workshops, workshop i datorseende, föreläsningar och paneldiskussioner"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

@@ -1,0 +1,92 @@
+id: gaia
+
+name:
+  value: Gothenburg Artificial Intelligence Alliance (GAIA)
+  status: claimed
+  source_url: https://www.gaia.fish/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: community
+  status: confirmed
+  source_url: https://www.allabolag.se/8025199459
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Ideell förening enligt allabolag.
+
+org_number:
+  value: "802519-9459"
+  status: confirmed
+  source_url: https://www.allabolag.se/8025199459
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Samma nummer visas i webbplatsens sidfot. Organisationsnummer enligt allabolag.
+
+website: https://www.gaia.fish
+
+description:
+  value: Ideell förening i Göteborg som arrangerar en årlig AI-konferens och återkommande meetups om AI, maskininlärning, datavetenskap och datateknik.
+  status: claimed
+  source_url: https://www.gaia.fish/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [community, utbildning]
+  status: claimed
+  source_url: https://www.gaia.fish/events
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Meetups ungefär varannan månad, en årlig konferens på våren och workshops enligt eventsidan.
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://www.gaia.fish/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1480"
+  status: confirmed
+  source_url: https://www.allabolag.se/8025199459
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte enligt allabolag. Webbplatsens postadress ligger i Mölndal.
+
+founded:
+  value: 2018
+  status: confirmed
+  source_url: https://www.allabolag.se/8025199459
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Registreringsår enligt allabolag (2018-11-08). Webbplatsen anger att meetupen Machine Learning and Data Science (GBG) går tillbaka till 2014.
+
+active:
+  value: true
+  status: claimed
+  source_url: https://www.gaia.fish/events
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Konferens och workshops i april 2026 enligt eventsidan.
+
+evidence:
+  - url: https://www.gaia.fish/events
+    kind: program
+    title: "Eventarkiv 2024-2026: meetups, årlig konferens och workshops om AI"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

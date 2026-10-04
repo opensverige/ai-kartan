@@ -1,0 +1,91 @@
+id: skogsstyrelsen
+
+name:
+  value: Skogsstyrelsen
+  status: claimed
+  source_url: https://www.skogsstyrelsen.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: myndighet
+  status: confirmed
+  source_url: https://www.allabolag.se/2021005612
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Statlig enhet enligt allabolag.
+
+org_number:
+  value: "202100-5612"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021005612
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Organisationsnummer enligt allabolag (källa: SCB, Bolagsverket, Skatteverket)."
+
+website: https://www.skogsstyrelsen.se
+
+description:
+  value: Tar fram kartunderlag med maskininlärning över skog med naturvärden, fångstgropar och kolbottnar och publicerar dem i karttjänsten Digitala värden i skog, med nedladdning för eget GIS.
+  status: claimed
+  source_url: https://www.skogsstyrelsen.se/e-tjanster-och-kartor/karttjanster/digitala-varden-i-skog/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Arbetet görs inom ett regeringsuppdrag 2022-2027 tillsammans med Naturvårdsverket. Karttjänsten är i betaversion enligt sidan.
+
+offers:
+  value: [produkt, data]
+  status: claimed
+  source_url: https://www.skogsstyrelsen.se/e-tjanster-och-kartor/karttjanster/digitala-varden-i-skog/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Karttjänst och nedladdningsbara kartunderlag för eget GIS.
+
+areas:
+  value: [jordbruk_skog, datorseende]
+  status: claimed
+  source_url: https://www.skogsstyrelsen.se/e-tjanster-och-kartor/karttjanster/digitala-varden-i-skog/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Underlagen bygger på fjärranalysdata och höjdmodell, inte på fältinventeringar.
+
+kommun:
+  value: "0680"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021005612
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte enligt allabolag. Kontaktsidan anger huvudkontor i Jönköping.
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/2021005612
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Status Aktiv enligt allabolag.
+
+evidence:
+  - url: https://www.skogsstyrelsen.se/e-tjanster-och-kartor/karttjanster/digitala-varden-i-skog/
+    kind: produkt
+    title: "Digitala värden i skog: karttjänst med AI-framtagna kunskapsunderlag"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://www.skogsstyrelsen.se/nyhetslista/digitala-ai-kartor-underlattar-for-skogsagare-att-ta-hansyn/
+    kind: case
+    title: "Pressmeddelande 2026-02-18: Digitala AI-kartor underlättar för skogsägare att ta hänsyn"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

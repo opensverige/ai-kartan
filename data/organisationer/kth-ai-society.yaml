@@ -1,0 +1,101 @@
+id: kth-ai-society
+
+name:
+  value: KTH AI Society
+  status: claimed
+  source_url: https://kthais.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: community
+  status: confirmed
+  source_url: https://www.allabolag.se/8025187249
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Ideell förening enligt allabolag.
+
+org_number:
+  value: "802518-7249"
+  status: confirmed
+  source_url: https://www.allabolag.se/8025187249
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Organisationsnummer enligt allabolag (källa: SCB, Bolagsverket, Skatteverket)."
+
+website: https://kthais.com
+
+description:
+  value: Studentförening vid KTH som arrangerar hackathons, föreläsningar och paneldiskussioner om AI och driver team för AI-forskning och utveckling, ofta tillsammans med sponsorer och partnerorganisationer.
+  status: claimed
+  source_url: https://kthais.com/about
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [community, utbildning, oppen_kallkod]
+  status: claimed
+  source_url: https://kthais.com/about
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Öppen källkod: projekt under MIT-licens på github.com/kthaisociety, till exempel ai.nvim och föreningens webbplats."
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://kthais.com/about
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/8025187249
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte enligt allabolag.
+
+founded:
+  value: 2018
+  status: confirmed
+  source_url: https://www.allabolag.se/8025187249
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Registreringsår enligt allabolag (2018-09-13).
+
+active:
+  value: true
+  status: claimed
+  source_url: https://kthais.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Webbplatsen är aktuell 2026 och tar emot medlemsansökningar.
+
+evidence:
+  - url: https://github.com/kthaisociety
+    kind: repo
+    title: "KTH AI Society på GitHub: öppen programvara under MIT-licens"
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://kthais.com/about
+    kind: program
+    title: "Om föreningen: hackathons, föreläsningar och AI-projekt med partners"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  github: https://github.com/kthaisociety
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

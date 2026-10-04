@@ -1,0 +1,95 @@
+id: scb
+
+name:
+  value: Statistiska centralbyrån
+  status: confirmed
+  source_url: https://www.allabolag.se/2021000837
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Registrerat namn STATISTISKA CENTRALBYRÅN enligt allabolag. Webbplatsen använder förkortningen SCB.
+
+type:
+  value: myndighet
+  status: confirmed
+  source_url: https://www.allabolag.se/2021000837
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Statlig enhet enligt allabolag.
+
+org_number:
+  value: "202100-0837"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021000837
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Samma nummer anges på webbplatsens sida Behandling av personuppgifter.
+
+website: https://www.scb.se
+
+description:
+  value: Använder maskininlärning i statistikproduktionen, bland annat för klassificering, kvalitetskontroll och imputering, och publicerar öppen kod på GitHub, till exempel modeller för att digitalisera inskannade kartor.
+  status: claimed
+  source_url: https://www.scb.se/contentassets/048c2c293c404f3e899e91b844b6b9c2/scbs-datadrivna-utveckling-och-ai-formaga.pdf
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Maskininlärningen beskrivs i SCB:s rapport enligt regleringsbrev 2026. Öppen kod finns på github.com/StatisticsSweden."
+
+offers:
+  value: [oppen_kallkod]
+  status: claimed
+  source_url: https://github.com/StatisticsSweden
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kod under bland annat MIT-licens, till exempel UrbanAIZE för kartdigitalisering.
+
+areas:
+  value: [offentlig_sektor, datorseende]
+  status: claimed
+  source_url: https://github.com/StatisticsSweden/UrbanAIZE
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Offentlig sektor: SCB är statlig myndighet. Datorseende: UrbanAIZE tränar U-Net-modeller på inskannade kartblad."
+
+kommun:
+  value: "1880"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021000837
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte enligt allabolag.
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/2021000837
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Status Aktiv enligt allabolag.
+
+evidence:
+  - url: https://www.scb.se/contentassets/048c2c293c404f3e899e91b844b6b9c2/scbs-datadrivna-utveckling-och-ai-formaga.pdf
+    kind: publikation
+    title: "SCB:s datadrivna utveckling och AI-förmåga: rapportering enligt regleringsbrev 2026"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://github.com/StatisticsSweden/UrbanAIZE
+    kind: repo
+    title: "UrbanAIZE: maskininlärning för att digitalisera inskannade kartblad (MIT)"
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  github: https://github.com/StatisticsSweden
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04
