@@ -1,0 +1,110 @@
+id: substorm
+
+name:
+  value: "Substorm"
+  status: claimed
+  source_url: https://substorm.ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "Substorm AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/5592057466
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: "bolag"
+  status: confirmed
+  source_url: https://www.allabolag.se/5592057466
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "559205-7466"
+  status: confirmed
+  source_url: https://www.allabolag.se/5592057466
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Webbplatsens integritetspolicy anger bolagsnamnet Substorm AB, men organisationsnumret hittades inte på de undersökta sidorna. Numret är matchat mot bolagsnamnet."
+
+website: https://substorm.ai
+
+description:
+  value: "Bygger AI-produkter för industri och verksamheter: Vigil Vision, datorseende för automatiserad visuell kvalitetskontroll i tillverkning, och Intello Redact, AI-stödd maskning av känslig information i dokument."
+  status: claimed
+  source_url: https://substorm.ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt, forskning]
+  status: claimed
+  source_url: https://substorm.ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Forskning enligt https://substorm.ai/forskningsprojekt/ (tillämpade forskningsprojekt med AI)."
+
+areas:
+  value: [industri, datorseende, offentlig_sektor]
+  status: claimed
+  source_url: https://substorm.ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Offentlig sektor enligt https://intelloredact.se/ (Redact är byggt för kommuner och regioner). Industri och datorseende enligt startsidan."
+
+kommun:
+  value: "2581"
+  status: confirmed
+  source_url: https://www.allabolag.se/5592057466
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag. Webbplatsen anger en kontaktadress i Stockholm."
+
+founded:
+  value: 2019
+  status: confirmed
+  source_url: https://www.allabolag.se/5592057466
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5592057466
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+evidence:
+  - url: https://vigilvision.se/
+    kind: produkt
+    title: "Vigil Vision: datorseende för visuell kvalitetskontroll i produktion"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://intelloredact.se/
+    kind: produkt
+    title: "Intello Redact: AI-stödd maskning av känslig information i dokument"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://substorm.ai/forskningsprojekt/
+    kind: case
+    title: "Tillämpade forskningsprojekt med AI och datorseende"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

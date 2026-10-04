@@ -1,0 +1,106 @@
+id: tuteliq
+
+name:
+  value: "Tuteliq"
+  status: claimed
+  source_url: https://tuteliq.ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "Tuteliq AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/5594811217
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: "bolag"
+  status: confirmed
+  source_url: https://www.allabolag.se/5594811217
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "559481-1217"
+  status: confirmed
+  source_url: https://www.allabolag.se/5594811217
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Samma nummer anges i webbplatsens användarvillkor (https://tuteliq.ai/terms)."
+
+website: https://tuteliq.ai
+
+description:
+  value: "Utvecklar ett API med AI som upptäcker grooming, mobbning, bedrägeri och självskada i text, tal, bild och video, för plattformar som används av barn."
+  status: claimed
+  source_url: https://tuteliq.ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt, oppen_kallkod]
+  status: claimed
+  source_url: https://github.com/Tuteliq/node
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Produkt: API enligt https://tuteliq.ai/docs. Öppen källkod: SDK:er under MIT-licens på GitHub."
+
+areas:
+  value: [forsvar_sakerhet, sprakteknik, datorseende]
+  status: claimed
+  source_url: https://tuteliq.ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "2180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5594811217
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+founded:
+  value: 2024
+  status: confirmed
+  source_url: https://www.allabolag.se/5594811217
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5594811217
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+evidence:
+  - url: https://tuteliq.ai/docs
+    kind: produkt
+    title: "Dokumentation för Tuteliqs API för barnsäkerhet"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://github.com/Tuteliq/node
+    kind: repo
+    title: "Node.js/TypeScript-SDK för Tuteliqs API (MIT-licens)"
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  github: https://github.com/Tuteliq
+  linkedin: https://www.linkedin.com/company/tuteliq
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

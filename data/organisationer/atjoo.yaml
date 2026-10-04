@@ -1,0 +1,99 @@
+id: atjoo
+
+name:
+  value: "ATJOO"
+  status: claimed
+  source_url: https://atjoo.com/veterinar
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "ATJOO AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/5593308389
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: "bolag"
+  status: confirmed
+  source_url: https://www.allabolag.se/5593308389
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "559330-8389"
+  status: confirmed
+  source_url: https://www.allabolag.se/5593308389
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Webbplatsens notis om localStorage anger bolagsnamnet Atjoo AB, men organisationsnumret hittades inte på de undersökta sidorna. Numret är matchat mot bolagsnamnet."
+
+website: https://atjoo.com
+
+description:
+  value: "Utvecklar Atjoo, en AI-receptionist som svarar i telefon, bokar besök i journalsystemet och kopplar akuta ärenden vidare för veterinärkliniker."
+  status: claimed
+  source_url: https://atjoo.com/veterinar
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://atjoo.com/veterinar
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [halsa, agenter_automation]
+  status: claimed
+  source_url: https://atjoo.com/veterinar
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "2580"
+  status: confirmed
+  source_url: https://www.allabolag.se/5593308389
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+founded:
+  value: 2021
+  status: confirmed
+  source_url: https://www.allabolag.se/5593308389
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsår enligt allabolag. Webbplatsen (https://atjoo.com/om-oss) anger grundat 2023."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5593308389
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+evidence:
+  - url: https://atjoo.com/veterinar
+    kind: produkt
+    title: "Atjoo: AI-receptionist för veterinärkliniker"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/atjoo
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

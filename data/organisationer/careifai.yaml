@@ -1,0 +1,99 @@
+id: careifai
+
+name:
+  value: "Careifai"
+  status: claimed
+  source_url: https://www.careifai.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "CareifAI Sweden AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/5594316415
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: "bolag"
+  status: confirmed
+  source_url: https://www.allabolag.se/5594316415
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "559431-6415"
+  status: confirmed
+  source_url: https://www.allabolag.se/5594316415
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Webbplatsens sidfot anger bolagsnamnet Careifai Sweden AB och orten Luleå, men organisationsnumret hittades inte på de undersökta sidorna. Numret är matchat mot bolagsnamnet."
+
+website: https://www.careifai.com
+
+description:
+  value: "Utvecklar verktyget Summarizer, som med AI sammanfattar journaltext, formulär och diktat som stöd för kliniker vid neuropsykiatriska utredningar."
+  status: claimed
+  source_url: https://www.careifai.com/product
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.careifai.com/product
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [halsa]
+  status: claimed
+  source_url: https://www.careifai.com/product
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "2580"
+  status: confirmed
+  source_url: https://www.allabolag.se/5594316415
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+founded:
+  value: 2023
+  status: confirmed
+  source_url: https://www.allabolag.se/5594316415
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5594316415
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+evidence:
+  - url: https://www.careifai.com/product
+    kind: produkt
+    title: "Summarizer: AI-verktyg för neuropsykiatriska utredningar"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: "Webbplatsen beskriver verktyget som under utveckling. Enligt https://www.careifai.com/aktuellt har en testkund bidragit till utvecklingen."
+
+links:
+  linkedin: https://www.linkedin.com/company/careifai-ab
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

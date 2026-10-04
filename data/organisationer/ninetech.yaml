@@ -1,0 +1,111 @@
+id: ninetech
+
+name:
+  value: "Ninetech"
+  status: claimed
+  source_url: https://www.ninetech.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "Ninetech Aktiebolag"
+  status: confirmed
+  source_url: https://www.allabolag.se/5564718822
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: "bolag"
+  status: confirmed
+  source_url: https://www.allabolag.se/5564718822
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "556471-8822"
+  status: confirmed
+  source_url: https://www.allabolag.se/5564718822
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Numret anges även i webbplatsens policysida (https://www.ninetech.com/om-ninetech/policys/)."
+
+website: https://www.ninetech.com
+
+description:
+  value: "Tar fram digitala lösningar åt företag i tillverkande industri, som e-handel, kundportaler och produktkonfiguratorer, bland annat med ramverket AI Search & Assist för AI-sök och AI-assistenter."
+  status: claimed
+  source_url: https://www.ninetech.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [utveckling]
+  status: claimed
+  source_url: https://www.ninetech.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [handel, industri]
+  status: claimed
+  source_url: https://www.ninetech.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1780"
+  status: confirmed
+  source_url: https://www.allabolag.se/5564718822
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+founded:
+  value: 1993
+  status: confirmed
+  source_url: https://www.allabolag.se/5564718822
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsår enligt allabolag. Webbplatsen (https://www.ninetech.com/om-ninetech/) anger att bolaget grundades 1993."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5564718822
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+evidence:
+  - url: https://www.ninetech.com/losningar/ai-search-assist/
+    kind: produkt
+    title: "Ninetech AI Search & Assist Framework: AI-sök och chatt"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://www.ninetech.com/expertis/ai-som-driver-forsaljning/
+    kind: produkt
+    title: "AI i sälj- och marknadskanaler: AI Search, Assist och Act"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://www.ninetech.com/kundcase/ai-som-gor-verklig-skillnad/
+    kind: case
+    title: "Kundcase: gränssnitt till en AI-stödd diagnosmjukvara"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/ninetech-ab/
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

@@ -1,0 +1,104 @@
+id: brikka
+
+name:
+  value: "Brikka"
+  status: claimed
+  source_url: https://www.brikka.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "Brikka Labs AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/5594776089
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: "bolag"
+  status: confirmed
+  source_url: https://www.allabolag.se/5594776089
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "559477-6089"
+  status: confirmed
+  source_url: https://www.allabolag.se/5594776089
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Webbplatsens sidfot anger bolagsnamnet Brikka Labs AB och orten Åre, men organisationsnumret hittades inte på de undersökta sidorna. Numret är matchat mot bolagsnamnet."
+
+website: https://www.brikka.se
+
+description:
+  value: "Hjälper svenska företag att ta fram AI-lösningar med proof of concept, workshops och föreläsningar, bland annat med språkmodeller för dokument och e-post."
+  status: claimed
+  source_url: https://www.brikka.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [utveckling, utbildning]
+  status: claimed
+  source_url: https://www.brikka.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://www.brikka.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "2321"
+  status: confirmed
+  source_url: https://www.allabolag.se/5594776089
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+founded:
+  value: 2024
+  status: confirmed
+  source_url: https://www.allabolag.se/5594776089
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5594776089
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+evidence:
+  - url: https://www.brikka.se/tillampningar
+    kind: case
+    title: "Tillämpningar: exempel på AI-lösningar hos kunder"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://www.brikka.se/tjanster/ai-poc-shop
+    kind: produkt
+    title: "Poc Shop: proof of concept med AI"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/brikka
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

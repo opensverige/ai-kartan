@@ -1,0 +1,103 @@
+id: digital-venue
+
+name:
+  value: "Digital Venue"
+  status: claimed
+  source_url: https://digitalvenue.ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "Digital Venue Nordics AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/5567740997
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: "bolag"
+  status: confirmed
+  source_url: https://www.allabolag.se/5567740997
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "556774-0997"
+  status: confirmed
+  source_url: https://www.allabolag.se/5567740997
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Webbplatsen (https://digitalvenue.ai/about/) anger bolagsnamnet Digital Venue Nordics AB, men organisationsnumret hittades inte på de undersökta sidorna. Numret är matchat mot bolagsnamnet."
+
+website: https://digitalvenue.ai
+
+description:
+  value: "Utvecklar DEAN, en AI-följeslagare för lärande, och ett AI-lager för skolor, bibliotek och museer som bygger på institutionens eget material."
+  status: claimed
+  source_url: https://digitalvenue.ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://digitalvenue.ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [utbildning, offentlig_sektor, media_kreativt]
+  status: claimed
+  source_url: https://digitalvenue.ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5567740997
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte Stockholm enligt allabolag, och webbplatsen anger huvudkontor i Stockholm. Allabolag anger även en besöksadress i Sundsvall."
+
+founded:
+  value: 2008
+  status: confirmed
+  source_url: https://www.allabolag.se/5567740997
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsår enligt allabolag. Webbplatsen (https://digitalvenue.ai/about/) anger verksamhet sedan 2023."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5567740997
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+evidence:
+  - url: https://digitalvenue.ai/
+    kind: produkt
+    title: "DEAN och AI-lagret för skolor, bibliotek och museer"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://oxelosund.alex2.digitalvenue.ai/sv
+    kind: demo
+    title: "AI-chatt för Oxelösunds bibliotek, driven av Digital Venue"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04
