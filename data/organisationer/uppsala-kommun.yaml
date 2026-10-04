@@ -1,0 +1,78 @@
+id: uppsala-kommun
+
+name:
+  value: Uppsala kommun
+  status: claimed
+  source_url: https://www.uppsala.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: kommun_region
+  status: confirmed
+  source_url: https://www.allabolag.se/2120003005
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "212000-3005"
+  status: confirmed
+  source_url: https://www.allabolag.se/2120003005
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Samma nummer anges på kommunens webbplats: https://www.uppsala.se/foretag-och-naringsliv/faktura-och-betalning/fakturor-och-rekvisitioner/"
+
+website: https://www.uppsala.se/
+
+description:
+  value: "Har tagit fram AI-assistenten RiTA, en chatbot som ger medarbetare på arbetsmarknadsförvaltningen svar och hänvisningar utifrån förvaltningens rutiner och styrande dokument, tillsammans med kommunens IT-stab."
+  status: claimed
+  source_url: https://www.uppsala.se/kommun-och-politik/sa-arbetar-vi-med-olika-amnen/sa-arbetar-vi-med-innovation/inspiration-foretag-och-arbete/rita---ratt-information-till-anvandaren/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Att assistenten är framtagen och används framgår av kommunens bilaga: https://www.uppsala.se/contentassets/fda29d8ac02d409389a954e96c6a8431/bilaga-verksamheternas-atgarder-kopplade-till-uppdrag-1.pdf"
+
+offers:
+  value: [utveckling]
+  status: claimed
+  source_url: https://www.uppsala.se/kommun-och-politik/sa-arbetar-vi-med-olika-amnen/sa-arbetar-vi-med-innovation/inspiration-foretag-och-arbete/rita---ratt-information-till-anvandaren/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [offentlig_sektor, agenter_automation]
+  status: claimed
+  source_url: https://www.uppsala.se/kommun-och-politik/sa-arbetar-vi-med-olika-amnen/sa-arbetar-vi-med-innovation/inspiration-foretag-och-arbete/rita---ratt-information-till-anvandaren/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0380"
+  status: confirmed
+  source_url: https://www.allabolag.se/2120003005
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+evidence:
+  - url: https://www.uppsala.se/kommun-och-politik/sa-arbetar-vi-med-olika-amnen/sa-arbetar-vi-med-innovation/inspiration-foretag-och-arbete/rita---ratt-information-till-anvandaren/
+    kind: case
+    title: "RiTA: AI-baserat rutinstöd för arbetsmarknadsförvaltningen"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://www.uppsala.se/contentassets/fda29d8ac02d409389a954e96c6a8431/bilaga-verksamheternas-atgarder-kopplade-till-uppdrag-1.pdf
+    kind: publikation
+    title: "Bilaga till kommunstyrelseärende: RiTA framtagen med IT-staben (status augusti 2025)"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

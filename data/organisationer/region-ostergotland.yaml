@@ -1,0 +1,71 @@
+id: region-ostergotland
+
+name:
+  value: Region Östergötland
+  status: claimed
+  source_url: https://www.regionostergotland.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: kommun_region
+  status: confirmed
+  source_url: https://www.allabolag.se/2321000040
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "232100-0040"
+  status: confirmed
+  source_url: https://www.allabolag.se/2321000040
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Samma nummer anges på regionens webbplats, skrivet med mellanslag (23 21 00-0040): https://www.regionostergotland.se/ro/om-region-ostergotland/upphandlingar/fakturering"
+
+website: https://www.regionostergotland.se/
+
+description:
+  value: "Har tagit fram en AI-app som mäter sårstorlek och sårläkning från mobilbilder. Appen utvecklades i forskning vid hand- och plastikkirurgiska kliniken och har spridits till kliniker i Sverige och Norge."
+  status: claimed
+  source_url: https://www.regionostergotland.se/ro/det-har-gor-vi/forskning/aktuell-forskning/nyheter/2026-04-09-ai-stod-i-bedomning-av-svarlakta-sar
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [forskning, utveckling]
+  status: claimed
+  source_url: https://www.regionostergotland.se/ro/det-har-gor-vi/forskning/aktuell-forskning/nyheter/2026-04-09-ai-stod-i-bedomning-av-svarlakta-sar
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [halsa, datorseende]
+  status: claimed
+  source_url: https://www.regionostergotland.se/ro/det-har-gor-vi/forskning/aktuell-forskning/nyheter/2026-04-09-ai-stod-i-bedomning-av-svarlakta-sar
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0580"
+  status: confirmed
+  source_url: https://www.allabolag.se/2321000040
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+evidence:
+  - url: https://www.regionostergotland.se/ro/det-har-gor-vi/forskning/aktuell-forskning/nyheter/2026-04-09-ai-stod-i-bedomning-av-svarlakta-sar
+    kind: case
+    title: "AI-stöd i bedömning av svårläkta sår (AI-app från hand- och plastikkirurgiska klinikens forskning)"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

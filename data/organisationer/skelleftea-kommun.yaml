@@ -1,0 +1,78 @@
+id: skelleftea-kommun
+
+name:
+  value: Skellefteå kommun
+  status: claimed
+  source_url: https://skelleftea.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: kommun_region
+  status: confirmed
+  source_url: https://www.allabolag.se/2120002643
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "212000-2643"
+  status: confirmed
+  source_url: https://www.allabolag.se/2120002643
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Samma nummer anges på kommunens webbplats: https://skelleftea.se/invanare/startsida/kontakta-kundtjanst/postadress-organisationsnummer"
+
+website: https://skelleftea.se/
+
+description:
+  value: "Har koordinerat ett Vinnova-finansierat projekt med Göteborg, Jönköping och RISE för att utveckla en AI-tjänst med generativ AI som anpassar webbinformation för personer med intellektuell funktionsnedsättning."
+  status: claimed
+  source_url: https://www.mynewsdesk.com/se/skellefteakommun/pressreleases/skellefteaa-med-i-nytt-projekt-foer-att-ta-fram-ai-baserat-stoed-foer-personer-med-funktionsnedsaettning-3330474
+  source_type: press
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [utveckling]
+  status: claimed
+  source_url: https://www.mynewsdesk.com/se/skellefteakommun/pressreleases/skellefteaa-med-i-nytt-projekt-foer-att-ta-fram-ai-baserat-stoed-foer-personer-med-funktionsnedsaettning-3330474
+  source_type: press
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [offentlig_sektor, sprakteknik]
+  status: claimed
+  source_url: https://www.mynewsdesk.com/se/skellefteakommun/pressreleases/skellefteaa-med-i-nytt-projekt-foer-att-ta-fram-ai-baserat-stoed-foer-personer-med-funktionsnedsaettning-3330474
+  source_type: press
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "2482"
+  status: confirmed
+  source_url: https://www.allabolag.se/2120002643
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+evidence:
+  - url: https://www.vinnova.se/en/p/ai-based-communication-support-for-people-with-intellectual-disabilities
+    kind: case
+    title: "Vinnovas projektdatabas: AI-baserat kommunikationsstöd för personer med intellektuell funktionsnedsättning"
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: "Vinnova anger Skellefteå kommun som koordinator och projektet som avslutat. Projektbeskrivningen är lämnad av projektdeltagarna själva."
+  - url: https://www.mynewsdesk.com/se/skellefteakommun/pressreleases/skellefteaa-med-i-nytt-projekt-foer-att-ta-fram-ai-baserat-stoed-foer-personer-med-funktionsnedsaettning-3330474
+    kind: case
+    title: "Pressmeddelande: Skellefteå med i nytt projekt för AI-baserat stöd för personer med funktionsnedsättning"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

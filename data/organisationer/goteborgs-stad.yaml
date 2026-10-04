@@ -1,0 +1,93 @@
+id: goteborgs-stad
+
+name:
+  value: Göteborgs Stad
+  status: claimed
+  source_url: https://goteborg.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Göteborgs kommun
+  status: confirmed
+  source_url: https://www.allabolag.se/2120001355
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: kommun_region
+  status: confirmed
+  source_url: https://www.allabolag.se/2120001355
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "212000-1355"
+  status: confirmed
+  source_url: https://www.allabolag.se/2120001355
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Samma nummer anges på stadens webbplats: https://goteborg.se/wps/portal/start/foretag-och-organisationer/upphandling-och-inkop/for-leverantorer-till-goteborgs-stad/fakturera-goteborgs-stad"
+
+website: https://goteborg.se/
+
+description:
+  value: "Medarbetare i hemtjänsten deltar i träningen av en gemensam AI-assistent för offentlig sektor. Staden har också medverkat i utvecklingen av en AI-tjänst som anpassar webbinformation för personer med intellektuell funktionsnedsättning."
+  status: claimed
+  source_url: https://goeteborgs-stad.mynewsdesk.com/news/goeteborgs-stad-traenar-en-ai-assistent-foer-svensk-offentlig-sektor-484030
+  source_type: press
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Andra meningen enligt stadens pressmeddelande: https://goeteborgs-stad.mynewsdesk.com/pressreleases/ny-ai-tjaenst-foer-personer-med-funktionsnedsaettning-utvecklas-i-goeteborg-3328486"
+
+offers:
+  value: [utveckling]
+  status: claimed
+  source_url: https://goeteborgs-stad.mynewsdesk.com/news/goeteborgs-stad-traenar-en-ai-assistent-foer-svensk-offentlig-sektor-484030
+  source_type: press
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [offentlig_sektor, agenter_automation]
+  status: claimed
+  source_url: https://goeteborgs-stad.mynewsdesk.com/news/goeteborgs-stad-traenar-en-ai-assistent-foer-svensk-offentlig-sektor-484030
+  source_type: press
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1480"
+  status: confirmed
+  source_url: https://www.allabolag.se/2120001355
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+evidence:
+  - url: https://goeteborgs-stad.mynewsdesk.com/news/goeteborgs-stad-traenar-en-ai-assistent-foer-svensk-offentlig-sektor-484030
+    kind: case
+    title: "Pressmeddelande: stadens hemtjänst tränar en AI-assistent för offentlig sektor"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://goeteborgs-stad.mynewsdesk.com/pressreleases/ny-ai-tjaenst-foer-personer-med-funktionsnedsaettning-utvecklas-i-goeteborg-3328486
+    kind: case
+    title: "Pressmeddelande: ny AI-tjänst för personer med funktionsnedsättning utvecklas (Vinnova-projekt)"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://www.ai.se/en/news/strong-interest-collaboration-shared-digital-assistant-public-sector
+    kind: case
+    title: "AI Sweden: gemensam digital assistent för offentlig sektor, deltagare i fas 1 (prototypen Svea)"
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: "AI Sweden samordnar projektet och listar kommunen bland de offentliga deltagarna i fas 1 (avslutad 2024)."
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

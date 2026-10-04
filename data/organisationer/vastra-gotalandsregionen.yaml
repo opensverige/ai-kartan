@@ -1,0 +1,78 @@
+id: vastra-gotalandsregionen
+
+name:
+  value: Västra Götalandsregionen
+  status: claimed
+  source_url: https://www.vgregion.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: kommun_region
+  status: confirmed
+  source_url: https://www.allabolag.se/2321000131
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "232100-0131"
+  status: confirmed
+  source_url: https://www.allabolag.se/2321000131
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Samma nummer anges på regionens webbplats: https://www.vgregion.se/om-vgr/organisation-och-verksamhet/inkop/leverantor/fakturera-vastra-gotalandsregionen/vara-krav-pa-innehall-i-faktura/"
+
+website: https://www.vgregion.se/
+
+description:
+  value: "Utvecklar AI-initiativ på regionens egna data, bland annat prognoser för inflöde och väntetider på akutmottagning, sjukfrånvaro och återinskrivning i slutenvården."
+  status: claimed
+  source_url: https://www.vgregion.se/om-vgr/organisation-och-verksamhet/satsningar-och-samarbeten/artificiell-intelligens/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [utveckling]
+  status: claimed
+  source_url: https://www.vgregion.se/om-vgr/organisation-och-verksamhet/satsningar-och-samarbeten/artificiell-intelligens/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [halsa]
+  status: claimed
+  source_url: https://www.vgregion.se/om-vgr/organisation-och-verksamhet/satsningar-och-samarbeten/artificiell-intelligens/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1487"
+  status: confirmed
+  source_url: https://www.allabolag.se/2321000131
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Regionens registrerade säte. Verksamheten omfattar hela Västra Götaland."
+
+evidence:
+  - url: https://www.vgregion.se/om-vgr/organisation-och-verksamhet/satsningar-och-samarbeten/artificiell-intelligens/
+    kind: case
+    title: "Satsningar inom AI: utvecklingsprojekt på regionens egna data"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://www.vgregion.se/om-vgr/organisation-och-verksamhet/satsningar-och-samarbeten/artificiell-intelligens/prognos-for-inflode-akutmottagning/
+    kind: case
+    title: "Prognos för inflöde till akutmottagning (pågående AI-projekt)"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

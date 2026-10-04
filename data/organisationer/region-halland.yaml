@@ -1,0 +1,78 @@
+id: region-halland
+
+name:
+  value: Region Halland
+  status: claimed
+  source_url: https://www.regionhalland.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: kommun_region
+  status: confirmed
+  source_url: https://www.allabolag.se/2321000115
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "232100-0115"
+  status: confirmed
+  source_url: https://www.allabolag.se/2321000115
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Samma nummer anges på regionens webbplats: https://www.regionhalland.se/om-region-halland/kontakta-oss"
+
+website: https://www.regionhalland.se/
+
+description:
+  value: "Regionens team för generativ AI har utvecklat en intern AI-portal med generella och verksamhetsspecifika AI-assistenter, bland annat en assistent för användarhjälp i journalsystemet Cosmic."
+  status: claimed
+  source_url: https://www.regionhalland.se/nyheter/nyheter/2025-12-05-intern-ai-portal-och-digital-tandvard-prisade
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [utveckling, forskning]
+  status: claimed
+  source_url: https://www.regionhalland.se/nyheter/nyheter/2025-12-05-intern-ai-portal-och-digital-tandvard-prisade
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Forskning enligt regionens sida om AI-assisterad analys av vårdförlopp: https://www.regionhalland.se/om-region-halland/forskning-och-innovation/pagaende-forskning/okad-kardiovaskular-halsa-genom-ai-assisterad-analys-av-vardforlopp"
+
+areas:
+  value: [halsa, agenter_automation]
+  status: claimed
+  source_url: https://www.regionhalland.se/nyheter/nyheter/2025-12-05-intern-ai-portal-och-digital-tandvard-prisade
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1380"
+  status: confirmed
+  source_url: https://www.allabolag.se/2321000115
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+evidence:
+  - url: https://www.regionhalland.se/nyheter/nyheter/2025-12-05-intern-ai-portal-och-digital-tandvard-prisade
+    kind: case
+    title: "Intern AI-portal prisad som Årets nytänkande 2025"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://www.regionhalland.se/om-region-halland/forskning-och-innovation/pagaende-forskning/okad-kardiovaskular-halsa-genom-ai-assisterad-analys-av-vardforlopp
+    kind: case
+    title: "Forskningsstudie: AI-assisterad analys av vårdförlopp vid ateroskleros (med Högskolan i Halmstad)"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

@@ -1,0 +1,79 @@
+id: tjorns-kommun
+
+name:
+  value: Tjörns kommun
+  status: claimed
+  source_url: https://www.tjorn.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: kommun_region
+  status: confirmed
+  source_url: https://www.allabolag.se/2120001306
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "212000-1306"
+  status: confirmed
+  source_url: https://www.allabolag.se/2120001306
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Samma nummer anges på kommunens webbplats, skrivet med mellanslag (21 20 00-13 06): https://www.tjorn.se/kommun-och-politik/kontakt/adresser-och-organisationsnummer"
+
+website: https://www.tjorn.se/
+
+description:
+  value: "Medarbetare i vård och omsorg deltar i träningen av en AI-driven assistent för offentlig sektor i ett projekt som leds av AI Sweden."
+  status: claimed
+  source_url: https://www.tjorn.se/kommun-och-politik/utveckling-och-samverkan/digitalisering/en-gemensam-digital-assistent-for-offentlig-sektor
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [utveckling]
+  status: claimed
+  source_url: https://www.tjorn.se/kommun-och-politik/utveckling-och-samverkan/digitalisering/en-gemensam-digital-assistent-for-offentlig-sektor
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [offentlig_sektor, agenter_automation]
+  status: claimed
+  source_url: https://www.tjorn.se/kommun-och-politik/utveckling-och-samverkan/digitalisering/en-gemensam-digital-assistent-for-offentlig-sektor
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1419"
+  status: confirmed
+  source_url: https://www.allabolag.se/2120001306
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunhuset ligger i Skärhamn."
+
+evidence:
+  - url: https://www.tjorn.se/kommun-och-politik/utveckling-och-samverkan/digitalisering/en-gemensam-digital-assistent-for-offentlig-sektor
+    kind: case
+    title: "En gemensam digital assistent för offentlig sektor"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://www.ai.se/en/news/strong-interest-collaboration-shared-digital-assistant-public-sector
+    kind: case
+    title: "AI Sweden: gemensam digital assistent för offentlig sektor, deltagare i fas 1 (prototypen Svea)"
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: "AI Sweden samordnar projektet och listar kommunen bland de offentliga deltagarna i fas 1 (avslutad 2024)."
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

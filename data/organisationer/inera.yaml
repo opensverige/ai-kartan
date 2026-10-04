@@ -1,0 +1,94 @@
+id: inera
+
+name:
+  value: Inera
+  status: claimed
+  source_url: https://www.inera.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Inera AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5565594230
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: kommun_region
+  status: claimed
+  source_url: https://www.inera.se/om-inera/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Aktiebolag som enligt Inera ägs av SKR Företag och samtliga regioner och kommuner. Klassningen som kommun_region är kartans bedömning."
+
+org_number:
+  value: "556559-4230"
+  status: confirmed
+  source_url: https://www.allabolag.se/5565594230
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Samma nummer anges på Ineras webbplats: https://www.inera.se/kontakta-oss/fragor-om-fakturor-och-betalning/"
+
+website: https://www.inera.se/
+
+description:
+  value: "Utvecklar en AI-assistent för nyttokalkyler som enligt plan ska vara fritt tillgänglig för kommuner och regioner. En demo visades i januari 2026."
+  status: claimed
+  source_url: https://www.inera.se/aktuellt/nyheter/inera-utvecklar-ai-assistent-for-nyttokalkyler/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [utveckling]
+  status: claimed
+  source_url: https://www.inera.se/aktuellt/nyheter/inera-utvecklar-ai-assistent-for-nyttokalkyler/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [offentlig_sektor, agenter_automation]
+  status: claimed
+  source_url: https://www.inera.se/aktuellt/nyheter/inera-utvecklar-ai-assistent-for-nyttokalkyler/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5565594230
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+evidence:
+  - url: https://www.inera.se/aktuellt/nyheter/inera-utvecklar-ai-assistent-for-nyttokalkyler/
+    kind: case
+    title: "Inera utvecklar AI-assistent för nyttokalkyler (demo visad i januari 2026)"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: "Planerad lansering april-maj 2026 enligt sidan. Lanseringen är inte kontrollerad."
+  - url: https://www.youtube.com/watch?v=yQwhxmNQhV4
+    kind: demo
+    title: "Inspelning: tidig demo av AI-assistent för nyttokalkyler (publicerad 30 januari 2026)"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: "Ligger på Ineras kanal för nyttokalkyler och länkas från Ineras nyhet ovan."
+  - url: https://www.mynewsdesk.com/se/inera-ab/news/inera-inleder-samarbete-med-ai-sweden-496911
+    kind: case
+    title: "Pressmeddelande: Inera inleder samarbete med AI Sweden kring den delade assistenten Svea"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

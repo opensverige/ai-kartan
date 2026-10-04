@@ -1,0 +1,85 @@
+id: sambruk
+
+name:
+  value: Sambruk
+  status: claimed
+  source_url: https://sambruk.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Föreningen Sambruk
+  status: confirmed
+  source_url: https://www.allabolag.se/8024282785
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: kommun_region
+  status: claimed
+  source_url: https://sambruk.se/om-sambruk/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Ideell förening där kommuner, regioner och organ som främjar föreningens ändamål kan vara medlemmar. Klassningen som kommun_region är kartans bedömning."
+
+org_number:
+  value: "802428-2785"
+  status: confirmed
+  source_url: https://www.allabolag.se/8024282785
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Samma nummer anges på föreningens webbplats: https://sambruk.se/kontakt/"
+
+website: https://sambruk.se/
+
+description:
+  value: "Driver en medlemsstyrd samverkan där kommuner och regioner gemensamt förvaltar och vidareutvecklar öppna AI-komponenter, med AI-chatt- och RAG-lösningen Eneo som kärna i plattformen."
+  status: claimed
+  source_url: https://sambruk.se/sambruks-ai-plattform/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [community, utveckling, oppen_kallkod, infrastruktur]
+  status: claimed
+  source_url: https://sambruk.se/sambruks-ai-plattform/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Community avser föreningens AI-nätverk: https://sambruk.se/ai-natverk/"
+
+areas:
+  value: [offentlig_sektor, agenter_automation]
+  status: claimed
+  source_url: https://sambruk.se/sambruks-ai-plattform/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/8024282785
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registrerat säte Stockholm enligt allabolag.se och https://sambruk.se/kontakt/. Postadressen är i Kungsör."
+
+evidence:
+  - url: https://sambruk.se/sambruks-ai-plattform/
+    kind: case
+    title: "Sambruks AI-plattform: medlemsstyrd samverkan kring öppna AI-komponenter med Eneo"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  github: https://github.com/Sambruk
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04
