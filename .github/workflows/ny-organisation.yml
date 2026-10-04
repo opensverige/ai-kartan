@@ -74,11 +74,16 @@ jobs:
           git add "$FIL"
           git commit -m "data: lägg till $NAMN (ärende #${{ github.event.issue.number }})"
           git push --force -u origin "$gren"
+          {
+            echo "Skapad automatiskt ur ärende #${{ github.event.issue.number }}. Uppgifterna är inskickade av organisationen själv och märkta som egen uppgift (claimed)."
+            echo
+            echo "Granska mot [kriterierna](https://github.com/${{ github.repository }}/blob/main/kriterier.md) innan merge."
+            echo
+            echo "Stänger #${{ github.event.issue.number }} när den mergas."
+          } > pr-kropp.md
           if gh pr view "$gren" >/dev/null 2>&1; then
             gh pr comment "$gren" --body "Uppdaterad efter ändring i ärendet."
           else
-            gh pr create --head "$gren" --title "Lägg till $NAMN" --body "Skapad automatiskt ur ärende #${{ github.event.issue.number }}. Uppgifterna är inskickade av organisationen själv och märkta som egen uppgift (claimed). Granska mot [kriterierna](https://github.com/${{ github.repository }}/blob/main/kriterier.md) innan merge.
-
-Stänger #${{ github.event.issue.number }} när den mergas."
+            gh pr create --head "$gren" --title "Lägg till $NAMN" --body-file pr-kropp.md
           fi
           gh issue comment "${{ github.event.issue.number }}" --body "Tack! En pull request har skapats: $(gh pr view "$gren" --json url --jq .url). En människa granskar den mot kriterierna."
