@@ -1,0 +1,102 @@
+id: trialbee
+
+name:
+  value: "Trialbee"
+  status: claimed
+  source_url: https://trialbee.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "Trialbee AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/trialbee-ab/malm%C3%B6/konsulter/2K34MNFI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/trialbee-ab/malm%C3%B6/konsulter/2K34MNFI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "556814-3019"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/trialbee-ab/malm%C3%B6/konsulter/2K34MNFI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Numret anges också i integritetspolicyn på trialbee.com."
+
+website: https://trialbee.com
+
+description:
+  value: "Bygger Honey, en plattform för rekrytering av patienter till kliniska studier, med AI-baserad förscreening via en konversationsagent, AI-genererade sammanfattningar och dubblettdetektering."
+  status: claimed
+  source_url: https://trialbee.com/ai-powered-intelligence-built-into-honey/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://trialbee.com/ai-powered-intelligence-built-into-honey/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [halsa]
+  status: claimed
+  source_url: https://trialbee.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Startsidan beskriver rekrytering av patienter till kliniska studier inom flera terapiområden."
+
+kommun:
+  value: "1280"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/trialbee-ab/malm%C3%B6/konsulter/2K34MNFI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag."
+
+founded:
+  value: 2010
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/trialbee-ab/malm%C3%B6/konsulter/2K34MNFI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsår enligt allabolag."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/trialbee-ab/malm%C3%B6/konsulter/2K34MNFI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status aktiv enligt allabolag."
+
+evidence:
+  - url: https://trialbee.com/ai-powered-intelligence-built-into-honey/
+    kind: produkt
+    title: "AI-funktioner i Honey: förscreeningsagent, kandidatsammanfattningar och dubblettdetektering"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/trialbee/
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

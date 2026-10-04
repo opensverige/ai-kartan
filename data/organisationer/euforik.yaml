@@ -1,0 +1,101 @@
+id: euforik
+
+name:
+  value: "Euforik"
+  status: claimed
+  source_url: https://euforik.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "Euforik AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/euforik-ab/kungsbacka/internet-konsulter-operat%C3%B6rer/2KJGEYYI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/euforik-ab/kungsbacka/internet-konsulter-operat%C3%B6rer/2KJGEYYI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "559556-6794"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/euforik-ab/kungsbacka/internet-konsulter-operat%C3%B6rer/2KJGEYYI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://euforik.com
+
+description:
+  value: "Bygger AI-programvara för inköp: en agent som söker upp och validerar leverantörer, skickar ut RFI, RFQ och RFP, tar fram avtalsutkast och följer upp leverantörer löpande."
+  status: claimed
+  source_url: https://euforik.com/product/source-to-contract
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://euforik.com/product/source-to-contract
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [agenter_automation]
+  status: claimed
+  source_url: https://euforik.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "AI-agent för inköp: leverantörssökning, förfrågningsunderlag, avtal och leverantörshantering."
+
+kommun:
+  value: "1384"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/euforik-ab/kungsbacka/internet-konsulter-operat%C3%B6rer/2KJGEYYI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag."
+
+founded:
+  value: 2025
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/euforik-ab/kungsbacka/internet-konsulter-operat%C3%B6rer/2KJGEYYI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsår enligt allabolag (registreringsdatum 2025-11-24)."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/euforik-ab/kungsbacka/internet-konsulter-operat%C3%B6rer/2KJGEYYI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status aktiv enligt allabolag."
+
+evidence:
+  - url: https://euforik.com/product/source-to-contract
+    kind: produkt
+    title: "Source to contract: AI-agent för leverantörssökning, validering, förfrågningar och avtal"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/euforik-com
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

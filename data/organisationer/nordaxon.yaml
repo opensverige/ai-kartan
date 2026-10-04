@@ -1,0 +1,102 @@
+id: nordaxon
+
+name:
+  value: "NordAxon"
+  status: claimed
+  source_url: https://www.nordaxon.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "NordAxon AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/nordaxon-ab/malm%C3%B6/konsulter/2KH05PGI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/nordaxon-ab/malm%C3%B6/konsulter/2KH05PGI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "559144-9060"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/nordaxon-ab/malm%C3%B6/konsulter/2KH05PGI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://www.nordaxon.com
+
+description:
+  value: "AI-konsultbolag som bygger maskininlärningslösningar, LLM-system och AI-agenter åt kunder, ger utbildning i AI och bedriver forskning inom life science."
+  status: claimed
+  source_url: https://www.nordaxon.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [utveckling, utbildning, forskning]
+  status: claimed
+  source_url: https://www.nordaxon.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Startsidan beskriver AI-konsulttjänster, AI-utbildning och ett forskningslabb inom life science."
+
+areas:
+  value: [generell, industri, halsa]
+  status: claimed
+  source_url: https://www.nordaxon.com/cases
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kundcasen täcker många branscher, bland annat industri, energi, finans, offentlig sektor och life science."
+
+kommun:
+  value: "1280"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/nordaxon-ab/malm%C3%B6/konsulter/2KH05PGI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag."
+
+founded:
+  value: 2018
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/nordaxon-ab/malm%C3%B6/konsulter/2KH05PGI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsår enligt allabolag. Startsidan anger att bolaget grundades 2018."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/nordaxon-ab/malm%C3%B6/konsulter/2KH05PGI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status aktiv enligt allabolag."
+
+evidence:
+  - url: https://www.nordaxon.com/cases
+    kind: case
+    title: "Publika AI-case: maskininlärning, LLM, datorseende och prediktion åt kunder i flera branscher"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/nordaxon-ab/
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

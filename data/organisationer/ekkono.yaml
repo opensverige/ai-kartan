@@ -1,0 +1,107 @@
+id: ekkono
+
+name:
+  value: "Ekkono"
+  status: claimed
+  source_url: https://www.ekkono.ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "Ekkono Solutions AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/ekkono-solutions-ab/varberg/internet-konsulter-operat%C3%B6rer/2KGMZZTI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/ekkono-solutions-ab/varberg/internet-konsulter-operat%C3%B6rer/2KGMZZTI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "559083-5129"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/ekkono-solutions-ab/varberg/internet-konsulter-operat%C3%B6rer/2KGMZZTI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://www.ekkono.ai
+
+description:
+  value: "Utvecklar programvara för edge-AI: ett SDK som tränar och kör maskininlärningsmodeller direkt på inbyggda enheter, med inkrementell inlärning och federerad inlärning mellan enheter."
+  status: claimed
+  source_url: https://www.ekkono.ai/product
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.ekkono.ai/product
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [industri, transport_mobilitet, fastighet_bygg]
+  status: claimed
+  source_url: https://www.ekkono.ai/use-cases
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Användningsfallssidan nämner industri, fordon samt byggnader och HVAC."
+
+kommun:
+  value: "1383"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/ekkono-solutions-ab/varberg/internet-konsulter-operat%C3%B6rer/2KGMZZTI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag."
+
+founded:
+  value: 2016
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/ekkono-solutions-ab/varberg/internet-konsulter-operat%C3%B6rer/2KGMZZTI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsår enligt allabolag."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/ekkono-solutions-ab/varberg/internet-konsulter-operat%C3%B6rer/2KGMZZTI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status aktiv enligt allabolag."
+
+evidence:
+  - url: https://www.ekkono.ai/product
+    kind: produkt
+    title: "Ekkono SDK: maskininlärning med inkrementell inlärning direkt på enheten"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://www.ekkono.ai/use-cases
+    kind: case
+    title: "Användningsfall för edge-AI inom industri, fordon och byggnader"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/ekkono-solutions-ab
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

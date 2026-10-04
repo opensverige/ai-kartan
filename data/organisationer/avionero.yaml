@@ -1,0 +1,99 @@
+id: avionero
+
+name:
+  value: "Avionero"
+  status: claimed
+  source_url: https://avionero.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "Avionero AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/avionero-ab/malm%C3%B6/datacenters/2KG8L9BI5YDLG
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/avionero-ab/malm%C3%B6/datacenters/2KG8L9BI5YDLG
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "559016-2847"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/avionero-ab/malm%C3%B6/datacenters/2KG8L9BI5YDLG
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://avionero.com
+
+description:
+  value: "Bygger en söktjänst för flyg och hotell med en AI-baserad rekommendationsmotor som föreslår resmål och datum utifrån land, kontinent eller intresse i stället för enskilda städer."
+  status: claimed
+  source_url: https://avionero.com/features
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "AI-påståendet är kort: sidan anger en AI-baserad rekommendationsmotor utan teknisk beskrivning."
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://avionero.com/features
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [transport_mobilitet]
+  status: claimed
+  source_url: https://avionero.com/features
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Söktjänst för resor: flyg och hotell."
+
+kommun:
+  value: "1280"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/avionero-ab/malm%C3%B6/datacenters/2KG8L9BI5YDLG
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag."
+
+founded:
+  value: 2015
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/avionero-ab/malm%C3%B6/datacenters/2KG8L9BI5YDLG
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsår enligt allabolag. Sidfoten på avionero.com anger 2018 som första år."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/avionero-ab/malm%C3%B6/datacenters/2KG8L9BI5YDLG
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status aktiv enligt allabolag."
+
+evidence:
+  - url: https://avionero.com/features
+    kind: produkt
+    title: "Funktioner: AI-baserad rekommendationsmotor för flyg och datum"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

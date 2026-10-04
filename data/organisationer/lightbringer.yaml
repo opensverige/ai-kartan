@@ -1,0 +1,110 @@
+id: lightbringer
+
+name:
+  value: "Lightbringer"
+  status: claimed
+  source_url: https://lightbringer.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "Lightbringer AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/lightbringer-ab/malm%C3%B6/internet-konsulter-operat%C3%B6rer/2KIOGCLI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/lightbringer-ab/malm%C3%B6/internet-konsulter-operat%C3%B6rer/2KIOGCLI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "559426-2213"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/lightbringer-ab/malm%C3%B6/internet-konsulter-operat%C3%B6rer/2KIOGCLI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://lightbringer.com
+
+description:
+  value: "Bygger en AI-baserad plattform för patentarbete: beskrivning av uppfinningar, strategi, ansökan och portföljhantering, med patentjurister som granskar och lämnar in ansökningarna. Finns också som MCP-koppling för AI-agenter."
+  status: claimed
+  source_url: https://lightbringer.com/our-platform/overview
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt, oppen_kallkod]
+  status: claimed
+  source_url: https://github.com/lightbringer-patents/claude-plugin
+  source_type: own_docs
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Pluginet claude-plugin för Lightbringers patenttjänst är MIT-licensierat på GitHub. Produkten beskrivs på lightbringer.com/our-platform/overview."
+
+areas:
+  value: [juridik, agenter_automation]
+  status: claimed
+  source_url: https://lightbringer.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Startsidan beskriver patenttjänst byggd på AI-agenter med patentjurister som granskar."
+
+kommun:
+  value: "1280"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/lightbringer-ab/malm%C3%B6/internet-konsulter-operat%C3%B6rer/2KIOGCLI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag."
+
+founded:
+  value: 2023
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/lightbringer-ab/malm%C3%B6/internet-konsulter-operat%C3%B6rer/2KIOGCLI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsår enligt allabolag."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/lightbringer-ab/malm%C3%B6/internet-konsulter-operat%C3%B6rer/2KIOGCLI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status aktiv enligt allabolag."
+
+evidence:
+  - url: https://lightbringer.com/our-platform/overview
+    kind: produkt
+    title: "Plattformsöversikt: AI-baserat arbetsflöde för patent, strategi och bevakning"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://github.com/lightbringer-patents/claude-plugin
+    kind: repo
+    title: "claude-plugin på GitHub (MIT-licens): plugin som kopplar AI-assistenter till Lightbringers patenttjänst"
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: "GitHub-organisationen lightbringer-patents länkas från lightbringer.com och anger lightbringer.com som webbplats."
+
+links:
+  github: https://github.com/lightbringer-patents
+  linkedin: https://www.linkedin.com/company/lightbringerapp/
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

@@ -1,0 +1,102 @@
+id: quickbutik
+
+name:
+  value: "Quickbutik"
+  status: claimed
+  source_url: https://quickbutik.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "Quickbutik AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/quickbutik-ab/helsingborg/datacenters/2K44C7LI5YDLG
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/quickbutik-ab/helsingborg/datacenters/2K44C7LI5YDLG
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "556980-9105"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/quickbutik-ab/helsingborg/datacenters/2K44C7LI5YDLG
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Numret anges också i användarvillkoren på quickbutik.com."
+
+website: https://quickbutik.com
+
+description:
+  value: "Bygger en e-handelsplattform med inbyggda AI-funktioner för innehåll, design och beslutsstöd samt en MCP-koppling som låter butiksägare styra butiken från Claude och ChatGPT."
+  status: claimed
+  source_url: https://quickbutik.com/sv/quickbutik-ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://quickbutik.com/sv/quickbutik-ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [handel, agenter_automation]
+  status: claimed
+  source_url: https://quickbutik.com/sv/quickbutik-ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "E-handelsplattform med AI-assistent och MCP-koppling för AI-agenter."
+
+kommun:
+  value: "1280"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/quickbutik-ab/helsingborg/datacenters/2K44C7LI5YDLG
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registrerat säte enligt allabolag (Malmö). Registrets adress och webbplatsen anger Helsingborg."
+
+founded:
+  value: 2014
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/quickbutik-ab/helsingborg/datacenters/2K44C7LI5YDLG
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsår enligt allabolag."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/quickbutik-ab/helsingborg/datacenters/2K44C7LI5YDLG
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status aktiv enligt allabolag."
+
+evidence:
+  - url: https://quickbutik.com/sv/quickbutik-ai
+    kind: produkt
+    title: "Quickbutik AI och MCP-koppling mot Claude och ChatGPT"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/quickbutik/
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

@@ -1,0 +1,110 @@
+id: icons-of
+
+name:
+  value: "Icons Of"
+  status: claimed
+  source_url: https://www.iconsof.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "ICONSOF AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/iconsof-ab/onsala/internet-konsulter-operat%C3%B6rer/2KIPZFCI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/iconsof-ab/onsala/internet-konsulter-operat%C3%B6rer/2KIPZFCI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "559433-3592"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/iconsof-ab/onsala/internet-konsulter-operat%C3%B6rer/2KIPZFCI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Numret anges också i sidfoten på iconsof.se."
+
+website: https://www.iconsof.se
+
+description:
+  value: "Utvecklar AI-stödda verktyg för hållbarhetsdata, bland annat The Cards för CSRD- och VSME-rapportering och en AI-driven tjänst för klimatscreening av finansiella data."
+  status: claimed
+  source_url: https://www.iconsof.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt, utveckling]
+  status: claimed
+  source_url: https://www.iconsof.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Startsidan beskriver egna verktyg (The Cards) och utveckling av AI-lösningar hos kunder (forward deployment engineering)."
+
+areas:
+  value: [energi_klimat]
+  status: claimed
+  source_url: https://www.iconsof.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Hållbarhetsdata, klimatscreening och rapportering enligt CSRD och VSME."
+
+kommun:
+  value: "1383"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/iconsof-ab/onsala/internet-konsulter-operat%C3%B6rer/2KIPZFCI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registrerat säte enligt allabolag (Varberg). Registrets adress och webbplatsen anger Onsala."
+
+founded:
+  value: 2023
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/iconsof-ab/onsala/internet-konsulter-operat%C3%B6rer/2KIPZFCI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsår enligt allabolag."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/iconsof-ab/onsala/internet-konsulter-operat%C3%B6rer/2KIPZFCI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status aktiv enligt allabolag."
+
+evidence:
+  - url: https://www.thecards.eu/en
+    kind: produkt
+    title: "The Cards: webbapplikation för ESRS- och VSME-rapportering med AI-assistent"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: "thecards.eu anges som produktsida för The Cards på iconsof.se."
+  - url: https://www.iconsof.se/
+    kind: produkt
+    title: "Tjänster: AI-agenter, klimatscreening och AI-assisterad rapportering"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/iconsof/
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

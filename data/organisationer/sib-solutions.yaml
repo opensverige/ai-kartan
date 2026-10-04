@@ -1,0 +1,101 @@
+id: sib-solutions
+
+name:
+  value: "SiB Solutions"
+  status: claimed
+  source_url: https://sibsolutions.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "SIB Solutions AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/sib-solutions-ab/lund/konsulter/2KGQ10AI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/sib-solutions-ab/lund/konsulter/2KGQ10AI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "559097-6410"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/sib-solutions-ab/lund/konsulter/2KGQ10AI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://sibsolutions.com
+
+description:
+  value: "Erbjuder en logistikplattform där kameror och AI-programvara analyserar video och driftdata för att ge visuell dokumentation och spårbarhet i lager."
+  status: claimed
+  source_url: https://sibsolutions.com/services/how-it-works/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://sibsolutions.com/services/how-it-works/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [transport_mobilitet, datorseende]
+  status: claimed
+  source_url: https://sibsolutions.com/services/how-it-works/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Sidan beskriver videoanalys i logistikprocesser, till exempel packning i lager."
+
+kommun:
+  value: "1281"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/sib-solutions-ab/lund/konsulter/2KGQ10AI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag."
+
+founded:
+  value: 2017
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/sib-solutions-ab/lund/konsulter/2KGQ10AI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsår enligt allabolag."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/sib-solutions-ab/lund/konsulter/2KGQ10AI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status aktiv enligt allabolag."
+
+evidence:
+  - url: https://sibsolutions.com/services/how-it-works/
+    kind: produkt
+    title: "Så fungerar plattformen: kameror, bearbetning i kameran och AI-analys av video och logistikdata"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/sib-solutions-ab/
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

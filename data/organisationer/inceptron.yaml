@@ -1,0 +1,108 @@
+id: inceptron
+
+name:
+  value: "Inceptron"
+  status: claimed
+  source_url: https://www.inceptron.io/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "Inceptron AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/inceptron-ab/lund/it-%C3%B6vrigt/2KIJXK4I63IHH
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: "infrastruktur"
+  status: claimed
+  source_url: https://www.inceptron.io/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Inferensplattform och hosting av AI-modeller via API. Allabolag anger bolagsformen aktiebolag."
+
+org_number:
+  value: "559405-1236"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/inceptron-ab/lund/it-%C3%B6vrigt/2KIJXK4I63IHH
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Numret anges också i användarvillkoren på inceptron.io."
+
+website: https://www.inceptron.io
+
+description:
+  value: "Bygger en plattform för att köra och optimera AI-modeller i produktion: serverlös inferens via API på EU-infrastruktur och en egen kompilator för modelloptimering som är öppen för early access."
+  status: claimed
+  source_url: https://www.inceptron.io/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [infrastruktur, produkt]
+  status: claimed
+  source_url: https://www.inceptron.io/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://www.inceptron.io/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1281"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/inceptron-ab/lund/it-%C3%B6vrigt/2KIJXK4I63IHH
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag."
+
+founded:
+  value: 2022
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/inceptron-ab/lund/it-%C3%B6vrigt/2KIJXK4I63IHH
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsår enligt allabolag."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/inceptron-ab/lund/it-%C3%B6vrigt/2KIJXK4I63IHH
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status aktiv enligt allabolag."
+
+evidence:
+  - url: https://docs.inceptron.io/
+    kind: produkt
+    title: "Dokumentation för Inceptrons API för serverlös inferens"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://www.inceptron.io/
+    kind: produkt
+    title: "Plattform för inferens och kompilatorbaserad modelloptimering"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://se.linkedin.com/company/inceptron
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

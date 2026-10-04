@@ -1,0 +1,109 @@
+id: blincvision
+
+name:
+  value: "BlincVision"
+  status: claimed
+  source_url: https://blincvision.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Hette tidigare Terranet. Namnbytet anges på startsidan."
+
+legal_name:
+  value: "BlincVision AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/blincvision-ab/lund/bilar/2K2HOCGI5YCZW
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Allabolag anger bolagsformen publikt aktiebolag."
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/blincvision-ab/lund/bilar/2K2HOCGI5YCZW
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "556707-2128"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/blincvision-ab/lund/bilar/2K2HOCGI5YCZW
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://blincvision.com
+
+description:
+  value: "Utvecklar ett perceptionssystem som kombinerar händelsekameror med en AI-modell som detekterar och klassificerar rörliga objekt med låg latens, för fordon, industriell automation och försvar."
+  status: claimed
+  source_url: https://blincvision.com/blincvision/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://blincvision.com/blincvision/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [transport_mobilitet, datorseende, industri, forsvar_sakerhet]
+  status: claimed
+  source_url: https://blincvision.com/blincvision/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Produktsidan nämner förarstöd och autonom körning, industriell automation samt försvar och säkerhet."
+
+kommun:
+  value: "1281"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/blincvision-ab/lund/bilar/2K2HOCGI5YCZW
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag."
+
+founded:
+  value: 2006
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/blincvision-ab/lund/bilar/2K2HOCGI5YCZW
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsår enligt allabolag."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/blincvision-ab/lund/bilar/2K2HOCGI5YCZW
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status aktiv enligt allabolag."
+
+evidence:
+  - url: https://blincvision.com/blincvision/
+    kind: produkt
+    title: "BlincVision: händelsekameror och AI-tränad programvara för detektering och klassificering"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://blincvision.com/
+    kind: produkt
+    title: "Startsida: händelsekamerateknik kombinerad med en AI-modell"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/terranet-ab
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

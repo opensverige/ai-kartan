@@ -1,0 +1,105 @@
+id: exini-diagnostics
+
+name:
+  value: "EXINI Diagnostics"
+  status: claimed
+  source_url: https://exini.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Helägt dotterbolag till Lantheus Holdings, Inc. enligt startsidan."
+
+legal_name:
+  value: "Exini Diagnostics Aktiebolag"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/exini-diagnostics-aktiebolag/lund/internet-konsulter-operat%C3%B6rer/2K1PLFVI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/exini-diagnostics-aktiebolag/lund/internet-konsulter-operat%C3%B6rer/2K1PLFVI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "556576-1995"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/exini-diagnostics-aktiebolag/lund/internet-konsulter-operat%C3%B6rer/2K1PLFVI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://exini.com
+
+description:
+  value: "Utvecklar AI-baserade program för automatisk analys av medicinska bilder, bland annat aPROMISE som använder djupinlärning på PSMA PET/CT-bilder vid prostatacancer."
+  status: claimed
+  source_url: https://exini.com/software-solutions/apromise/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt, forskning]
+  status: claimed
+  source_url: https://exini.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Startsidan anger Research, Software och Pharma service som verksamhetsområden."
+
+areas:
+  value: [halsa, datorseende]
+  status: claimed
+  source_url: https://exini.com/software-solutions/apromise/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "1281"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/exini-diagnostics-aktiebolag/lund/internet-konsulter-operat%C3%B6rer/2K1PLFVI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag."
+
+founded:
+  value: 1999
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/exini-diagnostics-aktiebolag/lund/internet-konsulter-operat%C3%B6rer/2K1PLFVI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsår enligt allabolag. Startsidan anger att bolaget grundades 1999."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/exini-diagnostics-aktiebolag/lund/internet-konsulter-operat%C3%B6rer/2K1PLFVI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status aktiv enligt allabolag."
+
+evidence:
+  - url: https://exini.com/software-solutions/apromise/
+    kind: produkt
+    title: "aPROMISE: djupinlärningsbaserad analys och rapportering av PSMA PET/CT"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://exini.com/resources/publications/
+    kind: publikation
+    title: "Publikationer om aPROMISE och aBSI"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

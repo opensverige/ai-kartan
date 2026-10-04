@@ -1,0 +1,109 @@
+id: combain
+
+name:
+  value: "Combain"
+  status: claimed
+  source_url: https://combain.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "Combain Mobile AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/combain-mobile-ab/lund/f%C3%B6retagsutveckling/2K2OG0AI5YEHU
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Namnet anges också i integritetspolicyn på combain.com."
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/combain-mobile-ab/lund/f%C3%B6retagsutveckling/2K2OG0AI5YEHU
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "556738-7914"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/combain-mobile-ab/lund/f%C3%B6retagsutveckling/2K2OG0AI5YEHU
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://combain.com
+
+description:
+  value: "Utvecklar ett API för positionering där GPS saknas. Djupinlärningsmodeller tränas på radiodata från mobilmaster, WiFi och Bluetooth för inomhus- och utomhuspositionering."
+  status: claimed
+  source_url: https://combain.com/positioning-solutions/combain-ai-indoor-positioning/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "AI Outdoor-sidan (combain.com/positioning-solutions/combain-ai-outdoor-positioning/) beskriver motsvarande djupinlärningsmodeller för positionering med mobilmast-ID."
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://combain.com/positioning-solutions/combain-location-api/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [transport_mobilitet, halsa, forsvar_sakerhet]
+  status: claimed
+  source_url: https://combain.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Startsidans användningsfall: spårning och logistik, vård, rättsvårdande myndigheter och säkerhet."
+
+kommun:
+  value: "1281"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/combain-mobile-ab/lund/f%C3%B6retagsutveckling/2K2OG0AI5YEHU
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag."
+
+founded:
+  value: 2007
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/combain-mobile-ab/lund/f%C3%B6retagsutveckling/2K2OG0AI5YEHU
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsår enligt allabolag."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/combain-mobile-ab/lund/f%C3%B6retagsutveckling/2K2OG0AI5YEHU
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status aktiv enligt allabolag."
+
+evidence:
+  - url: https://combain.com/positioning-solutions/combain-ai-indoor-positioning/
+    kind: produkt
+    title: "AI Indoor Positioning: neuralt nätverk av byggnadens radiomiljö för inomhuspositionering"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://combain.com/positioning-solutions/combain-ai-outdoor-positioning/
+    kind: produkt
+    title: "AI Outdoor Positioning: djupinlärningsmodeller för positionering med mobilmast-ID"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/combain-mobile-ab/
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

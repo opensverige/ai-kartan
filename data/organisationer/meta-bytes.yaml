@@ -1,0 +1,103 @@
+id: meta-bytes
+
+name:
+  value: "Meta Bytes"
+  status: claimed
+  source_url: https://www.metabytes.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "Meta Bytes AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/meta-bytes-ab/laholm/konsulter/2KGLK8OI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/meta-bytes-ab/laholm/konsulter/2KGLK8OI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "559076-8056"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/meta-bytes-ab/laholm/konsulter/2KGLK8OI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://www.metabytes.se
+
+description:
+  value: "Mjukvarubolag som bygger skräddarsydda system och integrationer åt kunder. Har bland annat utvecklat Aidare, en AI-driven plattform för säker utveckling av komplexa mjukvarusystem."
+  status: claimed
+  source_url: https://www.metabytes.se/kundcase/aidare-ai-driven-plattform-for-saker-utveckling-av-komplexa-mjukvarusystem
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [utveckling]
+  status: claimed
+  source_url: https://www.metabytes.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Startsidan beskriver systemutveckling, integrationer och IT-arkitektur åt kunder."
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://www.metabytes.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bred mjukvaruutveckling åt kunder i flera branscher. Det publika AI-caset gäller utvecklingsverktyg."
+
+kommun:
+  value: "1381"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/meta-bytes-ab/laholm/konsulter/2KGLK8OI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag."
+
+founded:
+  value: 2016
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/meta-bytes-ab/laholm/konsulter/2KGLK8OI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsår enligt allabolag."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/meta-bytes-ab/laholm/konsulter/2KGLK8OI5YF3I
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status aktiv enligt allabolag."
+
+evidence:
+  - url: https://www.metabytes.se/kundcase/aidare-ai-driven-plattform-for-saker-utveckling-av-komplexa-mjukvarusystem
+    kind: case
+    title: "Kundcase Aidare: AI-driven plattform för säker utveckling av komplexa mjukvarusystem"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: "Caset beskriver design, utveckling och produktifiering av plattformen. Aidares egen sida ai-dare.com anger att Aidare lanseras snart."
+
+links:
+  linkedin: https://www.linkedin.com/company/meta-bytes
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

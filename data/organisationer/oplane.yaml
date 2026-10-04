@@ -1,0 +1,110 @@
+id: oplane
+
+name:
+  value: "Oplane"
+  status: claimed
+  source_url: https://www.oplane.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "Oplane AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/oplane-ab/malm%C3%B6/internet-konsulter-operat%C3%B6rer/2KIIL53I5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/oplane-ab/malm%C3%B6/internet-konsulter-operat%C3%B6rer/2KIIL53I5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "559398-8487"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/oplane-ab/malm%C3%B6/internet-konsulter-operat%C3%B6rer/2KIIL53I5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Numret anges också i integritetspolicyn på oplane.com."
+
+website: https://www.oplane.com
+
+description:
+  value: "Bygger en AI-agent som löpande hotmodellerar kod och arkitektur, analyserar pull requests och hittar säkerhetsrisker. Finns även som plugin för Claude Code och andra kodverktyg."
+  status: claimed
+  source_url: https://www.oplane.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.oplane.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [forsvar_sakerhet, agenter_automation]
+  status: claimed
+  source_url: https://www.oplane.com/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Cybersäkerhet för mjukvaruteam: hotmodellering, analys av pull requests och säkerhet för AI-kodning via MCP."
+
+kommun:
+  value: "1230"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/oplane-ab/malm%C3%B6/internet-konsulter-operat%C3%B6rer/2KIIL53I5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registrerat säte enligt allabolag (Staffanstorp). Registrets adress och integritetspolicyn på oplane.com anger Malmö."
+
+founded:
+  value: 2022
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/oplane-ab/malm%C3%B6/internet-konsulter-operat%C3%B6rer/2KIIL53I5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsår enligt allabolag."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/oplane-ab/malm%C3%B6/internet-konsulter-operat%C3%B6rer/2KIIL53I5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status aktiv enligt allabolag."
+
+evidence:
+  - url: https://github.com/oplane/oplane-plugin
+    kind: repo
+    title: "oplane-plugin på GitHub: plugin för AI-baserad säkerhetsanalys, hotmodellering och granskning av pull requests"
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: "Koden är publik men licensierad som proprietär enligt README. GitHub-organisationen oplane länkas från oplane.com."
+  - url: https://www.oplane.com/
+    kind: produkt
+    title: "Startsida: AI-agent för kontinuerlig hotmodellering av kodbasen"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  github: https://github.com/oplane
+  linkedin: https://www.linkedin.com/company/90816660/
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

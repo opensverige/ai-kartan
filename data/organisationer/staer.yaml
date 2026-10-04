@@ -1,0 +1,109 @@
+id: staer
+
+name:
+  value: "Staer"
+  status: claimed
+  source_url: https://staer.ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "Staer AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/staer-ab/malm%C3%B6/internet-konsulter-operat%C3%B6rer/2KJDIDJI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/staer-ab/malm%C3%B6/internet-konsulter-operat%C3%B6rer/2KJDIDJI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "559543-1239"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/staer-ab/malm%C3%B6/internet-konsulter-operat%C3%B6rer/2KJDIDJI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://staer.ai
+
+description:
+  value: "Bygger rumslig intelligens för lager: en live 3D-karta byggd av kameror på truckar, med objektdetektering, inventering och samordning av mobila robotar. Publicerar även ett dataset på Hugging Face."
+  status: claimed
+  source_url: https://staer.ai/platform/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt, data]
+  status: claimed
+  source_url: https://staer.ai/platform/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Data: datasetet staerrobotics/warehouses på Hugging Face (åtkomst efter godkända villkor, licens cc-nc-sa enligt sidan)."
+
+areas:
+  value: [robotik, datorseende, transport_mobilitet]
+  status: claimed
+  source_url: https://staer.ai/platform/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Plattformen beskriver lager, truckflottor och mobila robotar."
+
+kommun:
+  value: "1280"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/staer-ab/malm%C3%B6/internet-konsulter-operat%C3%B6rer/2KJDIDJI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag."
+
+founded:
+  value: 2025
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/staer-ab/malm%C3%B6/internet-konsulter-operat%C3%B6rer/2KJDIDJI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsår enligt allabolag (registreringsdatum 2025-09-03)."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/staer-ab/malm%C3%B6/internet-konsulter-operat%C3%B6rer/2KJDIDJI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status aktiv enligt allabolag."
+
+evidence:
+  - url: https://huggingface.co/datasets/staerrobotics/warehouses
+    kind: dataset
+    title: "Datasetet staerrobotics/warehouses: syntetiska stereoscener från lager med djup, segmentering och objektlådor"
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: "Datasetet länkas från staer.ai, och Hugging Face-organisationen staerrobotics anger staer.ai som webbplats. Åtkomst till filerna kräver godkända villkor."
+  - url: https://staer.ai/platform/
+    kind: produkt
+    title: "Plattform: live 3D-karta från kameror på truckar med objektdetektering och inventering"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  huggingface: https://huggingface.co/staerrobotics
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

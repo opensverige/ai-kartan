@@ -1,0 +1,106 @@
+id: bounded
+
+name:
+  value: "Bounded"
+  status: claimed
+  source_url: https://www.bounded.eu/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: "Bounded Systems AB"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/bounded-systems-ab/malm%C3%B6/internet-konsulter-operat%C3%B6rer/2KJJSSQI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/bounded-systems-ab/malm%C3%B6/internet-konsulter-operat%C3%B6rer/2KJJSSQI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+org_number:
+  value: "559572-4682"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/bounded-systems-ab/malm%C3%B6/internet-konsulter-operat%C3%B6rer/2KJJSSQI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Numret anges också i sidfoten på bounded.eu."
+
+website: https://www.bounded.eu
+
+description:
+  value: "Bygger en plattform som granskar leverantörsavtal mot säkerhetskrav, samlar in leverantörssvar, tar fram förslag på ändringar och följer upp åtgärder. AI används för analys av textutdrag ur avtalen."
+  status: claimed
+  source_url: https://www.bounded.eu/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "AI-analysen anges på startsidan och på bounded.eu/security. Sajten använder ordet AI sparsamt."
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.bounded.eu/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [juridik, forsvar_sakerhet]
+  status: claimed
+  source_url: https://www.bounded.eu/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Startsidan nämner leverantörsavtal, säkerhet för kritisk infrastruktur samt NIS2, AI Act och CRA."
+
+kommun:
+  value: "1280"
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/bounded-systems-ab/malm%C3%B6/internet-konsulter-operat%C3%B6rer/2KJJSSQI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag."
+
+founded:
+  value: 2026
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/bounded-systems-ab/malm%C3%B6/internet-konsulter-operat%C3%B6rer/2KJJSSQI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsår enligt allabolag (registreringsdatum 2026-02-16)."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/foretag/bounded-systems-ab/malm%C3%B6/internet-konsulter-operat%C3%B6rer/2KJJSSQI5YFHL
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status aktiv enligt allabolag."
+
+evidence:
+  - url: https://www.bounded.eu/
+    kind: produkt
+    title: "Plattform för granskning av leverantörsavtal med AI-analys av textutdrag"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://www.bounded.eu/security
+    kind: resurs
+    title: "Säkerhetssida: begränsad AI-bearbetning av minimerade textutdrag"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04
