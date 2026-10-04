@@ -16,13 +16,13 @@ type:
   verified_by: manual
   note: "Kategori på infra: compute_gpu."
 org_number:
-  value: 556647-9241
-  status: claimed
-  source_url: https://glesys.com/legal/privacy-policy
-  source_type: own_docs
-  verified_at: 2026-08-06
-  verified_by: manual
-  note: Via infra.opensverige.se, där uppgiften är bekräftad mot leverantörens egna villkor. Här egen uppgift tills den kontrollerats mot register.
+  value: "556647-9241"
+  status: confirmed
+  source_url: https://www.allabolag.se/5566479241
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Samma nummer anges i bolagets integritetspolicy (glesys.com/legal/privacy-policy) och på infra.opensverige.se.
 website: https://glesys.se
 description:
   value: Tillhandahåller GPU-kapacitet och beräkningskraft för AI-arbetslaster i Sverige.
@@ -50,12 +50,12 @@ areas:
   verified_by: manual
 kommun:
   value: "1382"
-  status: claimed
-  source_url: https://glesys.com/legal/privacy-policy
-  source_type: own_docs
+  status: confirmed
+  source_url: https://www.allabolag.se/5566479241
+  source_type: third_party
   verified_at: 2026-10-04
-  verified_by: manual
-  note: Ort enligt infra.opensverige.se (Falkenberg). Kontrollera mot register.
+  verified_by: agent
+  note: Säte Falkenberg enligt registerspegeln.
 active:
   value: true
   status: claimed
