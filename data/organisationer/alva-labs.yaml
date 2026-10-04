@@ -1,0 +1,102 @@
+id: alva-labs
+
+name:
+  value: Alva Labs
+  status: claimed
+  source_url: https://www.alvalabs.io
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Alva Labs AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5591038178
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5591038178
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559103-8178"
+  status: confirmed
+  source_url: https://www.allabolag.se/5591038178
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://www.alvalabs.io
+
+description:
+  value: Utvecklar ett rekryteringssystem där en AI-agent förbereder återkommande moment som rollinställning, screening, schemaläggning och intervjubedömning, tillsammans med tester och ATS.
+  status: claimed
+  source_url: https://www.alvalabs.io/agentic-hiring-system
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.alvalabs.io/agentic-hiring-system
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [agenter_automation]
+  status: claimed
+  source_url: https://www.alvalabs.io/agentic-hiring-system
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0162"
+  status: confirmed
+  source_url: https://www.allabolag.se/5591038178
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Danderyd."
+
+founded:
+  value: 2017
+  status: confirmed
+  source_url: https://www.allabolag.se/5591038178
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2017-03-08."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5591038178
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.alvalabs.io/agentic-hiring-system
+    kind: produkt
+    title: "Agentic Hiring System: rekryteringssystem med AI-agent"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  github: https://github.com/alvalabs
+  linkedin: https://www.linkedin.com/company/alva-labs
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

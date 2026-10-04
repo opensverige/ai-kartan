@@ -1,0 +1,99 @@
+id: codon-consulting
+
+name:
+  value: Codon Consulting
+  status: claimed
+  source_url: https://www.codon.se
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Codon Consulting AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5592103666
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5592103666
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559210-3666"
+  status: confirmed
+  source_url: https://www.allabolag.se/5592103666
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Organisationsnumret anges även i sidfoten: https://www.codon.se/blog/increased-production-throughput-by-ai-driven-scheduling"
+
+website: https://www.codon.se
+
+description:
+  value: AI-konsult som bygger lösningar med maskininlärning och optimering för industri, finans och offentlig sektor, till exempel AI-baserad produktionsplanering och OCR för dokument.
+  status: claimed
+  source_url: https://www.codon.se/blog/increased-production-throughput-by-ai-driven-scheduling
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [utveckling]
+  status: claimed
+  source_url: https://www.codon.se
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [industri, offentlig_sektor, fintech]
+  status: claimed
+  source_url: https://www.codon.se
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5592103666
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+founded:
+  value: 2019
+  status: confirmed
+  source_url: https://www.allabolag.se/5592103666
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2019-06-27."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5592103666
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.codon.se/blog/increased-production-throughput-by-ai-driven-scheduling
+    kind: case
+    title: "Case: AI-baserad produktionsplanering åt ett läkemedelsföretag"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

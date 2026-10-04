@@ -1,0 +1,101 @@
+id: knowit
+
+name:
+  value: Knowit
+  status: claimed
+  source_url: https://www.knowit.se
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Knowit Aktiebolag (publ)
+  status: confirmed
+  source_url: https://www.allabolag.se/5563910354
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5563910354
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Publikt aktiebolag."
+
+org_number:
+  value: "556391-0354"
+  status: confirmed
+  source_url: https://www.allabolag.se/5563910354
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://www.knowit.se
+
+description:
+  value: IT-konsultbolag som bygger AI-lösningar åt kunder, till exempel AI-agenten Alva som förutspår engagemang för inlägg i sociala medier åt Kappahl Group.
+  status: claimed
+  source_url: https://www.knowit.se/kunder/ai-agenten-som-ger-kappahl-group-ett-forsprang-i-flodet/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [utveckling]
+  status: claimed
+  source_url: https://www.knowit.se/kunder/ai-agenten-som-ger-kappahl-group-ett-forsprang-i-flodet/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://www.knowit.se
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5563910354
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+founded:
+  value: 1990
+  status: confirmed
+  source_url: https://www.allabolag.se/5563910354
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 1990-06-14."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5563910354
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.knowit.se/kunder/ai-agenten-som-ger-kappahl-group-ett-forsprang-i-flodet/
+    kind: case
+    title: "Case: AI-agenten Alva åt Kappahl Group"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/knowit
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

@@ -1,0 +1,102 @@
+id: motorica
+
+name:
+  value: Motorica
+  status: claimed
+  source_url: https://motorica.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Motorica AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5592941107
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5592941107
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559294-1107"
+  status: confirmed
+  source_url: https://www.allabolag.se/5592941107
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Organisationsnumret anges även i bolagets integritetspolicy: https://motorica.com/privacy-policy"
+
+website: https://motorica.com
+
+description:
+  value: Utvecklar en tjänst som genererar karaktärsanimation för spel och film med generativa maskininlärningsmodeller och data från rörelsefångst.
+  status: claimed
+  source_url: https://motorica.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://motorica.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [media_kreativt]
+  status: claimed
+  source_url: https://motorica.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5592941107
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+founded:
+  value: 2020
+  status: confirmed
+  source_url: https://www.allabolag.se/5592941107
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2020-12-29."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5592941107
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://motorica.com
+    kind: produkt
+    title: "Startsida: AI-baserad animationsmotor för spel och film"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://linkedin.com/company/motorica-motion-engine/
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

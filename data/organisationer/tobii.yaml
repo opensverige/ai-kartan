@@ -1,0 +1,102 @@
+id: tobii
+
+name:
+  value: Tobii
+  status: claimed
+  source_url: https://www.tobii.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Tobii AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5566139654
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5566139654
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Publikt aktiebolag."
+
+org_number:
+  value: "556613-9654"
+  status: confirmed
+  source_url: https://www.allabolag.se/5566139654
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://www.tobii.com
+
+description:
+  value: Utvecklar teknik för ögonspårning och uppmärksamhetsdata där maskininlärning och AI ingår i många av produkterna, bland annat för hälso- och utbildningstillämpningar.
+  status: claimed
+  source_url: https://www.tobii.com/company/tobii-and-artificial-intelligence
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.tobii.com/company/tobii-and-artificial-intelligence
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell, halsa, utbildning]
+  status: claimed
+  source_url: https://www.tobii.com/company/tobii-and-artificial-intelligence
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0162"
+  status: confirmed
+  source_url: https://www.allabolag.se/5566139654
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Danderyd."
+
+founded:
+  value: 2001
+  status: confirmed
+  source_url: https://www.allabolag.se/5566139654
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2001-08-08."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5566139654
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.tobii.com/company/tobii-and-artificial-intelligence
+    kind: produkt
+    title: "Tobii och artificiell intelligens: maskininlärning i produkter för ögonspårning"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  github: https://github.com/tobiipro
+  linkedin: https://www.linkedin.com/company/tobii/
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

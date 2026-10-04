@@ -1,0 +1,102 @@
+id: hiq
+
+name:
+  value: HiQ
+  status: claimed
+  source_url: https://hiq.se
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: HiQ International AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5565293205
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5565293205
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "556529-3205"
+  status: confirmed
+  source_url: https://www.allabolag.se/5565293205
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Uppgiften avser HiQ International AB, som enligt bolagsändamålet i registret har dotterbolag och koncerngemensamma funktioner.
+
+website: https://hiq.se
+
+description:
+  value: Techkonsultbolag som bygger AI-plattformar och AI-lösningar åt organisationer, bland annat en miljö för egen drift av språkmodeller och en AI-driven kunskapsplattform.
+  status: claimed
+  source_url: https://hiq.se/ai-plattformar-losningar/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [utveckling, produkt]
+  status: claimed
+  source_url: https://hiq.se/ai-plattformar-losningar/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://hiq.se/ai-plattformar-losningar/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5565293205
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+founded:
+  value: 1996
+  status: confirmed
+  source_url: https://www.allabolag.se/5565293205
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 1996-01-30."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5565293205
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://hiq.se/ai-plattformar-losningar/
+    kind: produkt
+    title: HiQ:s AI-plattformar och AI-lösningar
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/hiq/
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

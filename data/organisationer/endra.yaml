@@ -1,0 +1,102 @@
+id: endra
+
+name:
+  value: Endra
+  status: claimed
+  source_url: https://www.endra.ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Endra Systems AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5594965898
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5594965898
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559496-5898"
+  status: confirmed
+  source_url: https://www.allabolag.se/5594965898
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsnamnet Endra Systems AB anges även i webbplatsens strukturerade data (https://www.endra.ai).
+
+website: https://www.endra.ai
+
+description:
+  value: Bygger en AI-plattform som genererar 3D-modeller och dokumentation för projektering av installationssystem i byggnader, till exempel brandlarm och el.
+  status: claimed
+  source_url: https://www.endra.ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.endra.ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [fastighet_bygg]
+  status: claimed
+  source_url: https://www.endra.ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5594965898
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+founded:
+  value: 2024
+  status: confirmed
+  source_url: https://www.allabolag.se/5594965898
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2024-09-13."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5594965898
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.endra.ai
+    kind: produkt
+    title: "Startsida: AI-plattform för projektering av installationer"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/endraai/
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

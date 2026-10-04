@@ -1,0 +1,102 @@
+id: truecaller
+
+name:
+  value: Truecaller
+  status: claimed
+  source_url: https://www.truecaller.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Truecaller AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5592782774
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5592782774
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Publikt aktiebolag."
+
+org_number:
+  value: "559278-2774"
+  status: confirmed
+  source_url: https://www.allabolag.se/5592782774
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Uppgiften avser Truecaller AB, ett publikt aktiebolag med säte i Stockholm.
+
+website: https://www.truecaller.com
+
+description:
+  value: Bygger en samtalsapp med funktionen AI Call Scanner, som analyserar rösten under ett pågående samtal för att avgöra om den är mänsklig eller AI-genererad.
+  status: claimed
+  source_url: https://www.truecaller.com/ai-call-scanner
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.truecaller.com/ai-call-scanner
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://www.truecaller.com/ai-call-scanner
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5592782774
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+founded:
+  value: 2020
+  status: confirmed
+  source_url: https://www.allabolag.se/5592782774
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2020-10-22. Avser registreringen av Truecaller AB, inte nödvändigtvis när verksamheten startade."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5592782774
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.truecaller.com/ai-call-scanner
+    kind: produkt
+    title: "AI Call Scanner: röstanalys som skiljer mänskliga från AI-genererade röster"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/truecaller
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

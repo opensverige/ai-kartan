@@ -1,0 +1,98 @@
+id: manomotion
+
+name:
+  value: ManoMotion
+  status: claimed
+  source_url: https://www.manomotion.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: ManoMotion AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5590171830
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5590171830
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559017-1830"
+  status: confirmed
+  source_url: https://www.allabolag.se/5590171830
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://www.manomotion.com
+
+description:
+  value: Utvecklar kamerabaserad AI för handspårning och gestigenkänning, bland annat för säkerhet vid industrimaskiner och för beröringsfri styrning.
+  status: claimed
+  source_url: https://www.manomotion.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.manomotion.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [industri, datorseende]
+  status: claimed
+  source_url: https://www.manomotion.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5590171830
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+founded:
+  value: 2015
+  status: confirmed
+  source_url: https://www.allabolag.se/5590171830
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2015-06-11."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5590171830
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.manomotion.com/ai-industrial-safety/
+    kind: produkt
+    title: "SaferHands: AI-baserad maskinsäkerhet med handspårning"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

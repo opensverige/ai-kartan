@@ -1,0 +1,102 @@
+id: alice-labs
+
+name:
+  value: Alice Labs
+  status: claimed
+  source_url: https://alicelabs.ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Alice Labs AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5594435470
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5594435470
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559443-5470"
+  status: confirmed
+  source_url: https://www.allabolag.se/5594435470
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Organisationsnumret anges även på bolagets egen sida: https://alicelabs.ai/case"
+
+website: https://alicelabs.ai
+
+description:
+  value: AI-konsult som bygger automation och AI-agenter åt företag, till exempel en agent för orderhantering, och håller utbildningar i AI.
+  status: claimed
+  source_url: https://alicelabs.ai/case
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [utveckling, utbildning]
+  status: claimed
+  source_url: https://alicelabs.ai/case
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [agenter_automation, generell]
+  status: claimed
+  source_url: https://alicelabs.ai/case
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5594435470
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+founded:
+  value: 2023
+  status: confirmed
+  source_url: https://www.allabolag.se/5594435470
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2023-08-02."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5594435470
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://alicelabs.ai/case
+    kind: case
+    title: "Case: AI-agenter och automation hos kunder"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/alicelabsai
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

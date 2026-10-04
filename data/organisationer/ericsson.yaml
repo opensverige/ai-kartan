@@ -1,0 +1,101 @@
+id: ericsson
+
+name:
+  value: Ericsson
+  status: claimed
+  source_url: https://www.ericsson.com/en/ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Telefonaktiebolaget LM Ericsson
+  status: confirmed
+  source_url: https://www.allabolag.se/5560160680
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5560160680
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Publikt aktiebolag."
+
+org_number:
+  value: "556016-0680"
+  status: confirmed
+  source_url: https://www.allabolag.se/5560160680
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://www.ericsson.com
+
+description:
+  value: Utvecklar AI för att hantera och optimera mobilnät, bland annat trafikprognoser, dynamisk resursallokering och agentbaserad AI för nätdrift.
+  status: claimed
+  source_url: https://www.ericsson.com/en/ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.ericsson.com/en/ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://www.ericsson.com/en/ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5560160680
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm. Allabolag anger postorten Kista, som ligger i Stockholms kommun."
+
+founded:
+  value: 1918
+  status: confirmed
+  source_url: https://www.allabolag.se/5560160680
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 1918-08-19."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5560160680
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.ericsson.com/en/ai
+    kind: produkt
+    title: "Telecom AI: AI för nätverk och nätverk för AI"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/ericsson
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

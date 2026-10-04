@@ -1,0 +1,103 @@
+id: netlight
+
+name:
+  value: Netlight
+  status: claimed
+  source_url: https://www.netlight.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Netlight Consulting AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5565756227
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5565756227
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "556575-6227"
+  status: confirmed
+  source_url: https://www.allabolag.se/5565756227
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Uppgiften avser Netlight Consulting AB, det svenska bolaget. Bolagsnamnet anges även i webbplatsens strukturerade data (https://www.netlight.com).
+
+website: https://www.netlight.com
+
+description:
+  value: IT-konsultbolag som bygger data- och AI-lösningar åt kunder, till exempel en flerspråkig chattbot med generativ AI för kundtjänst.
+  status: claimed
+  source_url: https://www.netlight.com/stories/elevating-customer-experience-with-generative-ai-powered-chatbot
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [utveckling]
+  status: claimed
+  source_url: https://www.netlight.com/stories/elevating-customer-experience-with-generative-ai-powered-chatbot
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://www.netlight.com/stories/elevating-customer-experience-with-generative-ai-powered-chatbot
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5565756227
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+founded:
+  value: 1999
+  status: confirmed
+  source_url: https://www.allabolag.se/5565756227
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 1999-10-04."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5565756227
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.netlight.com/stories/elevating-customer-experience-with-generative-ai-powered-chatbot
+    kind: case
+    title: "Case: flerspråkig chattbot med generativ AI"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  github: https://github.com/netlight
+  linkedin: https://www.linkedin.com/company/netlight-consulting/
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

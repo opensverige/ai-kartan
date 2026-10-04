@@ -1,0 +1,98 @@
+id: modulai
+
+name:
+  value: Modulai
+  status: claimed
+  source_url: https://modulai.io
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Modulai AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5591524029
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5591524029
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559152-4029"
+  status: confirmed
+  source_url: https://www.allabolag.se/5591524029
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+website: https://modulai.io
+
+description:
+  value: Konsultbolag som bygger skräddarsydda AI- och maskininlärningslösningar åt kunder, till exempel ett agentbaserat system som besvarar frågor om kliniska studier och objektdetektering i spelströmmar.
+  status: claimed
+  source_url: https://modulai.io
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [utveckling]
+  status: claimed
+  source_url: https://modulai.io
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://modulai.io
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5591524029
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+founded:
+  value: 2018
+  status: confirmed
+  source_url: https://www.allabolag.se/5591524029
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2018-03-14."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5591524029
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://modulai.io/case/multi-agent-rag-pharma
+    kind: case
+    title: "Case: agentbaserat RAG-system för frågor om kliniska studier"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04
