@@ -1,0 +1,102 @@
+id: avy
+
+name:
+  value: Avy
+  status: claimed
+  source_url: https://www.avy.se
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Avy AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5591633259
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5591633259
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Aktiebolag enligt allabolag.
+
+org_number:
+  value: "559163-3259"
+  status: confirmed
+  source_url: https://www.allabolag.se/5591633259
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Står även i webbplatsens strukturerade data (JSON-LD) på https://www.avy.se/sv/utforska/om-oss."
+
+website: https://www.avy.se
+
+description:
+  value: Bygger en plattform för hyresgästhantering där AI-agenter tar emot, sorterar och löser ärenden åt fastighetsägare och förvaltare.
+  status: claimed
+  source_url: https://www.avy.se/en/platform/agentic-ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.avy.se/en/platform/agentic-ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [fastighet_bygg, agenter_automation]
+  status: claimed
+  source_url: https://www.avy.se/en/platform/agentic-ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5591633259
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte enligt allabolag.
+
+founded:
+  value: 2018
+  status: confirmed
+  source_url: https://www.allabolag.se/5591633259
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Registreringsår enligt allabolag.
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5591633259
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Status Aktiv enligt allabolag.
+
+evidence:
+  - url: https://www.avy.se/en/platform/agentic-ai
+    kind: produkt
+    title: "Agentic AI: AI-agenter för hyresgästärenden och stöd till förvaltare"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/15807556/
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

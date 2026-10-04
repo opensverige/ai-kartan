@@ -1,0 +1,108 @@
+id: vionlabs
+
+name:
+  value: Vionlabs
+  status: claimed
+  source_url: https://www.vionlabs.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Vionlabs AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5568045420
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5568045420
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Aktiebolag enligt allabolag.
+
+org_number:
+  value: "556804-5420"
+  status: confirmed
+  source_url: https://www.allabolag.se/5568045420
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Står även i Vionlabs integritetspolicy (PDF) som länkas från webbplatsens sidfot (Vionlabs AB, Corporate registration number).
+
+website: https://www.vionlabs.com
+
+description:
+  value: Bygger AI som analyserar video och skapar metadata, miniatyrer och inbäddningar för innehållsupptäckt och personalisering i strömningstjänster.
+  status: claimed
+  source_url: https://www.vionlabs.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.vionlabs.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [media_kreativt]
+  status: claimed
+  source_url: https://www.vionlabs.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5568045420
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte enligt allabolag.
+
+founded:
+  value: 2010
+  status: confirmed
+  source_url: https://www.allabolag.se/5568045420
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsår enligt allabolag; webbplatsen https://www.vionlabs.com/company anger grundat 2016."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5568045420
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Status Aktiv enligt allabolag.
+
+evidence:
+  - url: https://www.vionlabs.com/embeddings-api
+    kind: produkt
+    title: "Embeddings API: vektorrepresentationer av videoinnehåll för likhetssökning"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://www.vionlabs.com/
+    kind: produkt
+    title: "Produktöversikt: metadata, miniatyrer, klipp och annonspauser med AI"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/vionlabs
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

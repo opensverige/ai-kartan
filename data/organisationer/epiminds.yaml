@@ -1,0 +1,99 @@
+id: epiminds
+
+name:
+  value: Epiminds
+  status: claimed
+  source_url: https://epiminds.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Epiminds AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5595326942
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5595326942
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Aktiebolag enligt allabolag.
+
+org_number:
+  value: "559532-6942"
+  status: confirmed
+  source_url: https://www.allabolag.se/5595326942
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Står även i egen integritetspolicy: https://epiminds.com/privacy (Epiminds AB, svenskt organisationsnummer)."
+
+website: https://epiminds.com
+
+description:
+  value: Bygger en plattform med över 20 samverkande AI-agenter som automatiserar analys, rapportering och optimering i digital marknadsföring.
+  status: claimed
+  source_url: https://epiminds.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://epiminds.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [agenter_automation, media_kreativt]
+  status: claimed
+  source_url: https://epiminds.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0183"
+  status: confirmed
+  source_url: https://www.allabolag.se/5595326942
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Säte Sundbyberg enligt allabolag; integritetspolicyn anger Stockholm som postort."
+
+founded:
+  value: 2025
+  status: confirmed
+  source_url: https://www.allabolag.se/5595326942
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Registreringsår enligt allabolag.
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5595326942
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Status Aktiv enligt allabolag.
+
+evidence:
+  - url: https://epiminds.com
+    kind: produkt
+    title: "Produktsida: samverkande AI-agenter för marknadsföring"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

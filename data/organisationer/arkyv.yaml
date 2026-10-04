@@ -1,0 +1,102 @@
+id: arkyv
+
+name:
+  value: Arkyv
+  status: claimed
+  source_url: https://www.arkyv.ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Arkyv AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5595326371
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5595326371
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Aktiebolag enligt allabolag.
+
+org_number:
+  value: "559532-6371"
+  status: confirmed
+  source_url: https://www.allabolag.se/5595326371
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Webbplatsen anger inget bolagsnamn eller organisationsnummer. Koppling via namnet Arkyv AB, registrets verksamhetsbeskrivning (AI-verktyg för arkitekter) och att bolagets registrerade VD och ordförande presenteras på webbplatsens om-sida. Inget annat bolag med namnet hittades.
+
+website: https://www.arkyv.ai
+
+description:
+  value: Bygger en AI-arbetsyta med agenter för arkitekter, ingenjörer och byggare som arbetar med BIM-modeller i Revit, Rhino och Archicad.
+  status: claimed
+  source_url: https://www.arkyv.ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.arkyv.ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [fastighet_bygg, agenter_automation]
+  status: claimed
+  source_url: https://www.arkyv.ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0380"
+  status: confirmed
+  source_url: https://www.allabolag.se/5595326371
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Säte Uppsala enligt allabolag; bolagets registrerade adress är i Stockholm."
+
+founded:
+  value: 2025
+  status: confirmed
+  source_url: https://www.allabolag.se/5595326371
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Registreringsår enligt allabolag.
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5595326371
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Status Aktiv enligt allabolag.
+
+evidence:
+  - url: https://www.arkyv.ai/ai-for-bim
+    kind: produkt
+    title: AI-agenter som arbetar i BIM-modellen i Revit, Rhino och Archicad
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/arkyv-ai
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

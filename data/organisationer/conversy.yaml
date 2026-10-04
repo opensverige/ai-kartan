@@ -1,0 +1,100 @@
+id: conversy
+
+name:
+  value: Conversy
+  status: claimed
+  source_url: https://conversy.ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Conversy AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5592774490
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5592774490
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Aktiebolag enligt allabolag.
+
+org_number:
+  value: "559277-4490"
+  status: confirmed
+  source_url: https://www.allabolag.se/5592774490
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Webbplatsens strukturerade data anger Conversy AB, Stockholm, men inget organisationsnummer.
+
+website: https://conversy.ai
+
+description:
+  value: Utvecklar en lokalt driftad AI-plattform för tal med röstbiometri, transkribering, översättning och detektion av syntetiska röster.
+  status: claimed
+  source_url: https://conversy.ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://conversy.ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [sprakteknik, forsvar_sakerhet]
+  status: claimed
+  source_url: https://conversy.ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5592774490
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte enligt allabolag.
+
+founded:
+  value: 2020
+  status: confirmed
+  source_url: https://www.allabolag.se/5592774490
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsår enligt allabolag; webbplatsen anger grundat 2019."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5592774490
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Status Aktiv enligt allabolag.
+
+evidence:
+  - url: https://conversy.ai/
+    kind: produkt
+    title: "On-prem AI-röstplattform: röstbiometri, transkribering, översättning och detektion av falska röster"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: "Sidan renderas med JavaScript; beskrivningen kommer från sidans metadata och strukturerade data."
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

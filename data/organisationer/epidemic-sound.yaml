@@ -1,0 +1,108 @@
+id: epidemic-sound
+
+name:
+  value: Epidemic Sound
+  status: claimed
+  source_url: https://www.epidemicsound.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Epidemic Sound AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5567810899
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5567810899
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Aktiebolag enligt allabolag.
+
+org_number:
+  value: "556781-0899"
+  status: confirmed
+  source_url: https://www.allabolag.se/5567810899
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Står även på egna webbplatsen: https://www.epidemicsound.com/about-us/ (Company registration number)."
+
+website: https://www.epidemicsound.com
+
+description:
+  value: Tillhandahåller licensierad musik och ljudeffekter för video, samt AI-verktyg för att hitta musik via fritextbeskrivning och skapa voiceovers på flera språk.
+  status: claimed
+  source_url: https://www.epidemicsound.com/tools/assistant/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.epidemicsound.com/tools/assistant/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [media_kreativt]
+  status: claimed
+  source_url: https://www.epidemicsound.com/tools/assistant/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5567810899
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte enligt allabolag.
+
+founded:
+  value: 2009
+  status: confirmed
+  source_url: https://www.allabolag.se/5567810899
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Registreringsår enligt allabolag.
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5567810899
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Status Aktiv enligt allabolag.
+
+evidence:
+  - url: https://www.epidemicsound.com/tools/assistant/
+    kind: produkt
+    title: "Assistant: AI-assistent som föreslår musik och ljudeffekter utifrån en beskrivning"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://www.epidemicsound.com/voices/
+    kind: produkt
+    title: "AI-voiceover: text till tal och tal till tal med röster baserade på inspelade röstartister"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/epidemic-sound/
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

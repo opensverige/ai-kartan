@@ -1,0 +1,108 @@
+id: lumoo
+
+name:
+  value: Lumoo
+  status: claimed
+  source_url: https://lumoo.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Lumoo Studio AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5595208298
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5595208298
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Aktiebolag enligt allabolag.
+
+org_number:
+  value: "559520-8298"
+  status: confirmed
+  source_url: https://www.allabolag.se/5595208298
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Webbplatsen anger inget bolagsnamn eller organisationsnummer. Koppling via namnet Lumoo Studio AB, registrets verksamhetsbeskrivning (AI-plattform för innehåll inom mode) och att bolagets registrerade VD presenteras på webbplatsens om-sida.
+
+website: https://lumoo.com
+
+description:
+  value: Bygger en AI-arbetsyta för modeteam där innehåll skapas och automatiseras, med bland annat virtuell provning och en kreativ agent.
+  status: claimed
+  source_url: https://lumoo.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://lumoo.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [media_kreativt, handel]
+  status: claimed
+  source_url: https://lumoo.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0381"
+  status: confirmed
+  source_url: https://www.allabolag.se/5595208298
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Säte Enköping enligt allabolag; bolagets registrerade adress och webbplatsen anger Stockholm."
+
+founded:
+  value: 2025
+  status: confirmed
+  source_url: https://www.allabolag.se/5595208298
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Registreringsår enligt allabolag.
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5595208298
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Status Aktiv enligt allabolag.
+
+evidence:
+  - url: https://lumoo.com/products/air
+    kind: produkt
+    title: "Lumoo Air: AI genererar produktbilder och video från ett produktfoto"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://lumoo.com/iris
+    kind: produkt
+    title: "Iris: kreativ AI-agent för modeteam (åtkomst på förfrågan)"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/lumoo-ai
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

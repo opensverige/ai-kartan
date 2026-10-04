@@ -1,0 +1,111 @@
+id: proptechos
+
+name:
+  value: ProptechOS
+  status: claimed
+  source_url: https://proptechos.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: ProptechOS AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5590161245
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5590161245
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Aktiebolag enligt allabolag.
+
+org_number:
+  value: "559016-1245"
+  status: confirmed
+  source_url: https://www.allabolag.se/5590161245
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Står även i egen integritetspolicy: https://proptechos.com/trust/privacy-notice-full/ (ProptechOS AB)."
+
+website: https://proptechos.com
+
+description:
+  value: Bygger en plattform som samlar byggnadsdata och kör AI-agenter som övervakar fastigheter, upptäcker avvikelser och utlöser åtgärder inom energi, VVS och drift.
+  status: claimed
+  source_url: https://proptechos.com/agents
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt, oppen_kallkod]
+  status: claimed
+  source_url: https://proptechos.com/agents
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "oppen_kallkod: GitHub-förrådet idun-corp/proptech-agents har licensen CC BY 4.0."
+
+areas:
+  value: [fastighet_bygg, agenter_automation, energi_klimat]
+  status: claimed
+  source_url: https://proptechos.com/agents
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5590161245
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte enligt allabolag.
+
+founded:
+  value: 2015
+  status: confirmed
+  source_url: https://www.allabolag.se/5590161245
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Registreringsår enligt allabolag.
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5590161245
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Status Aktiv enligt allabolag.
+
+evidence:
+  - url: https://proptechos.com/agents
+    kind: produkt
+    title: "AI-agenter för fastighetsdrift: övervakning, avvikelser och åtgärder"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://github.com/idun-corp/proptech-agents
+    kind: repo
+    title: Promptmallar för AI-agenter inom fastighetsbranschen (CC BY 4.0)
+    status: confirmed
+    verified_at: 2026-10-04
+    verified_by: agent
+    note: Offentligt förråd i GitHub-organisationen idun-corp, som ProptechOS webbplats länkar till.
+
+links:
+  github: https://github.com/idun-corp
+  linkedin: https://www.linkedin.com/company/proptechos/
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

@@ -1,0 +1,102 @@
+id: ai-vision-sweden
+
+name:
+  value: AI Vision Sweden
+  status: claimed
+  source_url: https://ai-vision.se
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: AI Vision Sweden AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5594544420
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5594544420
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Aktiebolag enligt allabolag.
+
+org_number:
+  value: "559454-4420"
+  status: confirmed
+  source_url: https://www.allabolag.se/5594544420
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Webbplatsens sidfot och integritetspolicy anger AI Vision Sweden AB men inget organisationsnummer.
+
+website: https://ai-vision.se
+
+description:
+  value: Levererar AI-baserade kamerasystem för industri och logistik, till exempel kontroll av stockar i sågverk och skadeinspektion av fordon.
+  status: claimed
+  source_url: https://ai-vision.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt, utveckling]
+  status: claimed
+  source_url: https://ai-vision.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [industri, datorseende]
+  status: claimed
+  source_url: https://ai-vision.se/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5594544420
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte enligt allabolag.
+
+founded:
+  value: 2023
+  status: confirmed
+  source_url: https://www.allabolag.se/5594544420
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Registreringsår enligt allabolag; webbplatsen anger att man arbetat med sådana projekt sedan 2017."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5594544420
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Status Aktiv enligt allabolag.
+
+evidence:
+  - url: https://ai-vision.se/case-studies
+    kind: case
+    title: "Kundcase: AI-kamerasystem i sågverk, förpackning och ytbehandling"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/ai-vision-sweden/
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

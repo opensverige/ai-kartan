@@ -1,0 +1,102 @@
+id: vividon
+
+name:
+  value: Vividon
+  status: claimed
+  source_url: https://www.vividon.ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Vividon AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5595786475
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5595786475
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Aktiebolag enligt allabolag.
+
+org_number:
+  value: "559578-6475"
+  status: confirmed
+  source_url: https://www.allabolag.se/5595786475
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Webbplatsens användarvillkor anger Vividon AB, Stockholm, men inget organisationsnummer: https://www.vividon.ai/terms."
+
+website: https://www.vividon.ai
+
+description:
+  value: Bygger AI-verktyg som ändrar ljussättningen i foton efter fotograferingen, som tillägg i Photoshop och som webbtjänst.
+  status: claimed
+  source_url: https://www.vividon.ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.vividon.ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [media_kreativt]
+  status: claimed
+  source_url: https://www.vividon.ai/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5595786475
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte enligt allabolag.
+
+founded:
+  value: 2026
+  status: confirmed
+  source_url: https://www.allabolag.se/5595786475
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Registreringsår enligt allabolag.
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5595786475
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Status Aktiv enligt allabolag.
+
+evidence:
+  - url: https://www.vividon.ai/
+    kind: produkt
+    title: "Vividon: AI-baserad omljussättning av foton i Photoshop och i webbläsaren"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/vividonlab/
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

@@ -1,0 +1,108 @@
+id: stratipath
+
+name:
+  value: Stratipath
+  status: claimed
+  source_url: https://www.stratipath.com
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Stratipath AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5592146004
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5592146004
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Aktiebolag enligt allabolag.
+
+org_number:
+  value: "559214-6004"
+  status: confirmed
+  source_url: https://www.allabolag.se/5592146004
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: "Står även i egen cookiepolicy: https://www.stratipath.com/cookies/ (Stratipath AB)."
+
+website: https://www.stratipath.com
+
+description:
+  value: Utvecklar AI-baserade diagnostikverktyg som bedömer prognos vid bröstcancer utifrån bilder av patologipreparat.
+  status: claimed
+  source_url: https://www.stratipath.com/stratipath-breast/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.stratipath.com/stratipath-breast/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [halsa]
+  status: claimed
+  source_url: https://www.stratipath.com/stratipath-breast/
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0184"
+  status: confirmed
+  source_url: https://www.allabolag.se/5592146004
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte enligt allabolag.
+
+founded:
+  value: 2019
+  status: confirmed
+  source_url: https://www.allabolag.se/5592146004
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Registreringsår enligt allabolag.
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5592146004
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Status Aktiv enligt allabolag.
+
+evidence:
+  - url: https://www.stratipath.com/stratipath-breast/
+    kind: produkt
+    title: "Stratipath Breast: AI-baserad prognosbedömning av bröstcancer (CE-IVD)"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+  - url: https://www.stratipath.com/scientific-evidence/
+    kind: publikation
+    title: Studier och vetenskapligt underlag för Stratipath Breast
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/stratipath/
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04

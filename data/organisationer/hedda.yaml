@@ -1,0 +1,99 @@
+id: hedda
+
+name:
+  value: Hedda
+  status: claimed
+  source_url: https://hedda.ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+legal_name:
+  value: Hedda AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5594935016
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5594935016
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Bolagsform Aktiebolag enligt allabolag.
+
+org_number:
+  value: "559493-5016"
+  status: confirmed
+  source_url: https://www.allabolag.se/5594935016
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Webbplatsen anger inget bolagsnamn eller organisationsnummer. Koppling via namnet Hedda AB, ort, verksamhet och att bolagets registrerade VD presenteras på webbplatsens kontaktsida.
+
+website: https://hedda.ai
+
+description:
+  value: Bygger en AI-plattform för bygg och infrastruktur som kopplar samman projektdata, krav och beslut från anbud till leverans.
+  status: claimed
+  source_url: https://hedda.ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://hedda.ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+areas:
+  value: [fastighet_bygg]
+  status: claimed
+  source_url: https://hedda.ai
+  source_type: own_site
+  verified_at: 2026-10-04
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5594935016
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Kommunsäte enligt allabolag.
+
+founded:
+  value: 2024
+  status: confirmed
+  source_url: https://www.allabolag.se/5594935016
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Registreringsår enligt allabolag.
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5594935016
+  source_type: third_party
+  verified_at: 2026-10-04
+  verified_by: agent
+  note: Status Aktiv enligt allabolag.
+
+evidence:
+  - url: https://hedda.ai/product
+    kind: produkt
+    title: "Produktsida: AI för anbud, kravextraktion och projektkunskap inom bygg"
+    status: claimed
+    verified_at: 2026-10-04
+    verified_by: agent
+
+record_created_at: 2026-10-04
+record_updated_at: 2026-10-04
