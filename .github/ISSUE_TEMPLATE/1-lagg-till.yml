@@ -1,0 +1,50 @@
+# Det korta formuläret: tre fält, sedan skriver kartan posten. Tas emot av .github/workflows/tips.yml.
+# Siffran först i filnamnet gör att mallen hamnar överst när någon väljer ärendetyp på GitHub.
+# Rubrikerna läses av scripts/lib/tips.mjs. Ändras en rubrik här måste den ändras där också.
+name: Lägg till en organisation
+description: Tre fält. Vi skriver posten och svarar här i ärendet.
+title: "Lägg till: "
+labels: ["tips"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Tre saker räcker. Vi läser webbplatsen, skriver posten och svarar här inom 14 dagar. Tre kriterier gäller, inga andra: **svensk koppling**, **något byggt med AI bakom en publik länk** och **finns på riktigt**. Läs dem i [kriterier.md](../blob/main/kriterier.md).
+
+        Lämna inga personuppgifter: inga namn, e-postadresser eller telefonnummer.
+  - type: input
+    id: namn
+    attributes:
+      label: Namn
+      description: Så som organisationen kallar sig.
+      placeholder: Exempelbolaget
+    validations:
+      required: true
+  - type: input
+    id: webbplats
+    attributes:
+      label: Webbplats
+      placeholder: https://exempelbolaget.se
+    validations:
+      required: true
+  - type: input
+    id: belagg
+    attributes:
+      label: Länk till något ni byggt med AI
+      description: En produkt, ett repo, en demo eller en publikation. Det får vara samma sida som webbplatsen om det syns där.
+      placeholder: https://exempelbolaget.se/produkt
+    validations:
+      required: true
+  - type: input
+    id: organisationsnummer
+    attributes:
+      label: Organisationsnummer (valfritt)
+      description: Formen 556000-0000. Med numret kan vi bekräfta uppgifter mot register direkt. Lämna alltid tomt för en enskild firma, eftersom numret då är ett personnummer.
+      placeholder: 556000-0000
+  - type: checkboxes
+    id: enskild
+    attributes:
+      label: Enskild firma
+      description: Kryssa bara i om det stämmer. Då läser ingen robot din webbplats, och vi frågar efter resten här i ärendet.
+      options:
+        - label: Det gäller en enskild firma och jag är personen själv. Jag förstår att posten är en personuppgift som jag kan få borttagen när som helst.

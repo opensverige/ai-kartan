@@ -13,6 +13,7 @@ Sajten är statisk och behöver inga nycklar. De enda hemligheter som förekomme
 
 - `andringar.yml` committar `history/changelog.json` till main med `GITHUB_TOKEN`.
 - `ny-organisation.yml` skapar en gren och en pull request ur ett ärende. Innehållet valideras först; PR:en mergas aldrig automatiskt.
+- `tips.yml` märker och kommenterar ärenden från det korta formuläret, och skriver om ärendetexten när den innehåller något som ser ut som ett personnummer. Flödet har bara läsrätt till koden.
 - `farskhet.yml` och `lankkoll.yml` öppnar och kommenterar ärenden.
 
 Inga flöden kör kod från pull requests med hemligheter (`pull_request`, inte `pull_request_target`).

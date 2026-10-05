@@ -1,7 +1,8 @@
 ---
 import Sida from '../layouts/Sida.astro';
 import { url, SAJT } from '../lib/data';
-const nyUrl = `${SAJT.repo}/issues/new?template=ny-organisation.yml`;
+const nyUrl = `${SAJT.repo}/issues/new?template=1-lagg-till.yml`;
+const helPostUrl = `${SAJT.repo}/issues/new?template=ny-organisation.yml`;
 const rattaUrl = `${SAJT.repo}/issues/new?template=rattelse.yml`;
 const bortUrl = `${SAJT.repo}/issues/new?template=borttagning.yml`;
 const mallUrl = `${SAJT.repo}/blob/main/data/MALL.yaml`;
@@ -12,15 +13,16 @@ const nyFilUrl = `${SAJT.repo}/new/main/data/organisationer`;
   titel="Lägg till, rätta eller ta bort"
   kicker="Bidra"
   ingress="Vem som helst kan lägga till sig själv eller en organisation med primärkälla. Det kostar inget, kan inte köpas och kräver inget konto hos oss, bara ett GitHub-konto."
-  beskrivning="Så lägger du till en organisation på AI-kartan: via ett formulär som blir en pull request, eller direkt med en YAML-fil. Så rättar du en uppgift eller begär borttagning."
+  beskrivning="Så lägger du till en organisation på AI-kartan: tre fält i ett formulär, eller en YAML-fil om du vill skriva hela posten själv. Så rättar du en uppgift eller begär borttagning."
   stig="/bidra"
 >
-  <h2 id="formular">Enklast: fyll i formuläret</h2>
-  <p>Formuläret på GitHub blir en pull request automatiskt. Du behöver inte kunna git. En människa granskar mot <a href={url('/kriterier')}>kriterierna</a> och svarar inom 14 dagar.</p>
+  <h2 id="formular">Enklast: tre fält</h2>
+  <p>Skriv namn, webbplats och en länk till något ni byggt med AI. Vi läser webbplatsen och skriver posten. En människa granskar den mot <a href={url('/kriterier')}>kriterierna</a>, och ni får svar i ärendet inom 14 dagar.</p>
   <p><a class="knapp" href={nyUrl} rel="noopener">Lägg till en organisation</a></p>
-  <p>Allt du skickar in märks som <em>egen uppgift</em>. Vill du att något ska bli <em>bekräftat</em>, länka till ett register eller ett oberoende dokument, så kontrollerar vi.</p>
+  <p>Det som står på er egen webbplats märks som <em>egen uppgift</em>. Det som går att bekräfta mot register märks som <em>bekräftat</em>.</p>
 
-  <h2 id="pr">För den som vill: en fil per organisation</h2>
+  <h2 id="pr">Vill du skriva hela posten själv?</h2>
+  <p>Det <a href={helPostUrl} rel="noopener">långa formuläret</a> blir en pull request automatiskt, och du står som medförfattare till ändringen. Du behöver inte kunna git. Eller skapa filen direkt:</p>
   <ol>
     <li>Kopiera <a href={mallUrl} rel="noopener">mallen</a>.</li>
     <li><a href={nyFilUrl} rel="noopener">Skapa filen</a> <code>data/organisationer/&lt;id&gt;.yaml</code> direkt i GitHubs webbgränssnitt. <code>id</code> är ett permanent slug-namn, till exempel <code>berget-ai</code>.</li>

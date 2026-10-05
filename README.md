@@ -18,7 +18,7 @@ Dagens kartor släpper bara in aktiebolag som är högst tio år gamla och har m
 **Varje uppgift har källa, datum och status.** Inget rankas, och ingen kan köpa en plats. Koden och datan är öppna, och vem som helst kan lägga till sig själv med en pull request. Byggt av [OpenSverige](https://opensverige.se), med samma metod som [infra.opensverige.se](https://infra.opensverige.se). Oberoende och inte statlig.
 
 → **Sajten:** karta.opensverige.se (under uppbyggnad)<br>
-→ **Lägg till en organisation:** [formulär som blir pull request](https://github.com/opensverige/ai-kartan/issues/new?template=ny-organisation.yml) · [kriterierna](kriterier.md)<br>
+→ **Lägg till en organisation:** [tre fält i ett formulär](https://github.com/opensverige/ai-kartan/issues/new?template=1-lagg-till.yml) · [kriterierna](kriterier.md)<br>
 → **Diskutera:** [Discord](https://discord.gg/ZbV4qB34um)
 
 ## Principer
@@ -100,7 +100,9 @@ npm run build        # validerar och bygger till dist/
 | `npm run farskhet` | Färskhetsrapport. Exit 1 när loggen stått still i 10 dagar eller en post gått 180 dagar utan kontroll. |
 | `npm run lankkoll` | Kontrollerar att alla länkar i datan svarar. `--andrade main --strikt` för PR-kontroll. |
 | `npm run importera:infra` | Importerar svenska leverantörer från infra.opensverige.se som typen `infrastruktur`. |
-| `node scripts/ny-organisation.mjs --fil arende.md` | Gör ett ifyllt ärendeformulär till en YAML-fil. |
+| `node scripts/ny-organisation.mjs --fil arende.md` | Gör det långa ärendeformuläret till en YAML-fil. |
+| `node scripts/tips.mjs --fil arende.md` | Läser det korta formuläret och skriver svaret som boten ger i ärendet. |
+| `npm test` | Kör testerna för intaget av nya organisationer. |
 
 Miljövariabler vid bygge: `SITE_URL` (standard `https://karta.opensverige.se`) och `BASE_PATH` (standard `/`).
 
@@ -108,7 +110,7 @@ Miljövariabler vid bygge: `SITE_URL` (standard `https://karta.opensverige.se`) 
 
 Tre vägar, ingen kräver att du frågar om lov:
 
-1. **Formulär.** [Lägg till en organisation](https://github.com/opensverige/ai-kartan/issues/new?template=ny-organisation.yml). Ärendet blir en pull request automatiskt.
+1. **Formulär.** [Lägg till en organisation](https://github.com/opensverige/ai-kartan/issues/new?template=1-lagg-till.yml) med tre fält: namn, webbplats och en länk till något ni byggt med AI. Vi skriver posten. Den som vill skriva allt själv använder [det långa formuläret](https://github.com/opensverige/ai-kartan/issues/new?template=ny-organisation.yml), som blir en pull request automatiskt.
 2. **Pull request.** Kopiera `data/MALL.yaml` till `data/organisationer/<id>.yaml` direkt i GitHubs webbgränssnitt. CI validerar.
 3. **Rättelse eller borttagning.** [Ärendemallar](https://github.com/opensverige/ai-kartan/issues/new/choose). Svar inom 14 dagar.
 

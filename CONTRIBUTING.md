@@ -4,7 +4,9 @@ Tack. Kartan blir bara bättre av dem som står på den och av dem som granskar.
 
 ## Lägga till en organisation
 
-**Utan git:** [fyll i formuläret](https://github.com/opensverige/ai-kartan/issues/new?template=ny-organisation.yml). Ett flöde gör ärendet till en pull request och kommenterar i ärendet om valideringen hittar fel.
+**Enklast:** [tre fält](https://github.com/opensverige/ai-kartan/issues/new?template=1-lagg-till.yml): namn, webbplats och en länk till något ni byggt med AI. Ett flöde svarar i ärendet, säger till om organisationen redan finns och tar bort nummer som ser ut som personnummer. Sedan skriver en granskare posten, se [Från tips till post](#från-tips-till-post).
+
+**Hela posten själv, utan git:** [det långa formuläret](https://github.com/opensverige/ai-kartan/issues/new?template=ny-organisation.yml). Ett flöde gör ärendet till en pull request, sätter dig som medförfattare och kommenterar i ärendet om valideringen hittar fel.
 
 **Med git eller GitHubs webbgränssnitt:**
 
@@ -14,6 +16,16 @@ Tack. Kartan blir bara bättre av dem som står på den och av dem som granskar.
 4. Öppna en pull request. CI kör `npm run validera`, kontrollerar länkarna i ändrade filer och bygger sajten.
 
 Kriterierna står i [kriterier.md](kriterier.md). Tre stycken, inga andra.
+
+## Från tips till post
+
+För granskare. Ett ärende med etiketten `tips` innehåller bara namn, webbplats och en länk. Resten skriver vi:
+
+1. Läs webbplatsen och belägget. Uppfylls inte ett kriterium stängs ärendet med etiketten `kriterium-1`, `kriterium-2` eller `kriterium-3` och en mening om varför.
+2. Kopiera [data/MALL.yaml](data/MALL.yaml) till `data/organisationer/<id>.yaml` och fyll i. Det som står på organisationens egen webbplats blir `claimed` med `own_site`. Det som går att slå upp i ett register blir `confirmed`.
+3. En AI-agent får göra utkastet, märkt `verified_by: agent`. Det gäller aldrig en enskild firma: där används bara det personen själv har skrivit i ärendet.
+4. Öppna en pull request med `Closes #<ärendets nummer>` i beskrivningen, så stängs ärendet när posten är inne.
+5. Ge tipsaren erkännande. Lägg raden `Co-authored-by: <användarnamn> <<id>+<användarnamn>@users.noreply.github.com>` sist i commit-meddelandet, så syns de som bidragsgivare på repot. Id-numret står på `https://api.github.com/users/<användarnamn>`. Gör inte det för en enskild firma: namnet skulle ligga kvar i historiken även om posten tas bort.
 
 ## Statusdisciplinen
 
@@ -47,6 +59,7 @@ Det mest värdefulla bidraget: höj ett fält från `claimed` till `confirmed` g
 npm ci
 npm run dev
 npm run validera
+npm test
 npm run build
 ```
 
@@ -58,4 +71,4 @@ npm run build
 
 ## För den som granskar
 
-Granskningslistan står längst ned i [kriterier.md](kriterier.md). Ett avslag skrivs i pull requesten med hänvisning till kriteriet. Två maintainers utöver initiativtagaren innan publik lansering, med den här filen som rutin.
+Granskningslistan står längst ned i [kriterier.md](kriterier.md). Ett avslag skrivs i pull requesten med hänvisning till kriteriet. Tips från det korta formuläret hanteras enligt [Från tips till post](#från-tips-till-post). Två maintainers utöver initiativtagaren innan publik lansering, med den här filen som rutin.

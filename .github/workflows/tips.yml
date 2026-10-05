@@ -1,0 +1,54 @@
+# Tar emot det korta formuläret "Lägg till en organisation": namn, webbplats och en länk.
+# Jobbet svarar i ärendet, säger till om organisationen redan finns på kartan och tar bort
+# nummer som ser ut som personnummer. Inget publiceras härifrån: posten skrivs av en
+# granskare, se CONTRIBUTING.md.
+name: Tips om ny organisation
+
+on:
+  issues:
+    types: [opened, edited]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  ta-emot:
+    # Formuläret sätter etiketten tips om den finns i repot. Rubriken i ärendetexten är reserv,
+    # så att jobbet går även innan etiketten har skapats. Vid ändring körs det bara om texten ändrats.
+    if: >-
+      (github.event.action == 'opened' || github.event.changes.body) &&
+      (contains(github.event.issue.labels.*.name, 'tips') ||
+      contains(github.event.issue.body, '### Länk till något ni byggt med AI'))
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Läs tipset
+        id: tips
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_ACTION: ${{ github.event.action }}
+        run: node scripts/tips.mjs --svar svar.md --rensad kropp.md
+
+      # Först av allt: ett personnummer ska inte stå kvar medan resten av jobbet går.
+      - name: Ta bort personnummer ur ärendet
+        if: steps.tips.outputs.rensad == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue edit "${{ github.event.issue.number }}" --body-file kropp.md
+
+      - name: Märk ärendet och svara
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label create "tips" --color "2d492d" --description "Tips om en organisation som saknas på kartan" --force
+          gh issue edit "${{ github.event.issue.number }}" --add-label "tips"
+          gh issue comment "${{ github.event.issue.number }}" --body-file svar.md

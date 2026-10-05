@@ -32,6 +32,9 @@ jobs:
 
       - run: npm ci
 
+      - name: Kör tester
+        run: npm test
+
       - name: Validera organisationsfiler
         run: node scripts/validera.mjs
 

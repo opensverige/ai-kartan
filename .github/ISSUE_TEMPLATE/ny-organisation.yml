@@ -1,5 +1,5 @@
-name: Lägg till en organisation
-description: Lägg till dig själv eller en organisation du har primärkälla för. Formuläret blir en pull request automatiskt.
+name: Lägg in hela posten själv
+description: För dig som vill fylla i alla uppgifter själv. Formuläret blir en pull request automatiskt, och du står som medförfattare.
 title: "Lägg till: "
 labels: ["ny-organisation"]
 body:

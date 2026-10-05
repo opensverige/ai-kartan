@@ -17,6 +17,7 @@
     "preview": "astro preview",
     "check": "astro check",
     "validera": "node scripts/validera.mjs",
+    "test": "node --test \"scripts/*.test.mjs\"",
     "andringar": "node scripts/andringar.mjs",
     "farskhet": "node scripts/farskhet.mjs",
     "lankkoll": "node scripts/lankkoll.mjs",
