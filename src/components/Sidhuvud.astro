@@ -29,7 +29,7 @@ function aktiv(href: string): boolean {
 <header class="sidhuvud">
   <div class="sidhuvud__rad">
     <a class="marke" href={url('/')} aria-label={`${SAJT.namn}, till kartan`}>
-      <img src={url('/logo.svg')} alt="" width="32" height="32" class="marke__bild" />
+      <img src={url('/icon.png')} alt="" width="36" height="36" class="marke__bild" />
       <span class="marke__text">
         <span class="marke__namn">OpenSverige</span>
         <span class="marke__under">AI-kartan · oberoende, inte statlig</span>
@@ -140,9 +140,8 @@ function aktiv(href: string): boolean {
     color: hsl(var(--ink));
   }
   .marke__bild {
-    width: 32px;
-    height: 32px;
-    image-rendering: pixelated;
+    width: 36px;
+    height: 36px;
     transition: transform var(--t-fast);
   }
   .marke:hover .marke__bild {

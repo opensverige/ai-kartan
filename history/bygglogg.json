@@ -1,4 +1,5 @@
 [
+  { "datum": "2026-10-05", "text": "Ny logotyp: en hand i pixelstil som håller en röd kartnål." },
   { "datum": "2026-10-05", "text": "Kortare väg in på kartan: tre fält räcker (namn, webbplats och en länk till något byggt med AI). Kartan skriver posten och en människa granskar den." },
   { "datum": "2026-10-05", "text": "Nytt gränssnitt för kartan och listan: karta i helskärm, sökfält mitt i sidhuvudet med träffar medan man skriver, filter som piller över kartan, kort per organisation och en detaljvy med länk till källor och belägg." },
   { "datum": "2026-10-04", "text": "Första versionen: karta med filter på erbjuder, typ, område och län; lista; en sida per organisation med källa och datum per fält; sidor per kommun och län; nedladdning som JSON, CSV och GeoJSON; llms.txt och Atom-flöde." },

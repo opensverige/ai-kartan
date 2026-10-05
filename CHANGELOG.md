@@ -4,6 +4,7 @@ Kodens och funktionernas historik. Dataändringar loggas separat och automatiskt
 
 ## 2026-10-05
 
+- Ny logotyp: en hand i pixelstil som håller en röd kartnål. Alla ikoner och delningsbilder byggs nu ur en enda bild, `scripts/brand/logotyp.png`, i stället för ur ett pixelraster i skriptet. `logo.svg` är borttagen; sidhuvudet och webbläsarikonen använder PNG.
 - Kortare väg in på kartan: formuläret "Lägg till en organisation" har tre fält (namn, webbplats, länk till något byggt med AI). Ett flöde svarar i ärendet, säger till om organisationen redan finns och tar bort nummer som ser ut som personnummer. Posten skrivs sedan av en granskare.
 - Det tidigare formuläret finns kvar som "Lägg in hela posten själv". Den som skickar in det står som medförfattare till ändringen och syns som bidragsgivare på repot.
 - Första testerna: `npm test` kör reglerna för intaget och går i CI.
