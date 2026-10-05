@@ -15,9 +15,11 @@ interface Props {
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
   ogTyp?: string;
   helTitel?: boolean;
+  /** Appskal: sidan fyller skärmen och saknar sidfot. Används av kartsidan. */
+  app?: boolean;
 }
 
-const { titel, beskrivning, stig, bild = '/og-image.jpg', noindex = false, bred = false, jsonLd, ogTyp = 'website', helTitel = false } = Astro.props;
+const { titel, beskrivning, stig, bild = '/og-image.jpg', noindex = false, bred = false, jsonLd, ogTyp = 'website', helTitel = false, app = false } = Astro.props;
 const fullTitel = helTitel ? titel : `${titel} | ${SAJT.namn}`;
 const kanonisk = absolutUrl(stig);
 const bildUrl = absolutUrl(bild);
@@ -55,13 +57,13 @@ const bildUrl = absolutUrl(bild);
     <link rel="sitemap" href={url('/sitemap-index.xml')} />
     {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
   </head>
-  <body>
+  <body class:list={[{ 'app-sida': app }]}>
     <a class="hoppa visuellt-dold" href="#innehall">Hoppa till innehållet</a>
     <Sidhuvud />
     <main id="innehall" class:list={['huvud', { 'huvud--bred': bred }]}>
       <slot />
     </main>
-    <Sidfot />
+    {!app && <Sidfot />}
   </body>
 </html>
 

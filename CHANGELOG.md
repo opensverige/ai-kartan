@@ -2,6 +2,14 @@
 
 Kodens och funktionernas historik. Dataändringar loggas separat och automatiskt i `history/changelog.json` och på sajten under Ändringar. Samma rader som här finns maskinläsbart i `history/bygglogg.json`.
 
+## 2026-10-05
+
+- Nytt gränssnitt för kartan och listan: kartan fyller skärmen, sökfältet ligger mitt i sidhuvudet och visar träffar på organisationer, kommuner och län medan man skriver.
+- Filtren är piller som flyter över kartan, med antal per val räknat på det aktuella urvalet. I smal vy ligger de i ett blad bakom knappen Filter.
+- Vänsterpanelen visar brödsmulor, antal och kort per organisation. Ett kort eller en punkt på kartan öppnar en detaljvy med länk till källor och belägg. I smal vy är panelen ett bottenblad. Bakåt i webbläsaren stänger detaljvyn.
+- Sidhuvudet säger att kartan är oberoende och inte statlig. Varje kort visar hur många fält som är bekräftade, och detaljvyn länkar till rättelse.
+- Kluster där alla organisationer hör till samma kommun öppnar kommunen i panelen. Den valda organisationen ritas alltid synligt, även inne i ett kluster.
+
 ## 2026-10-04
 
 - Första versionen av Tech Embassy – Sveriges öppna AI-karta.

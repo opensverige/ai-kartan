@@ -356,6 +356,7 @@ export function tillKartpost(o: Org) {
     d: o.description.value,
     s: o.h.senast_verifierad,
     c: o.h.antal_bekraftade,
+    f: o.h.antal_fakta,
     w: o.website,
     i: o.links?.infra_id ?? null,
   };
