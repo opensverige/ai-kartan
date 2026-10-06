@@ -12,22 +12,29 @@ const kmMellan = ([lng1, lat1], [lng2, lat2]) => {
   return 6371 * 2 * Math.asin(Math.sqrt(a));
 };
 
-test('ett litet antal visas aldrig som siffra', () => {
+test('ett litet antal står som "<5" i underlaget och visas aldrig som siffra', () => {
   assert.equal(MINSTA_ANTAL, 5);
   assert.equal(visaAntal(0), 'ingen än');
-  for (const n of [1, 2, 3, 4]) assert.equal(visaAntal(n), 'färre än 5');
+  assert.equal(visaAntal('<5'), 'färre än 5');
   assert.equal(visaAntal(5), '5');
   assert.equal(visaAntal(191), '191');
 });
 
-test('summan är exakt när inget antal är dolt', () => {
-  assert.equal(summa([191, 77, 45, 10, 0], 112), '435');
+test('en siffra mellan 1 och 4 i underlaget stoppar bygget', () => {
+  // Repot är publikt. Det lilla antalet får inte stå där heller, så filen ska säga "<5".
+  for (const n of [1, 2, 3, 4]) assert.throws(() => visaAntal(n), /<5/);
+  assert.throws(() => visaAntal(2.5), /heltal/);
+  assert.throws(() => visaAntal(-1), /heltal/);
 });
 
-test('summan avrundas när ett litet antal annars gick att räkna fram', () => {
-  // 191 + 3 + 112 = 306. Med exakt summa vore trean lätt att räkna ut.
-  assert.equal(summa([191, 3], 112), 'drygt 300');
-  assert.equal(summa([191, 77], 2), 'drygt 270');
+test('summan är exakt när inget antal är dolt', () => {
+  assert.equal(summa([191, 77, 45, 10, 0]), '323');
+});
+
+test('summan räknar bara det som är känt och säger att den är i underkant', () => {
+  // Det dolda antalet finns inte ens i underlaget, så det går inte att räkna fram ur summan.
+  assert.equal(summa([191, '<5', 0]), 'drygt 191');
+  assert.equal(summa(['<5']), 'färre än 5');
 });
 
 test('cirkeln ligger tio mil från mitten åt alla håll och är sluten', () => {
@@ -70,19 +77,20 @@ test('vyn som går till webbläsaren har plats, text och storlek per region', ()
   assert.deepEqual(vy.regioner.map((r) => [r.namn, r.visat, r.tom]), [['Stockholm', '191', false], ['Umeå', 'ingen än', true]]);
   assert.deepEqual([vy.regioner[0].lat, vy.regioner[0].lng], [59.3293, 18.0686]);
   assert.equal(vy.regioner[0].storlek, 1);
-  assert.deepEqual([vy.totalt, vy.annanOrt, vy.radieKm, vy.uppdaterad], ['303', '112', 100, '2026-10-06']);
+  // Summan gäller regionerna. De som har valt annan ort har inte sagt var de finns och räknas för sig.
+  assert.deepEqual([vy.iRegioner, vy.annanOrt, vy.radieKm, vy.uppdaterad], ['191', '112', 100, '2026-10-06']);
 });
 
 test('ett litet antal lämnar aldrig bygget som siffra', () => {
-  const vy = medlemsvy(data([{ namn: 'Stockholm', kommun: '0180', antal: 191 }, { namn: 'Jönköping', kommun: '0680', antal: 3 }, { namn: 'Umeå', kommun: '2480', antal: 0 }], 2), KOMMUNER);
+  const vy = medlemsvy(data([{ namn: 'Stockholm', kommun: '0180', antal: 191 }, { namn: 'Jönköping', kommun: '0680', antal: '<5' }, { namn: 'Umeå', kommun: '2480', antal: 0 }], '<5'), KOMMUNER);
   const [, jonkoping, umea] = vy.regioner;
   assert.equal(jonkoping.visat, 'färre än 5');
   assert.equal(jonkoping.tom, false);
   // Storleken får inte heller skilja ett litet antal från ett annat.
   assert.equal(jonkoping.storlek, umea.storlek);
   assert.equal(vy.annanOrt, 'färre än 5');
-  assert.equal(vy.totalt, 'drygt 190');
-  assert.doesNotMatch(JSON.stringify(vy), /"antal"|:3[,}]|:2[,}]|196/);
+  assert.equal(vy.iRegioner, 'drygt 191');
+  assert.doesNotMatch(JSON.stringify(vy), /"antal"/);
 });
 
 test('en region med okänd kommunkod stoppar bygget', () => {
@@ -113,9 +121,11 @@ test('regionfilen i datan går att rita och har bara antal', () => {
   const vy = medlemsvy(underlag, las('../../data/geo/kommuner.json'));
   assert.ok(vy.regioner.length >= 1);
   assert.match(underlag.uppdaterad, /^\d{4}-\d{2}-\d{2}$/);
+  // Ett antal är noll, minst fem eller "<5". Siffrorna 1 till 4 får aldrig stå i filen: repot är publikt.
+  const tillatet = (antal) => antal === '<5' || antal === 0 || (Number.isInteger(antal) && antal >= 5);
   for (const r of underlag.regioner) {
     assert.deepEqual(Object.keys(r).sort(), ['antal', 'kommun', 'namn']);
-    assert.ok(Number.isInteger(r.antal) && r.antal >= 0, r.namn);
+    assert.ok(tillatet(r.antal), `${r.namn}: skriv "<5" i stället för ${r.antal}`);
   }
-  assert.ok(Number.isInteger(underlag.annan_ort) && underlag.annan_ort >= 0);
+  assert.ok(tillatet(underlag.annan_ort), `annan_ort: skriv "<5" i stället för ${underlag.annan_ort}`);
 });

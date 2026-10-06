@@ -26,7 +26,7 @@ const allaEfterNamn = d.organisationer.slice().sort((a, b) => a.name.value.local
 // Var föreningens medlemmar finns, som antal per region. Ritas på kartan först när besökaren ber om det.
 const medlemmar = lage === 'karta' ? medlemsvy(medlemsdata as Medlemsdata, d.kommuner) : null;
 const kraftan = url('/ikoner/opensverige.png');
-// Stapelns bredd räknas ur ikonens storlek, som redan är rensad från små antal.
+// Stapelns bredd räknas ur ikonens storlek. Ett dolt antal ger samma stapel som noll.
 const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 100);
 ---
 
@@ -167,7 +167,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
               <Fragment set:html={ikon('kryss', 20)} />
             </button>
           </div>
-          <p class="medlemskort__text"><strong>{medlemmar.totalt}</strong> byggare har sagt var de finns.</p>
+          <p class="medlemskort__text"><strong>{medlemmar.iRegioner}</strong> byggare har valt en region.</p>
           <ul class="medlemskort__lista">
             {medlemmar.regioner.map((r) => (
               <li>
@@ -179,8 +179,8 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
           </ul>
           <p class="medlemskort__annan">Remote eller annan ort: <strong>{medlemmar.annanOrt}</strong></p>
           <p class="meta medlemskort__not">
-            Regionen väljer var och en själv på vår Discord: en stad och tio mil runt den. Vi vet inte var någon bor.
-            Uppdaterat {formateraDatum(medlemmar.uppdaterad)}.
+            Regionen väljer var och en själv på vår Discord: en stad och tio mil runt den. Kartan får bara antalet, aldrig
+            vem som har valt vad. Uppdaterat {formateraDatum(medlemmar.uppdaterad)}.
             <a class="medlemskort__lank" href={SAJT.discord} rel="noopener">Gå med på Discord</a>
           </p>
           <a class="knapp knapp--liten medlemskort__knapp" href={SAJT.discord} rel="noopener">Gå med på Discord</a>
@@ -287,7 +287,8 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     let sokVal: SokVal[] = [];
     let sokAktiv = -1;
     // Medlemsvyn: organisationerna göms och föreningens medlemmar visas som antal per region.
-    let medlemslage = medKarta && !!medlemsdata && start.get('vy') === 'medlemmar';
+    // En organisation i adressen går före: den som går till en organisation lämnar vyn.
+    let medlemslage = medKarta && !!medlemsdata && !valdId && start.get('vy') === 'medlemmar';
 
     const normalisera = (s: string) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
     const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
@@ -789,12 +790,14 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
           else if (arPaskagg(sokFalt.value)) valjSokval({ typ: 'vy' });
           else {
             // Den som söker vidare vill se organisationer, inte medlemsvyn.
-            lamnaMedlemsvy();
+            if (medlemslage) sattMedlemsvy(false);
             stangSok();
             sokFalt.blur();
             if (smal.matches) sattBlad('oppen');
           }
         } else if (e.key === 'Escape') {
+          // Märks som hanterad, så att samma tryck inte också stänger medlemsvyn.
+          e.preventDefault();
           if (!sokLada.hidden) stangSok();
           else sokFalt.blur();
         }
@@ -889,8 +892,10 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     const ORGKALLOR = ['orgs', 'lan-grupper', 'kommun-grupper', 'vald'];
     const MEDLEMSLAGER = ['medlemmar-yta', 'medlemmar-kant', 'medlemmar-ikon'];
     const KRAFTROD = '#c2511f';
-    let medlemmarRitade: Promise<void> | null = null;
     let kameraFore: { center: [number, number]; zoom: number } | null = null;
+    // Falskt tills kartan har visat sin första vanliga vy. Pekar adressen rakt in i medlemsvyn
+    // finns det ingen sådan vy att gå tillbaka till.
+    let forstaVyVisad = false;
 
     /** Organisationernas lager syns i den vanliga vyn och medlemmarnas i medlemsvyn, aldrig båda. */
     function visaMedlemslager() {
@@ -906,9 +911,12 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     const brickstorlek = (skala = 1) =>
       ['interpolate', ['linear'], ['zoom'], 3.3, ['*', 0.78 * skala, ['get', 'storlek']], 4.3, ['*', skala, ['get', 'storlek']]] as unknown as ExpressionSpecification;
 
-    /** Ritas första gången vyn öppnas: en cirkel med regionens radie och föreningens kräfta i mitten. */
-    async function ritaMedlemmar() {
-      if (!karta || !medlemsdata) return;
+    /**
+     * Brickan med föreningens kräfta. Laddas första gången vyn öppnas. Går bilden inte att ladda
+     * ritas regionerna ändå, med namn och antal, och nästa öppning försöker igen.
+     */
+    async function laddaKraftan() {
+      if (!karta || karta.hasImage('kraftan')) return;
       const bild = new Image();
       bild.src = app.dataset.kraftan ?? '';
       await bild.decode();
@@ -935,8 +943,12 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       penna.lineWidth = kant;
       penna.strokeStyle = BLACK;
       penna.stroke();
-      karta.addImage('kraftan', penna.getImageData(0, 0, duk.width, duk.height), { pixelRatio: tathet });
+      if (!karta.hasImage('kraftan')) karta.addImage('kraftan', penna.getImageData(0, 0, duk.width, duk.height), { pixelRatio: tathet });
+    }
 
+    /** Regionerna: en cirkel med regionens radie, och i mitten brickan med namn och antal. */
+    function ritaMedlemmar() {
+      if (!karta || !medlemsdata || karta.getSource('medlemmar')) return;
       const { regioner, radieKm } = medlemsdata;
       karta.addSource('medlemmar-ytor', {
         type: 'geojson',
@@ -975,7 +987,6 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         },
         paint: { 'icon-opacity': blek(0.5, 1), 'text-color': BLACK, 'text-halo-color': '#fdfbf7', 'text-halo-width': 2 },
       });
-      visaMedlemslager();
     }
 
     /** Brickorna landar: de växer lite för stora och sätter sig sedan. */
@@ -1012,7 +1023,12 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
      * annanstans, till exempel till en plats eller en organisation.
      */
     function sattMedlemsvy(pa: boolean, skriv = true, flyttaKameran = true) {
-      if (!karta || !kartaKlar || !medlemsdata) return;
+      if (!medlemsdata) return;
+      if (!karta || !kartaKlar) {
+        // Kartan är inte klar än. Ett val som lämnar vyn ska ändå gälla när den blir det.
+        if (!pa) medlemslage = false;
+        return;
+      }
       const bytte = pa !== (app.dataset.vy === 'medlemmar');
       medlemslage = pa;
       if (pa) app.dataset.vy = 'medlemmar';
@@ -1021,17 +1037,26 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       medlemsknapp?.setAttribute('aria-label', pa ? 'Tillbaka till organisationerna' : 'Visa var OpenSveriges medlemmar finns');
       if (medlemskort) medlemskort.hidden = !pa;
       tips?.remove();
-      visaMedlemslager();
       if (pa) {
-        if (bytte) kameraFore = { center: karta.getCenter().toArray() as [number, number], zoom: karta.getZoom() };
+        // Kameran sparas bara när den står still i en vy besökaren har sett. Mitt i en flygning,
+        // eller när adressen pekade rakt in i vyn, passas kartan in på urvalet när vyn lämnas.
+        if (bytte) kameraFore = forstaVyVisad && !karta.isMoving() ? { center: karta.getCenter().toArray() as [number, number], zoom: karta.getZoom() } : null;
         stangDetalj(false);
         if (smal.matches) sattBlad('titt');
-        medlemmarRitade ??= ritaMedlemmar().catch((fel) => console.warn('Medlemsvyn gick inte att rita', fel));
-        void medlemmarRitade.then(() => medlemslage && bytte && landaBrickor());
+        ritaMedlemmar();
+        visaMedlemslager();
+        void laddaKraftan()
+          .catch((fel) => console.warn('Kräftan gick inte att ladda', fel))
+          .then(() => medlemslage && bytte && landaBrickor());
         passaMedlemmar();
       } else {
-        if (flyttaKameran && kameraFore) karta.flyTo(kameraFore, AV_KOD);
+        visaMedlemslager();
+        if (flyttaKameran) {
+          if (kameraFore) karta.flyTo(kameraFore, AV_KOD);
+          else passaKarta();
+        }
         kameraFore = null;
+        forstaVyVisad = true;
       }
       if (skriv) skrivUrl(lasFilter());
     }
@@ -1352,6 +1377,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     function forstaVy() {
       // Medlemsvyn har sin egen kamera och ska inte flyttas när organisationernas data kommer.
       if (medlemslage) return;
+      if (kartaKlar) forstaVyVisad = true;
       const o = valdId ? alla.find((x) => x.id === valdId) : undefined;
       if (o) return visaDetalj(o, true, false);
       valdId = null;
@@ -1471,7 +1497,9 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         oppen.querySelector<HTMLElement>('.fknapp')?.focus();
         return;
       }
-      if (medlemslage && sokLada?.hidden !== false) sattMedlemsvy(false);
+      // Sist i raden: stänger något annat på samma tryck (sökrutan, menyn) står vyn kvar.
+      const menyOppen = !!document.querySelector('details[open].meny, .meny[open]');
+      if (medlemslage && !e.defaultPrevented && !menyOppen) sattMedlemsvy(false);
     });
 
     // Greppet går både att trycka på och att svepa upp eller ner.
