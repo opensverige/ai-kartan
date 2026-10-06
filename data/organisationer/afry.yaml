@@ -1,0 +1,91 @@
+id: afry
+
+name:
+  value: AFRY
+  status: claimed
+  source_url: https://afry.com
+  source_type: own_site
+  verified_at: 2026-10-06
+  verified_by: agent
+
+legal_name:
+  value: AFRY AB
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/556120647401
+  source_type: company_register
+  verified_at: 2026-10-06
+  verified_by: agent
+  note: "Namn enligt momsregistret, hämtat via EU:s tjänst VIES. AFRY AB är koncernens moderbolag. Artikeln anger inte vilket bolag i koncernen som byggt lösningen."
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/556120647401
+  source_type: company_register
+  verified_at: 2026-10-06
+  verified_by: agent
+  note: "Bolagsformen är härledd ur det registrerade namnet. Momsregistret har inget eget fält för bolagsform."
+
+org_number:
+  value: "556120-6474"
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/556120647401
+  source_type: company_register
+  verified_at: 2026-10-06
+  verified_by: agent
+
+website: https://afry.com
+
+description:
+  value: Har byggt en lösning för datorseende i plattformen AFRY X Data, för bildklassificering, objektdetektering och bildsegmentering. Enligt en artikel från 2022 kan lösningen driftsättas som tjänst åt andra organisationer.
+  status: claimed
+  source_url: https://afry.com/en/insight/computer-vision
+  source_type: own_site
+  verified_at: 2026-10-06
+  verified_by: agent
+
+offers:
+  value: [utveckling]
+  status: claimed
+  source_url: https://afry.com/en/insight/computer-vision
+  source_type: own_site
+  verified_at: 2026-10-06
+  verified_by: agent
+
+areas:
+  value: [datorseende]
+  status: claimed
+  source_url: https://afry.com/en/insight/computer-vision
+  source_type: own_site
+  verified_at: 2026-10-06
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/556120647401
+  source_type: company_register
+  verified_at: 2026-10-06
+  verified_by: agent
+  note: "Stockholm. Härledd från postorten i den registrerade adressen i momsregistret. Bolagsordningen på afry.com anger säte i Stockholm. Huvudkontorets besöksadress har enligt afry.com postorten Solna. Sätet enligt Bolagsverket är inte kontrollerat."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/556120647401
+  source_type: company_register
+  verified_at: 2026-10-06
+  verified_by: agent
+  note: "Giltigt momsregistreringsnummer enligt VIES 2026-10-06."
+
+evidence:
+  - url: https://afry.com/en/insight/computer-vision
+    kind: produkt
+    title: "Artikel från 2022 om datorseende i plattformen AFRY X Data"
+    status: claimed
+    verified_at: 2026-10-06
+    verified_by: agent
+    note: "Artikeln är daterad 2022-10-14. Sidan visar inte om lösningen finns kvar i dag."
+
+record_created_at: 2026-10-06
+record_updated_at: 2026-10-06

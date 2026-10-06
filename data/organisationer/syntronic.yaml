@@ -1,0 +1,91 @@
+id: syntronic
+
+name:
+  value: Syntronic
+  status: claimed
+  source_url: https://syntronic.com
+  source_type: own_site
+  verified_at: 2026-10-06
+  verified_by: agent
+
+legal_name:
+  value: Syntronic Aktiebolag
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/556247330501
+  source_type: company_register
+  verified_at: 2026-10-06
+  verified_by: agent
+  note: "Namn enligt momsregistret, hämtat via EU:s tjänst VIES. Webbplatsens kakruta anger Syntronic AB med samma organisationsnummer."
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/556247330501
+  source_type: company_register
+  verified_at: 2026-10-06
+  verified_by: agent
+  note: "Bolagsformen är härledd ur det registrerade namnet. Momsregistret har inget eget fält för bolagsform."
+
+org_number:
+  value: "556247-3305"
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/556247330501
+  source_type: company_register
+  verified_at: 2026-10-06
+  verified_by: agent
+
+website: https://syntronic.com
+
+description:
+  value: Har tillsammans med en fordonstillverkare tagit fram och validerat en prototyp till ett system som övervakar puls och andning i kupén. Prototypen använder bilens befintliga ESP-sensorer och inbyggd maskininlärning.
+  status: claimed
+  source_url: https://syntronic.com/case/in-cabin-vital-signs-monitoring-system-using-esp-sensors-and-machine-learning/
+  source_type: own_site
+  verified_at: 2026-10-06
+  verified_by: agent
+  note: "Syntronic.com är koncernens webbplats, med bolag i flera länder. Kundcaset anger inte vilket bolag i koncernen som utfört arbetet."
+
+offers:
+  value: [utveckling]
+  status: claimed
+  source_url: https://syntronic.com/case/in-cabin-vital-signs-monitoring-system-using-esp-sensors-and-machine-learning/
+  source_type: own_site
+  verified_at: 2026-10-06
+  verified_by: agent
+
+areas:
+  value: [transport_mobilitet]
+  status: claimed
+  source_url: https://syntronic.com/case/in-cabin-vital-signs-monitoring-system-using-esp-sensors-and-machine-learning/
+  source_type: own_site
+  verified_at: 2026-10-06
+  verified_by: agent
+
+kommun:
+  value: "2180"
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/556247330501
+  source_type: company_register
+  verified_at: 2026-10-06
+  verified_by: agent
+  note: "Gävle. Härledd från postorten i den registrerade adressen i momsregistret. Adressen i registret är en boxadress. Webbplatsens kontaktsida anger huvudkontor i Gävle. Sätet enligt Bolagsverket är inte kontrollerat."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/556247330501
+  source_type: company_register
+  verified_at: 2026-10-06
+  verified_by: agent
+  note: "Giltigt momsregistreringsnummer enligt VIES 2026-10-06."
+
+evidence:
+  - url: https://syntronic.com/case/in-cabin-vital-signs-monitoring-system-using-esp-sensors-and-machine-learning/
+    kind: case
+    title: "Kundcase: prototyp för övervakning av puls och andning i kupén med ESP-sensorer och maskininlärning"
+    status: claimed
+    verified_at: 2026-10-06
+    verified_by: agent
+
+record_created_at: 2026-10-06
+record_updated_at: 2026-10-06

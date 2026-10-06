@@ -1,0 +1,91 @@
+id: combitech
+
+name:
+  value: Combitech
+  status: claimed
+  source_url: https://www.combitech.se
+  source_type: own_site
+  verified_at: 2026-10-06
+  verified_by: agent
+
+legal_name:
+  value: Combitech Aktiebolag
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/556218679001
+  source_type: company_register
+  verified_at: 2026-10-06
+  verified_by: agent
+  note: "Namn enligt momsregistret, hämtat via EU:s tjänst VIES. Webbplatsen anger inget organisationsnummer. Integritetspolicyn som länkas från combitech.se anger Combitech AB som personuppgiftsansvarig. Bolaget hör enligt egen webbplats till Saab-koncernen."
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/556218679001
+  source_type: company_register
+  verified_at: 2026-10-06
+  verified_by: agent
+  note: "Bolagsformen är härledd ur det registrerade namnet. Momsregistret har inget eget fält för bolagsform."
+
+org_number:
+  value: "556218-6790"
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/556218679001
+  source_type: company_register
+  verified_at: 2026-10-06
+  verified_by: agent
+
+website: https://www.combitech.se
+
+description:
+  value: Erbjuder lösningar för datorseende som detekterar, mäter och positionerar objekt. Har en egen plattform, Combitech Machine Learning Platform, som integreras med den sensorteknik kunden väljer och har en AI-motor som är tränad för specifika uppgifter.
+  status: claimed
+  source_url: https://www.combitech.se/erbjudande/services/digitalisering-analys/ai-dataanalys/
+  source_type: own_site
+  verified_at: 2026-10-06
+  verified_by: agent
+
+offers:
+  value: [utveckling]
+  status: claimed
+  source_url: https://www.combitech.se/erbjudande/services/digitalisering-analys/ai-dataanalys/
+  source_type: own_site
+  verified_at: 2026-10-06
+  verified_by: agent
+
+areas:
+  value: [datorseende, industri]
+  status: claimed
+  source_url: https://www.combitech.se/erbjudande/services/digitalisering-analys/ai-dataanalys/
+  source_type: own_site
+  verified_at: 2026-10-06
+  verified_by: agent
+
+kommun:
+  value: "0780"
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/556218679001
+  source_type: company_register
+  verified_at: 2026-10-06
+  verified_by: agent
+  note: "Växjö. Härledd från postorten i den registrerade adressen i momsregistret. Webbplatsen anger adress i Växjö men säger inget om säte eller huvudkontor. Sätet enligt Bolagsverket är inte kontrollerat."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/556218679001
+  source_type: company_register
+  verified_at: 2026-10-06
+  verified_by: agent
+  note: "Giltigt momsregistreringsnummer enligt VIES 2026-10-06."
+
+evidence:
+  - url: https://www.combitech.se/erbjudande/services/digitalisering-analys/ai-dataanalys/
+    kind: produkt
+    title: "Tjänstesida om AI och dataanalys: Combitech Machine Learning Platform för bildanalys"
+    status: claimed
+    verified_at: 2026-10-06
+    verified_by: agent
+    note: "Tjänstesida utan namngiven kund eller daterad leverans. Exemplen på tillämpningar anges utan kund."
+
+record_created_at: 2026-10-06
+record_updated_at: 2026-10-06
