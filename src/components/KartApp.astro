@@ -161,7 +161,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
             <img class="medlemskort__bild" src={kraftan} alt="" width="44" height="44" loading="lazy" decoding="async" />
             <div>
               <p class="kicker">Du hittade kräftan</p>
-              <h2 class="medlemskort__rubrik">Här är vi</h2>
+              <h2 class="medlemskort__rubrik" id="medlemsrubrik" tabindex="-1">Här är vi</h2>
             </div>
             <button type="button" class="ikonknapp" id="stang-medlemmar" aria-label="Tillbaka till kartan" title="Tillbaka till kartan">
               <Fragment set:html={ikon('kryss', 20)} />
@@ -172,7 +172,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
             {medlemmar.regioner.map((r) => (
               <li>
                 <span>{r.namn}</span>
-                <span class="medlemskort__stapel" style={`--b:${stapel(r.storlek)}%`}></span>
+                <span class="medlemskort__stapel" style={`--b:${stapel(r.storlek)}%`} aria-hidden="true"></span>
                 {r.tom ? <a href={SAJT.discord} rel="noopener">bli först</a> : <strong>{r.visat}</strong>}
               </li>
             ))}
@@ -783,7 +783,10 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         if (!medKarta) return void (location.href = `${app.dataset.kartbas ?? '/'}?vy=medlemmar`);
         if (sokFalt) sokFalt.value = '';
         filtrera(false);
-        return sattMedlemsvy(true);
+        sattMedlemsvy(true);
+        // Sökfältet har släppt fokus. Det går till kortet, som annars ligger långt bort i tabbordningen.
+        medlemskort?.querySelector<HTMLElement>('#medlemsrubrik')?.focus({ preventScroll: true });
+        return;
       }
       if (v.typ === 'org') {
         if (medKarta) visaDetalj(v.o);
@@ -1041,12 +1044,16 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       const horn = medlemsdata.regioner.flatMap((r) => cirkel(r.lat, r.lng, medlemsdata.radieKm, 12));
       const lng = horn.map((p) => p[0]);
       const lat = horn.map((p) => p[1]);
-      const kort = medlemskort?.getBoundingClientRect();
-      // I smal vy ligger kortet som ett blad i botten, och knapparna och källraden flyttar upp ovanför det.
-      app.style.setProperty('--medlemskort-h', `${Math.round(kort?.height ?? 0)}px`);
-      const padding = smal.matches
-        ? { top: 28, bottom: (kort?.height ?? 0) + 64, left: 84, right: 32 }
-        : { top: 48, bottom: 48, left: (kort?.width ?? 0) + 40, right: 80 };
+      const yta = karta.getContainer().getBoundingClientRect();
+      const kort = medlemskort?.getBoundingClientRect() ?? new DOMRect(yta.left, yta.top, 0, 0);
+      // Knapparna och källraden flyttar upp ovanför kortet när det ligger som ett blad i botten.
+      app.style.setProperty('--medlemskort-h', `${Math.round(kort.height)}px`);
+      // Kortet ligger antingen som ett blad över kartans nederkant eller som ett kort vid dess vänstra
+      // kant. Marginalen räknas ur var det faktiskt ligger, så att den följer med när skärmen vrids.
+      const blad = kort.width > yta.width * 0.6;
+      const padding = blad
+        ? { top: 28, bottom: yta.bottom - kort.top + 52, left: 84, right: 32 }
+        : { top: 48, bottom: 48, left: kort.right - yta.left + 40, right: smal.matches ? 72 : 80 };
       karta.fitBounds([[Math.min(...lng), Math.min(...lat)], [Math.max(...lng), Math.max(...lat)]], { padding }, AV_KOD);
     }
 
@@ -1066,8 +1073,10 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       if (pa) app.dataset.vy = 'medlemmar';
       else delete app.dataset.vy;
       medlemsknapp?.setAttribute('aria-pressed', String(pa));
-      medlemsknapp?.setAttribute('aria-label', pa ? 'Tillbaka till organisationerna' : 'Visa var OpenSveriges medlemmar finns');
+      // Kortet göms när vyn stängs. Stod fokus i det går fokus till knappen som öppnade vyn.
+      const fokusIKortet = !pa && !!medlemskort?.contains(document.activeElement);
       if (medlemskort) medlemskort.hidden = !pa;
+      if (fokusIKortet) medlemsknapp?.focus({ preventScroll: true });
       tips?.remove();
       if (pa) {
         // Kameran sparas bara när den står still i en vy besökaren har sett. Mitt i en flygning,
@@ -1093,9 +1102,13 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       if (skriv) skrivUrl(lasFilter());
     }
 
-    /** Den som går till en plats eller en organisation lämnar medlemsvyn. */
+    /**
+     * Den som går till en plats eller en organisation lämnar medlemsvyn. Adressen skrivs om direkt,
+     * så att posten i historiken inte pekar på vyn när nästa post läggs ovanpå den. Annars leder
+     * Tillbaka till listan in i medlemsvyn igen.
+     */
     function lamnaMedlemsvy() {
-      if (medlemslage) sattMedlemsvy(false, false, false);
+      if (medlemslage) sattMedlemsvy(false, true, false);
     }
 
     async function startaKarta() {
@@ -1398,7 +1411,8 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       app.querySelector('#zooma-ut')?.addEventListener('click', () => karta?.zoomOut());
       app.querySelector('#visa-allt')?.addEventListener('click', () => (medlemslage ? passaMedlemmar() : passaKarta()));
       medlemsknapp?.addEventListener('click', () => sattMedlemsvy(!medlemslage));
-      smal.addEventListener('change', () => medlemslage && passaMedlemmar());
+      // Kortet byter storlek när skärmen vrids eller fönstret ändras. Då passas kartan in på nytt.
+      if (medlemskort && 'ResizeObserver' in window) new ResizeObserver(() => medlemslage && passaMedlemmar()).observe(medlemskort);
       app.querySelector('#stang-medlemmar')?.addEventListener('click', () => {
         sattMedlemsvy(false);
         medlemsknapp?.focus({ preventScroll: true });
@@ -2395,16 +2409,18 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
   .medlemskort[hidden] {
     display: none;
   }
-  /* Knappen som visar panelen ligger i samma hörn när panelen är dold. */
-  .app--utan-panel .medlemskort {
-    top: 74px;
+  /* Knappen som visar panelen ligger i samma hörn när panelen är dold. Bara i bred vy: i smal vy är kortet ett blad. */
+  @media (min-width: 901px) {
+    .app--utan-panel .medlemskort {
+      top: 74px;
+    }
   }
   .medlemskort__topp {
     display: flex;
     align-items: center;
     gap: 12px;
   }
-  .medlemskort__topp .kicker {
+  .app .medlemskort__topp .kicker {
     margin: 0 0 2px;
   }
   .medlemskort__topp .ikonknapp {
@@ -2423,7 +2439,8 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     font-size: 22px;
     line-height: 1.1;
   }
-  .medlemskort__text {
+  /* `.app p` nollställer marginaler, därav prefixet. */
+  .app .medlemskort__text {
     margin: 14px 0 10px;
   }
   .medlemskort__lista {
@@ -2459,11 +2476,11 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     background: hsl(var(--rust));
     content: '';
   }
-  .medlemskort__annan {
+  .app .medlemskort__annan {
     margin: 0;
     font-size: 14px;
   }
-  .medlemskort__not {
+  .app .medlemskort__not {
     margin: 10px 0 14px;
   }
   .medlemskort__lank {
@@ -3110,29 +3127,44 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     .app[data-vy='medlemmar'] .panel {
       display: none;
     }
+    /* Källraden är 24 px hög med 10 px luft. Knapparna ligger ovanför den, inte på den. */
     .app[data-vy='medlemmar'] .kartknappar {
-      bottom: calc(var(--medlemskort-h, 180px) + 28px);
+      bottom: calc(var(--medlemskort-h, 200px) + 62px);
     }
     .app[data-vy='medlemmar'] .maplibregl-ctrl-bottom-right,
     .app[data-vy='medlemmar'] .maplibregl-ctrl-bottom-left {
-      bottom: calc(var(--medlemskort-h, 180px) + 14px);
+      bottom: calc(var(--medlemskort-h, 200px) + 14px);
     }
-    .medlemskort__lista,
+    /* Regionerna står på en rad i stället för som staplar. De står kvar i texten för den som inte ser kartan. */
+    .medlemskort__lista {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2px 14px;
+      margin: 4px 0;
+      font-size: 13px;
+    }
+    .medlemskort__lista li {
+      display: inline-flex;
+      gap: 5px;
+    }
+    .medlemskort__lista strong {
+      min-width: 0;
+    }
+    .medlemskort__stapel,
     .medlemskort__knapp {
       display: none;
     }
     .medlemskort__lank {
       display: inline;
     }
-    .medlemskort__text {
+    .app .medlemskort__text {
       margin: 8px 0 0;
-    }
-    .medlemskort__text,
-    .medlemskort__annan {
-      display: inline;
       font-size: 15px;
     }
-    .medlemskort__not {
+    .app .medlemskort__annan {
+      font-size: 13px;
+    }
+    .app .medlemskort__not {
       margin: 6px 0 0;
       font-size: 11px;
       line-height: 1.45;
@@ -3147,6 +3179,25 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     }
     .sokfot__tang {
       display: none;
+    }
+  }
+
+  /* Liggande telefon: ett blad i botten tar hela höjden. Kortet ligger vid sidan, som i bred vy. */
+  @media (max-width: 900px) and (max-height: 520px) {
+    .medlemskort {
+      top: 12px;
+      right: auto;
+      bottom: auto;
+      width: 270px;
+      max-height: calc(100% - 24px);
+      overflow-y: auto;
+    }
+    .app[data-vy='medlemmar'] .kartknappar {
+      bottom: 44px;
+    }
+    .app[data-vy='medlemmar'] .maplibregl-ctrl-bottom-right,
+    .app[data-vy='medlemmar'] .maplibregl-ctrl-bottom-left {
+      bottom: 0;
     }
   }
 </style>
