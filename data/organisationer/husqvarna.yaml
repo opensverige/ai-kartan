@@ -1,0 +1,91 @@
+id: husqvarna
+
+name:
+  value: Husqvarna Group
+  status: claimed
+  source_url: https://www.husqvarnagroup.com
+  source_type: own_site
+  verified_at: 2026-10-06
+  verified_by: agent
+
+legal_name:
+  value: Husqvarna AB
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/556000533101
+  source_type: company_register
+  verified_at: 2026-10-06
+  verified_by: agent
+  note: "Namn enligt momsregistret, hämtat via EU:s tjänst VIES. Husqvarna AB är koncernens moderbolag. Pressmeddelandet anger inte vilket bolag i koncernen som utvecklat tekniken."
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/556000533101
+  source_type: company_register
+  verified_at: 2026-10-06
+  verified_by: agent
+  note: "Bolagsformen är härledd ur det registrerade namnet. Momsregistret har inget eget fält för bolagsform."
+
+org_number:
+  value: "556000-5331"
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/556000533101
+  source_type: company_register
+  verified_at: 2026-10-06
+  verified_by: agent
+
+website: https://www.husqvarnagroup.com
+
+description:
+  value: Erbjuder bland annat robotgräsklippare. Har presenterat modeller för 2026 med kamerabaserad AI-navigering, som installeras utan begränsningskabel, känner igen gräsmattans kanter och väjer för hinder.
+  status: claimed
+  source_url: https://www.husqvarnagroup.com/en/press/husqvarna-group-reveals-ai-vision-technology-robotic-lawnmowers-2026-2397307
+  source_type: press
+  verified_at: 2026-10-06
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.husqvarnagroup.com/en/press/husqvarna-group-reveals-ai-vision-technology-robotic-lawnmowers-2026-2397307
+  source_type: press
+  verified_at: 2026-10-06
+  verified_by: agent
+
+areas:
+  value: [robotik, datorseende]
+  status: claimed
+  source_url: https://www.husqvarnagroup.com/en/press/husqvarna-group-reveals-ai-vision-technology-robotic-lawnmowers-2026-2397307
+  source_type: press
+  verified_at: 2026-10-06
+  verified_by: agent
+
+kommun:
+  value: "0680"
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/556000533101
+  source_type: company_register
+  verified_at: 2026-10-06
+  verified_by: agent
+  note: "Jönköping. Härledd från postorten i den registrerade adressen i momsregistret. Egen webbplats anger säte i Jönköping och huvudkontor i Stockholm. Sätet enligt Bolagsverket är inte kontrollerat."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/556000533101
+  source_type: company_register
+  verified_at: 2026-10-06
+  verified_by: agent
+  note: "Giltigt momsregistreringsnummer enligt VIES 2026-10-06."
+
+evidence:
+  - url: https://www.husqvarnagroup.com/en/press/husqvarna-group-reveals-ai-vision-technology-robotic-lawnmowers-2026-2397307
+    kind: produkt
+    title: "Pressmeddelande 2025-10-17: robotgräsklippare med kamerabaserad AI-navigering aviseras för 2026"
+    status: claimed
+    verified_at: 2026-10-06
+    verified_by: agent
+    note: "Pressmeddelandet aviserar modeller för 2026. Sidan anger inte vem som utvecklat tekniken."
+
+record_created_at: 2026-10-06
+record_updated_at: 2026-10-06

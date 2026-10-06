@@ -1,0 +1,91 @@
+id: embark-studios
+
+name:
+  value: Embark Studios
+  status: claimed
+  source_url: https://www.embark-studios.com
+  source_type: own_site
+  verified_at: 2026-10-06
+  verified_by: agent
+
+legal_name:
+  value: Embark Studios AB
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559172301901
+  source_type: company_register
+  verified_at: 2026-10-06
+  verified_by: agent
+  note: "Namn enligt momsregistret, hämtat via EU:s tjänst VIES. Integritetspolicyn på webbplatsen anger samma bolag och organisationsnummer."
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559172301901
+  source_type: company_register
+  verified_at: 2026-10-06
+  verified_by: agent
+  note: "Bolagsformen är härledd ur det registrerade namnet. Momsregistret har inget eget fält för bolagsform."
+
+org_number:
+  value: "559172-3019"
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559172301901
+  source_type: company_register
+  verified_at: 2026-10-06
+  verified_by: agent
+
+website: https://www.embark-studios.com
+
+description:
+  value: Spelstudio som publicerar öppen källkod, bland annat cervo, ett bibliotek som kapslar in tract och används för maskininlärning i studions spel.
+  status: claimed
+  source_url: https://github.com/EmbarkStudios/cervo
+  source_type: own_docs
+  verified_at: 2026-10-06
+  verified_by: agent
+
+offers:
+  value: [oppen_kallkod]
+  status: claimed
+  source_url: https://github.com/EmbarkStudios/cervo
+  source_type: own_docs
+  verified_at: 2026-10-06
+  verified_by: agent
+
+areas:
+  value: [media_kreativt]
+  status: claimed
+  source_url: https://github.com/EmbarkStudios/cervo
+  source_type: own_docs
+  verified_at: 2026-10-06
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559172301901
+  source_type: company_register
+  verified_at: 2026-10-06
+  verified_by: agent
+  note: "Stockholm. Härledd från postorten i den registrerade adressen i momsregistret. Sätet enligt Bolagsverket är inte kontrollerat."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559172301901
+  source_type: company_register
+  verified_at: 2026-10-06
+  verified_by: agent
+  note: "Giltigt momsregistreringsnummer enligt VIES 2026-10-06."
+
+evidence:
+  - url: https://github.com/EmbarkStudios/cervo
+    kind: repo
+    title: "Kodförråd: cervo, bibliotek som kapslar in tract för maskininlärning i studions spel"
+    status: claimed
+    verified_at: 2026-10-06
+    verified_by: agent
+    note: "Tunt lager ovanpå tredjepartsbiblioteket tract. Förrådet innehåller verktygskod, ingen modell."
+
+record_created_at: 2026-10-06
+record_updated_at: 2026-10-06

@@ -1,0 +1,96 @@
+id: softhouse
+
+name:
+  value: Softhouse
+  status: claimed
+  source_url: https://www.softhouse.se
+  source_type: own_site
+  verified_at: 2026-10-06
+  verified_by: agent
+
+legal_name:
+  value: Softhouse Nordic AB
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/556535568101
+  source_type: company_register
+  verified_at: 2026-10-06
+  verified_by: agent
+  note: "Namn enligt momsregistret, hämtat via EU:s tjänst VIES. Webbplatsen gäller enligt integritetspolicyn Softhouse Nordic AB och dess dotterbolag. Kundcasen anger inte vilket bolag i koncernen som utförde arbetet."
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/556535568101
+  source_type: company_register
+  verified_at: 2026-10-06
+  verified_by: agent
+  note: "Bolagsformen är härledd ur det registrerade namnet. Momsregistret har inget eget fält för bolagsform."
+
+org_number:
+  value: "556535-5681"
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/556535568101
+  source_type: company_register
+  verified_at: 2026-10-06
+  verified_by: agent
+
+website: https://www.softhouse.se
+
+description:
+  value: Utvecklar AI-lösningar åt andra. Har tillsammans med Kraftringen tränat en maskininlärningsmodell som utifrån data om energiförbrukning förutsäger om ett hushåll har elbil eller värmepump.
+  status: claimed
+  source_url: https://www.softhouse.se/en/project/ai-for-smarter-energy-data-understanding-household-needs-in-real-time
+  source_type: own_site
+  verified_at: 2026-10-06
+  verified_by: agent
+
+offers:
+  value: [utveckling]
+  status: claimed
+  source_url: https://www.softhouse.se/en/project/ai-for-smarter-energy-data-understanding-household-needs-in-real-time
+  source_type: own_site
+  verified_at: 2026-10-06
+  verified_by: agent
+
+areas:
+  value: [energi_klimat]
+  status: claimed
+  source_url: https://www.softhouse.se/en/project/ai-for-smarter-energy-data-understanding-household-needs-in-real-time
+  source_type: own_site
+  verified_at: 2026-10-06
+  verified_by: agent
+
+kommun:
+  value: "1280"
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/556535568101
+  source_type: company_register
+  verified_at: 2026-10-06
+  verified_by: agent
+  note: "Malmö. Härledd från postorten i den registrerade adressen i momsregistret. Bolagets kallelse till årsstämma 2026 på softhouse.se anger säte i Malmö. Sätet enligt Bolagsverket är inte kontrollerat."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/556535568101
+  source_type: company_register
+  verified_at: 2026-10-06
+  verified_by: agent
+  note: "Giltigt momsregistreringsnummer enligt VIES 2026-10-06."
+
+evidence:
+  - url: https://www.softhouse.se/en/project/ai-for-smarter-energy-data-understanding-household-needs-in-real-time
+    kind: case
+    title: "Kundcase med Kraftringen: maskininlärningsmodell som förutsäger elbil och värmepump ur data om energiförbrukning"
+    status: claimed
+    verified_at: 2026-10-06
+    verified_by: agent
+  - url: https://www.softhouse.se/en/project/with-ai-and-computer-vision-for-image-classification-at-nanometer-scale
+    kind: case
+    title: "Kundcase med Mycronic: bildklassificering av fotomasker med maskininlärning"
+    status: claimed
+    verified_at: 2026-10-06
+    verified_by: agent
+
+record_created_at: 2026-10-06
+record_updated_at: 2026-10-06
