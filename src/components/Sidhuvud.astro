@@ -109,6 +109,8 @@ function aktiv(href: string): boolean {
       falt?.select();
     }
     if (e.key === 'Escape' && meny?.open) {
+      // Märks som hanterad, så att samma tryck inte också stänger något på sidan under menyn.
+      e.preventDefault();
       meny.open = false;
       meny.querySelector('summary')?.focus();
     }

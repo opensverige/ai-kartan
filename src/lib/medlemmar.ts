@@ -1,12 +1,16 @@
 // Var OpenSveriges medlemmar finns, som antal per region. Underlaget är regionrollerna på
 // föreningens Discord: varje medlem väljer själv en stad med tio mil runt om, eller "annan ort".
-// Här finns aldrig personer, bara antal, och små antal skrivs inte ut som siffror.
+// Här finns aldrig personer, bara antal. Ett antal under fem finns inte ens som siffra: i
+// underlaget står det som "<5", eftersom repot är publikt.
+
+/** Noll, minst fem, eller "<5" för ett antal mellan ett och fyra. */
+export type Antal = number | '<5';
 
 export interface Region {
   namn: string;
   /** Kommunkoden för staden som regionen är uppkallad efter. Dess mittpunkt blir regionens. */
   kommun: string;
-  antal: number;
+  antal: Antal;
 }
 
 /** Innehållet i data/gemenskap/regioner.json. */
@@ -15,7 +19,7 @@ export interface Medlemsdata {
   uppdaterad: string;
   radie_km: number;
   regioner: Region[];
-  annan_ort: number;
+  annan_ort: Antal;
 }
 
 export interface Regionvy {
@@ -32,11 +36,12 @@ export interface Regionvy {
   sida: 'under' | 'vanster';
 }
 
-/** Det webbläsaren får. Små antal är redan omskrivna här. */
+/** Det webbläsaren får. */
 export interface Medlemsvy {
   regioner: Regionvy[];
+  /** Hur många som har valt en region. De som har valt annan ort räknas inte hit. */
+  iRegioner: string;
   annanOrt: string;
-  totalt: string;
   radieKm: number;
   uppdaterad: string;
 }
@@ -44,21 +49,28 @@ export interface Medlemsvy {
 /** Färre än så här i en region skrivs inte ut: i en liten grupp går enskilda att peka ut. */
 export const MINSTA_ANTAL = 5;
 
-const arLitet = (antal: number): boolean => antal > 0 && antal < MINSTA_ANTAL;
+/** Antalet som tal, där "<5" räknas som noll. Kastar fel för det som inte får stå i underlaget. */
+function kant(antal: Antal): number {
+  if (antal === '<5') return 0;
+  if (!Number.isInteger(antal) || antal < 0) throw new Error(`Antalet ${antal} är inte ett heltal från noll och uppåt`);
+  if (antal > 0 && antal < MINSTA_ANTAL) throw new Error(`Antalet ${antal} får inte stå i underlaget. Skriv "<5": repot är publikt.`);
+  return antal;
+}
 
-export function visaAntal(antal: number): string {
-  if (antal === 0) return 'ingen än';
-  return arLitet(antal) ? `färre än ${MINSTA_ANTAL}` : String(antal);
+export function visaAntal(antal: Antal): string {
+  const tal = kant(antal);
+  if (antal === '<5') return `färre än ${MINSTA_ANTAL}`;
+  return tal === 0 ? 'ingen än' : String(tal);
 }
 
 /**
- * Summan av alla regioner och "annan ort". Är något antal dolt avrundas summan nedåt till
- * närmaste tiotal, annars går det dolda antalet att räkna fram ur resten.
+ * Summan av det som är känt. Finns ett dolt antal med säger texten att summan är i underkant.
+ * Det dolda antalet står inte i underlaget och går därför inte att räkna fram ur summan.
  */
-export function summa(antal: number[], annanOrt: number): string {
-  const alla = [...antal, annanOrt];
-  const total = alla.reduce((a, b) => a + b, 0);
-  return alla.some(arLitet) ? `drygt ${Math.floor(total / 10) * 10}` : String(total);
+export function summa(antal: Antal[]): string {
+  const kand = antal.reduce<number>((a, b) => a + kant(b), 0);
+  if (!antal.includes('<5')) return String(kand);
+  return kand === 0 ? `färre än ${MINSTA_ANTAL}` : `drygt ${kand}`;
 }
 
 const JORDRADIE_KM = 6371;
@@ -105,9 +117,8 @@ function kmMellan(a: { lat: number; lng: number }, b: { lat: number; lng: number
 
 /** Gör om underlaget till det som ritas. Kastar fel om en region pekar på en kommun som inte finns. */
 export function medlemsvy(data: Medlemsdata, kommuner: { kod: string; lat: number; lng: number }[]): Medlemsvy {
-  // Små antal räknas som noll när storleken bestäms, så att ikonen inte röjer dem.
-  const synligt = (antal: number): number => (arLitet(antal) ? 0 : antal);
-  const storst = Math.max(0, ...data.regioner.map((r) => synligt(r.antal)));
+  // Ett dolt antal räknas som noll när storleken bestäms.
+  const storst = Math.max(0, ...data.regioner.map((r) => kant(r.antal)));
   const platser = data.regioner.map((r) => {
     const kommun = kommuner.find((k) => k.kod === r.kommun);
     if (!kommun) throw new Error(`Regionen ${r.namn} pekar på kommunkoden ${r.kommun}, som inte finns i data/geo/kommuner.json`);
@@ -124,12 +135,12 @@ export function medlemsvy(data: Medlemsdata, kommuner: { kod: string; lat: numbe
       namn: r.namn,
       ...platser[i],
       visat: visaAntal(r.antal),
-      storlek: ikonstorlek(synligt(r.antal), storst),
+      storlek: ikonstorlek(kant(r.antal), storst),
       tom: r.antal === 0,
       sida: sida(i),
     })),
+    iRegioner: summa(data.regioner.map((r) => r.antal)),
     annanOrt: visaAntal(data.annan_ort),
-    totalt: summa(data.regioner.map((r) => r.antal), data.annan_ort),
     radieKm: data.radie_km,
     uppdaterad: data.uppdaterad,
   };
