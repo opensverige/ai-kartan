@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import Sidhuvud from '../components/Sidhuvud.astro';
 import Sidfot from '../components/Sidfot.astro';
+import Besoksrakning from '../components/Besoksrakning.astro';
 import { SAJT, absolutUrl, url } from '../lib/data';
 
 interface Props {
@@ -23,6 +24,8 @@ const { titel, beskrivning, stig, bild = '/og-image.jpg', noindex = false, bred 
 const fullTitel = helTitel ? titel : `${titel} | ${SAJT.namn}`;
 const kanonisk = absolutUrl(stig);
 const bildUrl = absolutUrl(bild);
+// Besök räknas bara på den publika sajten. Lokalt, i förhandsvisningar och i andra byggen räknas inget.
+const raknaBesok = process.env.VERCEL_ENV === 'production';
 ---
 
 <!doctype html>
@@ -56,6 +59,7 @@ const bildUrl = absolutUrl(bild);
     <link rel="preload" href={url('/fonts/JetBrainsMono-latin.woff2')} as="font" type="font/woff2" crossorigin />
     <link rel="sitemap" href={url('/sitemap-index.xml')} />
     {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+    {raknaBesok && <Besoksrakning />}
   </head>
   <body class:list={[{ 'app-sida': app }]}>
     <a class="hoppa visuellt-dold" href="#innehall">Hoppa till innehållet</a>
