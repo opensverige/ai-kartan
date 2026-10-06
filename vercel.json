@@ -5,9 +5,9 @@
   "trailingSlash": false,
   "redirects": [
     {
-      "source": "/:path*",
+      "source": "/(.*)",
       "has": [{ "type": "host", "value": "kartan.opensverige.se" }],
-      "destination": "https://karta.opensverige.se/:path*",
+      "destination": "https://karta.opensverige.se/$1",
       "permanent": true
     }
   ],
