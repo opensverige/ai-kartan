@@ -30,7 +30,7 @@ const kraftan = url('/ikoner/opensverige.png');
 const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 100);
 ---
 
-<div class="app" data-lage={lage} data-api={url('/api/karta.json')} data-orgbas={url('/organisation/')} data-bidra={url('/bidra')} data-csv={url('/api/data.csv')} data-infra={SAJT.infra} data-infralogo={url('/ai-infra.png')} data-worker={url('/vendor/maplibre/maplibre-gl-worker.mjs')} data-kartbas={url('/')} data-kraftan={kraftan}>
+<div class="app" data-lage={lage} data-api={url('/api/karta.json')} data-orgbas={url('/organisation/')} data-bidra={url('/bidra')} data-csv={url('/api/data.csv')} data-infra={SAJT.infra} data-infralogo={url('/ai-infra.png')} data-worker={url('/vendor/maplibre/maplibre-gl-worker.mjs')} data-kartbas={url('/')} data-kraftan={kraftan} data-metod={url('/metod')}>
   {lage === 'lista' && <Filterrad />}
 
   <section class="panel" id="panel" data-blad="titt" aria-label="Organisationer">
@@ -201,6 +201,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
   import { urvalSomCsv } from '../lib/csv';
   import { grupperaPerPlats, platsEfterUtzoomning, platsmitt, zoomgranser, ZOOM_KOMMUN, ZOOM_POSTER, type Platsgrupp } from '../lib/platsgrupper';
   import { arPaskagg, cirkel, type Medlemsvy } from '../lib/medlemmar';
+  import { normalisera, tolka, traffar, tomtSvar, type Tolkning } from '../lib/sok';
 
   type Post = {
     id: string; n: string; t: string; o: string[]; a: string[]; k: string | null; kn: string | null;
@@ -212,7 +213,8 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
   type FacettNamn = 'erbjuder' | 'typ' | 'omrade' | 'lan';
   type Filter = { q: string; erbjuder: string[]; typ: string[]; omrade: string[]; lan: string; kommun: string };
   type PlatsTraff = { typ: 'kommun' | 'lan'; kod: string; namn: string; nn: string; under: string; antal: number };
-  type SokTraff = { org: Rad[]; platser: PlatsTraff[]; totalt: number };
+  /** `visat` är orden som faktiskt söktes när utfyllnadsord togs bort. Annars tom. */
+  type SokTraff = { org: Rad[]; platser: PlatsTraff[]; totalt: number; visat: string };
   type SokVal = { typ: 'org'; o: Rad } | { typ: 'plats'; p: PlatsTraff } | { typ: 'vy' };
 
   const app = document.querySelector<HTMLElement>('.app');
@@ -289,7 +291,6 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     // Medlemsvyn: organisationerna göms och föreningens medlemmar visas som antal per region.
     let medlemslage = medKarta && !!medlemsdata && start.get('vy') === 'medlemmar';
 
-    const normalisera = (s: string) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
     const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
     const plural = (n: number) => (n === 1 ? 'organisation' : 'organisationer');
 
@@ -332,8 +333,8 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     }
 
     /** Sant om posten klarar filtret. `utom` hoppar över en facett, för att räkna antal per val. */
-    function passar(o: Rad, f: Filter, ord: string[], utom?: FacettNamn): boolean {
-      if (ord.length && !ord.every((t) => o.ns.includes(t))) return false;
+    function passar(o: Rad, f: Filter, tolkning: Tolkning, utom?: FacettNamn): boolean {
+      if (!traffar(o, tolkning)) return false;
       if (utom !== 'erbjuder' && f.erbjuder.length && !f.erbjuder.some((x) => o.o.includes(x))) return false;
       if (utom !== 'typ' && f.typ.length && !f.typ.includes(o.t)) return false;
       if (utom !== 'omrade' && f.omrade.length && !f.omrade.some((x) => o.a.includes(x))) return false;
@@ -375,11 +376,12 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
 
     function filtrera(skriv = true) {
       const f = lasFilter();
-      const ord = sokord(f.q);
-      urval = alla.filter((o) => passar(o, f, ord));
+      // Sökningen tolkas en gång mot alla organisationer, oavsett vilka filter som är valda.
+      const tolkning = tolka(f.q, alla);
+      urval = alla.filter((o) => passar(o, f, tolkning));
       renderLista();
       uppdateraHuvud(f);
-      uppdateraFacetter(f, ord);
+      uppdateraFacetter(f, tolkning);
       if (karta && kartaKlar) uppdateraKarta();
       if (skriv) skrivUrl(f);
     }
@@ -425,11 +427,11 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     }
 
     /** Räknar om antalet per val, givet alla andra filter, och markerar aktiva piller. */
-    function uppdateraFacetter(f: Filter, ord: string[]) {
+    function uppdateraFacetter(f: Filter, tolkning: Tolkning) {
       for (const namn of FACETTER) {
         const antal = new Map<string, number>();
         for (const o of alla) {
-          if (!passar(o, f, ord, namn)) continue;
+          if (!passar(o, f, tolkning, namn)) continue;
           const varden = namn === 'erbjuder' ? o.o : namn === 'omrade' ? o.a : namn === 'typ' ? [o.t] : o.l ? [o.l] : [];
           for (const v of varden) antal.set(v, (antal.get(v) ?? 0) + 1);
         }
@@ -520,6 +522,14 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         li.innerHTML = infralank('AI-infrastruktur i detalj', 'Pris, datacenter och ägande per leverantör på AI-Infra', infra);
         frag.appendChild(li);
       }
+      // Den som söker jobb får träffar på dem som bygger AI för arbetsmarknaden. Då står det också
+      // att kartan inte har några annonser, och var de finns.
+      if (sorterade.length && tomtSvar(f.q)?.sort === 'jobb') {
+        const li = document.createElement('li');
+        li.className = 'lista__tom';
+        li.innerHTML = saknasHtml(f.q, 'span') ?? '';
+        frag.appendChild(li);
+      }
       for (const o of sorterade) {
         const li = document.createElement('li');
         li.className = 'post' + (o.id === valdId ? ' post--aktiv' : '');
@@ -530,7 +540,9 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       if (!sorterade.length && alla.length) {
         const li = document.createElement('li');
         li.className = 'lista__tom';
-        li.innerHTML = `<strong>Inga organisationer matchar.</strong><span>Ta bort ett filter eller sök bredare. Saknas någon? <a href="${bidra}">Lägg till en organisation.</a></span>`;
+        li.innerHTML =
+          saknasHtml(f.q, 'span') ??
+          `<strong>Inga organisationer matchar.</strong><span>Ta bort ett filter eller sök bredare. Saknas någon? <a href="${bidra}">Lägg till en organisation.</a></span>`;
         frag.appendChild(li);
       }
       lista.replaceChildren(frag);
@@ -647,21 +659,22 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     function sok(q: string): SokTraff {
       const nq = normalisera(q.trim());
       const ord = nq.split(/\s+/).filter(Boolean);
-      if (!ord.length) return { org: [], platser: platser.filter((p) => p.typ === 'kommun').slice(0, 5), totalt: 0 };
+      if (!ord.length) return { org: [], platser: platser.filter((p) => p.typ === 'kommun').slice(0, 5), totalt: 0, visat: '' };
+      const tolkning = tolka(q, alla);
       const poang = (o: Rad): number => {
-        if (!ord.every((t) => o.ns.includes(t))) return -1;
+        if (!traffar(o, tolkning)) return -1;
         if (o.nn === nq) return 100;
         if (o.nn.startsWith(nq)) return 80;
         if (o.nn.split(/[\s\-–.]+/).some((w) => w.startsWith(ord[0]))) return 60;
         if (o.nn.includes(nq)) return 40;
         return 10;
       };
-      const traffar = alla.map((o) => ({ o, p: poang(o) })).filter((x) => x.p >= 0);
-      traffar.sort((a, b) => b.p - a.p || a.o.n.localeCompare(b.o.n, 'sv'));
+      const hittade = alla.map((o) => ({ o, p: poang(o) })).filter((x) => x.p >= 0);
+      hittade.sort((a, b) => b.p - a.p || a.o.n.localeCompare(b.o.n, 'sv'));
       const platsTraffar = platser
         .filter((p) => ord.every((t) => p.nn.includes(t)))
         .sort((a, b) => Number(b.nn.startsWith(nq)) - Number(a.nn.startsWith(nq)) || b.antal - a.antal);
-      return { org: traffar.slice(0, 6).map((x) => x.o), platser: platsTraffar.slice(0, 4), totalt: traffar.length };
+      return { org: hittade.slice(0, 6).map((x) => x.o), platser: platsTraffar.slice(0, 4), totalt: hittade.length, visat: tolkning.visat };
     }
 
     /** Namnet med träffen i fetstil. Normaliseringen behåller längden för svenska tecken. */
@@ -671,6 +684,22 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       const i = ord ? nt.indexOf(ord) : -1;
       if (i < 0 || nt.length !== text.length) return esc(text);
       return `${esc(text.slice(0, i))}<mark>${esc(text.slice(i, i + ord.length))}</mark>${esc(text.slice(i + ord.length))}`;
+    }
+
+    /**
+     * Texten när sökningen gäller något kartan inte har, till exempel jobb. `omslag` är elementet
+     * runt brödtexten: ett stycke i sökrutan, ett spann i listan. Null när den vanliga texten gäller.
+     */
+    function saknasHtml(q: string, omslag: 'p' | 'span'): string | null {
+      const tomt = tomtSvar(q);
+      if (!tomt) return null;
+      const vidare = {
+        jobb: '<a href="https://arbetsformedlingen.se/platsbanken/" rel="noopener">Öppna Platsbanken</a>',
+        regler: '<a href="?q=regelefterlevnad">Sök på regelefterlevnad</a>',
+        falt: `<a href="${esc(app.dataset.metod ?? '/metod')}">Läs om vad kartan innehåller</a>`,
+      }[tomt.sort];
+      const text = `<strong>${esc(tomt.rubrik)}</strong> ${omslag === 'span' ? '<span>' : ''}${esc(tomt.text)} ${vidare}${omslag === 'span' ? '</span>' : ''}`;
+      return omslag === 'p' ? `<p class="soktom">${text}</p>` : text;
     }
 
     function renderSok() {
@@ -705,11 +734,14 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         for (const p of t.platser) html += rad({ typ: 'plats', p }, `<span class="logo logo--liten logo--plats" aria-hidden="true">${ikon('nal', 17)}</span>`, markera(p.namn, q), `${esc(p.under)} · ${p.antal} ${plural(p.antal)}`);
         html += '</div>';
       }
+      if (sokVal.length && tomtSvar(q)?.sort === 'jobb') html = (saknasHtml(q, 'p') ?? '') + html;
       if (!sokVal.length) {
-        html = `<p class="soktom"><strong>Inga träffar på ”${esc(q)}”.</strong> Sökningen går på namn, beskrivning, plats, typ och område.</p>`;
+        html =
+          saknasHtml(q, 'p') ??
+          `<p class="soktom"><strong>Inga träffar på ”${esc(q)}”.</strong> Sökningen går på namn, beskrivning, plats, typ och område.</p>`;
       }
       const fot = q
-        ? `<span class="sokfot__antal">${t.totalt} ${t.totalt === 1 ? 'träff' : 'träffar'} i listan</span>`
+        ? `<span class="sokfot__antal">${t.totalt} ${t.totalt === 1 ? 'träff' : 'träffar'} i listan${t.visat ? ` · sökte på ”${esc(t.visat)}”` : ''}</span>`
         : '<span class="sokfot__antal">Skriv för att söka direkt</span>';
       sokLada.innerHTML =
         `<div class="soklista" role="listbox" id="soklista" aria-label="Sökträffar">${html}</div>` +
