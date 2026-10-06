@@ -9,6 +9,14 @@ Ikoner som kartan behöver, i den ordning de gör mest nytta. Filnamnet är kate
 - En färg, eller en färg plus kartnålens röda. Sajten har både ljus och mörk bakgrund på sikt.
 - PNG eller SVG. Lägg dem i `public/ikoner/<grupp>/<id>.png`, till exempel `public/ikoner/typ/bolag.png`.
 
+## Så läggs en ikon in
+
+1. Beskär bilden tätt runt motivet och spara den som en kvadrat på 192 pixlar.
+2. Lägg filen i `public/ikoner/typ/` med typens id som namn, till exempel `finansiar.png`.
+3. Klart. Sajten letar efter filen när den byggs. Typen ritas då som landmärke på kartan, och ikonen syns på korten, i filtret och på organisationssidan. Typer utan fil har kvar sin färgprick.
+
+På plats i dag: `myndighet` och `kommun_region`. Bara typer läses in på det här sättet än, inte de andra grupperna i listan.
+
 ## 1. Typ av organisation (8)
 
 Syns som färgprick i filtret, på korten och på kartans punkter. Den viktigaste gruppen.

@@ -4,7 +4,7 @@
 // Sökfältet ligger i sidhuvudet (Sidhuvud.astro) och kopplas in härifrån.
 import 'maplibre-gl/dist/maplibre-gl.css';
 import Filterrad from './Filterrad.astro';
-import { hamtaData, url, formateraDatum, SAJT } from '../lib/data';
+import { hamtaData, typikoner, url, formateraDatum, SAJT } from '../lib/data';
 import { ikon } from '../lib/ikoner';
 
 interface Props {
@@ -18,6 +18,7 @@ const etiketter = {
   erbjuder: Object.fromEntries(d.taxonomi.erbjuder.map((t) => [t.id, t.label])),
   omraden: Object.fromEntries(d.taxonomi.omraden.map((t) => [t.id, t.label])),
   lan: Object.fromEntries(d.lan.map((l) => [l.kod, l.namn])),
+  typikoner: typikoner(),
 };
 ---
 
@@ -139,7 +140,7 @@ const etiketter = {
 
 <script>
   // MapLibre är stort och laddas först när en karta faktiskt ska ritas, inte i listläget.
-  import type { Map as MapLibreMap, Popup, GeoJSONSource, ExpressionSpecification, PaddingOptions } from 'maplibre-gl';
+  import type { Map as MapLibreMap, Popup, GeoJSONSource, ExpressionSpecification, MapLayerMouseEvent, PaddingOptions } from 'maplibre-gl';
   import { ikon, type IkonNamn } from '../lib/ikoner';
   import { urvalSomCsv } from '../lib/csv';
 
@@ -161,6 +162,8 @@ const etiketter = {
 
   function starta(app: HTMLElement) {
     const etiketter = JSON.parse(document.getElementById('etiketter')!.textContent || '{}') as Record<string, Record<string, string>>;
+    // Typer med egen ikon: de ritas som landmärken på kartan och i logorutan på korten.
+    const typikoner = etiketter.typikoner ?? {};
     const medKarta = app.dataset.lage === 'karta';
     const orgbas = app.dataset.orgbas || '/organisation/';
     const bidra = app.dataset.bidra || '/bidra';
@@ -234,8 +237,10 @@ const etiketter = {
       return (ord.length === 1 ? ord[0].slice(0, 2) : ord[0][0] + ord[1][0]).toUpperCase();
     }
 
-    // Platshållare tills organisationerna har logotyper: initialer i typens färg.
+    // Platshållare tills organisationerna har logotyper: typens ikon om den finns, annars initialer i typens färg.
     function logoHtml(o: Post, klass = ''): string {
+      const bild = typikoner[o.t];
+      if (bild) return `<span class="logo logo--ikon ${klass}" aria-hidden="true"><img src="${esc(bild)}" alt="" loading="lazy" decoding="async"></span>`;
       return `<span class="logo ${klass}" style="--f:${FARG[o.t] || FARG.bolag}" aria-hidden="true">${esc(initialer(o.n))}</span>`;
     }
 
@@ -845,29 +850,87 @@ const etiketter = {
           const zoom = await src.getClusterExpansionZoom(klusterId);
           karta!.easeTo({ center: (f.geometry as GeoJSON.Point).coordinates as [number, number], zoom: Math.min(zoom, karta!.getMaxZoom()) });
         });
-        karta!.on('click', 'punkter', (e) => {
+        const oppnaPunkt = (e: MapLayerMouseEvent) => {
           const id = e.features?.[0]?.properties?.id;
           const o = id ? alla.find((x) => x.id === String(id)) : undefined;
           if (o) visaDetalj(o, false);
-        });
-        karta!.on('click', (e) => {
-          // Tryck på tom karta fäller ner bottenbladet i smal vy.
-          if (smal.matches && !karta!.queryRenderedFeatures(e.point, { layers: ['kluster', 'punkter'] }).length) sattBlad('titt');
-        });
-        karta!.on('mouseenter', 'punkter', (e) => {
+        };
+        const visaTips = (e: MapLayerMouseEvent) => {
           const f = e.features?.[0];
           if (!f) return;
           karta!.getCanvas().style.cursor = 'pointer';
           tips?.remove();
-          tips = new Tips({ closeButton: false, closeOnClick: false, offset: 14, className: 'tips' })
+          // Ett landmärke är högre än en prick, så namnet får mer luft.
+          tips = new Tips({ closeButton: false, closeOnClick: false, offset: typikoner[String(f.properties?.t)] ? 24 : 14, className: 'tips' })
             .setLngLat((f.geometry as GeoJSON.Point).coordinates as [number, number])
             .setText(String(f.properties?.n ?? ''))
             .addTo(karta!);
-        });
-        karta!.on('mouseleave', 'punkter', () => {
+        };
+        const doljTips = () => {
           karta!.getCanvas().style.cursor = '';
           tips?.remove();
+        };
+        const kopplaPunktlager = (lager: string) => {
+          karta!.on('click', lager, oppnaPunkt);
+          karta!.on('mouseenter', lager, visaTips);
+          karta!.on('mouseleave', lager, doljTips);
+        };
+        kopplaPunktlager('punkter');
+        karta!.on('click', (e) => {
+          // Tryck på tom karta fäller ner bottenbladet i smal vy.
+          const lager = ['kluster', 'punkter', 'landmarken'].filter((id) => karta!.getLayer(id));
+          if (smal.matches && !karta!.queryRenderedFeatures(e.point, { layers: lager }).length) sattBlad('titt');
         });
+
+        // Typer med egen ikon ritas som landmärken: bilden i stället för en prick, med namnet under.
+        // Går bilderna inte att ladda ligger prickarna kvar.
+        const ritaLandmarken = async () => {
+          const typer = Object.keys(typikoner);
+          if (!typer.length) return;
+          const BREDD = 40;
+          await Promise.all(
+            typer.map(async (typ) => {
+              const bild = new Image();
+              bild.src = typikoner[typ];
+              await bild.decode();
+              // Skalas ner en gång här. WebGL förminskar utan utjämning, och då flimrar pixelkonsten.
+              const duk = document.createElement('canvas');
+              duk.width = duk.height = BREDD * 2;
+              const penna = duk.getContext('2d');
+              if (!penna) throw new Error('ingen 2d-yta');
+              penna.imageSmoothingQuality = 'high';
+              penna.drawImage(bild, 0, 0, duk.width, duk.height);
+              karta!.addImage(`typ-${typ}`, penna.getImageData(0, 0, duk.width, duk.height), { pixelRatio: 2 });
+            }),
+          );
+          const arLandmarke = ['in', ['get', 't'], ['literal', typer]] as unknown as ExpressionSpecification;
+          const ensam = ['!', ['has', 'point_count']] as unknown as ExpressionSpecification;
+          const ikon = ['concat', 'typ-', ['get', 't']] as unknown as ExpressionSpecification;
+          karta!.addLayer(
+            {
+              id: 'landmarken', type: 'symbol', source: 'orgs', filter: ['all', ensam, arLandmarke],
+              layout: {
+                'icon-image': ikon,
+                'icon-size': ['interpolate', ['linear'], ['zoom'], 4, 0.8, 9, 1, 13, 1.2],
+                'icon-allow-overlap': true,
+                // Namnet visas från samma zoom som för prickarna.
+                'text-field': ['step', ['zoom'], '', 7, ['get', 'n']],
+                'text-font': ['Noto Sans Bold'], 'text-size': 12, 'text-anchor': 'top', 'text-offset': [0, 1.5], 'text-max-width': 9, 'text-optional': true,
+              },
+              paint: { 'text-color': BLACK, 'text-halo-color': '#fdfbf7', 'text-halo-width': 1.8 },
+            },
+            'vald-ring',
+          );
+          karta!.setFilter('punkter', ['all', ensam, ['!', arLandmarke]]);
+          karta!.setFilter('namn', ['all', ensam, ['!', arLandmarke]]);
+          // Den valda organisationen: större ring bakom, och ikonen i stället för pricken.
+          karta!.setPaintProperty('vald-ring', 'circle-radius', ['case', arLandmarke, 24, 15]);
+          karta!.setFilter('vald-punkt', ['!', arLandmarke]);
+          karta!.addLayer({ id: 'vald-ikon', type: 'symbol', source: 'vald', filter: arLandmarke, layout: { 'icon-image': ikon, 'icon-allow-overlap': true } }, 'vald-namn');
+          karta!.setLayoutProperty('vald-namn', 'text-offset', ['case', arLandmarke, ['literal', [0, -2.3]], ['literal', [0, -1.6]]]);
+          kopplaPunktlager('landmarken');
+        };
+        ritaLandmarken().catch(() => undefined);
         karta!.on('mouseenter', 'kluster', () => (karta!.getCanvas().style.cursor = 'pointer'));
         karta!.on('mouseleave', 'kluster', () => (karta!.getCanvas().style.cursor = ''));
 
@@ -1185,6 +1248,15 @@ const etiketter = {
     color: var(--f, hsl(var(--moss)));
     font: 700 17px/1 var(--font-sans);
     letter-spacing: -0.02em;
+  }
+  .logo.logo--ikon {
+    background: hsl(var(--yta));
+    overflow: hidden;
+  }
+  .logo--ikon img {
+    width: 84%;
+    height: 84%;
+    object-fit: contain;
   }
   .logo--liten {
     width: 38px;
@@ -2018,6 +2090,13 @@ const etiketter = {
     height: 10px;
     flex: none;
     border-radius: 50%;
+  }
+  .val__ikon {
+    flex: none;
+    width: 22px;
+    height: 22px;
+    margin: -3px -1px -3px -3px;
+    object-fit: contain;
   }
   .val:has(input:checked) .prick {
     box-shadow: 0 0 0 1.5px hsl(var(--yta));

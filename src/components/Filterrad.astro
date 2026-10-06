@@ -2,7 +2,7 @@
 // Filterraden: ett piller per facett som öppnar en ruta med val och antal.
 // På kartan flyter raden över kartans överkant. I smal vy fälls facetterna ihop
 // till ett enda Filter-piller som öppnar ett blad nerifrån.
-import { hamtaData } from '../lib/data';
+import { hamtaData, typikoner } from '../lib/data';
 import { ikon } from '../lib/ikoner';
 
 interface Val {
@@ -11,6 +11,7 @@ interface Val {
   antal: number;
   hjalp?: string;
   prick?: string;
+  ikon?: string;
 }
 interface Facett {
   namn: 'erbjuder' | 'typ' | 'omrade' | 'lan';
@@ -22,6 +23,7 @@ interface Facett {
 
 const d = hamtaData();
 const s = d.statistik;
+const ikoner = typikoner();
 const facetter: Facett[] = [
   {
     namn: 'erbjuder',
@@ -37,6 +39,7 @@ const facetter: Facett[] = [
       hjalp: t.description,
       antal: s.per_typ[t.id] ?? 0,
       prick: `var(--typ-${t.id})`,
+      ikon: ikoner[t.id],
     })),
   },
   {
@@ -94,7 +97,11 @@ const facetter: Facett[] = [
                 {f.val.map((v) => (
                   <label class="val" title={v.hjalp}>
                     <input class="visuellt-dold" type={f.ett ? 'radio' : 'checkbox'} name={f.namn} value={v.id} />
-                    {v.prick && <span class="prick" style={`background: ${v.prick}`} aria-hidden="true" />}
+                    {v.ikon ? (
+                      <img class="val__ikon" src={v.ikon} alt="" width="22" height="22" loading="lazy" decoding="async" />
+                    ) : (
+                      v.prick && <span class="prick" style={`background: ${v.prick}`} aria-hidden="true" />
+                    )}
                     <span>{v.text}</span>
                     <span class="val__antal" data-antal={`${f.namn}:${v.id}`}>{v.antal}</span>
                   </label>

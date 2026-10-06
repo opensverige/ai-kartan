@@ -4,6 +4,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { ROT, lasOrganisationer, lasTaxonomi, lasGeo, harled } from '../../scripts/lib/organisationer.mjs';
+import { hittaTypikoner } from './typikoner';
 
 export type Status = 'confirmed' | 'claimed' | 'planned' | 'unknown' | 'not_applicable';
 export type Typ = 'bolag' | 'enskild_firma' | 'myndighet' | 'kommun_region' | 'larosate' | 'community' | 'finansiar' | 'infrastruktur';
@@ -329,6 +330,12 @@ export function formateraDatum(iso: string | null | undefined): string {
 }
 
 /** Bygger en absolut eller basrelativ URL inom sajten. */
+/** Organisationstyper som har en ikon i public/ikoner/typ/, med adress. */
+export function typikoner(): Record<string, string> {
+  const typIds = hamtaData().taxonomi.typer.map((t) => t.id);
+  return hittaTypikoner(typIds, (fil) => fs.existsSync(path.join(ROT, 'public', fil)), url);
+}
+
 export function url(stig: string): string {
   const bas = import.meta.env.BASE_URL.replace(/\/$/, '');
   if (stig === '/') return bas || '/';

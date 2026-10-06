@@ -4,6 +4,7 @@ Kodens och funktionernas historik. Dataändringar loggas separat och automatiskt
 
 ## 2026-10-06
 
+- Myndigheter och kommuner ritas som landmärken på kartan, med en ikon i stället för en prick. Samma ikon syns på korten, i filtret Typ och på organisationssidan. En ny ikon börjar gälla när filen läggs i `public/ikoner/typ/`.
 - Ny sida Varför vi finns ersätter Om. Den säger kort vad kartan är, hur den skiljer sig från en kurerad karta, vem som granskar och vem som står bakom. Resten ligger i fällbara avsnitt. Sidan står först i menyn.
 - Arbetsflödena är härdade inför att repot blir publikt. Text ur ärenden och data hamnar aldrig i ett skalkommando, det långa formuläret kan inte skriva över en befintlig post, och varje ärende får en enda gren. Flödet för GitHub Pages startas bara för hand.
 - Ändringshistoriken skrivs inte över om git-historiken är avkortad, till exempel i en grund klon.
