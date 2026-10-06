@@ -1,11 +1,28 @@
 ---
 import Bas from '../layouts/Bas.astro';
 import KartApp from '../components/KartApp.astro';
-import { hamtaData, SAJT, url } from '../lib/data';
+import { hamtaData, absolutUrl, SAJT, url } from '../lib/data';
 
 const d = hamtaData();
 const s = d.statistik;
-const jsonLd = {
+const BESKRIVNING = `Öppen karta över ${s.antal} organisationer som bygger AI i Sverige: bolag, myndigheter, lärosäten och fler. Källa och datum på varje uppgift, ingen rankning.`;
+// Webbplatsen med sin sökruta, så att en sökmotor kan skicka en fråga rakt in i kartans sök.
+const webbplats = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: SAJT.namn,
+  alternateName: SAJT.titel,
+  url: absolutUrl('/'),
+  inLanguage: 'sv',
+  description: BESKRIVNING,
+  publisher: { '@type': 'Organization', name: 'OpenSverige', url: SAJT.opensverige },
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: { '@type': 'EntryPoint', urlTemplate: `${absolutUrl('/')}?q={search_term_string}` },
+    'query-input': 'required name=search_term_string',
+  },
+};
+const datamangd = {
   '@context': 'https://schema.org',
   '@type': 'Dataset',
   name: 'Tech Embassy – Sveriges öppna AI-karta',
@@ -13,14 +30,20 @@ const jsonLd = {
   url: import.meta.env.SITE,
   license: 'https://creativecommons.org/licenses/by/4.0/',
   creator: { '@type': 'Organization', name: 'OpenSverige', url: SAJT.opensverige },
+  inLanguage: 'sv',
+  isAccessibleForFree: true,
+  dateModified: s.senast_verifierad ?? d.byggd,
+  spatialCoverage: { '@type': 'Country', name: 'Sverige' },
+  keywords: ['AI', 'artificiell intelligens', 'Sverige', 'organisationer', 'öppna data'],
   distribution: [
     { '@type': 'DataDownload', encodingFormat: 'application/json', contentUrl: `${import.meta.env.SITE}${url('/api/data.json')}` },
     { '@type': 'DataDownload', encodingFormat: 'text/csv', contentUrl: `${import.meta.env.SITE}${url('/api/data.csv')}` },
     { '@type': 'DataDownload', encodingFormat: 'application/geo+json', contentUrl: `${import.meta.env.SITE}${url('/api/data.geojson')}` },
   ],
 };
+const jsonLd = [webbplats, datamangd];
 ---
 
-<Bas titel={`${SAJT.titel} | ${SAJT.namn}`} helTitel beskrivning={`${SAJT.tagline} ${s.antal} organisationer med källa och datum på varje uppgift. Ingen rankning, inga betalplatser.`} stig="/" bred app jsonLd={jsonLd}>
+<Bas titel={`${SAJT.titel} | ${SAJT.namn}`} helTitel beskrivning={BESKRIVNING} stig="/" bred app jsonLd={jsonLd}>
   <KartApp lage="karta" />
 </Bas>

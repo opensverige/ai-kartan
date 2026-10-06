@@ -4,6 +4,7 @@ import StatusMarke from '../../components/StatusMarke.astro';
 import TypTagg from '../../components/TypTagg.astro';
 import { hamtaData, allaFakta, visaVarde, kalltypEtikett, formateraDatum, typikoner, url, absolutUrl, SAJT } from '../../lib/data';
 import type { Org } from '../../lib/data';
+import { brodsmulor, metabeskrivning } from '../../lib/meta';
 
 export function getStaticPaths() {
   const d = hamtaData();
@@ -23,7 +24,9 @@ const idag = d.byggd;
 const andringar = d.andringar.rader.filter((r) => r.id === org.id).slice(0, 40);
 const gammal = (org.h.dagar_sedan_kontroll ?? 0) > 180;
 const nedlagd = org.active?.value === false;
-const beskrivning = `${org.name.value}: ${org.description.value} ${typ?.label ?? ''}${org.h.kommun_namn ? ` i ${org.h.kommun_namn}` : ''}. Källa och datum på varje uppgift.`;
+// Namnet står redan i titeln. Beskrivningen börjar därför med typ och plats och sedan vad organisationen bygger.
+const typOchPlats = `${typ?.label ?? ''}${org.h.kommun_namn ? ` i ${org.h.kommun_namn}` : ''}`;
+const beskrivning = metabeskrivning(`${typOchPlats ? `${typOchPlats}: ` : ''}${org.description.value}`);
 
 const rattelseUrl = `${SAJT.repo}/issues/new?template=rattelse.yml&title=${encodeURIComponent(`Rättelse: ${org.name.value}`)}&organisation=${encodeURIComponent(org.id)}`;
 const borttagningUrl = `${SAJT.repo}/issues/new?template=borttagning.yml&title=${encodeURIComponent(`Borttagning: ${org.name.value}`)}&organisation=${encodeURIComponent(org.id)}`;
@@ -31,7 +34,7 @@ const redigeraUrl = `${SAJT.repo}/edit/main/data/organisationer/${org.id}.yaml`;
 const kallkodUrl = `${SAJT.repo}/blob/main/data/organisationer/${org.id}.yaml`;
 
 const sameAs = [org.links?.github, org.links?.huggingface, org.links?.linkedin, org.links?.wikidata ? `https://www.wikidata.org/wiki/${org.links.wikidata}` : undefined].filter(Boolean);
-const jsonLd = {
+const organisation = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: org.name.value,
@@ -42,8 +45,16 @@ const jsonLd = {
   foundingDate: org.founded?.value ? String(org.founded.value) : undefined,
   address: org.h.kommun_namn ? { '@type': 'PostalAddress', addressLocality: org.h.kommun_namn, addressRegion: org.h.lan_namn, addressCountry: 'SE' } : undefined,
   sameAs: sameAs.length ? sameAs : undefined,
-  subjectOf: { '@type': 'WebPage', url: permalank, license: 'https://creativecommons.org/licenses/by/4.0/' },
+  subjectOf: { '@type': 'WebPage', url: permalank, dateModified: org.record_updated_at, license: 'https://creativecommons.org/licenses/by/4.0/' },
 };
+const jsonLd = [
+  organisation,
+  brodsmulor([
+    ['Karta', absolutUrl('/')],
+    ['Organisationer', absolutUrl('/organisationer')],
+    [org.name.value, permalank],
+  ]),
+];
 const citat = `OpenSverige AI-kartan, ”${org.name.value}”, hämtad ${idag}, ${permalank}. Data: CC BY 4.0.`;
 ---
 

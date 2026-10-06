@@ -20,6 +20,7 @@ const etiketter = {
   lan: Object.fromEntries(d.lan.map((l) => [l.kod, l.namn])),
   typikoner: typikoner(),
 };
+const allaEfterNamn = d.organisationer.slice().sort((a, b) => a.name.value.localeCompare(b.name.value, 'sv'));
 ---
 
 <div class="app" data-lage={lage} data-api={url('/api/karta.json')} data-orgbas={url('/organisation/')} data-bidra={url('/bidra')} data-csv={url('/api/data.csv')} data-infra={SAJT.infra} data-infralogo={url('/ai-infra.png')} data-worker={url('/vendor/maplibre/maplibre-gl-worker.mjs')}>
@@ -76,11 +77,22 @@ const etiketter = {
       </div>
 
       <noscript>
-        <style>{'.post--skelett { display: none; }'}</style>
+        <style>{'.post--skelett { display: none; } .enkel-lista { margin: 16px 0; padding-left: 28px; line-height: 1.9; } .enkel-lista span { color: hsl(var(--ink-mute)); }'}</style>
         <p class="lista__tom lista__tom--ram">
           <strong>Kartan och listan kräver JavaScript.</strong>
           <span>Alla organisationer finns också <a href={url('/plats')}>per kommun och län</a> och som <a href={url('/data')}>öppen data</a>.</span>
         </p>
+        {/* Utan JavaScript ska listsidan ändå gå att läsa och följa, för människor och för robotar som inte kör skript. */}
+        {lage === 'lista' && (
+          <ol class="enkel-lista">
+            {allaEfterNamn.map((o) => (
+              <li>
+                <a href={url(`/organisation/${o.id}`)}>{o.name.value}</a>
+                <span> · {etiketter.typer[o.type.value] ?? o.type.value}{o.h.kommun_namn ? `, ${o.h.kommun_namn}` : ''}</span>
+              </li>
+            ))}
+          </ol>
+        )}
       </noscript>
 
       <ol class="lista" id="lista">
