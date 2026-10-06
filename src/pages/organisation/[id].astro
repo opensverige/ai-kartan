@@ -200,8 +200,13 @@ const citat = `OpenSverige AI-kartan, ”${org.name.value}”, hämtad ${idag}, 
   }
   .org__namnrad {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 16px;
+  }
+  /* Får det längsta ordet inte plats bredvid ikonen faller rubriken ner under den i stället för att klippas. */
+  .org__namnrad h1 {
+    flex: 1 1 0;
   }
   .org__ikon {
     flex: none;

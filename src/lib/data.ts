@@ -329,13 +329,13 @@ export function formateraDatum(iso: string | null | undefined): string {
   return `${dd} ${manader[(m ?? 1) - 1]} ${y}`;
 }
 
-/** Bygger en absolut eller basrelativ URL inom sajten. */
 /** Organisationstyper som har en ikon i public/ikoner/typ/, med adress. */
 export function typikoner(): Record<string, string> {
   const typIds = hamtaData().taxonomi.typer.map((t) => t.id);
   return hittaTypikoner(typIds, (fil) => fs.existsSync(path.join(ROT, 'public', fil)), url);
 }
 
+/** Bygger en absolut eller basrelativ URL inom sajten. */
 export function url(stig: string): string {
   const bas = import.meta.env.BASE_URL.replace(/\/$/, '');
   if (stig === '/') return bas || '/';

@@ -762,6 +762,15 @@ const etiketter = {
     async function startaKarta() {
       const el = document.getElementById('karta');
       if (!el) return;
+      // Typikonerna hämtas och avkodas medan kartbiblioteket laddas, så att landmärkena kan ritas direkt.
+      const ikonbilder = Promise.allSettled(
+        Object.keys(typikoner).map(async (typ): Promise<[string, HTMLImageElement]> => {
+          const bild = new Image();
+          bild.src = typikoner[typ];
+          await bild.decode();
+          return [typ, bild];
+        }),
+      );
       const { Map: Karta, Popup: Tips, setWorkerUrl } = await import('maplibre-gl');
       // Workern serveras från sajten; se scripts/kopiera-maplibre-worker.mjs.
       if (app.dataset.worker) setWorkerUrl(new URL(app.dataset.worker, location.href).href);
@@ -855,27 +864,34 @@ const etiketter = {
           const o = id ? alla.find((x) => x.id === String(id)) : undefined;
           if (o) visaDetalj(o, false);
         };
+        let tipsFor: string | null = null;
         const visaTips = (e: MapLayerMouseEvent) => {
           const f = e.features?.[0];
           if (!f) return;
+          // Markören sätts vid varje rörelse: klustrets mouseleave nollställer den när pekaren kommer därifrån.
           karta!.getCanvas().style.cursor = 'pointer';
+          const id = String(f.properties?.id ?? '');
+          if (id === tipsFor) return;
+          tipsFor = id;
           tips?.remove();
           // Ett landmärke är högre än en prick, så namnet får mer luft.
-          tips = new Tips({ closeButton: false, closeOnClick: false, offset: typikoner[String(f.properties?.t)] ? 24 : 14, className: 'tips' })
+          tips = new Tips({ closeButton: false, closeOnClick: false, offset: f.layer.id === 'landmarken' ? 24 : 14, className: 'tips' })
             .setLngLat((f.geometry as GeoJSON.Point).coordinates as [number, number])
             .setText(String(f.properties?.n ?? ''))
             .addTo(karta!);
         };
         const doljTips = () => {
+          tipsFor = null;
           karta!.getCanvas().style.cursor = '';
           tips?.remove();
         };
-        const kopplaPunktlager = (lager: string) => {
-          karta!.on('click', lager, oppnaPunkt);
-          karta!.on('mouseenter', lager, visaTips);
-          karta!.on('mouseleave', lager, doljTips);
-        };
-        kopplaPunktlager('punkter');
+        // En uppsättning lyssnare för båda lagren. Med en per lager släcker det ena lagrets
+        // mouseleave tipset som det andra just visade, och ett klick kan öppna två poster.
+        // Landmärkeslagret läggs till senare; lager som saknas hoppas över tills dess.
+        const punktlager = ['punkter', 'landmarken'];
+        karta!.on('click', punktlager, oppnaPunkt);
+        karta!.on('mousemove', punktlager, visaTips);
+        karta!.on('mouseleave', punktlager, doljTips);
         karta!.on('click', (e) => {
           // Tryck på tom karta fäller ner bottenbladet i smal vy.
           const lager = ['kluster', 'punkter', 'landmarken'].filter((id) => karta!.getLayer(id));
@@ -885,38 +901,45 @@ const etiketter = {
         // Typer med egen ikon ritas som landmärken: bilden i stället för en prick, med namnet under.
         // Går bilderna inte att ladda ligger prickarna kvar.
         const ritaLandmarken = async () => {
-          const typer = Object.keys(typikoner);
-          if (!typer.length) return;
           const BREDD = 40;
-          await Promise.all(
-            typer.map(async (typ) => {
-              const bild = new Image();
-              bild.src = typikoner[typ];
-              await bild.decode();
-              // Skalas ner en gång här. WebGL förminskar utan utjämning, och då flimrar pixelkonsten.
-              const duk = document.createElement('canvas');
-              duk.width = duk.height = BREDD * 2;
-              const penna = duk.getContext('2d');
-              if (!penna) throw new Error('ingen 2d-yta');
-              penna.imageSmoothingQuality = 'high';
-              penna.drawImage(bild, 0, 0, duk.width, duk.height);
-              karta!.addImage(`typ-${typ}`, penna.getImageData(0, 0, duk.width, duk.height), { pixelRatio: 2 });
-            }),
-          );
+          // Bildens täthet följer skärmen, så att pixelkonsten inte förstoras på telefoner. Källan är 192 px.
+          const tathet = Math.max(2, Math.min(4, Math.ceil(window.devicePixelRatio || 1)));
+          const typer: string[] = [];
+          for (const utfall of await ikonbilder) {
+            // En ikon som inte går att ladda ska inte dra med sig de andra: den typen behåller sin prick.
+            if (utfall.status === 'rejected') {
+              console.warn('Typikonen gick inte att ladda', utfall.reason);
+              continue;
+            }
+            const [typ, bild] = utfall.value;
+            // Skalas ner en gång här. WebGL förminskar utan utjämning, och då flimrar pixelkonsten.
+            const duk = document.createElement('canvas');
+            duk.width = duk.height = BREDD * tathet;
+            const penna = duk.getContext('2d');
+            if (!penna) continue;
+            penna.imageSmoothingQuality = 'high';
+            penna.drawImage(bild, 0, 0, duk.width, duk.height);
+            karta!.addImage(`typ-${typ}`, penna.getImageData(0, 0, duk.width, duk.height), { pixelRatio: tathet });
+            typer.push(typ);
+          }
+          if (!typer.length) return;
           const arLandmarke = ['in', ['get', 't'], ['literal', typer]] as unknown as ExpressionSpecification;
           const ensam = ['!', ['has', 'point_count']] as unknown as ExpressionSpecification;
           const ikon = ['concat', 'typ-', ['get', 't']] as unknown as ExpressionSpecification;
           karta!.addLayer(
             {
               id: 'landmarken', type: 'symbol', source: 'orgs', filter: ['all', ensam, arLandmarke],
-              layout: {
-                'icon-image': ikon,
-                'icon-size': ['interpolate', ['linear'], ['zoom'], 4, 0.8, 9, 1, 13, 1.2],
-                'icon-allow-overlap': true,
-                // Namnet visas från samma zoom som för prickarna.
-                'text-field': ['step', ['zoom'], '', 7, ['get', 'n']],
-                'text-font': ['Noto Sans Bold'], 'text-size': 12, 'text-anchor': 'top', 'text-offset': [0, 1.5], 'text-max-width': 9, 'text-optional': true,
-              },
+              // Ikonen stannar vid 40 px, samma storlek som den valda ikonen och dess ring är ritade för.
+              layout: { 'icon-image': ikon, 'icon-size': ['interpolate', ['linear'], ['zoom'], 4, 0.8, 9, 1], 'icon-allow-overlap': true },
+            },
+            'vald-ring',
+          );
+          // Namnet ligger i ett eget lager. I samma lager som ikonen räknas textrutan som träffyta,
+          // och då fångar namnet klick och hovring som gäller grannen under.
+          karta!.addLayer(
+            {
+              id: 'landmarken-namn', type: 'symbol', source: 'orgs', minzoom: 7, filter: ['all', ensam, arLandmarke],
+              layout: { 'text-field': ['get', 'n'], 'text-font': ['Noto Sans Bold'], 'text-size': 12, 'text-anchor': 'top', 'text-offset': [0, 1.85], 'text-max-width': 9 },
               paint: { 'text-color': BLACK, 'text-halo-color': '#fdfbf7', 'text-halo-width': 1.8 },
             },
             'vald-ring',
@@ -928,9 +951,8 @@ const etiketter = {
           karta!.setFilter('vald-punkt', ['!', arLandmarke]);
           karta!.addLayer({ id: 'vald-ikon', type: 'symbol', source: 'vald', filter: arLandmarke, layout: { 'icon-image': ikon, 'icon-allow-overlap': true } }, 'vald-namn');
           karta!.setLayoutProperty('vald-namn', 'text-offset', ['case', arLandmarke, ['literal', [0, -2.3]], ['literal', [0, -1.6]]]);
-          kopplaPunktlager('landmarken');
         };
-        ritaLandmarken().catch(() => undefined);
+        ritaLandmarken().catch((fel) => console.warn('Landmärkena gick inte att rita', fel));
         karta!.on('mouseenter', 'kluster', () => (karta!.getCanvas().style.cursor = 'pointer'));
         karta!.on('mouseleave', 'kluster', () => (karta!.getCanvas().style.cursor = ''));
 
@@ -2100,6 +2122,11 @@ const etiketter = {
   }
   .val:has(input:checked) .prick {
     box-shadow: 0 0 0 1.5px hsl(var(--yta));
+  }
+  /* Ikonens mörka konturer försvinner mot det ikryssade valets bläckfärg utan en ljus platta. */
+  .val:has(input:checked) .val__ikon {
+    border-radius: 6px;
+    background: hsl(var(--yta));
   }
   .rensapill {
     position: relative;
