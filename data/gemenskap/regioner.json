@@ -1,0 +1,13 @@
+{
+  "kalla": "Regionroller på OpenSveriges Discord, som medlemmarna väljer själva. Bara antal per roll, inga personer.",
+  "uppdaterad": "2026-10-06",
+  "radie_km": 100,
+  "regioner": [
+    { "namn": "Stockholm", "kommun": "0180", "antal": 191 },
+    { "namn": "Göteborg", "kommun": "1480", "antal": 77 },
+    { "namn": "Malmö", "kommun": "1280", "antal": 45 },
+    { "namn": "Jönköping", "kommun": "0680", "antal": 10 },
+    { "namn": "Umeå", "kommun": "2480", "antal": 0 }
+  ],
+  "annan_ort": 112
+}

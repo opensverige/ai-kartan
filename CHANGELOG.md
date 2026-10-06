@@ -4,6 +4,7 @@ Kodens och funktionernas historik. Dataändringar loggas separat och automatiskt
 
 ## 2026-10-06
 
+- Ny vy: var OpenSveriges medlemmar finns. Knappen med kräftan på kartan visar regionerna med tio mils radie och antalet medlemmar i varje, plus hur många som bygger på annan ort. Underlaget är regionrollerna på föreningens Discord, som antal i `data/gemenskap/regioner.json`. Inga personer hämtas. Ett antal under fem skrivs som "färre än 5", också i filen i repot. Den som söker på kräfta eller opensverige hittar också dit, och vyn går att länka med `?vy=medlemmar`.
 - Organisationer ritas inte längre i sjöar eller i havet. Organisationerna i en kommun radas upp i ett rutnät runt kommunens mittpunkt, och rutor i vatten hoppas över. I en kommun med få organisationer ligger de längre isär, så att namnen får plats. Var det är land står i `data/geo/land.json`, som byggs ur samma kartunderlag som kartan visar. Platsen i rutnätet säger ingenting om adressen.
 - Kartan har tre nivåer i stället för kluster per pixelavstånd: län med namn och antal när hela landet syns, kommuner ett klick in, och organisationerna själva ett klick till. Ett klick eller dubbelklick på en grupp zoomar dit och visar platsen i panelen. En organisation som är ensam på sin plats ritas alltid som sig själv. Den som zoomar ut ur en nivå lämnar platsen.
 - Myndigheter och kommuner ritas som landmärken på kartan, med en ikon i stället för en prick. Samma ikon syns på korten, i filtret Typ och på organisationssidan. En ny ikon börjar gälla när filen läggs i `public/ikoner/typ/`.

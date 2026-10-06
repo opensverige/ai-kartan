@@ -6,6 +6,8 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import Filterrad from './Filterrad.astro';
 import { hamtaData, typikoner, url, formateraDatum, SAJT } from '../lib/data';
 import { ikon } from '../lib/ikoner';
+import { medlemsvy, type Medlemsdata } from '../lib/medlemmar';
+import medlemsdata from '../../data/gemenskap/regioner.json';
 
 interface Props {
   lage?: 'karta' | 'lista';
@@ -21,9 +23,14 @@ const etiketter = {
   typikoner: typikoner(),
 };
 const allaEfterNamn = d.organisationer.slice().sort((a, b) => a.name.value.localeCompare(b.name.value, 'sv'));
+// Var föreningens medlemmar finns, som antal per region. Ritas på kartan först när besökaren ber om det.
+const medlemmar = lage === 'karta' ? medlemsvy(medlemsdata as Medlemsdata, d.kommuner) : null;
+const kraftan = url('/ikoner/opensverige.png');
+// Stapelns bredd räknas ur ikonens storlek. Ett dolt antal ger samma stapel som noll.
+const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 100);
 ---
 
-<div class="app" data-lage={lage} data-api={url('/api/karta.json')} data-orgbas={url('/organisation/')} data-bidra={url('/bidra')} data-csv={url('/api/data.csv')} data-infra={SAJT.infra} data-infralogo={url('/ai-infra.png')} data-worker={url('/vendor/maplibre/maplibre-gl-worker.mjs')}>
+<div class="app" data-lage={lage} data-api={url('/api/karta.json')} data-orgbas={url('/organisation/')} data-bidra={url('/bidra')} data-csv={url('/api/data.csv')} data-infra={SAJT.infra} data-infralogo={url('/ai-infra.png')} data-worker={url('/vendor/maplibre/maplibre-gl-worker.mjs')} data-kartbas={url('/')} data-kraftan={kraftan}>
   {lage === 'lista' && <Filterrad />}
 
   <section class="panel" id="panel" data-blad="titt" aria-label="Organisationer">
@@ -135,6 +142,11 @@ const allaEfterNamn = d.organisationer.slice().sort((a, b) => a.name.value.local
         <Fragment set:html={ikon('panel-oppna', 20)} />
       </button>
       <div class="kartknappar">
+        {medlemmar && (
+          <button type="button" class="kartknapp kartknapp--vi" id="visa-medlemmar" aria-pressed="false" aria-controls="medlemskort" aria-label="Visa var OpenSveriges medlemmar finns" title="Var är vi?">
+            <img src={kraftan} alt="" width="36" height="36" decoding="async" />
+          </button>
+        )}
         <div class="kartknappar__grupp">
           <button type="button" class="kartknapp" id="zooma-in" aria-label="Zooma in"><Fragment set:html={ikon('plus', 20)} /></button>
           <button type="button" class="kartknapp" id="zooma-ut" aria-label="Zooma ut"><Fragment set:html={ikon('minus', 20)} /></button>
@@ -143,12 +155,44 @@ const allaEfterNamn = d.organisationer.slice().sort((a, b) => a.name.value.local
           <Fragment set:html={ikon('helbild', 19)} />
         </button>
       </div>
+      {medlemmar && (
+        <aside class="medlemskort" id="medlemskort" aria-label="OpenSveriges medlemmar per region" hidden>
+          <div class="medlemskort__topp">
+            <img class="medlemskort__bild" src={kraftan} alt="" width="44" height="44" loading="lazy" decoding="async" />
+            <div>
+              <p class="kicker">Du hittade kräftan</p>
+              <h2 class="medlemskort__rubrik">Här är vi</h2>
+            </div>
+            <button type="button" class="ikonknapp" id="stang-medlemmar" aria-label="Tillbaka till kartan" title="Tillbaka till kartan">
+              <Fragment set:html={ikon('kryss', 20)} />
+            </button>
+          </div>
+          <p class="medlemskort__text"><strong>{medlemmar.iRegioner}</strong> byggare har valt en region.</p>
+          <ul class="medlemskort__lista">
+            {medlemmar.regioner.map((r) => (
+              <li>
+                <span>{r.namn}</span>
+                <span class="medlemskort__stapel" style={`--b:${stapel(r.storlek)}%`}></span>
+                {r.tom ? <a href={SAJT.discord} rel="noopener">bli först</a> : <strong>{r.visat}</strong>}
+              </li>
+            ))}
+          </ul>
+          <p class="medlemskort__annan">Remote eller annan ort: <strong>{medlemmar.annanOrt}</strong></p>
+          <p class="meta medlemskort__not">
+            Regionen väljer var och en själv på vår Discord: en stad och tio mil runt den. Kartan får bara antalet, aldrig
+            vem som har valt vad. Uppdaterat {formateraDatum(medlemmar.uppdaterad)}.
+            <a class="medlemskort__lank" href={SAJT.discord} rel="noopener">Gå med på Discord</a>
+          </p>
+          <a class="knapp knapp--liten medlemskort__knapp" href={SAJT.discord} rel="noopener">Gå med på Discord</a>
+        </aside>
+      )}
       <p class="karta__not meta">Positioner visas på kommunnivå, aldrig som gatuadress. <a href={url('/metod#plats')}>Varför?</a></p>
     </div>
   )}
 </div>
 
 <script type="application/json" id="etiketter" set:html={JSON.stringify(etiketter)} />
+{medlemmar && <script type="application/json" id="medlemsdata" set:html={JSON.stringify(medlemmar)} />}
 
 <script>
   // MapLibre är stort och laddas först när en karta faktiskt ska ritas, inte i listläget.
@@ -156,6 +200,7 @@ const allaEfterNamn = d.organisationer.slice().sort((a, b) => a.name.value.local
   import { ikon, type IkonNamn } from '../lib/ikoner';
   import { urvalSomCsv } from '../lib/csv';
   import { grupperaPerPlats, platsEfterUtzoomning, platsmitt, zoomgranser, ZOOM_KOMMUN, ZOOM_POSTER, type Platsgrupp } from '../lib/platsgrupper';
+  import { arPaskagg, cirkel, type Medlemsvy } from '../lib/medlemmar';
 
   type Post = {
     id: string; n: string; t: string; o: string[]; a: string[]; k: string | null; kn: string | null;
@@ -168,7 +213,7 @@ const allaEfterNamn = d.organisationer.slice().sort((a, b) => a.name.value.local
   type Filter = { q: string; erbjuder: string[]; typ: string[]; omrade: string[]; lan: string; kommun: string };
   type PlatsTraff = { typ: 'kommun' | 'lan'; kod: string; namn: string; nn: string; under: string; antal: number };
   type SokTraff = { org: Rad[]; platser: PlatsTraff[]; totalt: number };
-  type SokVal = { typ: 'org'; o: Rad } | { typ: 'plats'; p: PlatsTraff };
+  type SokVal = { typ: 'org'; o: Rad } | { typ: 'plats'; p: PlatsTraff } | { typ: 'vy' };
 
   const app = document.querySelector<HTMLElement>('.app');
   if (app) starta(app);
@@ -208,6 +253,9 @@ const allaEfterNamn = d.organisationer.slice().sort((a, b) => a.name.value.local
     const sokFalt = document.querySelector<HTMLInputElement>('#sok');
     const sokLada = document.querySelector<HTMLElement>('#sokresultat');
     const smal = window.matchMedia('(max-width: 900px)');
+    const medlemsknapp = app.querySelector<HTMLButtonElement>('#visa-medlemmar');
+    const medlemskort = app.querySelector<HTMLElement>('#medlemskort');
+    const medlemsdata = JSON.parse(document.getElementById('medlemsdata')?.textContent || 'null') as Medlemsvy | null;
 
     const FARG: Record<string, string> = {
       bolag: '#2d492d', enskild_firma: '#478547', myndighet: '#2d2920', kommun_region: '#6d665f',
@@ -238,6 +286,9 @@ const allaEfterNamn = d.organisationer.slice().sort((a, b) => a.name.value.local
     let tips: Popup | null = null;
     let sokVal: SokVal[] = [];
     let sokAktiv = -1;
+    // Medlemsvyn: organisationerna göms och föreningens medlemmar visas som antal per region.
+    // En organisation i adressen går före: den som går till en organisation lämnar vyn.
+    let medlemslage = medKarta && !!medlemsdata && !valdId && start.get('vy') === 'medlemmar';
 
     const normalisera = (s: string) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
     const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
@@ -305,6 +356,7 @@ const allaEfterNamn = d.organisationer.slice().sort((a, b) => a.name.value.local
       if (f.lan) p.set('lan', f.lan);
       if (f.kommun) p.set('kommun', f.kommun);
       if (valdId) p.set('org', valdId);
+      if (medlemslage) p.set('vy', 'medlemmar');
       const qs = p.toString();
       const adress = qs ? `?${qs}` : location.pathname;
       if (nyPost) history.pushState(null, '', adress);
@@ -401,6 +453,7 @@ const allaEfterNamn = d.organisationer.slice().sort((a, b) => a.name.value.local
      * Vid utzoomning rörs inte kameran, eftersom besökaren redan har flyttat den.
      */
     function sattPlats(lan: string, nyKommun = '', utzoomning = false) {
+      lamnaMedlemsvy();
       kommun = nyKommun;
       sattVal('lan', [lan]);
       const vald = valdId ? alla.find((o) => o.id === valdId) : undefined;
@@ -524,6 +577,7 @@ const allaEfterNamn = d.organisationer.slice().sort((a, b) => a.name.value.local
 
     function visaDetalj(o: Rad, flyg = true, nyPost = true) {
       if (!vyDetalj) return;
+      lamnaMedlemsvy();
       // Bara första öppningen lägger en post i historiken. Byte mellan organisationer ersätter den.
       const iHistorik = nyPost && vyDetalj.hidden;
       valdId = o.id;
@@ -634,6 +688,13 @@ const allaEfterNamn = d.organisationer.slice().sort((a, b) => a.name.value.local
         );
       };
       let html = '';
+      // Påskägget: den som söker på föreningen eller på kräftan får vägen till medlemsvyn.
+      if (arPaskagg(q)) {
+        const bild = `<span class="logo logo--liten logo--ikon" aria-hidden="true"><img src="${esc(app.dataset.kraftan ?? '')}" alt=""></span>`;
+        html += '<div role="group" aria-label="OpenSverige"><p class="sokgrupp">Du hittade kräftan</p>';
+        html += rad({ typ: 'vy' }, bild, 'Var är OpenSverige?', 'Visa medlemmarna på kartan, region för region');
+        html += '</div>';
+      }
       if (t.org.length) {
         html += '<div role="group" aria-label="Organisationer"><p class="sokgrupp">Organisationer</p>';
         for (const o of t.org) html += rad({ typ: 'org', o }, logoHtml(o, 'logo--liten'), markera(o.n, q), `${esc(o.kn ?? 'Utan plats')} · ${esc(etiketter.typer[o.t] || o.t)}`);
@@ -686,6 +747,12 @@ const allaEfterNamn = d.organisationer.slice().sort((a, b) => a.name.value.local
     function valjSokval(v: SokVal) {
       stangSok();
       sokFalt?.blur();
+      if (v.typ === 'vy') {
+        if (!medKarta) return void (location.href = `${app.dataset.kartbas ?? '/'}?vy=medlemmar`);
+        if (sokFalt) sokFalt.value = '';
+        filtrera(false);
+        return sattMedlemsvy(true);
+      }
       if (v.typ === 'org') {
         if (medKarta) visaDetalj(v.o);
         else location.href = `${orgbas}${encodeURIComponent(v.o.id)}`;
@@ -720,12 +787,17 @@ const allaEfterNamn = d.organisationer.slice().sort((a, b) => a.name.value.local
         } else if (e.key === 'Enter') {
           e.preventDefault();
           if (sokAktiv >= 0 && sokVal[sokAktiv]) valjSokval(sokVal[sokAktiv]);
+          else if (arPaskagg(sokFalt.value)) valjSokval({ typ: 'vy' });
           else {
+            // Den som söker vidare vill se organisationer, inte medlemsvyn.
+            if (medlemslage) sattMedlemsvy(false);
             stangSok();
             sokFalt.blur();
             if (smal.matches) sattBlad('oppen');
           }
         } else if (e.key === 'Escape') {
+          // Märks som hanterad, så att samma tryck inte också stänger medlemsvyn.
+          e.preventDefault();
           if (!sokLada.hidden) stangSok();
           else sokFalt.blur();
         }
@@ -813,6 +885,185 @@ const allaEfterNamn = d.organisationer.slice().sort((a, b) => a.name.value.local
       const luft = { top: m.top + 36, bottom: m.bottom + 36, left: m.left + 36, right: m.right + 36 };
       const passad = karta.cameraForBounds([[v, s], [o, n]], { padding: luft });
       karta.flyTo({ center: passad?.center ?? [(v + o) / 2, (s + n) / 2], zoom: Math.min(hogst, Math.max(lagst, passad?.zoom ?? hogst)) }, AV_KOD);
+    }
+
+    /* ---------- Medlemsvyn ---------- */
+
+    const ORGKALLOR = ['orgs', 'lan-grupper', 'kommun-grupper', 'vald'];
+    const MEDLEMSLAGER = ['medlemmar-yta', 'medlemmar-kant', 'medlemmar-ikon'];
+    const KRAFTROD = '#c2511f';
+    let kameraFore: { center: [number, number]; zoom: number } | null = null;
+    // Falskt tills kartan har visat sin första vanliga vy. Pekar adressen rakt in i medlemsvyn
+    // finns det ingen sådan vy att gå tillbaka till.
+    let forstaVyVisad = false;
+
+    /** Organisationernas lager syns i den vanliga vyn och medlemmarnas i medlemsvyn, aldrig båda. */
+    function visaMedlemslager() {
+      if (!karta) return;
+      for (const lager of karta.getStyle().layers) {
+        const kalla = 'source' in lager ? String(lager.source) : '';
+        if (ORGKALLOR.includes(kalla)) karta.setLayoutProperty(lager.id, 'visibility', medlemslage ? 'none' : 'visible');
+        else if (MEDLEMSLAGER.includes(lager.id)) karta.setLayoutProperty(lager.id, 'visibility', medlemslage ? 'visible' : 'none');
+      }
+    }
+
+    /** Brickans storlek: efter regionens antal, och lite mindre när hela landet ryms på en smal skärm. */
+    const brickstorlek = (skala = 1) =>
+      ['interpolate', ['linear'], ['zoom'], 3.3, ['*', 0.78 * skala, ['get', 'storlek']], 4.3, ['*', skala, ['get', 'storlek']]] as unknown as ExpressionSpecification;
+
+    /**
+     * Brickan med föreningens kräfta. Laddas första gången vyn öppnas. Går bilden inte att ladda
+     * ritas regionerna ändå, med namn och antal, och nästa öppning försöker igen.
+     */
+    async function laddaKraftan() {
+      if (!karta || karta.hasImage('kraftan')) return;
+      const bild = new Image();
+      bild.src = app.dataset.kraftan ?? '';
+      await bild.decode();
+      // Bilden har egen bakgrund. Den skärs till en rund bricka med kant, så att den står ut mot kartan.
+      const BREDD = 60;
+      const tathet = Math.max(2, Math.min(3, Math.ceil(window.devicePixelRatio || 1)));
+      const duk = document.createElement('canvas');
+      duk.width = duk.height = BREDD * tathet;
+      const penna = duk.getContext('2d');
+      if (!penna) return;
+      const mitten = duk.width / 2;
+      const kant = 2.5 * tathet;
+      penna.imageSmoothingQuality = 'high';
+      penna.beginPath();
+      penna.arc(mitten, mitten, mitten - kant / 2, 0, Math.PI * 2);
+      penna.fillStyle = '#fbfaf7';
+      penna.fill();
+      penna.save();
+      penna.clip();
+      // Lite luft runt om, så att fingrarna och klon inte skärs av i brickans kant.
+      const luft = duk.width * 0.07;
+      penna.drawImage(bild, luft, luft, duk.width - luft * 2, duk.height - luft * 2);
+      penna.restore();
+      penna.lineWidth = kant;
+      penna.strokeStyle = BLACK;
+      penna.stroke();
+      if (!karta.hasImage('kraftan')) karta.addImage('kraftan', penna.getImageData(0, 0, duk.width, duk.height), { pixelRatio: tathet });
+    }
+
+    /** Regionerna: en cirkel med regionens radie, och i mitten brickan med namn och antal. */
+    function ritaMedlemmar() {
+      if (!karta || !medlemsdata || karta.getSource('medlemmar')) return;
+      const { regioner, radieKm } = medlemsdata;
+      karta.addSource('medlemmar-ytor', {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features: regioner.map((r) => ({ type: 'Feature', geometry: { type: 'Polygon', coordinates: [cirkel(r.lat, r.lng, radieKm)] }, properties: { tom: r.tom } })),
+        },
+      });
+      karta.addSource('medlemmar', {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features: regioner.map((r) => ({ type: 'Feature', geometry: { type: 'Point', coordinates: [r.lng, r.lat] }, properties: { n: r.namn, visat: r.visat, storlek: r.storlek, tom: r.tom, sida: r.sida } })),
+        },
+      });
+      // En region som ingen har valt än ritas blekare: den finns, men är tom.
+      const blek = (tomt: number, fullt: number) => ['case', ['get', 'tom'], tomt, fullt] as unknown as ExpressionSpecification;
+      karta.addLayer({ id: 'medlemmar-yta', type: 'fill', source: 'medlemmar-ytor', paint: { 'fill-color': KRAFTROD, 'fill-opacity': blek(0.04, 0.16) } });
+      karta.addLayer({
+        id: 'medlemmar-kant', type: 'line', source: 'medlemmar-ytor',
+        paint: { 'line-color': KRAFTROD, 'line-width': 1.5, 'line-dasharray': [3, 2.5], 'line-opacity': blek(0.5, 0.9) },
+      });
+      karta.addLayer({
+        id: 'medlemmar-ikon', type: 'symbol', source: 'medlemmar',
+        layout: {
+          'icon-image': 'kraftan', 'icon-size': brickstorlek(), 'icon-allow-overlap': true,
+          'text-field': ['format', ['get', 'n'], {}, '\n', {}, ['get', 'visat'], { 'font-scale': 1.3 }],
+          'text-font': ['Noto Sans Bold'], 'text-size': ['interpolate', ['linear'], ['zoom'], 3.3, 11.5, 4.3, 13], 'text-line-height': 1.25, 'text-allow-overlap': true,
+          // Namnet står under brickan, eller väster om den när en grannregion ligger nära i öster.
+          // Avståndet följer brickan, som är 60 px bred gånger regionens storlek.
+          'text-anchor': ['match', ['get', 'sida'], 'vanster', 'right', 'top'],
+          'text-justify': ['match', ['get', 'sida'], 'vanster', 'right', 'center'],
+          'text-radial-offset': ['+', 0.45, ['*', 2.3, ['get', 'storlek']]],
+          // Störst sist, så att den ligger överst där två regioner möts.
+          'symbol-sort-key': ['get', 'storlek'],
+        },
+        paint: { 'icon-opacity': blek(0.5, 1), 'text-color': BLACK, 'text-halo-color': '#fdfbf7', 'text-halo-width': 2 },
+      });
+    }
+
+    /** Brickorna landar: de växer lite för stora och sätter sig sedan. */
+    function landaBrickor() {
+      if (!karta || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const borjan = performance.now();
+      const steg = (nu: number) => {
+        if (!karta?.getLayer('medlemmar-ikon')) return;
+        const t = Math.min(1, (nu - borjan) / 520);
+        const skala = 1 + 2.70158 * (t - 1) ** 3 + 1.70158 * (t - 1) ** 2;
+        karta.setLayoutProperty('medlemmar-ikon', 'icon-size', brickstorlek(Math.max(0.01, skala)));
+        if (t < 1) requestAnimationFrame(steg);
+      };
+      requestAnimationFrame(steg);
+    }
+
+    /** Alla regioner i bild, med plats för kortet som ligger över kartan. */
+    function passaMedlemmar() {
+      if (!karta || !medlemsdata) return;
+      const horn = medlemsdata.regioner.flatMap((r) => cirkel(r.lat, r.lng, medlemsdata.radieKm, 12));
+      const lng = horn.map((p) => p[0]);
+      const lat = horn.map((p) => p[1]);
+      const kort = medlemskort?.getBoundingClientRect();
+      // I smal vy ligger kortet som ett blad i botten, och knapparna och källraden flyttar upp ovanför det.
+      app.style.setProperty('--medlemskort-h', `${Math.round(kort?.height ?? 0)}px`);
+      const padding = smal.matches
+        ? { top: 28, bottom: (kort?.height ?? 0) + 64, left: 84, right: 32 }
+        : { top: 48, bottom: 48, left: (kort?.width ?? 0) + 40, right: 80 };
+      karta.fitBounds([[Math.min(...lng), Math.min(...lat)], [Math.max(...lng), Math.max(...lat)]], { padding }, AV_KOD);
+    }
+
+    /**
+     * Slår på eller av medlemsvyn. `flyttaKameran` är falskt när besökaren redan är på väg någon
+     * annanstans, till exempel till en plats eller en organisation.
+     */
+    function sattMedlemsvy(pa: boolean, skriv = true, flyttaKameran = true) {
+      if (!medlemsdata) return;
+      if (!karta || !kartaKlar) {
+        // Kartan är inte klar än. Ett val som lämnar vyn ska ändå gälla när den blir det.
+        if (!pa) medlemslage = false;
+        return;
+      }
+      const bytte = pa !== (app.dataset.vy === 'medlemmar');
+      medlemslage = pa;
+      if (pa) app.dataset.vy = 'medlemmar';
+      else delete app.dataset.vy;
+      medlemsknapp?.setAttribute('aria-pressed', String(pa));
+      medlemsknapp?.setAttribute('aria-label', pa ? 'Tillbaka till organisationerna' : 'Visa var OpenSveriges medlemmar finns');
+      if (medlemskort) medlemskort.hidden = !pa;
+      tips?.remove();
+      if (pa) {
+        // Kameran sparas bara när den står still i en vy besökaren har sett. Mitt i en flygning,
+        // eller när adressen pekade rakt in i vyn, passas kartan in på urvalet när vyn lämnas.
+        if (bytte) kameraFore = forstaVyVisad && !karta.isMoving() ? { center: karta.getCenter().toArray() as [number, number], zoom: karta.getZoom() } : null;
+        stangDetalj(false);
+        if (smal.matches) sattBlad('titt');
+        ritaMedlemmar();
+        visaMedlemslager();
+        void laddaKraftan()
+          .catch((fel) => console.warn('Kräftan gick inte att ladda', fel))
+          .then(() => medlemslage && bytte && landaBrickor());
+        passaMedlemmar();
+      } else {
+        visaMedlemslager();
+        if (flyttaKameran) {
+          if (kameraFore) karta.flyTo(kameraFore, AV_KOD);
+          else passaKarta();
+        }
+        kameraFore = null;
+        forstaVyVisad = true;
+      }
+      if (skriv) skrivUrl(lasFilter());
+    }
+
+    /** Den som går till en plats eller en organisation lämnar medlemsvyn. */
+    function lamnaMedlemsvy() {
+      if (medlemslage) sattMedlemsvy(false, false, false);
     }
 
     async function startaKarta() {
@@ -1084,6 +1335,8 @@ const allaEfterNamn = d.organisationer.slice().sort((a, b) => a.name.value.local
           karta!.setLayoutProperty('ensam-yta', 'icon-size', ['case', arLandmarke, 38, 18]);
           karta!.addLayer({ id: 'vald-ikon', type: 'symbol', source: 'vald', filter: ['all', synlig, arLandmarke], layout: { 'icon-image': ikon, 'icon-allow-overlap': true } }, 'vald-namn');
           karta!.setLayoutProperty('vald-namn', 'text-offset', ['case', arLandmarke, ['literal', [0, -2.3]], ['literal', [0, -1.6]]]);
+          // Landmärkena kan bli klara efter att medlemsvyn har öppnats. Då ska de också vara gömda.
+          visaMedlemslager();
         };
         ritaLandmarken().catch((fel) => console.warn('Landmärkena gick inte att rita', fel));
         // Den som själv zoomar ut ur en nivå lämnar platsen den hörde till. Annars står kartan
@@ -1094,7 +1347,7 @@ const allaEfterNamn = d.organisationer.slice().sort((a, b) => a.name.value.local
         karta!.on('zoomend', (e) => {
           const fran = zoomFore;
           zoomFore = karta!.getZoom();
-          if ((e as { avKod?: boolean }).avKod || !alla.length) return;
+          if ((e as { avKod?: boolean }).avKod || !alla.length || medlemslage) return;
           const f = lasFilter();
           const efter = platsEfterUtzoomning(zoomFore, { lan: f.lan, kommun: f.kommun }, fran);
           if (efter.lan !== f.lan || efter.kommun !== f.kommun) sattPlats(efter.lan, efter.kommun, true);
@@ -1105,15 +1358,26 @@ const allaEfterNamn = d.organisationer.slice().sort((a, b) => a.name.value.local
           uppdateraKarta();
           forstaVy();
         }
+        // Adressen kan peka rakt in i medlemsvyn. Den behöver inte organisationernas data.
+        if (medlemslage) sattMedlemsvy(true, false);
       });
 
       app.querySelector('#zooma-in')?.addEventListener('click', () => karta?.zoomIn());
       app.querySelector('#zooma-ut')?.addEventListener('click', () => karta?.zoomOut());
-      app.querySelector('#visa-allt')?.addEventListener('click', passaKarta);
+      app.querySelector('#visa-allt')?.addEventListener('click', () => (medlemslage ? passaMedlemmar() : passaKarta()));
+      medlemsknapp?.addEventListener('click', () => sattMedlemsvy(!medlemslage));
+      smal.addEventListener('change', () => medlemslage && passaMedlemmar());
+      app.querySelector('#stang-medlemmar')?.addEventListener('click', () => {
+        sattMedlemsvy(false);
+        medlemsknapp?.focus({ preventScroll: true });
+      });
     }
 
     /** Första vyn när både data och karta finns: vald organisation, vald plats eller hela landet. */
     function forstaVy() {
+      // Medlemsvyn har sin egen kamera och ska inte flyttas när organisationernas data kommer.
+      if (medlemslage) return;
+      if (kartaKlar) forstaVyVisad = true;
       const o = valdId ? alla.find((x) => x.id === valdId) : undefined;
       if (o) return visaDetalj(o, true, false);
       valdId = null;
@@ -1231,7 +1495,11 @@ const allaEfterNamn = d.organisationer.slice().sort((a, b) => a.name.value.local
       if (oppen) {
         stangPiller();
         oppen.querySelector<HTMLElement>('.fknapp')?.focus();
+        return;
       }
+      // Sist i raden: stänger något annat på samma tryck (sökrutan, menyn) står vyn kvar.
+      const menyOppen = !!document.querySelector('details[open].meny, .meny[open]');
+      if (medlemslage && !e.defaultPrevented && !menyOppen) sattMedlemsvy(false);
     });
 
     // Greppet går både att trycka på och att svepa upp eller ner.
@@ -1265,6 +1533,7 @@ const allaEfterNamn = d.organisationer.slice().sort((a, b) => a.name.value.local
       if (o) visaDetalj(o, true, false);
       else stangDetalj(false, true);
       detaljIHistorik = false;
+      if (medKarta && (p.get('vy') === 'medlemmar') !== medlemslage) sattMedlemsvy(!medlemslage, false);
     });
     smal.addEventListener('change', () => {
       form.classList.remove('filteryta--oppen');
@@ -2064,6 +2333,132 @@ const allaEfterNamn = d.organisationer.slice().sort((a, b) => a.name.value.local
     font-family: var(--font-mono);
     font-size: 10px;
   }
+
+  /* ---------- Medlemsvyn ---------- */
+  .kartknapp--vi {
+    overflow: hidden;
+  }
+  .kartknapp--vi img {
+    width: 36px;
+    height: 36px;
+    border-radius: 12px;
+  }
+  .kartknapp--vi[aria-pressed='true'] {
+    border-color: hsl(var(--ink));
+    box-shadow: 0 0 0 2px hsl(var(--ink)), var(--skugga-flyt);
+  }
+  .medlemskort {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    z-index: 5;
+    width: 300px;
+    max-width: calc(100% - 32px);
+    padding: 16px;
+    border: 1px solid hsl(var(--kant));
+    border-radius: var(--r-kort);
+    background: hsl(var(--yta-kort));
+    box-shadow: var(--skugga-flyt);
+  }
+  .medlemskort[hidden] {
+    display: none;
+  }
+  /* Knappen som visar panelen ligger i samma hörn när panelen är dold. */
+  .app--utan-panel .medlemskort {
+    top: 74px;
+  }
+  .medlemskort__topp {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .medlemskort__topp .kicker {
+    margin: 0 0 2px;
+  }
+  .medlemskort__topp .ikonknapp {
+    margin-left: auto;
+    align-self: flex-start;
+  }
+  .medlemskort__bild {
+    flex: none;
+    width: 44px;
+    height: 44px;
+    border: 2px solid hsl(var(--ink));
+    border-radius: 50%;
+  }
+  .medlemskort__rubrik {
+    margin: 0;
+    font-size: 22px;
+    line-height: 1.1;
+  }
+  .medlemskort__text {
+    margin: 14px 0 10px;
+  }
+  .medlemskort__lista {
+    display: grid;
+    gap: 7px;
+    margin: 0 0 12px;
+    padding: 0;
+    list-style: none;
+    font-size: 14px;
+  }
+  .medlemskort__lista li {
+    display: grid;
+    grid-template-columns: 78px 1fr auto;
+    gap: 10px;
+    align-items: center;
+  }
+  .medlemskort__lista strong {
+    min-width: 28px;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+  .medlemskort__stapel {
+    height: 6px;
+    overflow: hidden;
+    border-radius: 3px;
+    background: hsl(var(--yta-chip));
+  }
+  .medlemskort__stapel::after {
+    display: block;
+    width: var(--b);
+    height: 100%;
+    border-radius: 3px;
+    background: hsl(var(--rust));
+    content: '';
+  }
+  .medlemskort__annan {
+    margin: 0;
+    font-size: 14px;
+  }
+  .medlemskort__not {
+    margin: 10px 0 14px;
+  }
+  .medlemskort__lank {
+    display: none;
+  }
+  /* Filtren och noten om positioner gäller organisationerna, som inte syns i medlemsvyn. */
+  .app[data-vy='medlemmar'] .kartyta .filteryta,
+  .app[data-vy='medlemmar'] .karta__not {
+    display: none;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .kartknapp--vi:hover img,
+    .medlemskort:not([hidden]) .medlemskort__bild {
+      animation: nyp 620ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+  }
+  @keyframes nyp {
+    25% {
+      transform: rotate(-10deg);
+    }
+    55% {
+      transform: rotate(7deg);
+    }
+    80% {
+      transform: rotate(-3deg);
+    }
+  }
   .tips .maplibregl-popup-content {
     padding: 6px 10px;
     border-radius: 10px;
@@ -2668,6 +3063,47 @@ const allaEfterNamn = d.organisationer.slice().sort((a, b) => a.name.value.local
       inset: 0;
       z-index: 79;
       background: hsl(var(--ink) / 0.4);
+    }
+
+    /* Medlemskortet blir ett blad i botten och tar listans plats. Antalen per region står på kartan. */
+    .medlemskort {
+      top: auto;
+      right: 12px;
+      bottom: 12px;
+      left: 12px;
+      width: auto;
+      max-width: none;
+      padding: 12px 14px 14px;
+    }
+    .app[data-vy='medlemmar'] .panel {
+      display: none;
+    }
+    .app[data-vy='medlemmar'] .kartknappar {
+      bottom: calc(var(--medlemskort-h, 180px) + 28px);
+    }
+    .app[data-vy='medlemmar'] .maplibregl-ctrl-bottom-right,
+    .app[data-vy='medlemmar'] .maplibregl-ctrl-bottom-left {
+      bottom: calc(var(--medlemskort-h, 180px) + 14px);
+    }
+    .medlemskort__lista,
+    .medlemskort__knapp {
+      display: none;
+    }
+    .medlemskort__lank {
+      display: inline;
+    }
+    .medlemskort__text {
+      margin: 8px 0 0;
+    }
+    .medlemskort__text,
+    .medlemskort__annan {
+      display: inline;
+      font-size: 15px;
+    }
+    .medlemskort__not {
+      margin: 6px 0 0;
+      font-size: 11px;
+      line-height: 1.45;
     }
 
     /* Sökträffarna fyller skärmens bredd under sidhuvudet. */
