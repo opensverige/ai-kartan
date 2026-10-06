@@ -1,10 +1,10 @@
 [
-  { "id": "bolag", "label": "Bolag", "plural": "Bolag", "description": "Aktiebolag, handelsbolag, kommanditbolag eller ekonomisk förening.", "color": "moss" },
-  { "id": "enskild_firma", "label": "Enskild firma", "plural": "Enskilda firmor", "description": "Enskild näringsidkare. Läggs bara till av personen själv, eftersom posten är en personuppgift.", "color": "moss" },
-  { "id": "myndighet", "label": "Myndighet", "plural": "Myndigheter", "description": "Statlig myndighet eller annat statligt organ.", "color": "ink" },
-  { "id": "kommun_region", "label": "Kommun eller region", "plural": "Kommuner och regioner", "description": "Kommun, region eller bolag och förbund som ägs av dem.", "color": "ink" },
-  { "id": "larosate", "label": "Lärosäte eller forskningsmiljö", "plural": "Lärosäten och forskningsmiljöer", "description": "Universitet, högskola, forskningsinstitut, forskningscentrum eller forskningsprogram.", "color": "amber" },
-  { "id": "community", "label": "Community eller förening", "plural": "Communities och föreningar", "description": "Ideell förening, nätverk, meetup eller annan sammanslutning med egen identitet.", "color": "rust" },
-  { "id": "finansiar", "label": "Finansiär", "plural": "Finansiärer", "description": "Riskkapital, offentlig finansiär, stiftelse, inkubator eller accelerator som finansierar AI.", "color": "link" },
-  { "id": "infrastruktur", "label": "Infrastruktur", "plural": "Infrastruktur", "description": "Leverantör eller nationell resurs för AI-beräkning, hosting eller inferens. Jämför infra.opensverige.se.", "color": "mute" }
+  { "id": "bolag", "label": "Bolag", "plural": "Bolag", "description": "Aktiebolag, handelsbolag, kommanditbolag eller ekonomisk förening.", "color": "moss", "belagg": ["produkt", "repo", "modell", "dataset", "demo", "publikation", "case"] },
+  { "id": "enskild_firma", "label": "Enskild firma", "plural": "Enskilda firmor", "description": "Enskild näringsidkare. Läggs bara till av personen själv, eftersom posten är en personuppgift.", "color": "moss", "belagg": ["produkt", "repo", "modell", "dataset", "demo", "publikation", "case"] },
+  { "id": "myndighet", "label": "Myndighet", "plural": "Myndigheter", "description": "Statlig myndighet eller annat statligt organ.", "color": "ink", "belagg": ["produkt", "repo", "modell", "dataset", "demo", "publikation", "case", "resurs", "program"] },
+  { "id": "kommun_region", "label": "Kommun eller region", "plural": "Kommuner och regioner", "description": "Kommun, region eller bolag och förbund som ägs av dem.", "color": "ink", "belagg": ["produkt", "repo", "modell", "dataset", "demo", "publikation", "case", "resurs"] },
+  { "id": "larosate", "label": "Lärosäte eller forskningsmiljö", "plural": "Lärosäten och forskningsmiljöer", "description": "Universitet, högskola, forskningsinstitut, forskningscentrum eller forskningsprogram.", "color": "amber", "belagg": ["publikation", "repo", "modell", "dataset", "case", "resurs", "program"] },
+  { "id": "community", "label": "Community eller förening", "plural": "Communities och föreningar", "description": "Ideell förening, nätverk, meetup eller annan sammanslutning med egen identitet.", "color": "rust", "belagg": ["program", "repo", "publikation", "resurs"] },
+  { "id": "finansiar", "label": "Finansiär", "plural": "Finansiärer", "description": "Riskkapital, offentlig finansiär, stiftelse, inkubator eller accelerator som finansierar AI.", "color": "link", "belagg": ["portfolj", "program", "case"] },
+  { "id": "infrastruktur", "label": "Infrastruktur", "plural": "Infrastruktur", "description": "Leverantör eller nationell resurs för AI-beräkning, hosting eller inferens. Jämför infra.opensverige.se.", "color": "mute", "belagg": ["resurs", "produkt", "case"] }
 ]
