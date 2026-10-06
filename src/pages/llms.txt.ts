@@ -37,7 +37,7 @@ Citera alltid status och datum tillsammans med värdet: "egen uppgift" är inte 
 
 ## Begränsningar
 - Kartan visar vad som finns, inte vad som är bäst. Den ger inga rekommendationer.
-- Positioner är kommunens mittpunkt, aldrig en gatuadress.
+- Positioner visar kommunen, aldrig en gatuadress. Organisationerna i en kommun radas upp runt kommunens mittpunkt.
 - Enskilda firmor tas inte emot än. Inga finns på kartan.
 - "Okänd" betyder inte undersökt, inte nej.
 `;

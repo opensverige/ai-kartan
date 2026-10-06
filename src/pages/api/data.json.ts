@@ -16,7 +16,7 @@ export const GET: APIRoute = () => {
     source: SAJT.repo,
     schema: `${SAJT.repo}/blob/main/schema/organisation.schema.json`,
     note:
-      'Varje fält är en uppgift med value, status (confirmed|claimed|planned|unknown|not_applicable), source_url, source_type och verified_at. Citera alltid status och datum tillsammans med värdet. Fältet harlett är beräknat vid bygget: län, position på kommunnivå och färskhet.',
+      'Varje fält är en uppgift med value, status (confirmed|claimed|planned|unknown|not_applicable), source_url, source_type och verified_at. Citera alltid status och datum tillsammans med värdet. Fältet harlett är beräknat vid bygget: län, position på kommunnivå (en ruta på land nära kommunens mittpunkt, utan samband med adressen) och färskhet.',
     antal: d.statistik.antal,
     statistik: d.statistik,
     organisationer: d.organisationer.map(exportPost),
