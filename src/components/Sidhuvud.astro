@@ -46,14 +46,14 @@ function aktiv(href: string): boolean {
     </nav>
 
     <form class="sok" id="sokform" role="search" action={url('/')} method="get">
-      <label class="visuellt-dold" for="sok">Sök organisation, kommun eller län</label>
+      <label class="visuellt-dold" for="sok">Sök på namn, plats eller vad de bygger</label>
       <span class="sok__ikon"><Fragment set:html={ikon('sok', 19)} /></span>
       <input
         id="sok"
         class="sok__falt"
         type="search"
         name="q"
-        placeholder="Sök organisation eller plats"
+        placeholder="Sök namn, plats eller ämne"
         autocomplete="off"
         autocapitalize="off"
         spellcheck="false"
