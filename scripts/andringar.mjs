@@ -11,6 +11,7 @@ import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import YAML from 'yaml';
 import { ROT, faktaIPost } from './lib/organisationer.mjs';
+import { historikenKrymper } from './lib/historik.mjs';
 
 const DATAKATALOG = 'data/organisationer';
 const UTFIL = path.join(ROT, 'history', 'changelog.json');
@@ -55,6 +56,8 @@ function lika(a, b) {
 function huvud() {
   let logg;
   try {
+    // I en grund klon ger git log inget fel, bara färre commits. Då ska filen lämnas orörd.
+    if (git(['rev-parse', '--is-shallow-repository']).trim() === 'true') throw new Error('grund klon');
     logg = git(['log', '--reverse', '--date=short', '--format=%H%x09%ad', '--', DATAKATALOG]).trim();
   } catch (e) {
     console.warn('Kunde inte läsa git-historiken (grunt klon eller inget repo). Behåller befintlig history/changelog.json.');
@@ -114,9 +117,13 @@ function huvud() {
     console.log(`${rader.length} rader totalt.`);
     return;
   }
+  const gammal = fs.existsSync(UTFIL) ? fs.readFileSync(UTFIL, 'utf8') : '';
+  if (historikenKrymper(rader.length, gammal) && !process.argv.includes('--tvinga')) {
+    console.error(`Stoppar: ${rader.length} rader ur git men fler i history/changelog.json. Historiken ser avkortad ut. Kör med --tvinga om det är avsikten.`);
+    process.exit(1);
+  }
   fs.mkdirSync(path.dirname(UTFIL), { recursive: true });
   const text = JSON.stringify(ut, null, 2) + '\n';
-  const gammal = fs.existsSync(UTFIL) ? fs.readFileSync(UTFIL, 'utf8') : '';
   // Skriv bara om raderna ändrats, så att generated_at inte skapar brus.
   const gammalUtanTid = gammal.replace(/"generated_at": "[^"]+"/, '');
   const nyUtanTid = text.replace(/"generated_at": "[^"]+"/, '');

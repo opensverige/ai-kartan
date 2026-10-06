@@ -101,10 +101,16 @@ const sorterad = Object.fromEntries(ordning.filter((k) => k in org).map((k) => [
 
 fs.mkdirSync(KATALOG_ORG, { recursive: true });
 const fil = path.join(KATALOG_ORG, `${id}.yaml`);
+// Formuläret är för nya organisationer. Utan spärren kunde vem som helst lägga fram en
+// överskrivning av en befintlig post som om den vore ett nytillskott.
+if (fs.existsSync(fil)) {
+  console.error(`Det finns redan en post med id "${id}". Använd formuläret Rätta en uppgift.`);
+  process.exit(1);
+}
 const arende = process.env.ISSUE_NUMBER ? ` (ärende #${process.env.ISSUE_NUMBER})` : '';
 fs.writeFileSync(fil, `# Inskickad av organisationen själv${arende}. Alla uppgifter är egen uppgift tills de bekräftats.\n` + YAML.stringify(sorterad, { lineWidth: 0 }), 'utf8');
 console.log(`Skrev ${fil}`);
 
 if (process.env.GITHUB_OUTPUT) {
-  fs.appendFileSync(process.env.GITHUB_OUTPUT, `fil=${path.relative(process.cwd(), fil).replace(/\\/g, '/')}\nid=${id}\nnamn=${namn.replace(/\n/g, ' ')}\n`);
+  fs.appendFileSync(process.env.GITHUB_OUTPUT, `fil=${path.relative(process.cwd(), fil).replace(/\\/g, '/')}\nid=${id}\nnamn=${namn.replace(/[\r\n\[\]]/g, ' ')}\n`);
 }
