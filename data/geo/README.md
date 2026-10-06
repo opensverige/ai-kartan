@@ -1,6 +1,6 @@
 # Geodata: kommuner och län
 
-Referensdata för AI-kartan: Sveriges 290 kommuner och 21 län med SCB:s koder och namn, slugar, en punkt per enhet samt förenklade gränspolygoner. Filerna i den här mappen och i `public/geo/` är **genererade** av `scripts/geo/bygg-geodata.py`. Redigera dem inte för hand, kör skriptet igen (se längst ned).
+Referensdata för AI-kartan: Sveriges 290 kommuner och 21 län med SCB:s koder och namn, slugar, en punkt per enhet samt förenklade gränspolygoner. Filerna i den här mappen och i `public/geo/` är **genererade** av `scripts/geo/bygg-geodata.py`, utom `land.json` som byggs av `scripts/geo/bygg-land.mjs`. Redigera dem inte för hand, kör skripten igen (se längst ned).
 
 Källorna hämtades **2026-10-04**.
 
@@ -12,7 +12,9 @@ Källorna hämtades **2026-10-04**.
 | `data/geo/lan.json` | 21 län sorterade på kod: `kod`, `namn`, `slug`, `lat`, `lng`, `punkt_kalla` |
 | `public/geo/kommuner.geojson` | Kommunpolygoner (290 features), egenskaper `kod`, `namn`, `lan_kod` |
 | `public/geo/lan.geojson` | Länspolygoner (21 features), egenskaper `kod`, `namn` |
-| `scripts/geo/bygg-geodata.py` | Bygger alla fyra filerna |
+| `scripts/geo/bygg-geodata.py` | Bygger de fyra filerna ovan |
+| `data/geo/land.json` | Land och vatten runt varje kommuns punkt: en mask per kommunkod. Se "Land och vatten" |
+| `scripts/geo/bygg-land.mjs` | Bygger `land.json` |
 
 - `kod` är SCB:s kommunkod (4 siffror) respektive länskod (2 siffror), som sträng med ledande nolla. `lan_kod` är kommunkodens två första siffror.
 - `namn` är SCB:s namn utan ordet "kommun" (till exempel "Upplands Väsby", "Malung-Sälen", "Gotland"). Länsnamnen innehåller "län".
@@ -27,6 +29,7 @@ Källorna hämtades **2026-10-04**.
 | Punkter | Wikidata, koordinat (P625) på kommunens och länets objekt. Frågor mot <https://query.wikidata.org/sparql> | CC0 1.0 (se nedan) |
 | Kommunpolygoner | geoBoundaries gbOpen, Sverige ADM2. <https://www.geoboundaries.org/api/current/gbOpen/SWE/ADM2/> | CC0 1.0 (se nedan) |
 | Länspolygoner | geoBoundaries gbOpen, Sverige ADM1. <https://www.geoboundaries.org/api/current/gbOpen/SWE/ADM1/> | CC BY 3.0 (se nedan) |
+| Land och vatten | OpenStreetMap, läst ur OpenFreeMaps vektorbrickor (OpenMapTiles-schemat, lagret `water`). <https://openfreemap.org/> | ODbL 1.0 (se "Land och vatten") |
 
 ### SCB
 
@@ -89,6 +92,7 @@ CC BY 3.0 (<https://creativecommons.org/licenses/by/3.0/>) kräver att upphovspe
 - Koordinater: Wikidata (CC0, ingen källhänvisning krävs men det är god sed att nämna den).
 - Kommungränser: "Administrative boundaries courtesy of geoBoundaries.org".
 - Länsgränser: "Länsgränser: Erik Frohne, Wikimedia Commons (CC BY 3.0), via geoBoundaries.org. Förenklade."
+- Land och vatten: "© OpenStreetMap-bidragsgivare". Kartan visar redan den raden för kartunderlaget.
 
 Filerna ligger i projektets datamapp, men tredjepartsvillkoren ovan gäller även här (projektets egen datalicens finns i `LICENSE-DATA`).
 
@@ -128,6 +132,20 @@ Polygonerna omfattar landyta och insjöar men inte havet (kommunernas sammanlagd
 
 Skriptet kontrollerar efter varje bygge att `punkt_kalla` är `wikidata` eller `centroid`, att varje `centroid`-punkt ligger inuti sin polygon och att varje `wikidata`-punkt ligger högst toleransen utanför sin polygon i de skrivna filerna. Vid framtagningen jämfördes dessutom varje `wikidata`-punkt med Wikidatas rådata (samma värde avrundat till 4 decimaler).
 
+## Land och vatten
+
+Kartan ritar organisationer på kommunnivå: de radas upp i ett rutnät runt kommunens punkt. Många punkter ligger vid en sjö eller vid kusten, och utan hänsyn till vattnet hamnar organisationer i Vättern eller i Riddarfjärden. `land.json` säger därför vilka rutor som ligger på land.
+
+- **Rutnätet** är detsamma för alla kommuner: 673 rutor i sexkantsmönster, 220 m mellan rutorna, upp till 3 km från punkten. Ordningen är fast, närmast punkten först. Det står i `scripts/lib/landplatser.mjs`.
+- **Masken** är en hexsträng per kommunkod, fyra rutor per tecken med den första rutan i den högsta biten. En etta betyder land.
+- **Land** betyder att rutans mitt och sex punkter 60 m därifrån alla ligger utanför vattenytorna. Marginalen gör att pricken inte ritas halvvägs ut i vattnet.
+- **Vattnet** är lagret `water` i OpenFreeMaps vektorbrickor på zoom 12, samma underlag som kartan visar. Där finns hav, sjöar, breda vattendrag och även små ytor som dammar och fontäner.
+- **Fördelningen** görs vid bygget: organisationerna i en kommun får var sin landruta, närmast punkten först. I en kommun med få organisationer används ett glesare rutnät (660 m eller 440 m mellan rutorna, inom 1,5 km) så att namnen får plats. Ordningen mellan organisationerna är godtycklig men stabil. Vilken ruta en organisation får säger ingenting om var den finns.
+
+`land.json` är härledd ur OpenStreetMap och ligger därför under Open Database License 1.0 (<https://opendatacommons.org/licenses/odbl/1-0/>), © OpenStreetMap-bidragsgivare (<https://www.openstreetmap.org/copyright>). Det skiljer den från resten av mappen. Fälten `brickor` och `zoom` i filen säger vilken utgåva av brickorna masken byggdes på.
+
+Kontroll vid bygget: 290 kommuner, i snitt 565 av 673 rutor på land. Minst land har Lysekil (165 rutor), Ystad (196) och Karlsborg (214). I 32 kommuner ligger själva punkten i vatten eller närmare stranden än 60 m, bland dem Jönköping, Göteborg, Karlstad och Kalmar. Där börjar raden i närmaste landruta.
+
 ## Namn och slugar
 
 - **Namnmatchning:** SCB-posterna kopplas till geoBoundaries-polygoner via namn (exakt träff, därefter utan diakriter om det är entydigt). 289 av 290 kommuner och alla 21 län matchar exakt. Den enda manuella matchningen är **1480 Göteborg**, som heter "Gothenburg" i geoBoundaries (`GB_ALIAS` i skriptet).
@@ -157,7 +175,10 @@ Från projektroten:
 
 ```sh
 python scripts/geo/bygg-geodata.py
+node scripts/geo/bygg-land.mjs
 ```
+
+Det andra skriptet behöver bara köras när kommunernas punkter eller rutnätet har ändrats. Det hämtar ungefär 1 300 brickor (28 MB) till samma cache-mapp och skriver `land.json`. Med `--kontroll` skriver det ingenting och säger bara om filen stämmer med kartunderlaget. Resten av avsnittet gäller det första skriptet.
 
 Det kräver Python 3 (testat med 3.12) och internet, men inga paket. Skriptet:
 

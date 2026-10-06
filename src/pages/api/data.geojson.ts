@@ -6,7 +6,8 @@ export const GET: APIRoute = () => {
   const body = {
     type: 'FeatureCollection',
     license: 'CC-BY-4.0',
-    attribution: 'OpenSverige AI-kartan, karta.opensverige.se. Positioner på kommunnivå (kommunens mittpunkt med liten förskjutning) om inte position_typ = exakt.',
+    attribution:
+      'OpenSverige AI-kartan, karta.opensverige.se. Positioner på kommunnivå om inte position_typ = exakt: en ruta på land nära kommunens mittpunkt, utan samband med adressen. Land och vatten: © OpenStreetMap-bidragsgivare.',
     generated_at: d.byggd,
     features: d.organisationer
       .filter((o) => o.h.position)

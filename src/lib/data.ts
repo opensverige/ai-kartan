@@ -4,6 +4,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { ROT, lasOrganisationer, lasTaxonomi, lasGeo, harled } from '../../scripts/lib/organisationer.mjs';
+import { platserPaLand } from '../../scripts/lib/landplatser.mjs';
 import { hittaTypikoner } from './typikoner';
 
 export type Status = 'confirmed' | 'claimed' | 'planned' | 'unknown' | 'not_applicable';
@@ -176,8 +177,10 @@ export function hamtaData(): Dataset {
     throw new Error(`Ogiltiga datafiler: ${trasiga.map((p) => p.fil).join(', ')}. Kör npm run validera.`);
   }
   const jamfor = new Intl.Collator('sv');
+  // Platserna inom en kommun delas ut på en gång: varje organisation får en egen ruta på land.
+  const paLand = platserPaLand(poster.map((p) => p.data), geo);
   const organisationer: Org[] = poster
-    .map((p) => ({ ...(p.data as OrgData), h: harled(p.data, geo) as Harlett }))
+    .map((p) => ({ ...(p.data as OrgData), h: harled(p.data, geo, paLand) as Harlett }))
     .sort((a, b) => jamfor.compare(a.name.value, b.name.value));
 
   const etikett = Object.fromEntries(

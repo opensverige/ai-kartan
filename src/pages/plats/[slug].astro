@@ -51,7 +51,7 @@ const jsonLd = [
     <h1>AI i {plats.namn}</h1>
     <p class="ingress">
       {n} {n === 1 ? 'organisation' : 'organisationer'} med säte i {plats.namn} kommun bygger AI: {perTyp.map(([t, c], i) => `${c} ${(d.etikett.typer.get(t)?.plural ?? t).toLowerCase()}${i < perTyp.length - 1 ? ', ' : '.'}`).join('')}
-      Positionen är kommunens mittpunkt, aldrig en gatuadress.
+      Kartan visar kommunen, aldrig en gatuadress.
     </p>
     <p class="rad">
       <a class="knapp knapp--liten" href={url(`/?kommun=${plats.kod}`)}>Visa på kartan</a>

@@ -42,7 +42,7 @@ Git-repot är sanningen. Sajten, nedladdningarna och ändringshistoriken byggs f
 ```
 data/organisationer/   en YAML-fil per organisation – den kanoniska datan
 data/taxonomi/         organisationstyper, erbjuder, områden, statusar, källtyper
-data/geo/              kommuner och län med koder och mittpunkter (CC0)
+data/geo/              kommuner och län med koder och mittpunkter (CC0), land och vatten (ODbL)
 data/MALL.yaml         mall för en ny post, med kommentarer
 schema/                JSON Schema för en post
 scripts/               validering, ändringshistorik, färskhet, länkkoll, import

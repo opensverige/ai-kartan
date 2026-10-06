@@ -51,9 +51,12 @@ export function lasGeo() {
   if (!fs.existsSync(kommunFil) || !fs.existsSync(lanFil)) return null;
   const kommuner = lasJson(kommunFil);
   const lan = lasJson(lanFil);
+  const landFil = path.join(KATALOG_GEO, 'land.json');
   return {
     kommuner,
     lan,
+    /** Landmask per kommunkod, se scripts/lib/landplatser.mjs. Tom om filen saknas. */
+    land: fs.existsSync(landFil) ? lasJson(landFil).kommuner : {},
     kommunPerKod: new Map(kommuner.map((k) => [k.kod, k])),
     lanPerKod: new Map(lan.map((l) => [l.kod, l])),
   };
@@ -105,7 +108,10 @@ export function dagarSedan(datum, idag = new Date()) {
   return Math.floor((idag.getTime() - d.getTime()) / 86400000);
 }
 
-/** Deterministisk liten förskjutning så att punkter i samma kommun inte ligger exakt på varandra. */
+/**
+ * Deterministisk liten förskjutning så att punkter i samma kommun inte ligger exakt på varandra.
+ * Reserven för en organisation som inte har fått en plats på land av `platserPaLand`.
+ */
 export function forskjutning(id, lat, maxMeter = 1800) {
   let h = 2166136261;
   for (const c of id) {
@@ -121,9 +127,13 @@ export function forskjutning(id, lat, maxMeter = 1800) {
 
 /**
  * Härleder fält som sajten behöver: län, kommunnamn, position, färskhet.
- * Positionen är kommunens mittpunkt med liten förskjutning, om inte exakta koordinater finns.
+ * Positionen är en plats på land nära kommunens mittpunkt, om inte exakta koordinater finns.
+ * `platser` kommer från `platserPaLand` och räknas på alla organisationer på en gång.
+ * @param {any} data
+ * @param {any} geo
+ * @param {Map<string, { lat: number, lng: number }> | null} [platser]
  */
-export function harled(data, geo) {
+export function harled(data, geo, platser = null) {
   const kommunKod = data.kommun?.value ?? null;
   const kommun = kommunKod && geo ? geo.kommunPerKod.get(kommunKod) ?? null : null;
   const lanKod = kommunKod ? kommunKod.slice(0, 2) : null;
@@ -135,8 +145,13 @@ export function harled(data, geo) {
     position = { lat: data.coordinates.value.lat, lng: data.coordinates.value.lng };
     positionTyp = 'exakt';
   } else if (kommun) {
-    const { dLat, dLng } = forskjutning(data.id, kommun.lat);
-    position = { lat: +(kommun.lat + dLat).toFixed(5), lng: +(kommun.lng + dLng).toFixed(5) };
+    const paLand = platser?.get(data.id);
+    if (paLand) {
+      position = { lat: paLand.lat, lng: paLand.lng };
+    } else {
+      const { dLat, dLng } = forskjutning(data.id, kommun.lat);
+      position = { lat: +(kommun.lat + dLat).toFixed(5), lng: +(kommun.lng + dLng).toFixed(5) };
+    }
     positionTyp = 'kommun';
   }
 
