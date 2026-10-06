@@ -4,6 +4,7 @@ Kodens och funktionernas historik. Dataändringar loggas separat och automatiskt
 
 ## 2026-10-06
 
+- Länkkontrollen skiljer på döda länkar och länkar som inte gick att nå. Lärosäten och myndigheter nekar ofta trafik från GitHubs servrar, och det stoppade pull requests i onödan. Nu stoppar bara en länk som servern säger är borta, eller en domän som inte finns.
 - Valideringen prövar belägg mot organisationstypen. Varje typ har en lista över sorters belägg som räknas, i `data/taxonomi/typer.json`, och en post behöver minst en länk som är dess egen. Båda ger en anmärkning, inte ett fel.
 - Förslag till förfinade kriterier i `docs/kriterier-forslag.md`, prövat mot befintliga poster i `docs/kriterieprov-2026-10-06.md`. Kriterierna i `kriterier.md` gäller tills förslaget är antaget.
 - Tätare lista på kartsidan: varje organisation tar en tredjedel så mycket höjd som förut, så att fler syns direkt. Beskrivningen visas på en rad, resten i detaljvyn. Listsidan har kvar de större korten.
