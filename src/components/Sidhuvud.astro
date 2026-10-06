@@ -12,13 +12,13 @@ const vyer: { href: string; text: string; ikon: IkonNamn }[] = [
   { href: '/organisationer', text: 'Lista', ikon: 'lista' },
 ];
 const lankar: { href: string; text: string }[] = [
+  { href: '/om', text: 'Varför vi finns' },
   { href: '/plats', text: 'Platser' },
   { href: '/andringar', text: 'Ändringar' },
   { href: '/metod', text: 'Metod' },
   { href: '/kriterier', text: 'Kriterier' },
   { href: '/data', text: 'Öppen data' },
   { href: '/bidra', text: 'Bidra' },
-  { href: '/om', text: 'Om' },
 ];
 function aktiv(href: string): boolean {
   if (href === '/') return stig === '/' || stig === '';
