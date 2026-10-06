@@ -3,6 +3,14 @@
   "framework": "astro",
   "cleanUrls": true,
   "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "kartan.opensverige.se" }],
+      "destination": "https://karta.opensverige.se/:path*",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     { "source": "/api/data", "destination": "/api/data.json" },
     { "source": "/api/data/:id", "destination": "/api/data/:id.json" },
