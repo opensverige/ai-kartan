@@ -1,0 +1,99 @@
+id: klarna
+
+name:
+  value: Klarna
+  status: claimed
+  source_url: https://www.klarna.com/se/
+  source_type: own_site
+  verified_at: 2026-10-06
+  verified_by: agent
+
+legal_name:
+  value: Klarna Bank AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5567370431
+  source_type: third_party
+  verified_at: 2026-10-06
+  verified_by: agent
+  note: "De sidor på klarna.com som öppnades anger inget bolagsnamn eller organisationsnummer, så kopplingen bygger på namnet. Enligt allabolag.se ingår bolaget i en koncern med Klarna Holding AB som moderbolag."
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5567370431
+  source_type: third_party
+  verified_at: 2026-10-06
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Publikt bankaktiebolag."
+
+org_number:
+  value: "556737-0431"
+  status: confirmed
+  source_url: https://www.allabolag.se/5567370431
+  source_type: third_party
+  verified_at: 2026-10-06
+  verified_by: agent
+
+website: https://www.klarna.com/se/
+
+description:
+  value: Bolag inom betalningar och banktjänster. Har byggt en AI-assistent i Klarna-appen som besvarar kundtjänstärenden, bland annat om återbetalningar och returer, på fler än 35 språk. Assistenten drivs av OpenAI:s modeller.
+  status: claimed
+  source_url: https://www.klarna.com/international/press/klarna-ai-assistant-handles-two-thirds-of-customer-service-chats-in-its-first-month/
+  source_type: own_site
+  verified_at: 2026-10-06
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.klarna.com/international/press/klarna-ai-assistant-handles-two-thirds-of-customer-service-chats-in-its-first-month/
+  source_type: own_site
+  verified_at: 2026-10-06
+  verified_by: agent
+
+areas:
+  value: [fintech, agenter_automation]
+  status: claimed
+  source_url: https://www.klarna.com/international/press/klarna-ai-assistant-handles-two-thirds-of-customer-service-chats-in-its-first-month/
+  source_type: own_site
+  verified_at: 2026-10-06
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5567370431
+  source_type: third_party
+  verified_at: 2026-10-06
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+founded:
+  value: 2007
+  status: confirmed
+  source_url: https://www.allabolag.se/5567370431
+  source_type: third_party
+  verified_at: 2026-10-06
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2007-09-05. Bolagets egen historik anger att verksamheten började 2005."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5567370431
+  source_type: third_party
+  verified_at: 2026-10-06
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.klarna.com/international/press/klarna-ai-assistant-handles-two-thirds-of-customer-service-chats-in-its-first-month/
+    kind: produkt
+    title: "Pressmeddelande 2024-02-27: AI-assistent för kundtjänst i Klarna-appen, driven av OpenAI"
+    status: claimed
+    verified_at: 2026-10-06
+    verified_by: agent
+
+record_created_at: 2026-10-06
+record_updated_at: 2026-10-06
