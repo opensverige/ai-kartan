@@ -86,6 +86,18 @@ evidence:
     status: claimed
     verified_at: 2026-10-04
     verified_by: agent
+  - url: https://supr.naiss.se/round/2026locallusmall/
+    kind: resurs
+    title: "LU Local small 2026: ansökningsomgång för COSMOS vid LUNARC, öppen till 2026-12-18"
+    status: claimed
+    verified_at: 2026-10-06
+    verified_by: agent
+  - url: https://www.lunarc.lu.se/getting-access/how-get-access/how-apply-project
+    kind: resurs
+    title: "Ansökan om projekt vid LUNARC: projekttyper och SUPR-omgångar för 2026"
+    status: claimed
+    verified_at: 2026-10-06
+    verified_by: agent
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-04
+record_updated_at: 2026-10-06

@@ -20,6 +20,7 @@ import {
   faktaIPost,
   senastVerifierad,
 } from './lib/organisationer.mjs';
+import { provaBelaggstyp, utanEgetBelagg } from './lib/belagg.mjs';
 
 const argv = process.argv.slice(2);
 const somJson = argv.includes('--json');
@@ -124,6 +125,8 @@ function kontrolleraPost(post) {
     belaggsUrler.add(b.url);
     if (b.verified_at && b.verified_at > IDAG) e(`evidence: verified_at ${b.verified_at} ligger i framtiden.`);
   }
+  const felSort = provaBelaggstyp(data, tax);
+  if (felSort) w(felSort);
 
   // 7. Personuppgifter
   if (typId === 'enskild_firma') {
@@ -156,6 +159,8 @@ function kontrolleraPost(post) {
 
 function huvud() {
   let poster = lasOrganisationer();
+  // Jämförs mot alla poster, även när bara några filer valideras.
+  const utanEget = utanEgetBelagg(poster.filter((p) => p.data).map((p) => p.data));
   if (valdaFiler.length) {
     const valda = new Set(valdaFiler.map((f) => path.basename(f)));
     poster = poster.filter((p) => valda.has(p.fil));
@@ -177,6 +182,9 @@ function huvud() {
     if (id) {
       if (idn.has(id)) r.fel.push(`id "${id}" används redan i ${idn.get(id)}.`);
       idn.set(id, post.fil);
+    }
+    if (utanEget.has(id)) {
+      r.varningar.push(`evidence: inget eget belägg. Alla länkar används också av ${utanEget.get(id).join(', ')}. Lägg till en länk som visar organisationens eget arbete.`);
     }
     const webb = post.data?.website?.replace(/\/+$/, '').toLowerCase();
     if (webb) {

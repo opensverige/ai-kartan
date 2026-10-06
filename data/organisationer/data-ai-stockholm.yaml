@@ -1,0 +1,91 @@
+id: data-ai-stockholm
+
+name:
+  value: Data & AI Stockholm
+  status: claimed
+  source_url: https://dataaistockholm.com/
+  source_type: own_site
+  verified_at: 2026-10-05
+  verified_by: agent
+
+type:
+  value: community
+  status: claimed
+  source_url: https://dataaistockholm.com/summit
+  source_type: own_site
+  verified_at: 2026-10-05
+  verified_by: agent
+  note: Beskriver sig på summit-sidan som ett ideellt community för yrkesverksamma. Ingen juridisk form anges på webbplatsen.
+
+org_number:
+  value: null
+  status: unknown
+  verified_at: 2026-10-05
+  verified_by: agent
+  note: Varken webbplatsen eller dess villkorssida anger organisationsnummer eller juridisk form.
+
+website: https://dataaistockholm.com
+
+description:
+  value: Community för yrkesverksamma inom data och AI i Stockholm. Arrangerar träffar, hackathon och ett summit, och publicerar sammanfattningar av träffarna i ett nyhetsbrev.
+  status: claimed
+  source_url: https://dataaistockholm.com/
+  source_type: own_site
+  verified_at: 2026-10-05
+  verified_by: agent
+
+offers:
+  value: [community]
+  status: claimed
+  source_url: https://dataaistockholm.com/
+  source_type: own_site
+  verified_at: 2026-10-05
+  verified_by: agent
+  note: Träffar, hackathon och summit enligt webbplatsens lista över evenemang.
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://dataaistockholm.com/
+  source_type: own_site
+  verified_at: 2026-10-05
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: claimed
+  source_url: https://dataaistockholm.com/summit
+  source_type: own_site
+  verified_at: 2026-10-05
+  verified_by: agent
+  note: Stockholm enligt webbplatsen. Inget registerutdrag, eftersom inget organisationsnummer anges.
+
+active:
+  value: true
+  status: claimed
+  source_url: https://dataaistockholm.com/summit
+  source_type: own_site
+  verified_at: 2026-10-05
+  verified_by: agent
+  note: Summit planerat till 14 oktober 2026 enligt webbplatsen.
+
+evidence:
+  - url: https://dataaistockholm.com/summit
+    kind: program
+    title: Data & AI Stockholm Summit 2026 med spår om AI i produktion, maskininlärning och LLM-tillämpningar
+    status: claimed
+    verified_at: 2026-10-05
+    verified_by: agent
+  - url: https://dataaistockholm1.substack.com/p/agents-and-data-engineering-a-community
+    kind: publikation
+    title: "Agents & Data Engineering: sammanfattning av en träff om AI-agenter och data engineering"
+    status: claimed
+    verified_at: 2026-10-05
+    verified_by: agent
+
+links:
+  github: https://github.com/data-ai-stockholm
+  linkedin: https://www.linkedin.com/company/data-ai-stockholm/
+
+record_created_at: 2026-10-05
+record_updated_at: 2026-10-05

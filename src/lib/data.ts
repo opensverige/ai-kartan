@@ -77,6 +77,8 @@ export interface Etikett {
   description?: string;
   color?: string;
   may_confirm?: boolean;
+  /** Bara typer: sorters belägg som räknas för kriterium 2. */
+  belagg?: string[];
 }
 
 export interface Taxonomi {
@@ -356,6 +358,7 @@ export function tillKartpost(o: Org) {
     d: o.description.value,
     s: o.h.senast_verifierad,
     c: o.h.antal_bekraftade,
+    f: o.h.antal_fakta,
     w: o.website,
     i: o.links?.infra_id ?? null,
   };
@@ -369,6 +372,8 @@ export const SAJT = {
   tagline: 'Alla som bygger AI i Sverige, inte bara de som en kommitté har godkänt.',
   repo: 'https://github.com/opensverige/ai-kartan',
   discord: 'https://discord.gg/ZbV4qB34um',
+  /** Kanalen där tillägg och rättelser tas emot. Länken fungerar bara för den som redan är med på servern. */
+  discordKanal: { namn: 'infra-intag', url: 'https://discord.com/channels/1466847548864987289/1552282091331526696' },
   infra: 'https://infra.opensverige.se',
   opensverige: 'https://opensverige.se',
 };

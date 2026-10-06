@@ -78,6 +78,18 @@ evidence:
     status: claimed
     verified_at: 2026-10-04
     verified_by: agent
+  - url: https://www.digitalfutures.kth.se/project/eo-ai4globalchange/
+    kind: publikation
+    title: "Projektet EO-AI4GlobalChange: publikationer om djupinlärning för jordobservation"
+    status: claimed
+    verified_at: 2026-10-06
+    verified_by: agent
+  - url: https://www.digitalfutures.kth.se/project/learning-and-sharing-under-privacy-constraints/
+    kind: publikation
+    title: "Projektet DataLEASH: publikationer, språkmodell och demo om avidentifiering av vårdtext"
+    status: claimed
+    verified_at: 2026-10-06
+    verified_by: agent
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-04
+record_updated_at: 2026-10-06

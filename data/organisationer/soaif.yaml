@@ -78,6 +78,18 @@ evidence:
     status: claimed
     verified_at: 2026-10-04
     verified_by: agent
+  - url: https://soaif.se/forelasningar/
+    kind: resurs
+    title: "Inspelad kvällsföreläsning om AI inom tandvård, 14 maj 2025"
+    status: claimed
+    verified_at: 2026-10-06
+    verified_by: agent
+  - url: https://soaif.se/medlemskap/
+    kind: program
+    title: "Medlemskap via öppet formulär med tillgång till evenemang och workshops"
+    status: claimed
+    verified_at: 2026-10-06
+    verified_by: agent
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-04
+record_updated_at: 2026-10-06

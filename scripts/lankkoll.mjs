@@ -2,13 +2,14 @@
 // Kontrollerar att varje länk i datan svarar. En uppgift vars källa försvunnit ska upptäckas, inte ligga kvar tyst.
 //
 //   node scripts/lankkoll.mjs                 # alla länkar, rapport, exit 0
-//   node scripts/lankkoll.mjs --strikt        # exit 1 om någon länk är död
+//   node scripts/lankkoll.mjs --strikt        # exit 1 om någon länk är död (onåbara länkar rapporteras men stoppar inte)
 //   node scripts/lankkoll.mjs --andrade main  # bara filer som skiljer sig från angiven gren (för PR-kontroll)
 //   node scripts/lankkoll.mjs --markdown      # rapport som markdown (för ett GitHub-ärende)
 
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { ROT, lasOrganisationer, faktaIPost } from './lib/organisationer.mjs';
+import { bedomLank } from './lib/lankar.mjs';
 
 const argv = process.argv.slice(2);
 const strikt = argv.includes('--strikt');
@@ -51,9 +52,11 @@ async function kolla(url) {
     if (svar.status === 405 || svar.status === 403 || svar.status === 404 || svar.status >= 500) {
       svar = await fetch(url, { method: 'GET', redirect: 'follow', signal: styr.signal, headers: { 'user-agent': UA, accept: 'text/html,*/*' } });
     }
-    return { url, status: svar.status, ok: svar.ok || (svar.status >= 300 && svar.status < 400) || svar.status === 403 || svar.status === 429 };
+    return { url, status: svar.status, utfall: bedomLank({ status: svar.status }) };
   } catch (e) {
-    return { url, status: 0, ok: false, fel: e.name === 'AbortError' ? 'timeout' : e.message };
+    // Nodes fetch lägger den egentliga orsaken (ENOTFOUND, ECONNRESET, certifikatfel) i e.cause.
+    const fel = e.name === 'AbortError' ? 'timeout' : (e.cause?.code ?? e.message);
+    return { url, status: 0, fel, utfall: bedomLank({ status: 0, fel }) };
   } finally {
     clearTimeout(timer);
   }
@@ -70,16 +73,24 @@ async function arbetare() {
 }
 await Promise.all(Array.from({ length: SAMTIDIGT }, arbetare));
 
-const doda = resultat.filter((r) => !r.ok);
+const doda = resultat.filter((r) => r.utfall === 'dod');
+const onabara = resultat.filter((r) => r.utfall === 'onabar');
+const sammanfattning = `${doda.length} döda, ${onabara.length} gick inte att nå härifrån.`;
 if (markdown) {
   console.log(`## Länkkontroll ${new Date().toISOString().slice(0, 10)}\n`);
-  console.log(`${urler.length} länkar i ${poster.length} poster kontrollerade. ${doda.length} svarar inte.\n`);
+  console.log(`${urler.length} länkar i ${poster.length} poster kontrollerade. ${sammanfattning}\n`);
   if (doda.length) {
     console.log('| Länk | Svar | Används av |\n|---|---|---|');
     for (const r of doda) console.log(`| ${r.url} | ${r.status || r.fel} | ${lankar.get(r.url).map((a) => `${a.id} (${a.falt})`).join(', ')} |`);
   }
+  if (onabara.length) {
+    // Som lista, inte tabell: veckoflödet öppnar ett ärende bara när rapporten har tabellrader.
+    console.log('\nGick inte att nå härifrån. Öppna dem i en webbläsare innan något ändras:\n');
+    for (const r of onabara) console.log(`- ${r.url} (${r.status || r.fel}), används av ${lankar.get(r.url).map((a) => a.id).join(', ')}`);
+  }
 } else {
-  console.log(`${urler.length} länkar kontrollerade i ${poster.length} poster. ${doda.length} svarar inte.`);
-  for (const r of doda) console.log(`  ${r.status || r.fel}\t${r.url}\t← ${lankar.get(r.url).map((a) => a.id).join(', ')}`);
+  console.log(`${urler.length} länkar kontrollerade i ${poster.length} poster. ${sammanfattning}`);
+  for (const r of doda) console.log(`  död\t${r.status || r.fel}\t${r.url}\t← ${lankar.get(r.url).map((a) => a.id).join(', ')}`);
+  for (const r of onabara) console.log(`  onåbar\t${r.status || r.fel}\t${r.url}\t← ${lankar.get(r.url).map((a) => a.id).join(', ')}`);
 }
 process.exit(strikt && doda.length ? 1 : 0);

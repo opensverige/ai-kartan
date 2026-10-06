@@ -26,6 +26,8 @@ Länken fungerar och organisationen är inte avregistrerad. Länkar kontrolleras
 
 En soloutvecklare eller enskild firma är en personuppgift. Sådana poster skapas bara av personen själv (`self_submitted: true`), vilket är samtycket, och tas bort på begäran utan diskussion. Vi skrapar aldrig enskilda firmor och registrerar aldrig deras organisationsnummer, eftersom det är ett personnummer. Schemat saknar fält för kontaktpersoner, anställda och ägare.
 
+Tills vidare tas enskilda firmor inte emot alls. Det öppnar när det går att begära borttagning utan konto.
+
 ## Hur ett beslut fattas och bestrids
 
 En pull request granskas av en människa mot de tre kriterierna och mot metoden. AI får hjälpa till att kontrollera att belägget visar det som påstås, men bedömer aldrig om någon förtjänar att vara med. Ett avslag skrivs i pull requesten med hänvisning till kriteriet (1, 2 eller 3). Den som inte håller med öppnar en ny pull request eller ett ärende med ytterligare belägg. Vi svarar inom 14 dagar.

@@ -77,6 +77,12 @@ evidence:
     status: claimed
     verified_at: 2026-10-04
     verified_by: agent
+  - url: https://amm.aass.oru.se/software/
+    kind: repo
+    title: "Kod och dataset från forskargruppen för mobil manipulation vid AASS"
+    status: claimed
+    verified_at: 2026-10-06
+    verified_by: agent
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-04
+record_updated_at: 2026-10-06

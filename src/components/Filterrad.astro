@@ -1,0 +1,121 @@
+---
+// Filterraden: ett piller per facett som öppnar en ruta med val och antal.
+// På kartan flyter raden över kartans överkant. I smal vy fälls facetterna ihop
+// till ett enda Filter-piller som öppnar ett blad nerifrån.
+import { hamtaData } from '../lib/data';
+import { ikon } from '../lib/ikoner';
+
+interface Val {
+  id: string;
+  text: string;
+  antal: number;
+  hjalp?: string;
+  prick?: string;
+}
+interface Facett {
+  namn: 'erbjuder' | 'typ' | 'omrade' | 'lan';
+  rubrik: string;
+  /** Bara ett val åt gången (radioknappar). */
+  ett?: boolean;
+  val: Val[];
+}
+
+const d = hamtaData();
+const s = d.statistik;
+const facetter: Facett[] = [
+  {
+    namn: 'erbjuder',
+    rubrik: 'Erbjuder',
+    val: d.taxonomi.erbjuder.map((e) => ({ id: e.id, text: e.label, hjalp: e.description, antal: s.per_erbjuder[e.id] ?? 0 })),
+  },
+  {
+    namn: 'typ',
+    rubrik: 'Typ',
+    val: d.taxonomi.typer.map((t) => ({
+      id: t.id,
+      text: t.plural ?? t.label,
+      hjalp: t.description,
+      antal: s.per_typ[t.id] ?? 0,
+      prick: `var(--typ-${t.id})`,
+    })),
+  },
+  {
+    namn: 'omrade',
+    rubrik: 'Område',
+    val: d.taxonomi.omraden.map((o) => ({ id: o.id, text: o.label, antal: s.per_omrade[o.id] ?? 0 })),
+  },
+  {
+    namn: 'lan',
+    rubrik: 'Län',
+    ett: true,
+    val: d.lan.filter((l) => s.per_lan[l.kod]).map((l) => ({ id: l.kod, text: l.namn, antal: s.per_lan[l.kod] ?? 0 })),
+  },
+];
+---
+
+<form class="filteryta" id="filter" aria-label="Filtrera organisationer">
+  <div class="filterrad">
+    <button type="button" class="fknapp fknapp--mobil" id="oppna-filter" aria-controls="facetter" aria-expanded="false">
+      <Fragment set:html={ikon('reglage', 17)} />
+      Filter
+      <span class="fknapp__antal" id="filter-antal" hidden></span>
+    </button>
+
+    <div class="facetter" id="facetter">
+      <div class="facetter__huvud">
+        <p class="facetter__rubrik">Filter</p>
+        <button type="button" class="rundknapp" id="stang-filter" aria-label="Stäng filter">
+          <Fragment set:html={ikon('kryss', 18)} />
+        </button>
+      </div>
+      <div class="facetter__kropp">
+        {facetter.map((f) => (
+          <div class="fpill" data-facett={f.namn}>
+            <button type="button" class="fknapp" aria-expanded="false" aria-controls={`pop-${f.namn}`}>
+              {f.rubrik}
+              <span class="fknapp__antal" hidden></span>
+              <span class="fknapp__pil"><Fragment set:html={ikon('ner', 15)} /></span>
+            </button>
+            <div class="pop" id={`pop-${f.namn}`} role="group" aria-label={f.rubrik}>
+              <div class="pop__huvud">
+                <div>
+                  <p class="kicker">{f.rubrik}</p>
+                  <p class="pop__under">Antal i det aktuella urvalet</p>
+                </div>
+                <button type="button" class="pop__rensa" data-rensa={f.namn}>Rensa</button>
+              </div>
+              <div class="pop__val">
+                {f.ett && (
+                  <label class="val">
+                    <input class="visuellt-dold" type="radio" name={f.namn} value="" checked />
+                    <span>Hela Sverige</span>
+                  </label>
+                )}
+                {f.val.map((v) => (
+                  <label class="val" title={v.hjalp}>
+                    <input class="visuellt-dold" type={f.ett ? 'radio' : 'checkbox'} name={f.namn} value={v.id} />
+                    {v.prick && <span class="prick" style={`background: ${v.prick}`} aria-hidden="true" />}
+                    <span>{v.text}</span>
+                    <span class="val__antal" data-antal={`${f.namn}:${v.id}`}>{v.antal}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div class="facetter__fot">
+        <button type="button" class="knapp knapp--ghost" data-rensa="alla">Rensa</button>
+        <button type="button" class="knapp facetter__visa" id="visa-urval">Visa urvalet</button>
+      </div>
+    </div>
+
+  </div>
+
+  <button type="button" class="rensapill" id="rensa" data-rensa="alla" hidden>
+    <Fragment set:html={ikon('kryss', 15)} />
+    <span id="rensa-text">Rensa filter</span>
+  </button>
+
+  <div class="filteryta__skugga" id="filter-skugga" hidden></div>
+</form>

@@ -41,6 +41,17 @@
   --r-pill: 999px;
   --t-fast: 140ms ease;
 
+  /* Appskalet: sidhuvudet, kartsidan och listan. Varm yta, mjuka kort, runda piller. */
+  --yta: 42 45% 98%;
+  --yta-kort: 45 60% 99%;
+  --yta-chip: 42 26% 92%;
+  --kant: 40 20% 87%;
+  --r-kort: 20px;
+  --r-ruta: 14px;
+  --huvud-h: 68px;
+  --skugga-flyt: 0 1px 2px hsl(var(--ink) / 0.06), 0 12px 32px -14px hsl(var(--ink) / 0.3);
+  --t-blad: 320ms cubic-bezier(0.16, 1, 0.3, 1);
+
   /* Färg per organisationstyp på kartan */
   --typ-bolag: hsl(120 24% 23%);
   --typ-enskild_firma: hsl(120 30% 40%);
@@ -425,6 +436,48 @@ a.tagg:hover {
 .ljus {
   color: hsl(var(--ink-mute));
 }
+/* Fällbara avsnitt: rubriken syns alltid, resten visas på begäran. */
+.dragspel {
+  border-top: 1px solid hsl(var(--rule-soft));
+}
+.dragspel:last-of-type {
+  border-bottom: 1px solid hsl(var(--rule-soft));
+}
+.dragspel > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 0;
+  color: hsl(var(--ink));
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+.dragspel > summary::-webkit-details-marker {
+  display: none;
+}
+.dragspel > summary::after {
+  content: '+';
+  flex: none;
+  color: hsl(var(--ink-mute));
+  font: 400 22px/1 var(--font-mono);
+}
+.dragspel[open] > summary::after {
+  content: '−';
+}
+.dragspel > summary:hover {
+  color: hsl(var(--moss));
+}
+.dragspel__kropp {
+  padding-bottom: 4px;
+}
+
+/* Kanalnamn som #infra-intag ska inte brytas vid bindestrecket. */
+.kanal {
+  white-space: nowrap;
+}
 
 /* Utskrift: organisationssidan ska gå att skriva ut och citera */
 @media print {
@@ -449,6 +502,31 @@ a.tagg:hover {
   .kort,
   .tabell {
     break-inside: avoid;
+  }
+}
+
+.ik {
+  flex: none;
+  display: block;
+}
+
+/* Kartsidan fyller exakt skärmen: sidhuvud överst, appen i resten. Ingen sidrullning. */
+body.app-sida {
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: hsl(var(--yta));
+}
+body.app-sida .huvud {
+  flex: 1;
+  min-height: 0;
+}
+
+@media (max-width: 900px) {
+  :root {
+    --huvud-h: 60px;
   }
 }
 

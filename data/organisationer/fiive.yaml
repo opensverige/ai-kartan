@@ -95,10 +95,22 @@ evidence:
     verified_at: 2026-10-04
     verified_by: agent
     note: "Enligt sidan drivs chattboten av GPT-4o via Azure OpenAI och är i testfas hos kommunen."
+  - url: https://www.fiive.se/work/candoris-nova
+    kind: case
+    title: "Plattform för styrelsearbete åt Candoris, med transkribering och sammanfattning av möten"
+    status: claimed
+    verified_at: 2026-10-06
+    verified_by: agent
+  - url: https://www.fiive.se/work/rag-solution-manuals
+    kind: case
+    title: "RAG-chattbot för sökning i tekniska manualer åt en maskintillverkare"
+    status: claimed
+    verified_at: 2026-10-06
+    verified_by: agent
 
 links:
   github: https://github.com/FiiveAB/
   linkedin: https://www.linkedin.com/company/fiive-ai/
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-04
+record_updated_at: 2026-10-06

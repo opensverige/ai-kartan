@@ -1,177 +1,393 @@
 ---
+// Sidhuvud i appstil: märke, vyväxel, sök i mitten och meny till höger.
+// Sökfältet är ett vanligt GET-formulär mot kartan. På kartsidan och i listan tar
+// KartApp över det och visar träffar direkt medan man skriver.
 import { SAJT, url } from '../lib/data';
+import { ikon } from '../lib/ikoner';
+import type { IkonNamn } from '../lib/ikoner';
 
 const stig = Astro.url.pathname.replace(import.meta.env.BASE_URL.replace(/\/$/, ''), '') || '/';
-const lankar = [
-  { href: '/', text: 'Karta' },
-  { href: '/organisationer', text: 'Organisationer' },
+const vyer: { href: string; text: string; ikon: IkonNamn }[] = [
+  { href: '/', text: 'Karta', ikon: 'karta' },
+  { href: '/organisationer', text: 'Lista', ikon: 'lista' },
+];
+const lankar: { href: string; text: string }[] = [
   { href: '/plats', text: 'Platser' },
   { href: '/andringar', text: 'Ändringar' },
   { href: '/metod', text: 'Metod' },
+  { href: '/kriterier', text: 'Kriterier' },
+  { href: '/data', text: 'Öppen data' },
   { href: '/bidra', text: 'Bidra' },
   { href: '/om', text: 'Om' },
 ];
-function aktiv(href: string) {
+function aktiv(href: string): boolean {
   if (href === '/') return stig === '/' || stig === '';
   return stig === href || stig.startsWith(`${href}/`);
 }
 ---
 
 <header class="sidhuvud">
-  <div class="ram ram--bred sidhuvud__rad">
+  <div class="sidhuvud__rad">
     <a class="marke" href={url('/')} aria-label={`${SAJT.namn}, till kartan`}>
-      <img src={url('/logo.svg')} alt="" width="30" height="30" class="marke__bild" />
-      <span class="marke__namn">OpenSverige</span>
-      <span class="marke__pill">AI-kartan</span>
+      <img src={url('/icon.png')} alt="" width="36" height="36" class="marke__bild" />
+      <span class="marke__text">
+        <span class="marke__namn">OpenSverige</span>
+        <span class="marke__under">AI-kartan · ideell, oberoende, inte statlig</span>
+      </span>
     </a>
-    <nav class="nav" aria-label="Huvudmeny">
-      <ul class="nav__lista">
-        {lankar.map((l) => (
-          <li>
-            <a href={url(l.href)} aria-current={aktiv(l.href) ? 'page' : undefined}>{l.text}</a>
-          </li>
-        ))}
-      </ul>
+
+    <nav class="vyval" aria-label="Vy">
+      {vyer.map((v) => (
+        <a href={url(v.href)} aria-current={aktiv(v.href) ? 'page' : undefined}>
+          <Fragment set:html={ikon(v.ikon, 17)} />
+          {v.text}
+        </a>
+      ))}
     </nav>
-    <details class="meny">
-      <summary class="meny__knapp" aria-label="Öppna menyn">Meny</summary>
-      <ul class="meny__lista">
-        {lankar.map((l) => (
-          <li>
-            <a href={url(l.href)} aria-current={aktiv(l.href) ? 'page' : undefined}>{l.text}</a>
+
+    <form class="sok" id="sokform" role="search" action={url('/')} method="get">
+      <label class="visuellt-dold" for="sok">Sök organisation, kommun eller län</label>
+      <span class="sok__ikon"><Fragment set:html={ikon('sok', 19)} /></span>
+      <input
+        id="sok"
+        class="sok__falt"
+        type="search"
+        name="q"
+        placeholder="Sök organisation eller plats"
+        autocomplete="off"
+        autocapitalize="off"
+        spellcheck="false"
+        enterkeyhint="search"
+      />
+      <kbd class="sok__kbd" aria-hidden="true">⌘K</kbd>
+      <div class="sok__lada" id="sokresultat" hidden></div>
+    </form>
+
+    <div class="sidhuvud__hoger">
+      <a class="hknapp hknapp--mork" href={url('/bidra')}>
+        <Fragment set:html={ikon('plus', 17)} />
+        Lägg till
+      </a>
+      <details class="meny">
+        <summary class="hknapp hknapp--ikon" aria-label="Meny">
+          <Fragment set:html={ikon('meny', 20)} />
+        </summary>
+        <ul class="meny__lista">
+          {vyer.map((v) => (
+            <li class="meny__vy">
+              <a href={url(v.href)} aria-current={aktiv(v.href) ? 'page' : undefined}>{v.text}</a>
+            </li>
+          ))}
+          {lankar.map((l) => (
+            <li>
+              <a href={url(l.href)} aria-current={aktiv(l.href) ? 'page' : undefined}>{l.text}</a>
+            </li>
+          ))}
+          <li class="meny__skilje">
+            <a href={SAJT.infra} rel="noopener">AI-Infra</a>
           </li>
-        ))}
-        <li>
-          <a href={SAJT.discord} rel="noopener">Discord</a>
-        </li>
-      </ul>
-    </details>
+          <li>
+            <a href={SAJT.discord} rel="noopener">Discord</a>
+          </li>
+        </ul>
+      </details>
+    </div>
   </div>
 </header>
+
+<script>
+  const falt = document.querySelector<HTMLInputElement>('#sok');
+  const kbd = document.querySelector<HTMLElement>('.sok__kbd');
+  const meny = document.querySelector<HTMLDetailsElement>('.meny');
+
+  if (kbd && !/Mac|iPhone|iPad/.test(navigator.userAgent)) kbd.textContent = 'Ctrl K';
+
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      falt?.focus();
+      falt?.select();
+    }
+    if (e.key === 'Escape' && meny?.open) {
+      meny.open = false;
+      meny.querySelector('summary')?.focus();
+    }
+  });
+  document.addEventListener('click', (e) => {
+    if (meny?.open && !meny.contains(e.target as Node)) meny.open = false;
+  });
+</script>
 
 <style>
   .sidhuvud {
     position: sticky;
     top: 0;
     z-index: 50;
-    background: hsl(var(--bg-soft) / 0.86);
-    backdrop-filter: blur(14px) saturate(160%);
-    -webkit-backdrop-filter: blur(14px) saturate(160%);
-    border-bottom: 1px solid hsl(var(--rule-soft));
+    flex: none;
+    background: hsl(var(--yta));
+    border-bottom: 1px solid hsl(var(--kant));
   }
   .sidhuvud__rad {
     display: flex;
     align-items: center;
-    gap: 24px;
-    min-height: 58px;
+    gap: 16px;
+    height: var(--huvud-h);
+    padding: 0 20px;
   }
   .marke {
     display: inline-flex;
     align-items: center;
     gap: 9px;
+    flex: none;
     text-decoration: none;
     color: hsl(var(--ink));
   }
   .marke__bild {
-    width: 30px;
-    height: 30px;
-    image-rendering: pixelated;
+    width: 36px;
+    height: 36px;
     transition: transform var(--t-fast);
   }
   .marke:hover .marke__bild {
     transform: rotate(-9deg);
   }
+  .marke__text {
+    display: grid;
+    gap: 3px;
+  }
   .marke__namn {
     font-weight: 700;
     font-size: 21px;
+    line-height: 1;
     letter-spacing: -0.03em;
   }
-  .marke__pill {
+  /* Kartan ska aldrig kunna tas för en statlig tjänst. */
+  .marke__under {
     font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.08em;
+    font-size: 9.5px;
+    line-height: 1;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     color: hsl(var(--moss));
-    background: hsl(var(--moss) / 0.07);
-    border: 1px solid hsl(var(--moss) / 0.25);
-    border-radius: var(--r-tag);
-    padding: 3px 6px;
+    white-space: nowrap;
   }
-  .nav {
-    margin-left: auto;
+
+  /* Vyväxel: Karta eller Lista */
+  .vyval {
+    display: inline-flex;
+    flex: none;
+    gap: 2px;
+    padding: 4px;
+    border-radius: var(--r-pill);
+    background: hsl(var(--yta-chip));
   }
-  .nav__lista,
-  .meny__lista {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    gap: 4px;
-  }
-  .nav a,
-  .meny a {
-    display: inline-block;
-    padding: 8px 10px;
-    border-radius: 6px;
-    color: hsl(var(--ink-soft));
+  .vyval a {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 14px;
+    border-radius: var(--r-pill);
+    color: hsl(var(--ink-mute));
     text-decoration: none;
     font-size: 14.5px;
     font-weight: 500;
+    line-height: 1.2;
+    transition: color var(--t-fast), background var(--t-fast);
   }
-  .nav a:hover,
-  .meny a:hover {
-    color: hsl(var(--moss));
-    background: hsl(var(--moss) / 0.07);
+  .vyval a:hover {
+    color: hsl(var(--ink));
   }
-  .nav a[aria-current='page'],
-  .meny a[aria-current='page'] {
-    color: hsl(var(--moss));
-    box-shadow: inset 0 -2px 0 hsl(var(--moss));
-    border-radius: 6px 6px 0 0;
+  .vyval a[aria-current='page'] {
+    background: hsl(var(--bg));
+    color: hsl(var(--ink));
+    font-weight: 600;
+    box-shadow: 0 1px 2px hsl(var(--ink) / 0.12);
+  }
+
+  /* Sök: sidhuvudets tydligaste element */
+  .sok {
+    position: relative;
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 640px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    height: 46px;
+    border: 1.5px solid hsl(var(--ink) / 0.22);
+    border-radius: var(--r-pill);
+    background: hsl(var(--bg));
+    box-shadow: 0 1px 2px hsl(var(--ink) / 0.05);
+    transition: border-color var(--t-fast), box-shadow var(--t-fast);
+  }
+  .sok:hover {
+    border-color: hsl(var(--ink) / 0.45);
+  }
+  .sok:focus-within {
+    border-color: hsl(var(--ink));
+    box-shadow: 0 0 0 4px hsl(var(--ink) / 0.08);
+  }
+  .sok__ikon {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    flex: none;
+    color: hsl(var(--ink));
+    pointer-events: none;
+  }
+  .sok__falt {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    padding: 0 8px 0 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: hsl(var(--ink));
+    font: 500 16px/1.2 var(--font-sans);
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .sok__falt::placeholder {
+    color: hsl(var(--ink-mute));
+    font-weight: 400;
+    opacity: 1;
+  }
+  .sok__kbd {
+    flex: none;
+    margin-right: 10px;
+    padding: 4px 7px;
+    border: 1px solid hsl(var(--kant));
+    border-radius: 7px;
+    background: hsl(var(--yta-chip));
+    color: hsl(var(--ink-mute));
+    font: 500 11px/1 var(--font-mono);
+    white-space: nowrap;
+  }
+  .sok:focus-within .sok__kbd {
+    display: none;
+  }
+
+  .sidhuvud__hoger {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: none;
+  }
+  .hknapp {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    height: 42px;
+    padding: 0 16px;
+    border: 1px solid hsl(var(--kant));
+    border-radius: var(--r-ruta);
+    background: hsl(var(--yta-kort));
+    color: hsl(var(--ink));
+    font: 600 14.5px/1 var(--font-sans);
+    text-decoration: none;
+    cursor: pointer;
+    transition: background var(--t-fast), border-color var(--t-fast);
+  }
+  .hknapp:hover {
+    border-color: hsl(var(--ink) / 0.4);
+    color: hsl(var(--ink));
+  }
+  .hknapp--mork {
+    background: hsl(var(--ink));
+    border-color: hsl(var(--ink));
+    color: hsl(var(--yta));
+  }
+  .hknapp--mork:hover {
+    background: hsl(var(--ink-soft));
+    border-color: hsl(var(--ink-soft));
+    color: hsl(var(--yta));
+  }
+  .hknapp--ikon {
+    width: 42px;
+    padding: 0;
+    list-style: none;
+  }
+  .hknapp--ikon::-webkit-details-marker {
+    display: none;
   }
   .meny {
-    display: none;
-    margin-left: auto;
     position: relative;
   }
-  .meny__knapp {
-    list-style: none;
-    cursor: pointer;
-    font: 600 14px/1 var(--font-sans);
-    padding: 9px 12px;
-    border: 1px solid hsl(var(--rule));
-    border-radius: var(--r-btn);
-    color: hsl(var(--ink));
-    background: hsl(var(--bg));
-  }
-  .meny__knapp::-webkit-details-marker {
-    display: none;
-  }
-  .meny[open] .meny__knapp {
-    border-color: hsl(var(--moss));
+  .meny[open] > summary {
+    border-color: hsl(var(--ink));
   }
   .meny__lista {
     position: absolute;
     right: 0;
-    top: calc(100% + 8px);
+    top: calc(100% + 10px);
+    display: flex;
     flex-direction: column;
     gap: 2px;
-    min-width: 220px;
-    background: hsl(var(--bg));
-    border: 1px solid hsl(var(--rule));
-    border-radius: var(--r-card);
+    min-width: 230px;
+    margin: 0;
     padding: 8px;
-    box-shadow: 0 18px 40px -18px hsl(var(--ink) / 0.35);
+    list-style: none;
+    background: hsl(var(--yta-kort));
+    border: 1px solid hsl(var(--kant));
+    border-radius: var(--r-kort);
+    box-shadow: var(--skugga-flyt);
   }
-  .meny a {
+  .meny__lista a {
     display: block;
+    padding: 9px 12px;
+    border-radius: 10px;
+    color: hsl(var(--ink-soft));
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
   }
-  @media (max-width: 940px) {
-    .nav {
+  .meny__lista a:hover {
+    background: hsl(var(--yta-chip));
+    color: hsl(var(--ink));
+  }
+  .meny__lista a[aria-current='page'] {
+    color: hsl(var(--ink));
+    font-weight: 700;
+  }
+  .meny__vy {
+    display: none;
+  }
+  .meny__skilje {
+    margin-top: 4px;
+    padding-top: 4px;
+    border-top: 1px solid hsl(var(--kant));
+  }
+
+  @media (max-width: 1180px) {
+    .marke__under {
       display: none;
     }
-    .meny {
+  }
+  @media (max-width: 900px) {
+    .sidhuvud__rad {
+      gap: 10px;
+      padding: 0 12px;
+    }
+    .marke__text,
+    .vyval,
+    .hknapp--mork,
+    .sok__kbd {
+      display: none;
+    }
+    .meny__vy {
       display: block;
+    }
+    .marke {
+      min-width: 44px;
+      min-height: 44px;
+      justify-content: center;
+    }
+    .sok {
+      height: 44px;
+    }
+    .sok__ikon {
+      width: 42px;
     }
   }
 </style>

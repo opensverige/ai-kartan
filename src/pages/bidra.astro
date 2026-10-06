@@ -1,7 +1,10 @@
 ---
+// Sidan ska gå att skumma: vägarna in överst, vad man skickar i tre rader,
+// och allt annat i fällbara avsnitt för den som vill veta mer.
 import Sida from '../layouts/Sida.astro';
 import { url, SAJT } from '../lib/data';
-const nyUrl = `${SAJT.repo}/issues/new?template=ny-organisation.yml`;
+const nyUrl = `${SAJT.repo}/issues/new?template=1-lagg-till.yml`;
+const helPostUrl = `${SAJT.repo}/issues/new?template=ny-organisation.yml`;
 const rattaUrl = `${SAJT.repo}/issues/new?template=rattelse.yml`;
 const bortUrl = `${SAJT.repo}/issues/new?template=borttagning.yml`;
 const mallUrl = `${SAJT.repo}/blob/main/data/MALL.yaml`;
@@ -11,64 +14,137 @@ const nyFilUrl = `${SAJT.repo}/new/main/data/organisationer`;
 <Sida
   titel="Lägg till, rätta eller ta bort"
   kicker="Bidra"
-  ingress="Vem som helst kan lägga till sig själv eller en organisation med primärkälla. Det kostar inget, kan inte köpas och kräver inget konto hos oss, bara ett GitHub-konto."
-  beskrivning="Så lägger du till en organisation på AI-kartan: via ett formulär som blir en pull request, eller direkt med en YAML-fil. Så rättar du en uppgift eller begär borttagning."
+  ingress="Kartan drivs ideellt av föreningen OpenSverige. Inget kostar. Skriv till oss, så gör vi resten."
+  beskrivning="Lägg till, rätta eller ta bort en organisation på AI-kartan, via Discord eller GitHub. Kartan drivs ideellt av föreningen OpenSverige."
   stig="/bidra"
 >
-  <h2 id="formular">Enklast: fyll i formuläret</h2>
-  <p>Formuläret på GitHub blir en pull request automatiskt. Du behöver inte kunna git. En människa granskar mot <a href={url('/kriterier')}>kriterierna</a> och svarar inom 14 dagar.</p>
-  <p><a class="knapp" href={nyUrl} rel="noopener">Lägg till en organisation</a></p>
-  <p>Allt du skickar in märks som <em>egen uppgift</em>. Vill du att något ska bli <em>bekräftat</em>, länka till ett register eller ett oberoende dokument, så kontrollerar vi.</p>
+  <h2 id="vagar">Så når du oss</h2>
+  <ul class="vagar">
+    <li class="kort vag" id="discord">
+      <p class="kicker">Enklast · kräver Discord-konto</p>
+      <h3>Discord</h3>
+      <p>Gå med och skriv i <a class="kanal" href={SAJT.discordKanal.url} rel="noopener">#{SAJT.discordKanal.namn}</a>.</p>
+      <a class="knapp knapp--liten" href={SAJT.discord} rel="noopener">Gå med i Discord</a>
+    </li>
+    <li class="kort vag">
+      <p class="kicker">Kräver GitHub-konto</p>
+      <h3>GitHub</h3>
+      <p>Ett öppet ärende som du kan följa. Här går det också att <a href={rattaUrl} rel="noopener">rätta</a> och <a href={bortUrl} rel="noopener">ta bort</a>.</p>
+      <a class="knapp knapp--ghost knapp--liten" href={nyUrl} rel="noopener">Lägg till via GitHub</a>
+    </li>
+    <li class="kort kort--mjuk vag vag--snart">
+      <p class="kicker">Kommer snart</p>
+      <h3>E-post</h3>
+      <p>Utan konto.</p>
+    </li>
+    <li class="kort kort--mjuk vag vag--snart">
+      <p class="kicker">Kommer snart</p>
+      <h3>Formulär</h3>
+      <p>Utan konto, här på sajten.</p>
+    </li>
+  </ul>
 
-  <h2 id="pr">För den som vill: en fil per organisation</h2>
-  <ol>
-    <li>Kopiera <a href={mallUrl} rel="noopener">mallen</a>.</li>
-    <li><a href={nyFilUrl} rel="noopener">Skapa filen</a> <code>data/organisationer/&lt;id&gt;.yaml</code> direkt i GitHubs webbgränssnitt. <code>id</code> är ett permanent slug-namn, till exempel <code>berget-ai</code>.</li>
-    <li>Ge varje uppgift <code>source_url</code>, <code>verified_at</code> och <code>status</code>. Kommunkoden står inom citattecken, listan finns i <code>data/geo/kommuner.json</code>.</li>
-    <li>Öppna en pull request. CI validerar schemat, reglerna och länkarna. Felmeddelandena är på svenska och säger vad som saknas.</li>
-  </ol>
-  <pre><code>{`id: exempelbolaget
+  <h2 id="formular">Det här behöver vi</h2>
+  <ul class="uppgifter">
+    <li><strong>Lägga till.</strong> Namn, webbplats och en länk till något ni byggt med AI. Vi skriver posten.</li>
+    <li id="ratta"><strong>Rätta.</strong> Vad som är fel, och en länk som visar det.</li>
+    <li id="ta-bort"><strong>Ta bort.</strong> Vilken organisation det gäller. Nedlagd, dubblett eller vill inte vara med räcker som skäl.</li>
+  </ul>
+  <p>Vi svarar inom 14 dagar. Enskilda firmor kommer snart.</p>
+
+  <h2>Mer, om du vill</h2>
+  <details class="dragspel" id="varfor">
+    <summary>Varför behövs ett konto?</summary>
+    <div class="dragspel__kropp">
+      <p>OpenSverige är en ideell förening, inget företag. Vi gör det här på fritiden, så det finns ingen kundtjänst. Frågor tas där vi redan arbetar: öppet på Discord och GitHub. Ingen kan köpa en plats eller en snabbare kö.</p>
+    </div>
+  </details>
+
+  <details class="dragspel" id="regler">
+    <summary>Vad händer med det jag skickar?</summary>
+    <div class="dragspel__kropp">
+      <ul>
+        <li>En människa granskar mot <a href={url('/kriterier')}>kriterierna</a>.</li>
+        <li>Det som står på er webbplats märks som <em>egen uppgift</em>.</li>
+        <li>Det som går att slå upp i ett register märks som <em>bekräftat</em>.</li>
+        <li>Vi ändrar aldrig status på begäran. Vi läser bevis.</li>
+        <li>Beskrivningen är neutral: vad som byggs, inte hur bra det är.</li>
+        <li>Inga personuppgifter. Därför väntar vi med enskilda firmor.</li>
+        <li>En borttagen post syns i historiken, utan sitt innehåll.</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="dragspel" id="pr">
+    <summary>Skriv hela posten själv</summary>
+    <div class="dragspel__kropp">
+      <p>Det <a href={helPostUrl} rel="noopener">långa formuläret</a> blir en pull request, och du står som medförfattare. Eller skapa filen direkt:</p>
+      <ol>
+        <li>Kopiera <a href={mallUrl} rel="noopener">mallen</a>.</li>
+        <li><a href={nyFilUrl} rel="noopener">Skapa filen</a> <code>data/organisationer/&lt;id&gt;.yaml</code>.</li>
+        <li>Ge varje uppgift källa, datum och status.</li>
+        <li>Öppna en pull request. Kontrollen säger vad som saknas.</li>
+      </ol>
+      <pre><code>{`id: exempelbolaget
 name:
   value: Exempelbolaget
   status: claimed
   source_url: https://exempelbolaget.se
   source_type: own_site
   verified_at: 2026-10-04
-type:
-  value: bolag
-  status: confirmed
-  source_url: https://www.allabolag.se/5560000000
-  source_type: third_party
-  verified_at: 2026-10-04
-kommun:
-  value: "0180"
-  status: confirmed
-  source_url: https://www.allabolag.se/5560000000
-  source_type: third_party
-  verified_at: 2026-10-04
 evidence:
   - url: https://github.com/exempelbolaget/svensk-llm
     kind: repo
     verified_at: 2026-10-04`}</code></pre>
+      <p class="meta">Mallen har alla fält. Koden och datan ligger i <a href={SAJT.repo} rel="noopener">opensverige/ai-kartan</a>.</p>
+    </div>
+  </details>
 
-  <h2 id="regler">Reglerna i korthet</h2>
-  <ul>
-    <li><strong>Källa och datum på varje uppgift.</strong> Utan det stoppar CI publiceringen.</li>
-    <li><strong>Egen webbplats ger egen uppgift.</strong> Bara register, myndigheter, oberoende tredje part och akademiska källor ger bekräftad.</li>
-    <li><strong>Inga personuppgifter.</strong> Inga namn, e-postadresser, telefonnummer eller gatuadresser. Enskilda firmor läggs bara till av personen själv.</li>
-    <li><strong>Neutral beskrivning.</strong> Skriv vad som byggs, inte hur bra det är. Kartan är källa, inte marknadsföring.</li>
-    <li><strong>En organisation, en post.</strong> Flera tjänster beskrivs i samma post.</li>
-  </ul>
-
-  <h2 id="ratta">Rätta en uppgift</h2>
-  <p>Fel? <a href={rattaUrl} rel="noopener">Öppna ett rättelseärende</a> med källa. Varje organisationssida har också knappen ”Begär rättelse” förifylld. Vi ändrar aldrig status på begäran, men vi läser bevis.</p>
-
-  <h2 id="ta-bort">Begär borttagning</h2>
-  <p>Nedlagd, dubblett, eller vill ni inte vara med? <a href={bortUrl} rel="noopener">Öppna ett borttagningsärende</a>. En enskild firma tas bort på begäran av personen själv, utan diskussion. Borttagningen syns i historiken som ”hela posten borttagen”, utan innehållet.</p>
-
-  <h2 id="verifiera">Hjälp till att verifiera</h2>
-  <p>Det mest värdefulla bidraget är att höja en uppgift från egen uppgift till bekräftad. Välj en post, slå upp organisationsnumret i ett register eller på en oberoende sida som speglar registret, och öppna en pull request som byter källa, källtyp och status. Målet är att minst 25 procent av posterna har minst ett bekräftat fält tre månader efter lansering.</p>
-
-  <h2 id="discord">Prata med oss</h2>
-  <p>All diskussion sker öppet i <a href={SAJT.discord} rel="noopener">OpenSveriges Discord</a>. Spårbara ärenden i <a href={`${SAJT.repo}/issues`} rel="noopener">GitHub Issues</a>. Koden och datan ligger i <a href={SAJT.repo} rel="noopener">opensverige/ai-kartan</a>.</p>
+  <details class="dragspel" id="verifiera">
+    <summary>Hjälp till att verifiera</summary>
+    <div class="dragspel__kropp">
+      <p>Höj en uppgift från egen uppgift till bekräftad. Slå upp organisationsnumret i ett register. Öppna sedan en pull request som byter källa, källtyp och status.</p>
+    </div>
+  </details>
 </Sida>
+
+<style>
+  .vagar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 12px;
+    margin: 0 0 16px;
+    padding: 0;
+    list-style: none;
+  }
+  .vag {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .vag h3,
+  .vag p {
+    margin: 0;
+  }
+  .vag .knapp {
+    margin-top: auto;
+  }
+  .vag--snart {
+    border-style: dashed;
+    color: hsl(var(--ink-mute));
+  }
+  .vag--snart h3 {
+    color: hsl(var(--ink-mute));
+  }
+  .uppgifter {
+    display: grid;
+    gap: 8px;
+    margin: 0 0 12px;
+    padding: 0;
+    list-style: none;
+  }
+  .uppgifter strong {
+    color: hsl(var(--ink));
+  }
+</style>

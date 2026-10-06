@@ -1,5 +1,5 @@
-name: Lägg till en organisation
-description: Lägg till dig själv eller en organisation du har primärkälla för. Formuläret blir en pull request automatiskt.
+name: Lägg in hela posten själv
+description: För dig som vill fylla i alla uppgifter själv. Formuläret blir en pull request automatiskt, och du står som medförfattare.
 title: "Lägg till: "
 labels: ["ny-organisation"]
 body:
@@ -8,7 +8,7 @@ body:
       value: |
         Tack för att du bygger på kartan. Tre kriterier gäller, inga andra: **svensk koppling**, **något byggt med AI bakom en publik länk** och **finns på riktigt**. Läs dem i [kriterier.md](../blob/main/kriterier.md).
 
-        Uppgifter du lämnar märks som **egen uppgift** tills de kan bekräftas mot register. Det är inte ett betyg, bara ärlig märkning. Lämna inga personuppgifter: inga namn, e-postadresser eller telefonnummer.
+        Uppgifter du lämnar märks som **egen uppgift** tills de kan bekräftas mot register. Det är inte ett betyg, bara ärlig märkning. Lämna inga personuppgifter: inga namn, e-postadresser eller telefonnummer. Enskilda firmor tar vi inte emot än, eftersom en sådan post är en personuppgift. Det kommer.
   - type: input
     id: namn
     attributes:
@@ -30,7 +30,6 @@ body:
       label: Organisationstyp
       options:
         - bolag
-        - enskild_firma
         - myndighet
         - kommun_region
         - larosate
@@ -43,7 +42,7 @@ body:
     id: organisationsnummer
     attributes:
       label: Organisationsnummer
-      description: Formen 556000-0000. Lämna tomt om det saknas. För enskild firma lämnas det alltid tomt (det är ett personnummer).
+      description: Formen 556000-0000. Lämna tomt om det saknas.
       placeholder: 556000-0000
   - type: input
     id: kommun
@@ -159,7 +158,7 @@ body:
     attributes:
       label: Bekräftelse
       options:
-        - label: Jag företräder organisationen, eller lämnar uppgifter som har en publik primärkälla. Är det en enskild firma är jag personen själv och förstår att posten är en personuppgift som jag kan få borttagen när som helst.
+        - label: Jag företräder organisationen, eller lämnar uppgifter som har en publik primärkälla.
           required: true
         - label: Uppgifterna innehåller inga personuppgifter (namn, e-post, telefon) och får publiceras under CC BY 4.0.
           required: true

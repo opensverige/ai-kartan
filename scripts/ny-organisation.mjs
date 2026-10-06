@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-// Gör ett ifyllt ärendeformulär ("Lägg till en organisation") till en YAML-fil.
+// Gör det långa ärendeformuläret ("Lägg in hela posten själv") till en YAML-fil.
+// Det korta formuläret, tre fält, tas emot av scripts/tips.mjs.
 // Körs av .github/workflows/ny-organisation.yml, men går också att köra lokalt:
 //
 //   ISSUE_BODY="$(cat arende.md)" node scripts/ny-organisation.mjs --fran-arende
@@ -11,6 +12,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import YAML from 'yaml';
 import { KATALOG_ORG, lasGeo } from './lib/organisationer.mjs';
+import { parsa, ikryssade, normaliseraUrl } from './lib/arende.mjs';
 
 const argv = process.argv.slice(2);
 const IDAG = new Date().toISOString().slice(0, 10);
@@ -23,23 +25,6 @@ if (!kropp.trim()) {
   process.exit(1);
 }
 
-/** Delar upp GitHubs formulärutdata "### Etikett\n\nvärde" i ett objekt. */
-function parsa(text) {
-  const ut = {};
-  const delar = text.split(/^### /m).slice(1);
-  for (const del of delar) {
-    const [rubrik, ...rest] = del.split('\n');
-    const varde = rest.join('\n').trim();
-    ut[rubrik.trim()] = varde === '_No response_' ? '' : varde;
-  }
-  return ut;
-}
-function ikryssade(text) {
-  return (text || '')
-    .split('\n')
-    .filter((r) => /^- \[[xX]\]/.test(r))
-    .map((r) => r.replace(/^- \[[xX]\]\s*/, '').split(/\s+[–-]\s+/)[0].trim());
-}
 function slug(s) {
   return s
     .toLowerCase()
@@ -50,12 +35,6 @@ function slug(s) {
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
     .slice(0, 60);
-}
-function normaliseraUrl(u) {
-  u = (u || '').trim();
-  if (!u) return '';
-  if (!/^https?:\/\//i.test(u)) u = `https://${u}`;
-  return u.replace(/\/+$/, '');
 }
 
 const f = parsa(kropp);

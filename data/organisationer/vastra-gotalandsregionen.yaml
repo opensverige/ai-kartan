@@ -73,6 +73,18 @@ evidence:
     status: claimed
     verified_at: 2026-10-04
     verified_by: agent
+  - url: https://www.vgregion.se/om-vgr/organisation-och-verksamhet/satsningar-och-samarbeten/artificiell-intelligens/kostnadsintensiva-patienter/
+    kind: case
+    title: "Kostnadsintensiva patienter: avslutat projekt med klusteranalys på regionens egna data"
+    status: claimed
+    verified_at: 2026-10-06
+    verified_by: agent
+  - url: https://kostnadsintensiva.vgregion.se/
+    kind: demo
+    title: "Publicerad app som visar kluster av kostnadsintensiva patienter (data från 2019)"
+    status: claimed
+    verified_at: 2026-10-06
+    verified_by: agent
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-04
+record_updated_at: 2026-10-06

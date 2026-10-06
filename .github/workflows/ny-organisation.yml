@@ -1,4 +1,4 @@
-# Gör ett ifyllt ärendeformulär "Lägg till organisation" till en pull request, utan att den som
+# Gör det långa ärendeformuläret "Lägg in hela posten själv" till en pull request, utan att den som
 # bidrar behöver kunna git. Ärendet läses, en YAML-fil skapas, valideras och läggs i en PR.
 # Misslyckas valideringen skrivs felen som en kommentar i ärendet i stället.
 #
@@ -66,13 +66,22 @@ jobs:
           FIL: ${{ steps.bygg.outputs.fil }}
           ID: ${{ steps.bygg.outputs.id }}
           NAMN: ${{ steps.bygg.outputs.namn }}
+          FORFATTARE: ${{ github.event.issue.user.login }}
+          FORFATTAR_ID: ${{ github.event.issue.user.id }}
+          ENSKILD: ${{ contains(github.event.issue.body, 'enskild_firma') }}
         run: |
           gren="arende/${{ github.event.issue.number }}-$ID"
           git config user.name "ai-kartan-bot"
           git config user.email "ai-kartan-bot@users.noreply.github.com"
           git checkout -B "$gren"
           git add "$FIL"
-          git commit -m "data: lägg till $NAMN (ärende #${{ github.event.issue.number }})"
+          meddelande="data: lägg till $NAMN (ärende #${{ github.event.issue.number }})"
+          # Den som skickade in posten står som medförfattare och syns som bidragsgivare på repot.
+          # Enskilda firmor undantas: namnet skulle ligga kvar i historiken även om posten tas bort.
+          if [ "$ENSKILD" != "true" ]; then
+            meddelande="$meddelande"$'\n\n'"Co-authored-by: $FORFATTARE <$FORFATTAR_ID+$FORFATTARE@users.noreply.github.com>"
+          fi
+          git commit -m "$meddelande"
           git push --force -u origin "$gren"
           {
             echo "Skapad automatiskt ur ärende #${{ github.event.issue.number }}. Uppgifterna är inskickade av organisationen själv och märkta som egen uppgift (claimed)."

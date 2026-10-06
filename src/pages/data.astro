@@ -16,7 +16,7 @@ const idag = d.byggd;
     <thead><tr><th>Fil</th><th>Innehåll</th></tr></thead>
     <tbody>
       <tr><td><a href={url('/api/data.json')}>data.json</a></td><td>Allt. Varje fält med värde, status, källa, källtyp och datum, plus härledda fält (län, position, färskhet).</td></tr>
-      <tr><td><a href={url('/api/data.csv')}>data.csv</a></td><td>En rad per organisation. Varje fält har kolumner för värde, status, källa och datum. Listor separeras med <code>|</code>.</td></tr>
+      <tr><td><a href={url('/api/data.csv')}>data.csv</a></td><td>En rad per organisation. Varje fält har kolumner för värde, status, källa och datum. Listor separeras med <code>|</code>. Vill du bara ha ett urval? Filtrera på <a href={url('/')}>kartan</a> eller i <a href={url('/organisationer')}>listan</a> och använd knappen Ladda ner urvalet. Den filen har samma kolumner men semikolon mellan fälten, så att den öppnas direkt i Excel.</td></tr>
       <tr><td><a href={url('/api/data.geojson')}>data.geojson</a></td><td>Punkter på kommunnivå för kartverktyg. Attribut: typ, erbjuder, områden, kommun, län, permalänk.</td></tr>
       <tr><td><code>/api/data/&lt;id&gt;.json</code></td><td>En organisation med sin ändringshistorik. Exempel: <a href={url('/api/data/opensverige.json')}>opensverige.json</a>.</td></tr>
       <tr><td><a href={url('/api/andringar.json')}>andringar.json</a></td><td>Varje ändrat fält i datan med datum, gammalt och nytt värde. Append-only.</td></tr>

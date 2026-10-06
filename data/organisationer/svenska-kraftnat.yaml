@@ -86,6 +86,18 @@ evidence:
     verified_at: 2026-10-04
     verified_by: agent
     note: Publicerad av SMHI, som är projektpartner.
+  - url: https://www.svk.se/siteassets/om-oss/organisation/finansiell-information/arkiv/arsredovisning-2024.pdf
+    kind: publikation
+    title: "Årsredovisning 2024: obalansprognoser utvecklade med maskininlärning (s. 20)"
+    status: claimed
+    verified_at: 2026-10-06
+    verified_by: agent
+  - url: https://www.svk.se/siteassets/om-oss/remissvar/2025/fi2025_00457-remissvar-over-betankandet-ai-kommissionens-fardplan-for-sverige.pdf
+    kind: publikation
+    title: "Remissvar om AI-kommissionens färdplan: AI-lösning för balansering i bruk 2025 (s. 3)"
+    status: claimed
+    verified_at: 2026-10-06
+    verified_by: agent
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-04
+record_updated_at: 2026-10-06

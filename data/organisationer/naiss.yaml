@@ -83,6 +83,18 @@ evidence:
     verified_at: 2026-10-04
     verified_by: agent
     note: Drevs av C3SE vid Chalmers. Sidan anger att Alvis är avvecklad som NAISS-resurs och att användarna flyttat till Arrhenius.
+  - url: https://supr.naiss.se/round/2026small/
+    kind: resurs
+    title: "NAISS Small 2026: ansökningsomgång med Arrhenius GPU, öppen till 2027-01-01"
+    status: claimed
+    verified_at: 2026-10-06
+    verified_by: agent
+  - url: https://user.naiss.se/allocations/
+    kind: resurs
+    title: "Ansökan om tilldelning hos NAISS: omgångarna Small, Medium och Large via SUPR"
+    status: claimed
+    verified_at: 2026-10-06
+    verified_by: agent
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-04
+record_updated_at: 2026-10-06
