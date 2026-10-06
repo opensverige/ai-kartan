@@ -1,8 +1,451 @@
 {
-  "generated_at": "2026-10-04T22:09:32Z",
-  "antal": 322,
-  "senaste_andring": "2026-10-05",
+  "generated_at": "2026-10-06T06:32:41Z",
+  "antal": 345,
+  "senaste_andring": "2026-10-06",
   "rader": [
+    {
+      "datum": "2026-10-06",
+      "commit": "00180ecc1c",
+      "id": "vastra-gotalandsregionen",
+      "namn": "Västra Götalandsregionen",
+      "falt": "evidence",
+      "andring": "ändrad",
+      "gammalt": [
+        "https://www.vgregion.se/om-vgr/organisation-och-verksamhet/satsningar-och-samarbeten/artificiell-intelligens/",
+        "https://www.vgregion.se/om-vgr/organisation-och-verksamhet/satsningar-och-samarbeten/artificiell-intelligens/prognos-for-inflode-akutmottagning/"
+      ],
+      "nytt": [
+        "https://kostnadsintensiva.vgregion.se/",
+        "https://www.vgregion.se/om-vgr/organisation-och-verksamhet/satsningar-och-samarbeten/artificiell-intelligens/",
+        "https://www.vgregion.se/om-vgr/organisation-och-verksamhet/satsningar-och-samarbeten/artificiell-intelligens/kostnadsintensiva-patienter/",
+        "https://www.vgregion.se/om-vgr/organisation-och-verksamhet/satsningar-och-samarbeten/artificiell-intelligens/prognos-for-inflode-akutmottagning/"
+      ],
+      "status": null,
+      "gammal_status": null,
+      "kalla": null
+    },
+    {
+      "datum": "2026-10-06",
+      "commit": "00180ecc1c",
+      "id": "trafikverket",
+      "namn": "Trafikverket",
+      "falt": "evidence",
+      "andring": "ändrad",
+      "gammalt": [
+        "https://bransch.trafikverket.se/om-oss/aktuellt-for-dig-i-branschen3/aktuellt-for-dig-i-branschen/2025/2005-04/ett-abc-om-digital-besiktning-av-def--jarnvagspodden-avsnitt-5-2025/",
+        "https://www.trafikverket.se/om-oss/nyheter/nationella-nyheter/2024/december/ai-fokus-pa-trafikverket-och-ingenjorsdagen/"
+      ],
+      "nytt": [
+        "https://bransch.trafikverket.se/om-oss/aktuellt-for-dig-i-branschen3/aktuellt-for-dig-i-branschen/2025/2005-04/ett-abc-om-digital-besiktning-av-def--jarnvagspodden-avsnitt-5-2025/",
+        "https://bransch.trafikverket.se/om-oss/aktuellt-for-dig-i-branschen3/aktuellt-for-dig-i-branschen/2025/2025-06/ai-effektiviserar-underhallet-och-trafikverkets-interna-verksamhet/",
+        "https://trafikverket.diva-portal.org/smash/get/diva2:1962928/FULLTEXT01.pdf",
+        "https://www.trafikverket.se/om-oss/nyheter/nationella-nyheter/2024/december/ai-fokus-pa-trafikverket-och-ingenjorsdagen/"
+      ],
+      "status": null,
+      "gammal_status": null,
+      "kalla": null
+    },
+    {
+      "datum": "2026-10-06",
+      "commit": "00180ecc1c",
+      "id": "svenska-kraftnat",
+      "namn": "Svenska kraftnät",
+      "falt": "evidence",
+      "andring": "ändrad",
+      "gammalt": [
+        "https://www.smhi.se/nyheter/nyheter/2026-01-28-ny-ai-modell-siktar-mot-att-forbattra-prognoser-for-moln-och-vind",
+        "https://www.svk.se/press-och-nyheter/nyheter/allmanna-nyheter/2026/ny-ai-modell-for-battre-vindkraftprognoser/"
+      ],
+      "nytt": [
+        "https://www.smhi.se/nyheter/nyheter/2026-01-28-ny-ai-modell-siktar-mot-att-forbattra-prognoser-for-moln-och-vind",
+        "https://www.svk.se/press-och-nyheter/nyheter/allmanna-nyheter/2026/ny-ai-modell-for-battre-vindkraftprognoser/",
+        "https://www.svk.se/siteassets/om-oss/organisation/finansiell-information/arkiv/arsredovisning-2024.pdf",
+        "https://www.svk.se/siteassets/om-oss/remissvar/2025/fi2025_00457-remissvar-over-betankandet-ai-kommissionens-fardplan-for-sverige.pdf"
+      ],
+      "status": null,
+      "gammal_status": null,
+      "kalla": null
+    },
+    {
+      "datum": "2026-10-06",
+      "commit": "00180ecc1c",
+      "id": "soaif",
+      "namn": "Svensk Odontologisk AI Förening (SOAIF)",
+      "falt": "evidence",
+      "andring": "ändrad",
+      "gammalt": [
+        "https://soaif.se/"
+      ],
+      "nytt": [
+        "https://soaif.se/",
+        "https://soaif.se/forelasningar/",
+        "https://soaif.se/medlemskap/"
+      ],
+      "status": null,
+      "gammal_status": null,
+      "kalla": null
+    },
+    {
+      "datum": "2026-10-06",
+      "commit": "00180ecc1c",
+      "id": "scilifelab",
+      "namn": "SciLifeLab (Science for Life Laboratory)",
+      "falt": "evidence",
+      "andring": "ändrad",
+      "gammalt": [
+        "https://www.scilifelab.se/data-ai/"
+      ],
+      "nytt": [
+        "https://github.com/ScilifelabDataCentre/gradio-flower-classification",
+        "https://www.scilifelab.se/data-ai/"
+      ],
+      "status": null,
+      "gammal_status": null,
+      "kalla": null
+    },
+    {
+      "datum": "2026-10-06",
+      "commit": "00180ecc1c",
+      "id": "naiss",
+      "namn": "NAISS – National Academic Infrastructure for Supercomputing in Sweden",
+      "falt": "evidence",
+      "andring": "ändrad",
+      "gammalt": [
+        "https://www.naiss.se/resource/alvis/",
+        "https://www.naiss.se/resource/arrhenius/"
+      ],
+      "nytt": [
+        "https://supr.naiss.se/round/2026small/",
+        "https://user.naiss.se/allocations/",
+        "https://www.naiss.se/resource/alvis/",
+        "https://www.naiss.se/resource/arrhenius/"
+      ],
+      "status": null,
+      "gammal_status": null,
+      "kalla": null
+    },
+    {
+      "datum": "2026-10-06",
+      "commit": "00180ecc1c",
+      "id": "meta-bytes",
+      "namn": "Meta Bytes",
+      "falt": "evidence",
+      "andring": "ändrad",
+      "gammalt": [
+        "https://www.metabytes.se/kundcase/aidare-ai-driven-plattform-for-saker-utveckling-av-komplexa-mjukvarusystem"
+      ],
+      "nytt": [
+        "https://www.metabytes.se/kundcase/aidare-ai-driven-plattform-for-saker-utveckling-av-komplexa-mjukvarusystem",
+        "https://www.metabytes.se/kundcase/diab-effektiviserade-sin-orderhantering-med-back-ai",
+        "https://www.metabytes.se/kundcase/identifiering-av-vilda-djur-med-hjalp-av-ai"
+      ],
+      "status": null,
+      "gammal_status": null,
+      "kalla": null
+    },
+    {
+      "datum": "2026-10-06",
+      "commit": "00180ecc1c",
+      "id": "lund-ai-society",
+      "namn": "Lund AI Society",
+      "falt": "evidence",
+      "andring": "ändrad",
+      "gammalt": [
+        "https://lundaisociety.com/fellowship"
+      ],
+      "nytt": [
+        "https://lundaisociety.com/events",
+        "https://lundaisociety.com/fellowship"
+      ],
+      "status": null,
+      "gammal_status": null,
+      "kalla": null
+    },
+    {
+      "datum": "2026-10-06",
+      "commit": "00180ecc1c",
+      "id": "lunarc",
+      "namn": "LUNARC – Centre for Scientific and Technical Computing",
+      "falt": "evidence",
+      "andring": "ändrad",
+      "gammalt": [
+        "https://www.lunarc.lu.se/systems/cosmos"
+      ],
+      "nytt": [
+        "https://supr.naiss.se/round/2026locallusmall/",
+        "https://www.lunarc.lu.se/getting-access/how-get-access/how-apply-project",
+        "https://www.lunarc.lu.se/systems/cosmos"
+      ],
+      "status": null,
+      "gammal_status": null,
+      "kalla": null
+    },
+    {
+      "datum": "2026-10-06",
+      "commit": "00180ecc1c",
+      "id": "luminar-ventures",
+      "namn": "Luminar Ventures",
+      "falt": "evidence",
+      "andring": "ändrad",
+      "gammalt": [
+        "https://www.luminarventures.com/portfolio"
+      ],
+      "nytt": [
+        "https://tech.eu/2026/02/02/swedish-startup-berget-ai-lands-2-1m-as-demand-grows-for-sovereign-ai-in-europe/",
+        "https://www.luminarventures.com/portfolio"
+      ],
+      "status": null,
+      "gammal_status": null,
+      "kalla": null
+    },
+    {
+      "datum": "2026-10-06",
+      "commit": "00180ecc1c",
+      "id": "jail-ju",
+      "namn": "Jönköping AI Lab (JAIL), Jönköping University",
+      "falt": "evidence",
+      "andring": "ändrad",
+      "gammalt": [
+        "https://ju.se/en/about-us/school-of-engineering/organisation/computing/research.html"
+      ],
+      "nytt": [
+        "https://ju.se/en/about-us/school-of-engineering/organisation/computer-science-and-informatics/research-projects/explain.html",
+        "https://ju.se/en/about-us/school-of-engineering/organisation/computing/research.html",
+        "https://www.diva-portal.org/smash/record.jsf?pid=diva2:1606938"
+      ],
+      "status": null,
+      "gammal_status": null,
+      "kalla": null
+    },
+    {
+      "datum": "2026-10-06",
+      "commit": "00180ecc1c",
+      "id": "j12-ventures",
+      "namn": "J12 Ventures",
+      "falt": "evidence",
+      "andring": "ändrad",
+      "gammalt": [
+        "https://www.j12ventures.com/portfolio"
+      ],
+      "nytt": [
+        "https://www.j12ventures.com/portfolio",
+        "https://www.j12ventures.com/thesis",
+        "https://www.kovant.com/blog/kovant-launches-globally"
+      ],
+      "status": null,
+      "gammal_status": null,
+      "kalla": null
+    },
+    {
+      "datum": "2026-10-06",
+      "commit": "00180ecc1c",
+      "id": "internetstiftelsen",
+      "namn": "Internetstiftelsen",
+      "falt": "evidence",
+      "andring": "ändrad",
+      "gammalt": [
+        "https://internetkunskap.se/grundkurs-i-ai/",
+        "https://internetstiftelsen.se/om-oss/press/pressmeddelanden/internetstiftelsen-och-kth-i-satsning-pa-lararfortbildning-inom-ai-och-digital-bildning/"
+      ],
+      "nytt": [
+        "https://internetkunskap.se/grundkurs-i-ai/",
+        "https://internetstiftelsen.se/om-oss/press/pressmeddelanden/internetstiftelsen-och-kth-i-satsning-pa-lararfortbildning-inom-ai-och-digital-bildning/",
+        "https://svenskarnaochinternet.se/utvalt/sa-anvander-svenskarna-ai-2026/"
+      ],
+      "status": null,
+      "gammal_status": null,
+      "kalla": null
+    },
+    {
+      "datum": "2026-10-06",
+      "commit": "00180ecc1c",
+      "id": "industrifonden",
+      "namn": "Industrifonden",
+      "falt": "evidence",
+      "andring": "ändrad",
+      "gammalt": [
+        "https://industrifonden.com/portfolio"
+      ],
+      "nytt": [
+        "https://industrifonden.com/news-insights/trackpaw-secures-e2-3m-to-revolutionize-preclinical-research-with-ai-powered-monitoring",
+        "https://industrifonden.com/portfolio"
+      ],
+      "status": null,
+      "gammal_status": null,
+      "kalla": null
+    },
+    {
+      "datum": "2026-10-06",
+      "commit": "00180ecc1c",
+      "id": "hpc2n",
+      "namn": "HPC2N – High Performance Computing Center North",
+      "falt": "evidence",
+      "andring": "ändrad",
+      "gammalt": [
+        "https://www.hpc2n.umu.se/resources/hardware/kebnekaise"
+      ],
+      "nytt": [
+        "https://supr.naiss.se/round/2026hpc2n/",
+        "https://www.hpc2n.umu.se/kebnekaise-local",
+        "https://www.hpc2n.umu.se/resources/hardware/kebnekaise"
+      ],
+      "status": null,
+      "gammal_status": null,
+      "kalla": null
+    },
+    {
+      "datum": "2026-10-06",
+      "commit": "00180ecc1c",
+      "id": "goteborgs-stad",
+      "namn": "Göteborgs Stad",
+      "falt": "evidence",
+      "andring": "ändrad",
+      "gammalt": [
+        "https://goeteborgs-stad.mynewsdesk.com/news/goeteborgs-stad-traenar-en-ai-assistent-foer-svensk-offentlig-sektor-484030",
+        "https://goeteborgs-stad.mynewsdesk.com/pressreleases/ny-ai-tjaenst-foer-personer-med-funktionsnedsaettning-utvecklas-i-goeteborg-3328486",
+        "https://www.ai.se/en/news/strong-interest-collaboration-shared-digital-assistant-public-sector"
+      ],
+      "nytt": [
+        "https://goeteborgs-stad.mynewsdesk.com/news/goeteborgs-stad-traenar-en-ai-assistent-foer-svensk-offentlig-sektor-484030",
+        "https://goeteborgs-stad.mynewsdesk.com/pressreleases/ny-ai-tjaenst-foer-personer-med-funktionsnedsaettning-utvecklas-i-goeteborg-3328486",
+        "https://goeteborgs-stad.mynewsdesk.com/pressreleases/pris-foer-utveckling-av-ny-teknologi-3431552",
+        "https://www.ai.se/en/news/strong-interest-collaboration-shared-digital-assistant-public-sector"
+      ],
+      "status": null,
+      "gammal_status": null,
+      "kalla": null
+    },
+    {
+      "datum": "2026-10-06",
+      "commit": "00180ecc1c",
+      "id": "formas",
+      "namn": "Formas",
+      "falt": "evidence",
+      "andring": "ändrad",
+      "gammalt": [
+        "https://formas.se/kunskap-och-fordjupning/nyheter/nyheter/2020-11-10-ai-projekt-ska-mota-klimatutmaningen.html"
+      ],
+      "nytt": [
+        "https://formas.se/en/start-page/apply-for-funding/all-calls/calls/2024-02-23-research-driven-solutions-for-a-sustainable-society-2024.html",
+        "https://formas.se/kunskap-och-fordjupning/nyheter/nyheter/2020-11-10-ai-projekt-ska-mota-klimatutmaningen.html",
+        "https://formas.se/soka-finansiering/alla-utlysningar/utlysningar/2025-04-14-utforska---nytankande-forskning-for-miljo-areella-naringar-och-samhallsbyggande-2025.html"
+      ],
+      "status": null,
+      "gammal_status": null,
+      "kalla": null
+    },
+    {
+      "datum": "2026-10-06",
+      "commit": "00180ecc1c",
+      "id": "fiive",
+      "namn": "Fiive",
+      "falt": "evidence",
+      "andring": "ändrad",
+      "gammalt": [
+        "https://www.fiive.se/work/herrljunga-chatbot"
+      ],
+      "nytt": [
+        "https://www.fiive.se/work/candoris-nova",
+        "https://www.fiive.se/work/herrljunga-chatbot",
+        "https://www.fiive.se/work/rag-solution-manuals"
+      ],
+      "status": null,
+      "gammal_status": null,
+      "kalla": null
+    },
+    {
+      "datum": "2026-10-06",
+      "commit": "00180ecc1c",
+      "id": "digital-futures",
+      "namn": "Digital Futures",
+      "falt": "evidence",
+      "andring": "ändrad",
+      "gammalt": [
+        "https://www.digitalfutures.kth.se/research/"
+      ],
+      "nytt": [
+        "https://www.digitalfutures.kth.se/project/eo-ai4globalchange/",
+        "https://www.digitalfutures.kth.se/project/learning-and-sharing-under-privacy-constraints/",
+        "https://www.digitalfutures.kth.se/research/"
+      ],
+      "status": null,
+      "gammal_status": null,
+      "kalla": null
+    },
+    {
+      "datum": "2026-10-06",
+      "commit": "00180ecc1c",
+      "id": "digg",
+      "namn": "Myndigheten för digital förvaltning",
+      "falt": "evidence",
+      "andring": "ändrad",
+      "gammalt": [
+        "https://www.digg.se/en/management-and-coordination/nordic-digigov-lab/about-nordic-digigov-lab",
+        "https://www.digg.se/en/management-and-coordination/nordic-digigov-lab/ai-powered-seamless-service"
+      ],
+      "nytt": [
+        "https://www.digg.se/ai-for-offentlig-forvaltning/riktlinjer-for-generativ-ai/om-riktlinjerna",
+        "https://www.digg.se/en/management-and-coordination/nordic-digigov-lab/about-nordic-digigov-lab",
+        "https://www.digg.se/en/management-and-coordination/nordic-digigov-lab/ai-powered-seamless-service",
+        "https://www.digg.se/om-oss/nyheter/ai/nyheter/2026-02-16-digg-lanserar-nordisk-fortroendemodell-for-ai"
+      ],
+      "status": null,
+      "gammal_status": null,
+      "kalla": null
+    },
+    {
+      "datum": "2026-10-06",
+      "commit": "00180ecc1c",
+      "id": "c3se",
+      "namn": "C3SE – Chalmers e-Commons e-infrastrukturgrupp",
+      "falt": "evidence",
+      "andring": "ändrad",
+      "gammalt": [
+        "https://www.c3se.chalmers.se/",
+        "https://www.c3se.chalmers.se/about/Alvis/",
+        "https://www.naiss.se/resource/alvis/"
+      ],
+      "nytt": [
+        "https://supr.naiss.se/round/2026e-commons/",
+        "https://www.c3se.chalmers.se/",
+        "https://www.c3se.chalmers.se/about/Alvis/",
+        "https://www.c3se.chalmers.se/about/Vera/",
+        "https://www.naiss.se/resource/alvis/"
+      ],
+      "status": null,
+      "gammal_status": null,
+      "kalla": null
+    },
+    {
+      "datum": "2026-10-06",
+      "commit": "00180ecc1c",
+      "id": "aass-oru",
+      "namn": "Centre for Applied Autonomous Sensor Systems (AASS), Örebro universitet",
+      "falt": "evidence",
+      "andring": "ändrad",
+      "gammalt": [
+        "https://www.oru.se/english/research/research-environments/ent/AASS/projects-at-aass/"
+      ],
+      "nytt": [
+        "https://amm.aass.oru.se/software/",
+        "https://www.oru.se/english/research/research-environments/ent/AASS/projects-at-aass/"
+      ],
+      "status": null,
+      "gammal_status": null,
+      "kalla": null
+    },
+    {
+      "datum": "2026-10-06",
+      "commit": "e51c5fdbdd",
+      "id": "data-ai-stockholm",
+      "namn": "Data & AI Stockholm",
+      "falt": "hela posten",
+      "andring": "tillagd",
+      "gammalt": null,
+      "nytt": null,
+      "status": null,
+      "kalla": "https://dataaistockholm.com"
+    },
     {
       "datum": "2026-10-05",
       "commit": "def036307d",
