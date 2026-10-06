@@ -2,7 +2,7 @@
 import Bas from '../../layouts/Bas.astro';
 import StatusMarke from '../../components/StatusMarke.astro';
 import TypTagg from '../../components/TypTagg.astro';
-import { hamtaData, allaFakta, visaVarde, kalltypEtikett, formateraDatum, url, absolutUrl, SAJT } from '../../lib/data';
+import { hamtaData, allaFakta, visaVarde, kalltypEtikett, formateraDatum, typikoner, url, absolutUrl, SAJT } from '../../lib/data';
 import type { Org } from '../../lib/data';
 
 export function getStaticPaths() {
@@ -14,6 +14,7 @@ interface Props {
   org: Org;
 }
 const { org } = Astro.props;
+const typikon = typikoner()[org.type.value];
 const d = hamtaData();
 const fakta = allaFakta(org);
 const typ = d.etikett.typer.get(org.type.value);
@@ -59,7 +60,10 @@ const citat = `OpenSverige AI-kartan, ”${org.name.value}”, hämtad ${idag}, 
         {org.h.lan_slug && <a class="tagg" href={url(`/lan/${org.h.lan_slug}`)}>{org.h.lan_namn}</a>}
         {org.links?.infra_id && <a class="tagg" href={`${SAJT.infra}/leverantor/${org.links.infra_id}`} rel="noopener">Finns på AI-Infra</a>}
       </div>
-      <h1>{org.name.value}</h1>
+      <div class="org__namnrad">
+        {typikon && <img class="org__ikon" src={typikon} alt="" width="72" height="72" decoding="async" />}
+        <h1>{org.name.value}</h1>
+      </div>
       <p class="org__beskrivning">{org.description.value} <StatusMarke status={org.description.status} kort /></p>
       <p class="rad">
         <a class="knapp knapp--ghost knapp--liten" href={org.website} rel="noopener">{org.website.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}</a>
@@ -193,6 +197,28 @@ const citat = `OpenSverige AI-kartan, ”${org.name.value}”, hämtad ${idag}, 
   }
   .brod a {
     color: hsl(var(--ink-mute));
+  }
+  .org__namnrad {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+  }
+  /* Får det längsta ordet inte plats bredvid ikonen faller rubriken ner under den i stället för att klippas. */
+  .org__namnrad h1 {
+    flex: 1 1 0;
+  }
+  .org__ikon {
+    flex: none;
+    width: 72px;
+    height: 72px;
+    object-fit: contain;
+  }
+  @media (max-width: 520px) {
+    .org__ikon {
+      width: 52px;
+      height: 52px;
+    }
   }
   .org__huvud h1 {
     margin: 12px 0 10px;
