@@ -1,8 +1,20 @@
 {
-  "generated_at": "2026-10-06T20:31:15Z",
-  "antal": 345,
+  "generated_at": "2026-10-06T20:46:08Z",
+  "antal": 346,
   "senaste_andring": "2026-10-06",
   "rader": [
+    {
+      "datum": "2026-10-06",
+      "commit": "846255384b",
+      "id": "klarna",
+      "namn": "Klarna",
+      "falt": "hela posten",
+      "andring": "tillagd",
+      "gammalt": null,
+      "nytt": null,
+      "status": null,
+      "kalla": "https://www.klarna.com/se/"
+    },
     {
       "datum": "2026-10-06",
       "commit": "15b2b442ab",
