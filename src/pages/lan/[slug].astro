@@ -2,6 +2,7 @@
 import Bas from '../../layouts/Bas.astro';
 import OrgKort from '../../components/OrgKort.astro';
 import { hamtaData, url, absolutUrl } from '../../lib/data';
+import { brodsmulor } from '../../lib/meta';
 import type { Plats } from '../../lib/data';
 
 export function getStaticPaths() {
@@ -16,7 +17,7 @@ const n = plats.organisationer.length;
 const kommuner = d.platser.kommuner.filter((k) => k.lan_kod === plats.kod);
 const titel = `AI i ${plats.namn}`;
 const beskrivning = `${n} ${n === 1 ? 'organisation' : 'organisationer'} som bygger AI i ${plats.namn}, fördelade på ${kommuner.length} kommuner. Med källa och datum på varje uppgift.`;
-const jsonLd = {
+const samling = {
   '@context': 'https://schema.org',
   '@type': 'CollectionPage',
   name: titel,
@@ -24,6 +25,13 @@ const jsonLd = {
   url: absolutUrl(`/lan/${plats.slug}`),
   about: { '@type': 'AdministrativeArea', name: plats.namn, containedInPlace: { '@type': 'Country', name: 'Sverige' } },
 };
+const jsonLd = [
+  samling,
+  brodsmulor([
+    ['Platser', absolutUrl('/plats')],
+    [plats.namn, absolutUrl(`/lan/${plats.slug}`)],
+  ]),
+];
 ---
 
 <Bas titel={titel} beskrivning={beskrivning} stig={`/lan/${plats.slug}`} jsonLd={jsonLd}>
