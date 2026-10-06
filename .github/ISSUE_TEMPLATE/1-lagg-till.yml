@@ -39,12 +39,12 @@ body:
     id: organisationsnummer
     attributes:
       label: Organisationsnummer (valfritt)
-      description: Formen 556000-0000. Med numret kan vi bekräfta uppgifter mot register direkt. Lämna alltid tomt för en enskild firma, eftersom numret då är ett personnummer.
+      description: Formen 556000-0000. Med numret kan vi bekräfta uppgifter mot register direkt. Skriv aldrig numret för en enskild firma, eftersom det är ett personnummer.
       placeholder: 556000-0000
   - type: checkboxes
     id: enskild
     attributes:
       label: Enskild firma
-      description: Kryssa bara i om det stämmer. Då läser ingen robot din webbplats, och vi frågar efter resten här i ärendet.
+      description: Enskilda firmor tar vi inte emot än, men det kommer. Kryssa i om det gäller dig, så hör vi av oss här när det öppnar.
       options:
-        - label: Det gäller en enskild firma och jag är personen själv. Jag förstår att posten är en personuppgift som jag kan få borttagen när som helst.
+        - label: Det gäller en enskild firma.

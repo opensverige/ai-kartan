@@ -125,7 +125,7 @@ export function skrivSvar(resultat, { sajt, repo, andrad = false }) {
     stycken.push(andrad ? 'Tack, ärendet är uppdaterat och ser bra ut.' : 'Tack! Tipset är mottaget.');
     stycken.push(
       resultat.tips.enskild
-        ? 'Eftersom det gäller en enskild firma läser ingen robot din webbplats. Skriv i en kommentar vilken kommun du verkar i och en mening om vad du bygger, så skriver vi posten utifrån det. Du kan få posten borttagen när som helst.'
+        ? 'Enskilda firmor tar vi inte emot än. En enskild firma är en person, och först ska det gå att få sin post borttagen utan att behöva ett konto. Ärendet ligger kvar, och vi hör av oss här när det öppnar.'
         : `Vi läser webbplatsen, skriver posten och hör av oss här i ärendet inom 14 dagar. En människa granskar den mot [kriterierna](${repo}/blob/main/kriterier.md) innan den publiceras. Det som står på er egen webbplats märks som egen uppgift, och det som går att bekräfta mot register märks som bekräftat.`,
     );
   }

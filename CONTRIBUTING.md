@@ -23,7 +23,7 @@ För granskare. Ett ärende med etiketten `tips` innehåller bara namn, webbplat
 
 1. Läs webbplatsen och belägget. Uppfylls inte ett kriterium stängs ärendet med etiketten `kriterium-1`, `kriterium-2` eller `kriterium-3` och en mening om varför.
 2. Kopiera [data/MALL.yaml](data/MALL.yaml) till `data/organisationer/<id>.yaml` och fyll i. Det som står på organisationens egen webbplats blir `claimed` med `own_site`. Det som går att slå upp i ett register blir `confirmed`.
-3. En AI-agent får göra utkastet, märkt `verified_by: agent`. Det gäller aldrig en enskild firma: där används bara det personen själv har skrivit i ärendet.
+3. En AI-agent får göra utkastet, märkt `verified_by: agent`. Tips om enskilda firmor läggs inte in än. Boten svarar att det kommer, och ärendet får ligga kvar.
 4. Öppna en pull request med `Closes #<ärendets nummer>` i beskrivningen, så stängs ärendet när posten är inne.
 5. Ge tipsaren erkännande. Lägg raden `Co-authored-by: <användarnamn> <<id>+<användarnamn>@users.noreply.github.com>` sist i commit-meddelandet, så syns de som bidragsgivare på repot. Id-numret står på `https://api.github.com/users/<användarnamn>`. Gör inte det för en enskild firma: namnet skulle ligga kvar i historiken även om posten tas bort.
 
@@ -41,7 +41,7 @@ Källtypen styr vilken status som är möjlig. `own_site`, `own_docs`, `press` o
 ## Personuppgifter
 
 - Schemat saknar fält för kontaktpersoner, anställda, ägare, e-post och telefon. Lägg inte till sådana. Valideringen stoppar dem.
-- Enskilda firmor läggs bara till av personen själv (`self_submitted: true`), utan organisationsnummer och utan koordinater.
+- Enskilda firmor läggs bara till av personen själv (`self_submitted: true`), utan organisationsnummer och utan koordinater. Tills vidare tas de inte emot alls: det öppnar när det går att begära borttagning utan konto.
 - Positioner är kommunens mittpunkt. Exakta koordinater bara när organisationen själv publicerar en kontorsadress.
 
 ## Rätta och ta bort

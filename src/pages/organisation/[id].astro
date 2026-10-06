@@ -134,13 +134,16 @@ const citat = `OpenSverige AI-kartan, ”${org.name.value}”, hämtad ${idag}, 
       </div>
       <div>
         <h2 id="ratta">Rätta eller ta bort</h2>
-        <p class="lasbredd">Fel? Öppna ett ärende med källa, så svarar vi inom 14 dagar. Organisationen är källa, aldrig författare: en rättelse från er märks som egen uppgift tills den kan bekräftas.</p>
+        <p class="lasbredd">Fel? Skriv i <a class="kanal" href={SAJT.discordKanal.url} rel="noopener">#{SAJT.discordKanal.namn}</a> på Discord eller öppna ett ärende på GitHub. Länka en källa. Vi svarar inom 14 dagar.</p>
         <p class="rad">
-          <a class="knapp knapp--liten" href={rattelseUrl} rel="noopener">Begär rättelse</a>
-          <a class="knapp knapp--ghost knapp--liten" href={borttagningUrl} rel="noopener">Begär borttagning</a>
-          <a class="knapp knapp--ghost knapp--liten" href={redigeraUrl} rel="noopener">Redigera filen på GitHub</a>
+          <a class="knapp knapp--liten" href={SAJT.discord} rel="noopener">Gå med i Discord</a>
+          <a class="knapp knapp--ghost knapp--liten" href={rattelseUrl} rel="noopener">Rätta via GitHub</a>
+          <a class="knapp knapp--ghost knapp--liten" href={borttagningUrl} rel="noopener">Ta bort via GitHub</a>
         </p>
-        <p class="meta">Källfil: <a href={kallkodUrl} rel="noopener">data/organisationer/{org.id}.yaml</a></p>
+        <p class="meta">
+          Båda vägarna kräver konto. E-post kommer. <a href={url('/bidra#varfor')}>Varför?</a><br />
+          Källfil: <a href={kallkodUrl} rel="noopener">data/organisationer/{org.id}.yaml</a> · <a href={redigeraUrl} rel="noopener">redigera på GitHub</a>
+        </p>
       </div>
     </section>
 

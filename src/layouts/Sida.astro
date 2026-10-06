@@ -28,6 +28,19 @@ const { titel, beskrivning, stig, kicker, ingress, noindex, bred = false, jsonLd
   </article>
 </Bas>
 
+<script>
+  // Öppnar det fällbara avsnitt som adressen pekar på, till exempel /bidra#varfor.
+  function oppnaMal() {
+    const mal = location.hash ? document.getElementById(decodeURIComponent(location.hash.slice(1))) : null;
+    const avsnitt = mal?.closest('details');
+    if (!avsnitt) return;
+    avsnitt.open = true;
+    avsnitt.scrollIntoView();
+  }
+  oppnaMal();
+  addEventListener('hashchange', oppnaMal);
+</script>
+
 <style>
   .sidhuvud-text {
     margin-bottom: 28px;

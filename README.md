@@ -102,13 +102,13 @@ npm run build        # validerar och bygger till dist/
 | `npm run importera:infra` | Importerar svenska leverantörer från infra.opensverige.se som typen `infrastruktur`. |
 | `node scripts/ny-organisation.mjs --fil arende.md` | Gör det långa ärendeformuläret till en YAML-fil. |
 | `node scripts/tips.mjs --fil arende.md` | Läser det korta formuläret och skriver svaret som boten ger i ärendet. |
-| `npm test` | Kör testerna för intaget av nya organisationer. |
+| `npm test` | Kör testerna för intaget av nya organisationer och för nedladdningen av ett urval. |
 
 Miljövariabler vid bygge: `SITE_URL` (standard `https://karta.opensverige.se`) och `BASE_PATH` (standard `/`).
 
 ## Bidra
 
-Tre vägar, ingen kräver att du frågar om lov:
+Enklast är att skriva i [Discord](https://discord.gg/ZbV4qB34um). Den som hellre använder GitHub har tre vägar, och ingen kräver att du frågar om lov:
 
 1. **Formulär.** [Lägg till en organisation](https://github.com/opensverige/ai-kartan/issues/new?template=1-lagg-till.yml) med tre fält: namn, webbplats och en länk till något ni byggt med AI. Vi skriver posten. Den som vill skriva allt själv använder [det långa formuläret](https://github.com/opensverige/ai-kartan/issues/new?template=ny-organisation.yml), som blir en pull request automatiskt.
 2. **Pull request.** Kopiera `data/MALL.yaml` till `data/organisationer/<id>.yaml` direkt i GitHubs webbgränssnitt. CI validerar.
