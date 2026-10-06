@@ -4,7 +4,7 @@
 // Sökfältet ligger i sidhuvudet (Sidhuvud.astro) och kopplas in härifrån.
 import 'maplibre-gl/dist/maplibre-gl.css';
 import Filterrad from './Filterrad.astro';
-import { hamtaData, url, formateraDatum } from '../lib/data';
+import { hamtaData, url, formateraDatum, SAJT } from '../lib/data';
 import { ikon } from '../lib/ikoner';
 
 interface Props {
@@ -21,7 +21,7 @@ const etiketter = {
 };
 ---
 
-<div class="app" data-lage={lage} data-api={url('/api/karta.json')} data-orgbas={url('/organisation/')} data-bidra={url('/bidra')} data-worker={url('/vendor/maplibre/maplibre-gl-worker.mjs')}>
+<div class="app" data-lage={lage} data-api={url('/api/karta.json')} data-orgbas={url('/organisation/')} data-bidra={url('/bidra')} data-csv={url('/api/data.csv')} data-infra={SAJT.infra} data-infralogo={url('/ai-infra.png')} data-worker={url('/vendor/maplibre/maplibre-gl-worker.mjs')}>
   {lage === 'lista' && <Filterrad />}
 
   <section class="panel" id="panel" data-blad="titt" aria-label="Organisationer">
@@ -49,18 +49,14 @@ const etiketter = {
           <h1 class="panel__rubrik" id="rubrik">Alla som bygger AI i Sverige</h1>
           <p class="panel__antal"><strong id="antal-tal">{s.antal}</strong> <span id="antal-not">organisationer</span></p>
           <p class="panel__text" id="ingress">
-            Soloutvecklaren, föreningen, kommunen och lärosätet syns bredvid bolagen. Inget rankas och ingen kan köpa en plats.
-            <a href={url('/bidra')}>Lägg till dig själv med en pull request.</a>
-          </p>
-          <p class="panel__fakta meta">
-            {s.andel_med_bekraftat} % har minst ett bekräftat fält · {d.platser.kommuner.length} kommuner ·
-            senast verifierad {formateraDatum(s.senast_verifierad)}
+            Drivs ideellt av föreningen OpenSverige, inget företag. Inget rankas och ingen kan köpa en plats.
+            <a href={url('/bidra')}>Lägg till dig själv.</a>
           </p>
         </header>
       )}
 
       <div class="listhuvud">
-        <p class="kicker listhuvud__antal" id="antal" aria-live="polite">Laddar …</p>
+        <p class:list={['kicker', 'listhuvud__antal', { 'visuellt-dold': lage === 'karta' }]} id="antal" aria-live="polite">Laddar …</p>
         <div class="listhuvud__hoger">
           <label class="sortera">
             <span>Sortera:</span>
@@ -71,6 +67,9 @@ const etiketter = {
           </label>
           <button type="button" class="ikonknapp ej-utskrift" id="dela" aria-label="Kopiera länk till urvalet" title="Kopiera länk till urvalet">
             <Fragment set:html={ikon('lank', 18)} />
+          </button>
+          <button type="button" class="ikonknapp ej-utskrift" id="ladda-ner" aria-label="Ladda ner urvalet som CSV" title="Ladda ner urvalet som CSV">
+            <Fragment set:html={ikon('ladda-ner', 18)} />
           </button>
         </div>
       </div>
@@ -94,6 +93,13 @@ const etiketter = {
       </ol>
 
       <p class="lista__saknas">Saknas någon? <a href={url('/bidra')}>Lägg till en organisation</a></p>
+
+      {lage === 'karta' && (
+        <p class="panel__fakta meta">
+          {s.andel_med_bekraftat} % har minst ett bekräftat fält · {d.platser.kommuner.length} kommuner ·
+          senast verifierad {formateraDatum(s.senast_verifierad)}
+        </p>
+      )}
 
       {lage === 'karta' && (
         <footer class="panel__fot">
@@ -135,6 +141,7 @@ const etiketter = {
   // MapLibre är stort och laddas först när en karta faktiskt ska ritas, inte i listläget.
   import type { Map as MapLibreMap, Popup, GeoJSONSource, ExpressionSpecification, PaddingOptions } from 'maplibre-gl';
   import { ikon, type IkonNamn } from '../lib/ikoner';
+  import { urvalSomCsv } from '../lib/csv';
 
   type Post = {
     id: string; n: string; t: string; o: string[]; a: string[]; k: string | null; kn: string | null;
@@ -144,7 +151,7 @@ const etiketter = {
   /** Post med förberedd söktext: nn är namnet, ns allt som går att söka på. */
   type Rad = Post & { nn: string; ns: string };
   type FacettNamn = 'erbjuder' | 'typ' | 'omrade' | 'lan';
-  type Filter = { q: string; erbjuder: string[]; typ: string[]; omrade: string[]; lan: string; kommun: string; bekraftat: boolean };
+  type Filter = { q: string; erbjuder: string[]; typ: string[]; omrade: string[]; lan: string; kommun: string };
   type PlatsTraff = { typ: 'kommun' | 'lan'; kod: string; namn: string; nn: string; under: string; antal: number };
   type SokTraff = { org: Rad[]; platser: PlatsTraff[]; totalt: number };
   type SokVal = { typ: 'org'; o: Rad } | { typ: 'plats'; p: PlatsTraff };
@@ -162,6 +169,9 @@ const etiketter = {
     const antalEl = app.querySelector<HTMLElement>('#antal')!;
     const sortEl = app.querySelector<HTMLSelectElement>('#sortera')!;
     const delaEl = app.querySelector<HTMLButtonElement>('#dela')!;
+    const laddaNerEl = app.querySelector<HTMLButtonElement>('#ladda-ner')!;
+    const infra = app.dataset.infra || 'https://infra.opensverige.se';
+    const infralogo = app.dataset.infralogo || '/ai-infra.png';
     const rensaEl = app.querySelector<HTMLButtonElement>('#rensa')!;
     const rensaText = app.querySelector<HTMLElement>('#rensa-text')!;
     const filterAntal = app.querySelector<HTMLElement>('#filter-antal')!;
@@ -240,7 +250,6 @@ const etiketter = {
         omrade: fd.getAll('omrade').map(String),
         lan: String(fd.get('lan') || ''),
         kommun,
-        bekraftat: fd.get('bekraftat') === '1',
       };
     }
 
@@ -258,7 +267,6 @@ const etiketter = {
         if (f.lan && o.l !== f.lan) return false;
         if (f.kommun && o.k !== f.kommun) return false;
       }
-      if (f.bekraftat && o.c < 1) return false;
       return true;
     }
 
@@ -271,7 +279,6 @@ const etiketter = {
       if (f.typ.length) p.set('typ', f.typ.join(','));
       if (f.omrade.length) p.set('omrade', f.omrade.join(','));
       if (f.lan) p.set('lan', f.lan);
-      if (f.bekraftat) p.set('bekraftat', '1');
       if (f.kommun) p.set('kommun', f.kommun);
       if (valdId) p.set('org', valdId);
       const qs = p.toString();
@@ -289,7 +296,6 @@ const etiketter = {
       sattVal('omrade', lista('omrade'));
       // En kommun ligger alltid i ett län; koden börjar med länets två siffror.
       sattVal('lan', [p.get('lan') || kommun.slice(0, 2)]);
-      (form.elements.namedItem('bekraftat') as HTMLInputElement).checked = p.get('bekraftat') === '1';
     }
 
     function filtrera(skriv = true) {
@@ -334,7 +340,7 @@ const etiketter = {
         brod.innerHTML = delar.join('');
       }
 
-      const aktiva = f.erbjuder.length + f.typ.length + f.omrade.length + (f.lan || f.kommun ? 1 : 0) + (f.bekraftat ? 1 : 0);
+      const aktiva = f.erbjuder.length + f.typ.length + f.omrade.length + (f.lan || f.kommun ? 1 : 0);
       rensaEl.hidden = aktiva === 0 && !f.q;
       rensaText.textContent = aktiva ? `Rensa ${aktiva} filter` : 'Rensa sökningen';
       filterAntal.hidden = aktiva === 0;
@@ -378,7 +384,6 @@ const etiketter = {
     function rensa(vad: string) {
       if (vad === 'alla') {
         for (const namn of ['erbjuder', 'typ', 'omrade']) sattVal(namn, []);
-        (form.elements.namedItem('bekraftat') as HTMLInputElement).checked = false;
         if (sokFalt) sokFalt.value = '';
         sattPlats('');
         return;
@@ -390,24 +395,45 @@ const etiketter = {
 
     /* ---------- Lista ---------- */
 
+    /** Länk till systersajten AI-Infra: leverantörens egen sida om den finns där, annars översikten. */
+    function infralank(rubrik: string, text: string, adress: string): string {
+      return (
+        `<a class="infralank" href="${esc(adress)}" rel="noopener"><img class="infralank__logo" src="${esc(infralogo)}" alt="" width="44" height="44" />` +
+        `<span class="infralank__text"><strong>${rubrik}</strong><span>${text}</span></span>${ikon('ut', 18)}</a>`
+      );
+    }
+
     function kortHtml(o: Rad): string {
       const chips = o.o.slice(0, 3).map((x) => `<span class="chip">${esc(etiketter.erbjuder[x] || x)}</span>`).join('');
       const fler = o.o.length > 3 ? `<span class="chip">+${o.o.length - 3}</span>` : '';
       const bekr = o.c > 0 ? `<span class="chip chip--bekr"><span class="chip__prick"></span>${o.c} av ${o.f} fält bekräftade</span>` : '';
       return (
         `<a class="post__lank" href="${orgbas}${encodeURIComponent(o.id)}">${logoHtml(o)}` +
-        `<span class="post__huvud"><span class="post__namn">${esc(o.n)}</span>` +
+        `<span class="post__huvud"><span class="post__rad"><span class="post__namn">${esc(o.n)}</span>${o.i ? '<span class="post__marke">AI-Infra</span>' : ''}</span>` +
         `<span class="post__under">${esc(o.kn ?? 'Utan plats')} · ${esc(etiketter.typer[o.t] || o.t)}</span></span>` +
         `<span class="post__text">${esc(o.d)}</span>` +
         `<span class="post__chips">${chips}${fler}${bekr}</span></a>`
       );
     }
 
+    /** Urvalet i den ordning listan visar det. */
+    function sorterat(): Rad[] {
+      const poster = urval.slice();
+      if (sortEl.value === 'kontroll') poster.sort((a, b) => (b.s ?? '').localeCompare(a.s ?? '') || a.n.localeCompare(b.n, 'sv'));
+      else poster.sort((a, b) => a.n.localeCompare(b.n, 'sv'));
+      return poster;
+    }
+
     function renderLista() {
       const frag = document.createDocumentFragment();
-      const sorterade = urval.slice();
-      if (sortEl.value === 'kontroll') sorterade.sort((a, b) => (b.s ?? '').localeCompare(a.s ?? '') || a.n.localeCompare(b.n, 'sv'));
-      else sorterade.sort((a, b) => a.n.localeCompare(b.n, 'sv'));
+      const sorterade = sorterat();
+      const f = lasFilter();
+      // Den som letar infrastruktur får veta att leverantörerna jämförs i detalj på systersajten.
+      if (sorterade.length && (f.typ.includes('infrastruktur') || f.erbjuder.includes('infrastruktur'))) {
+        const li = document.createElement('li');
+        li.innerHTML = infralank('AI-infrastruktur i detalj', 'Pris, datacenter och ägande per leverantör på AI-Infra', infra);
+        frag.appendChild(li);
+      }
       for (const o of sorterade) {
         const li = document.createElement('li');
         li.className = 'post' + (o.id === valdId ? ' post--aktiv' : '');
@@ -447,6 +473,11 @@ const etiketter = {
         `<p class="detalj__text">${esc(o.d)}</p>` +
         `<p class="kicker detalj__kicker">Detaljer</p>` +
         `<dl class="rutor">${rutor.map(([i, e, v]) => `<div><dt>${ikon(i, 16)}${e}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>` +
+        (o.i
+          ? infralank('Finns på AI-Infra', 'Pris, datacenter och ägande, med källa på varje uppgift', `${infra}/leverantor/${encodeURIComponent(o.i)}`)
+          : o.t === 'infrastruktur' || o.o.includes('infrastruktur')
+            ? infralank('Jämför AI-infrastruktur', 'Svenska och europeiska leverantörer på AI-Infra', infra)
+            : '') +
         `<p class="detalj__ratta">Fel eller inaktuellt? <a href="${orgbas}${encodeURIComponent(o.id)}#ratta">Begär rättelse</a></p>` +
         (o.pt === 'kommun' ? '<p class="meta detalj__not">Positionen visas på kommunnivå, aldrig som gatuadress.</p>' : '') +
         `</div>` +
@@ -909,6 +940,27 @@ const etiketter = {
     }
     delaEl.addEventListener('click', () => kopieraLank(delaEl));
 
+    // Urvalet som CSV: samma kolumner som hela datasetet, med källa och datum per uppgift.
+    laddaNerEl.addEventListener('click', async () => {
+      const adress = app.dataset.csv!;
+      try {
+        const svar = await fetch(adress);
+        if (!svar.ok) throw new Error(String(svar.status));
+        const csv = urvalSomCsv(await svar.text(), sorterat().map((o) => o.id));
+        const lank = document.createElement('a');
+        lank.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+        // sv-SE skriver datum som ÅÅÅÅ-MM-DD i lokal tid. toISOString räknar i UTC och hamnar fel runt midnatt.
+        lank.download = `ai-kartan-urval-${new Date().toLocaleDateString('sv-SE')}.csv`;
+        lank.click();
+        setTimeout(() => URL.revokeObjectURL(lank.href), 1000);
+        laddaNerEl.classList.add('kopierad');
+        setTimeout(() => laddaNerEl.classList.remove('kopierad'), 1600);
+      } catch {
+        // Går urvalet inte att ta fram får man hela datasetet i stället för ingenting.
+        location.href = adress;
+      }
+    });
+
     // Filterpiller: ett öppet åt gången. I smal vy ligger alla i bladet och är alltid utfällda.
     const stangPiller = (utom?: Element | null) => {
       form.querySelectorAll('.fpill--oppen').forEach((el) => {
@@ -1177,7 +1229,7 @@ const etiketter = {
     scrollbar-width: thin;
   }
   .panel__intro {
-    padding: 16px 22px 20px;
+    padding: 12px 22px 16px;
     border-bottom: 1px solid hsl(var(--kant));
   }
   .panel__topp {
@@ -1186,7 +1238,7 @@ const etiketter = {
     justify-content: space-between;
     gap: 8px;
     min-height: 36px;
-    margin: 0 -8px 10px 0;
+    margin: 0 -8px 6px 0;
   }
   .brod {
     display: flex;
@@ -1230,7 +1282,7 @@ const etiketter = {
   }
   .panel__rubrik {
     margin: 0 0 8px;
-    font-size: clamp(28px, 2.5vw, 36px);
+    font-size: clamp(26px, 2.3vw, 34px);
     line-height: 1.04;
     letter-spacing: -0.035em;
   }
@@ -1249,7 +1301,7 @@ const etiketter = {
     color: hsl(var(--ink-mute));
   }
   .app .panel__fakta {
-    margin-top: 10px;
+    padding: 0 22px 16px;
     font-size: 11.5px;
     line-height: 1.55;
   }
@@ -1259,15 +1311,20 @@ const etiketter = {
     align-items: center;
     justify-content: space-between;
     gap: 4px 12px;
-    padding: 14px 14px 10px 22px;
+    padding: 8px 12px 8px 22px;
   }
   .listhuvud__antal {
     white-space: nowrap;
   }
   .listhuvud__hoger {
     display: flex;
+    flex: 1;
     align-items: center;
-    gap: 4px;
+    justify-content: flex-end;
+    gap: 2px;
+  }
+  .app[data-lage='karta'] .sortera {
+    margin-right: auto;
   }
   .sortera {
     display: inline-flex;
@@ -1327,6 +1384,24 @@ const etiketter = {
     gap: 3px;
     min-width: 0;
   }
+  .post__rad {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .post__marke {
+    flex: none;
+    margin-left: auto;
+    padding: 2px 5px;
+    border: 1px solid hsl(var(--moss) / 0.28);
+    border-radius: var(--r-tag);
+    background: hsl(var(--moss) / 0.07);
+    color: hsl(var(--moss));
+    font: 500 9.5px/1.3 var(--font-mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
   .post__namn {
     font-size: 19px;
     font-weight: 700;
@@ -1380,6 +1455,117 @@ const etiketter = {
     border-radius: 50%;
     background: currentColor;
   }
+  /* Kartans lista är tät: namn, plats och typ, och en rad beskrivning. Listsidan visar hela korten. */
+  .app[data-lage='karta'] .lista {
+    gap: 8px;
+    padding: 0 12px 16px;
+  }
+  .app[data-lage='karta'] .post {
+    border-radius: var(--r-ruta);
+    contain-intrinsic-size: auto 84px;
+  }
+  .app[data-lage='karta'] .post__lank {
+    grid-template-columns: 40px minmax(0, 1fr);
+    gap: 2px 12px;
+    align-items: start;
+    padding: 11px 14px 12px 12px;
+  }
+  .app[data-lage='karta'] .post .logo {
+    grid-row: 1 / span 2;
+    width: 40px;
+    height: 40px;
+    border-radius: 11px;
+    font-size: 14px;
+  }
+  .app[data-lage='karta'] .post__huvud {
+    gap: 1px;
+  }
+  .app[data-lage='karta'] .post__namn {
+    font-size: 16px;
+    line-height: 1.25;
+  }
+  .app[data-lage='karta'] .post__under {
+    font-size: 13px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .app[data-lage='karta'] .post__text {
+    display: block;
+    grid-column: 2;
+    margin-top: 1px;
+    font-size: 13.5px;
+    line-height: 1.4;
+    color: hsl(var(--ink-mute));
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .app[data-lage='karta'] .post__chips {
+    display: none;
+  }
+  .app[data-lage='karta'] .post--skelett {
+    grid-template-columns: 40px minmax(0, 1fr);
+    gap: 6px 12px;
+    padding: 11px 14px 12px 12px;
+  }
+  .app[data-lage='karta'] .skelett--logo {
+    grid-row: 1 / span 2;
+    width: 40px;
+    height: 40px;
+  }
+  .app[data-lage='karta'] .skelett--rad {
+    height: 16px;
+  }
+  .app[data-lage='karta'] .skelett--text {
+    grid-column: 2;
+    height: 14px;
+  }
+
+  /* Länk till systersajten AI-Infra: överst i listan när man filtrerar på infrastruktur, och i detaljvyn. */
+  .infralank {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 9px 14px 9px 10px;
+    border: 1px solid hsl(var(--moss) / 0.3);
+    border-radius: var(--r-ruta);
+    background: hsl(var(--moss) / 0.06);
+    color: hsl(var(--moss));
+    text-decoration: none;
+    transition: background var(--t-fast), border-color var(--t-fast);
+  }
+  .infralank:hover {
+    border-color: hsl(var(--moss));
+    background: hsl(var(--moss) / 0.1);
+    color: hsl(var(--moss));
+  }
+  .infralank__logo {
+    flex: none;
+    width: 44px;
+    height: 44px;
+    margin: -2px 0;
+  }
+  .infralank__text {
+    display: grid;
+    flex: 1;
+    gap: 2px;
+    min-width: 0;
+  }
+  .infralank strong {
+    font-size: 15px;
+    line-height: 1.25;
+  }
+  .infralank__text span {
+    font-size: 13px;
+    line-height: 1.35;
+    color: hsl(var(--ink-mute));
+  }
+  .detalj .infralank {
+    margin-top: 14px;
+  }
+
   .lista__tom {
     display: grid;
     gap: 4px;
@@ -1730,8 +1916,7 @@ const etiketter = {
   }
   .fpill--aktiv > .fknapp,
   .fpill--oppen > .fknapp,
-  .fknapp--aktiv,
-  .fknapp--vaxel:has(input:checked) {
+  .fknapp--aktiv {
     background: hsl(var(--ink));
     color: hsl(var(--yta));
   }
@@ -1742,26 +1927,9 @@ const etiketter = {
   .fpill--oppen .fknapp__pil {
     transform: rotate(180deg);
   }
-  .fknapp--vaxel {
-    padding: 0 16px 0 14px;
-  }
-  .fknapp--vaxel:has(input:focus-visible),
   .val:has(input:focus-visible) {
     outline: 2px solid hsl(var(--moss));
     outline-offset: 2px;
-  }
-  .fknapp__prick {
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: hsl(140 55% 42%);
-    box-shadow: 0 0 0 3px hsl(140 55% 42% / 0.2);
-  }
-  .filterrad__streck {
-    width: 1px;
-    height: 22px;
-    margin: 0 6px;
-    background: hsl(var(--kant));
   }
   .pop {
     display: none;
@@ -2116,9 +2284,6 @@ const etiketter = {
     .app[data-lage='lista'] .filterrad {
       flex-wrap: wrap;
     }
-    .filterrad__streck {
-      display: none;
-    }
     .filterrad > .fknapp,
     .rensapill {
       height: 46px;
@@ -2130,8 +2295,7 @@ const etiketter = {
       display: inline-flex;
       padding: 0 16px;
     }
-    .fknapp--mobil.fknapp--aktiv,
-    .filterrad > .fknapp--vaxel:has(input:checked) {
+    .fknapp--mobil.fknapp--aktiv {
       border-color: hsl(var(--ink));
       background: hsl(var(--ink));
     }
