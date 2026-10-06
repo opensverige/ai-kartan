@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-10-06T06:32:41Z",
+  "generated_at": "2026-10-06T20:31:15Z",
   "antal": 345,
   "senaste_andring": "2026-10-06",
   "rader": [
     {
       "datum": "2026-10-06",
-      "commit": "00180ecc1c",
+      "commit": "15b2b442ab",
       "id": "vastra-gotalandsregionen",
       "namn": "Västra Götalandsregionen",
       "falt": "evidence",
@@ -26,7 +26,7 @@
     },
     {
       "datum": "2026-10-06",
-      "commit": "00180ecc1c",
+      "commit": "15b2b442ab",
       "id": "trafikverket",
       "namn": "Trafikverket",
       "falt": "evidence",
@@ -47,7 +47,7 @@
     },
     {
       "datum": "2026-10-06",
-      "commit": "00180ecc1c",
+      "commit": "15b2b442ab",
       "id": "svenska-kraftnat",
       "namn": "Svenska kraftnät",
       "falt": "evidence",
@@ -68,7 +68,7 @@
     },
     {
       "datum": "2026-10-06",
-      "commit": "00180ecc1c",
+      "commit": "15b2b442ab",
       "id": "soaif",
       "namn": "Svensk Odontologisk AI Förening (SOAIF)",
       "falt": "evidence",
@@ -87,7 +87,7 @@
     },
     {
       "datum": "2026-10-06",
-      "commit": "00180ecc1c",
+      "commit": "15b2b442ab",
       "id": "scilifelab",
       "namn": "SciLifeLab (Science for Life Laboratory)",
       "falt": "evidence",
@@ -105,7 +105,7 @@
     },
     {
       "datum": "2026-10-06",
-      "commit": "00180ecc1c",
+      "commit": "15b2b442ab",
       "id": "naiss",
       "namn": "NAISS – National Academic Infrastructure for Supercomputing in Sweden",
       "falt": "evidence",
@@ -126,7 +126,7 @@
     },
     {
       "datum": "2026-10-06",
-      "commit": "00180ecc1c",
+      "commit": "15b2b442ab",
       "id": "meta-bytes",
       "namn": "Meta Bytes",
       "falt": "evidence",
@@ -145,7 +145,7 @@
     },
     {
       "datum": "2026-10-06",
-      "commit": "00180ecc1c",
+      "commit": "15b2b442ab",
       "id": "lund-ai-society",
       "namn": "Lund AI Society",
       "falt": "evidence",
@@ -163,7 +163,7 @@
     },
     {
       "datum": "2026-10-06",
-      "commit": "00180ecc1c",
+      "commit": "15b2b442ab",
       "id": "lunarc",
       "namn": "LUNARC – Centre for Scientific and Technical Computing",
       "falt": "evidence",
@@ -182,7 +182,7 @@
     },
     {
       "datum": "2026-10-06",
-      "commit": "00180ecc1c",
+      "commit": "15b2b442ab",
       "id": "luminar-ventures",
       "namn": "Luminar Ventures",
       "falt": "evidence",
@@ -200,7 +200,7 @@
     },
     {
       "datum": "2026-10-06",
-      "commit": "00180ecc1c",
+      "commit": "15b2b442ab",
       "id": "jail-ju",
       "namn": "Jönköping AI Lab (JAIL), Jönköping University",
       "falt": "evidence",
@@ -219,7 +219,7 @@
     },
     {
       "datum": "2026-10-06",
-      "commit": "00180ecc1c",
+      "commit": "15b2b442ab",
       "id": "j12-ventures",
       "namn": "J12 Ventures",
       "falt": "evidence",
@@ -238,7 +238,7 @@
     },
     {
       "datum": "2026-10-06",
-      "commit": "00180ecc1c",
+      "commit": "15b2b442ab",
       "id": "internetstiftelsen",
       "namn": "Internetstiftelsen",
       "falt": "evidence",
@@ -258,7 +258,7 @@
     },
     {
       "datum": "2026-10-06",
-      "commit": "00180ecc1c",
+      "commit": "15b2b442ab",
       "id": "industrifonden",
       "namn": "Industrifonden",
       "falt": "evidence",
@@ -276,7 +276,7 @@
     },
     {
       "datum": "2026-10-06",
-      "commit": "00180ecc1c",
+      "commit": "15b2b442ab",
       "id": "hpc2n",
       "namn": "HPC2N – High Performance Computing Center North",
       "falt": "evidence",
@@ -295,7 +295,7 @@
     },
     {
       "datum": "2026-10-06",
-      "commit": "00180ecc1c",
+      "commit": "15b2b442ab",
       "id": "goteborgs-stad",
       "namn": "Göteborgs Stad",
       "falt": "evidence",
@@ -317,7 +317,7 @@
     },
     {
       "datum": "2026-10-06",
-      "commit": "00180ecc1c",
+      "commit": "15b2b442ab",
       "id": "formas",
       "namn": "Formas",
       "falt": "evidence",
@@ -336,7 +336,7 @@
     },
     {
       "datum": "2026-10-06",
-      "commit": "00180ecc1c",
+      "commit": "15b2b442ab",
       "id": "fiive",
       "namn": "Fiive",
       "falt": "evidence",
@@ -355,7 +355,7 @@
     },
     {
       "datum": "2026-10-06",
-      "commit": "00180ecc1c",
+      "commit": "15b2b442ab",
       "id": "digital-futures",
       "namn": "Digital Futures",
       "falt": "evidence",
@@ -374,7 +374,7 @@
     },
     {
       "datum": "2026-10-06",
-      "commit": "00180ecc1c",
+      "commit": "15b2b442ab",
       "id": "digg",
       "namn": "Myndigheten för digital förvaltning",
       "falt": "evidence",
@@ -395,7 +395,7 @@
     },
     {
       "datum": "2026-10-06",
-      "commit": "00180ecc1c",
+      "commit": "15b2b442ab",
       "id": "c3se",
       "namn": "C3SE – Chalmers e-Commons e-infrastrukturgrupp",
       "falt": "evidence",
@@ -418,7 +418,7 @@
     },
     {
       "datum": "2026-10-06",
-      "commit": "00180ecc1c",
+      "commit": "15b2b442ab",
       "id": "aass-oru",
       "namn": "Centre for Applied Autonomous Sensor Systems (AASS), Örebro universitet",
       "falt": "evidence",
@@ -436,7 +436,7 @@
     },
     {
       "datum": "2026-10-06",
-      "commit": "e51c5fdbdd",
+      "commit": "dbede65dcf",
       "id": "data-ai-stockholm",
       "namn": "Data & AI Stockholm",
       "falt": "hela posten",
@@ -448,7 +448,7 @@
     },
     {
       "datum": "2026-10-05",
-      "commit": "def036307d",
+      "commit": "f9280431ac",
       "id": "trafikverket",
       "namn": "Trafikverket",
       "falt": "hela posten",
@@ -460,7 +460,7 @@
     },
     {
       "datum": "2026-10-05",
-      "commit": "def036307d",
+      "commit": "f9280431ac",
       "id": "svenska-kraftnat",
       "namn": "Svenska kraftnät",
       "falt": "hela posten",
@@ -472,7 +472,7 @@
     },
     {
       "datum": "2026-10-05",
-      "commit": "def036307d",
+      "commit": "f9280431ac",
       "id": "sva",
       "namn": "Statens veterinärmedicinska anstalt",
       "falt": "hela posten",
@@ -484,7 +484,7 @@
     },
     {
       "datum": "2026-10-05",
-      "commit": "def036307d",
+      "commit": "f9280431ac",
       "id": "sundsvalls-kommun",
       "namn": "Sundsvalls kommun",
       "falt": "hela posten",
@@ -496,7 +496,7 @@
     },
     {
       "datum": "2026-10-05",
-      "commit": "def036307d",
+      "commit": "f9280431ac",
       "id": "sprakbanken-text",
       "namn": "Språkbanken Text, Göteborgs universitet",
       "falt": "hela posten",
@@ -508,7 +508,7 @@
     },
     {
       "datum": "2026-10-05",
-      "commit": "def036307d",
+      "commit": "f9280431ac",
       "id": "sgu",
       "namn": "Sveriges geologiska undersökning",
       "falt": "hela posten",
@@ -520,7 +520,7 @@
     },
     {
       "datum": "2026-10-05",
-      "commit": "def036307d",
+      "commit": "f9280431ac",
       "id": "riksbanken",
       "namn": "Sveriges Riksbank",
       "falt": "hela posten",
@@ -532,7 +532,7 @@
     },
     {
       "datum": "2026-10-05",
-      "commit": "def036307d",
+      "commit": "f9280431ac",
       "id": "region-stockholm",
       "namn": "Region Stockholm",
       "falt": "hela posten",
@@ -544,7 +544,7 @@
     },
     {
       "datum": "2026-10-05",
-      "commit": "def036307d",
+      "commit": "f9280431ac",
       "id": "recs-hkr",
       "namn": "Research environment of Computer science (RECS), Högskolan Kristianstad",
       "falt": "hela posten",
@@ -556,7 +556,7 @@
     },
     {
       "datum": "2026-10-05",
-      "commit": "def036307d",
+      "commit": "f9280431ac",
       "id": "nsc",
       "namn": "National Supercomputer Centre (NSC), Linköping University",
       "falt": "hela posten",
@@ -568,7 +568,7 @@
     },
     {
       "datum": "2026-10-05",
-      "commit": "def036307d",
+      "commit": "f9280431ac",
       "id": "naiss",
       "namn": "NAISS – National Academic Infrastructure for Supercomputing in Sweden",
       "falt": "hela posten",
@@ -580,7 +580,7 @@
     },
     {
       "datum": "2026-10-05",
-      "commit": "def036307d",
+      "commit": "f9280431ac",
       "id": "lantmateriet",
       "namn": "Lantmäteriet",
       "falt": "hela posten",
@@ -592,7 +592,7 @@
     },
     {
       "datum": "2026-10-05",
-      "commit": "def036307d",
+      "commit": "f9280431ac",
       "id": "lakemedelsverket",
       "namn": "Läkemedelsverket",
       "falt": "hela posten",
@@ -604,7 +604,7 @@
     },
     {
       "datum": "2026-10-05",
-      "commit": "def036307d",
+      "commit": "f9280431ac",
       "id": "helsingborgs-stad",
       "namn": "Helsingborgs stad",
       "falt": "hela posten",
@@ -616,7 +616,7 @@
     },
     {
       "datum": "2026-10-05",
-      "commit": "def036307d",
+      "commit": "f9280431ac",
       "id": "foi",
       "namn": "Totalförsvarets forskningsinstitut",
       "falt": "hela posten",
@@ -628,7 +628,7 @@
     },
     {
       "datum": "2026-10-05",
-      "commit": "def036307d",
+      "commit": "f9280431ac",
       "id": "elliit",
       "namn": "ELLIIT – Excellence Center at Linköping–Lund in Information Technology",
       "falt": "hela posten",
@@ -640,7 +640,7 @@
     },
     {
       "datum": "2026-10-05",
-      "commit": "def036307d",
+      "commit": "f9280431ac",
       "id": "domstolsverket",
       "namn": "Domstolsverket",
       "falt": "hela posten",
@@ -652,7 +652,7 @@
     },
     {
       "datum": "2026-10-05",
-      "commit": "def036307d",
+      "commit": "f9280431ac",
       "id": "digg",
       "namn": "Myndigheten för digital förvaltning",
       "falt": "hela posten",
@@ -664,7 +664,7 @@
     },
     {
       "datum": "2026-10-05",
-      "commit": "def036307d",
+      "commit": "f9280431ac",
       "id": "clasp-gu",
       "namn": "CLASP – Centrum för språkteori och sannolikhetsstudier, Göteborgs universitet",
       "falt": "hela posten",
@@ -676,7 +676,7 @@
     },
     {
       "datum": "2026-10-05",
-      "commit": "def036307d",
+      "commit": "f9280431ac",
       "id": "c3se",
       "namn": "C3SE – Chalmers e-Commons e-infrastrukturgrupp",
       "falt": "hela posten",
@@ -688,7 +688,7 @@
     },
     {
       "datum": "2026-10-05",
-      "commit": "def036307d",
+      "commit": "f9280431ac",
       "id": "boverket",
       "namn": "Boverket",
       "falt": "hela posten",
@@ -700,7 +700,7 @@
     },
     {
       "datum": "2026-10-05",
-      "commit": "def036307d",
+      "commit": "f9280431ac",
       "id": "ange-kommun",
       "namn": "Ånge kommun",
       "falt": "hela posten",
@@ -712,7 +712,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "065dca83ab",
+      "commit": "a6ff3ce203",
       "id": "glesys",
       "namn": "Glesys",
       "falt": "kommun",
@@ -725,7 +725,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "065dca83ab",
+      "commit": "a6ff3ce203",
       "id": "glesys",
       "namn": "Glesys",
       "falt": "org_number",
@@ -738,7 +738,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "1878d5a5c2",
+      "commit": "17528bd5de",
       "id": "trialbee",
       "namn": "Trialbee",
       "falt": "hela posten",
@@ -750,7 +750,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "1878d5a5c2",
+      "commit": "17528bd5de",
       "id": "staer",
       "namn": "Staer",
       "falt": "hela posten",
@@ -762,7 +762,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "1878d5a5c2",
+      "commit": "17528bd5de",
       "id": "sib-solutions",
       "namn": "SiB Solutions",
       "falt": "hela posten",
@@ -774,7 +774,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "1878d5a5c2",
+      "commit": "17528bd5de",
       "id": "quickbutik",
       "namn": "Quickbutik",
       "falt": "hela posten",
@@ -786,7 +786,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "1878d5a5c2",
+      "commit": "17528bd5de",
       "id": "oxide-ai",
       "namn": "Oxide AI",
       "falt": "hela posten",
@@ -798,7 +798,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "1878d5a5c2",
+      "commit": "17528bd5de",
       "id": "oplane",
       "namn": "Oplane",
       "falt": "hela posten",
@@ -810,7 +810,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "1878d5a5c2",
+      "commit": "17528bd5de",
       "id": "nordaxon",
       "namn": "NordAxon",
       "falt": "hela posten",
@@ -822,7 +822,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "1878d5a5c2",
+      "commit": "17528bd5de",
       "id": "meta-bytes",
       "namn": "Meta Bytes",
       "falt": "hela posten",
@@ -834,7 +834,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "1878d5a5c2",
+      "commit": "17528bd5de",
       "id": "lightbringer",
       "namn": "Lightbringer",
       "falt": "hela posten",
@@ -846,7 +846,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "1878d5a5c2",
+      "commit": "17528bd5de",
       "id": "inceptron",
       "namn": "Inceptron",
       "falt": "hela posten",
@@ -858,7 +858,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "1878d5a5c2",
+      "commit": "17528bd5de",
       "id": "icons-of",
       "namn": "Icons Of",
       "falt": "hela posten",
@@ -870,7 +870,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "1878d5a5c2",
+      "commit": "17528bd5de",
       "id": "halmos-labs",
       "namn": "Halmos Labs",
       "falt": "hela posten",
@@ -882,7 +882,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "1878d5a5c2",
+      "commit": "17528bd5de",
       "id": "exini-diagnostics",
       "namn": "EXINI Diagnostics",
       "falt": "hela posten",
@@ -894,7 +894,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "1878d5a5c2",
+      "commit": "17528bd5de",
       "id": "euforik",
       "namn": "Euforik",
       "falt": "hela posten",
@@ -906,7 +906,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "1878d5a5c2",
+      "commit": "17528bd5de",
       "id": "ekkono",
       "namn": "Ekkono",
       "falt": "hela posten",
@@ -918,7 +918,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "1878d5a5c2",
+      "commit": "17528bd5de",
       "id": "dbtune",
       "namn": "DBtune",
       "falt": "hela posten",
@@ -930,7 +930,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "1878d5a5c2",
+      "commit": "17528bd5de",
       "id": "combain",
       "namn": "Combain",
       "falt": "hela posten",
@@ -942,7 +942,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "1878d5a5c2",
+      "commit": "17528bd5de",
       "id": "bounded",
       "namn": "Bounded",
       "falt": "hela posten",
@@ -954,7 +954,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "1878d5a5c2",
+      "commit": "17528bd5de",
       "id": "blincvision",
       "namn": "BlincVision",
       "falt": "hela posten",
@@ -966,7 +966,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "1878d5a5c2",
+      "commit": "17528bd5de",
       "id": "avionero",
       "namn": "Avionero",
       "falt": "hela posten",
@@ -978,7 +978,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "81656a5c57",
+      "commit": "f2fbd420cd",
       "id": "zenseact",
       "namn": "Zenseact",
       "falt": "hela posten",
@@ -990,7 +990,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "81656a5c57",
+      "commit": "f2fbd420cd",
       "id": "vitrolife",
       "namn": "Vitrolife",
       "falt": "hela posten",
@@ -1002,7 +1002,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "81656a5c57",
+      "commit": "f2fbd420cd",
       "id": "viscando",
       "namn": "Viscando",
       "falt": "hela posten",
@@ -1014,7 +1014,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "81656a5c57",
+      "commit": "f2fbd420cd",
       "id": "viking-analytics",
       "namn": "Viking Analytics",
       "falt": "hela posten",
@@ -1026,7 +1026,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "81656a5c57",
+      "commit": "f2fbd420cd",
       "id": "synteda",
       "namn": "Synteda",
       "falt": "hela posten",
@@ -1038,7 +1038,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "81656a5c57",
+      "commit": "f2fbd420cd",
       "id": "smart-eye",
       "namn": "Smart Eye",
       "falt": "hela posten",
@@ -1050,7 +1050,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "81656a5c57",
+      "commit": "f2fbd420cd",
       "id": "sleep-cycle",
       "namn": "Sleep Cycle",
       "falt": "hela posten",
@@ -1062,7 +1062,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "81656a5c57",
+      "commit": "f2fbd420cd",
       "id": "salesbyte",
       "namn": "SalesByte",
       "falt": "hela posten",
@@ -1074,7 +1074,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "81656a5c57",
+      "commit": "f2fbd420cd",
       "id": "repli5",
       "namn": "Repli5",
       "falt": "hela posten",
@@ -1086,7 +1086,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "81656a5c57",
+      "commit": "f2fbd420cd",
       "id": "qamcom",
       "namn": "Qamcom",
       "falt": "hela posten",
@@ -1098,7 +1098,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "81656a5c57",
+      "commit": "f2fbd420cd",
       "id": "paliscope",
       "namn": "Paliscope",
       "falt": "hela posten",
@@ -1110,7 +1110,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "81656a5c57",
+      "commit": "f2fbd420cd",
       "id": "ortoma",
       "namn": "Ortoma",
       "falt": "hela posten",
@@ -1122,7 +1122,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "81656a5c57",
+      "commit": "f2fbd420cd",
       "id": "kognic",
       "namn": "Kognic",
       "falt": "hela posten",
@@ -1134,7 +1134,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "81656a5c57",
+      "commit": "f2fbd420cd",
       "id": "irisity",
       "namn": "Irisity",
       "falt": "hela posten",
@@ -1146,7 +1146,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "81656a5c57",
+      "commit": "f2fbd420cd",
       "id": "eneryield",
       "namn": "Eneryield",
       "falt": "hela posten",
@@ -1158,7 +1158,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "81656a5c57",
+      "commit": "f2fbd420cd",
       "id": "embedl",
       "namn": "Embedl",
       "falt": "hela posten",
@@ -1170,7 +1170,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "81656a5c57",
+      "commit": "f2fbd420cd",
       "id": "eghed",
       "namn": "eghed",
       "falt": "hela posten",
@@ -1182,7 +1182,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "81656a5c57",
+      "commit": "f2fbd420cd",
       "id": "cognivity-ai",
       "namn": "Cognivity.AI",
       "falt": "hela posten",
@@ -1194,7 +1194,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "81656a5c57",
+      "commit": "f2fbd420cd",
       "id": "callista-enterprise",
       "namn": "Callista Enterprise",
       "falt": "hela posten",
@@ -1206,7 +1206,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "81656a5c57",
+      "commit": "f2fbd420cd",
       "id": "atlas-ai",
       "namn": "Atlas AI",
       "falt": "hela posten",
@@ -1218,7 +1218,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "81656a5c57",
+      "commit": "f2fbd420cd",
       "id": "aiopt",
       "namn": "AIOpt",
       "falt": "hela posten",
@@ -1230,7 +1230,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "ea24990bb1",
+      "commit": "dbd7296ce3",
       "id": "winningtemp",
       "namn": "Winningtemp",
       "falt": "hela posten",
@@ -1242,7 +1242,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "ea24990bb1",
+      "commit": "dbd7296ce3",
       "id": "winniio",
       "namn": "WINNIIO",
       "falt": "hela posten",
@@ -1254,7 +1254,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "ea24990bb1",
+      "commit": "dbd7296ce3",
       "id": "voidleap",
       "namn": "Voidleap",
       "falt": "hela posten",
@@ -1266,7 +1266,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "ea24990bb1",
+      "commit": "dbd7296ce3",
       "id": "spiideo",
       "namn": "Spiideo",
       "falt": "hela posten",
@@ -1278,7 +1278,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "ea24990bb1",
+      "commit": "dbd7296ce3",
       "id": "precise-biometrics",
       "namn": "Precise Biometrics",
       "falt": "hela posten",
@@ -1290,7 +1290,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "ea24990bb1",
+      "commit": "dbd7296ce3",
       "id": "parlametric",
       "namn": "Parlametric",
       "falt": "hela posten",
@@ -1302,7 +1302,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "ea24990bb1",
+      "commit": "dbd7296ce3",
       "id": "konfliktkollen",
       "namn": "Konfliktkollen",
       "falt": "hela posten",
@@ -1314,7 +1314,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "ea24990bb1",
+      "commit": "dbd7296ce3",
       "id": "kognitiv-ai",
       "namn": "Kognitiv AI",
       "falt": "hela posten",
@@ -1326,7 +1326,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "ea24990bb1",
+      "commit": "dbd7296ce3",
       "id": "klang",
       "namn": "Klang",
       "falt": "hela posten",
@@ -1338,7 +1338,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "ea24990bb1",
+      "commit": "dbd7296ce3",
       "id": "hippoly",
       "namn": "Hippoly",
       "falt": "hela posten",
@@ -1350,7 +1350,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "ea24990bb1",
+      "commit": "dbd7296ce3",
       "id": "hektar",
       "namn": "Hektar",
       "falt": "hela posten",
@@ -1362,7 +1362,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "ea24990bb1",
+      "commit": "dbd7296ce3",
       "id": "fiive",
       "namn": "Fiive",
       "falt": "hela posten",
@@ -1374,7 +1374,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "ea24990bb1",
+      "commit": "dbd7296ce3",
       "id": "evoma",
       "namn": "Evoma",
       "falt": "hela posten",
@@ -1386,7 +1386,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "ea24990bb1",
+      "commit": "dbd7296ce3",
       "id": "digital-step",
       "namn": "Digital Step",
       "falt": "hela posten",
@@ -1398,7 +1398,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "ea24990bb1",
+      "commit": "dbd7296ce3",
       "id": "detectivio",
       "namn": "Detectivio",
       "falt": "hela posten",
@@ -1410,7 +1410,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "ea24990bb1",
+      "commit": "dbd7296ce3",
       "id": "daily-wins",
       "namn": "Daily Wins",
       "falt": "hela posten",
@@ -1422,7 +1422,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "ea24990bb1",
+      "commit": "dbd7296ce3",
       "id": "citera",
       "namn": "Citera",
       "falt": "hela posten",
@@ -1434,7 +1434,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "ea24990bb1",
+      "commit": "dbd7296ce3",
       "id": "centiro",
       "namn": "Centiro",
       "falt": "hela posten",
@@ -1446,7 +1446,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "ea24990bb1",
+      "commit": "dbd7296ce3",
       "id": "cellavision",
       "namn": "CellaVision",
       "falt": "hela posten",
@@ -1458,7 +1458,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "ea24990bb1",
+      "commit": "dbd7296ce3",
       "id": "axis-communications",
       "namn": "Axis Communications",
       "falt": "hela posten",
@@ -1470,7 +1470,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "ea24990bb1",
+      "commit": "dbd7296ce3",
       "id": "alpha-leap",
       "namn": "Alpha Leap",
       "falt": "hela posten",
@@ -1482,7 +1482,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "ea24990bb1",
+      "commit": "dbd7296ce3",
       "id": "adway",
       "namn": "Adway",
       "falt": "hela posten",
@@ -1494,7 +1494,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "14029741de",
+      "commit": "03908b828e",
       "id": "wasp",
       "namn": "WASP – Wallenberg AI, Autonomous Systems and Software Program",
       "falt": "hela posten",
@@ -1506,7 +1506,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "14029741de",
+      "commit": "03908b828e",
       "id": "wasp-hs",
       "namn": "WASP-HS – Humanity and Society",
       "falt": "hela posten",
@@ -1518,7 +1518,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "14029741de",
+      "commit": "03908b828e",
       "id": "taiga-umu",
       "namn": "TAIGA – Centrum för transdisciplinär AI, Umeå universitet",
       "falt": "hela posten",
@@ -1530,7 +1530,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "14029741de",
+      "commit": "03908b828e",
       "id": "stc-miun",
       "namn": "STC – Sensible Things that Communicate, Mittuniversitetet",
       "falt": "hela posten",
@@ -1542,7 +1542,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "14029741de",
+      "commit": "03908b828e",
       "id": "scilifelab",
       "namn": "SciLifeLab (Science for Life Laboratory)",
       "falt": "hela posten",
@@ -1554,7 +1554,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "14029741de",
+      "commit": "03908b828e",
       "id": "sail-his",
       "namn": "Skövde Artificial Intelligence Lab (SAIL), Högskolan i Skövde",
       "falt": "hela posten",
@@ -1566,7 +1566,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "14029741de",
+      "commit": "03908b828e",
       "id": "rpl-kth",
       "namn": "Institutionen för robotik, perception och lärande (RPL), KTH",
       "falt": "hela posten",
@@ -1578,7 +1578,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "14029741de",
+      "commit": "03908b828e",
       "id": "rise",
       "namn": "RISE Research Institutes of Sweden",
       "falt": "hela posten",
@@ -1590,7 +1590,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "14029741de",
+      "commit": "03908b828e",
       "id": "machine-learning-ltu",
       "namn": "Maskininlärning (Machine Learning), Luleå tekniska universitet",
       "falt": "hela posten",
@@ -1602,7 +1602,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "14029741de",
+      "commit": "03908b828e",
       "id": "jail-ju",
       "namn": "Jönköping AI Lab (JAIL), Jönköping University",
       "falt": "hela posten",
@@ -1614,7 +1614,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "14029741de",
+      "commit": "03908b828e",
       "id": "hints-bth",
       "namn": "HINTS: Human-Centered Intelligent Realities, Blekinge Tekniska Högskola",
       "falt": "hela posten",
@@ -1626,7 +1626,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "14029741de",
+      "commit": "03908b828e",
       "id": "dsv-su",
       "namn": "Institutionen för data- och systemvetenskap (DSV), Stockholms universitet",
       "falt": "hela posten",
@@ -1638,7 +1638,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "14029741de",
+      "commit": "03908b828e",
       "id": "dista-lnu",
       "namn": "Data Intensive Software Technologies and Applications (DISTA), Linnéuniversitetet",
       "falt": "hela posten",
@@ -1650,7 +1650,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "14029741de",
+      "commit": "03908b828e",
       "id": "digital-futures",
       "namn": "Digital Futures",
       "falt": "hela posten",
@@ -1662,7 +1662,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "14029741de",
+      "commit": "03908b828e",
       "id": "chair-chalmers",
       "namn": "Chalmers AI Research Centre (CHAIR)",
       "falt": "hela posten",
@@ -1674,7 +1674,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "14029741de",
+      "commit": "03908b828e",
       "id": "caisr-hh",
       "namn": "Center for Applied Intelligent Systems Research (CAISR), Högskolan i Halmstad",
       "falt": "hela posten",
@@ -1686,7 +1686,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "14029741de",
+      "commit": "03908b828e",
       "id": "ais-mdu",
       "namn": "Artificial Intelligence and Intelligent Systems (AIS), Mälardalens universitet",
       "falt": "hela posten",
@@ -1698,7 +1698,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "14029741de",
+      "commit": "03908b828e",
       "id": "aiics-liu",
       "namn": "Artificiell intelligens och integrerade datorsystem (AIICS), Linköpings universitet",
       "falt": "hela posten",
@@ -1710,7 +1710,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "14029741de",
+      "commit": "03908b828e",
       "id": "ai-sweden",
       "namn": "AI Sweden",
       "falt": "hela posten",
@@ -1722,7 +1722,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "14029741de",
+      "commit": "03908b828e",
       "id": "ai-innovation-ki",
       "namn": "Centrum för AI Innovation, Karolinska Institutet",
       "falt": "hela posten",
@@ -1734,7 +1734,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "14029741de",
+      "commit": "03908b828e",
       "id": "ai-for-research-uu",
       "namn": "AI for Research, Uppsala universitet",
       "falt": "hela posten",
@@ -1746,7 +1746,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "14029741de",
+      "commit": "03908b828e",
       "id": "aass-oru",
       "namn": "Centre for Applied Autonomous Sensor Systems (AASS), Örebro universitet",
       "falt": "hela posten",
@@ -1758,7 +1758,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "588344d156",
+      "commit": "ab27ee459e",
       "id": "vastra-gotalandsregionen",
       "namn": "Västra Götalandsregionen",
       "falt": "hela posten",
@@ -1770,7 +1770,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "588344d156",
+      "commit": "ab27ee459e",
       "id": "uppsala-kommun",
       "namn": "Uppsala kommun",
       "falt": "hela posten",
@@ -1782,7 +1782,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "588344d156",
+      "commit": "ab27ee459e",
       "id": "tjorns-kommun",
       "namn": "Tjörns kommun",
       "falt": "hela posten",
@@ -1794,7 +1794,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "588344d156",
+      "commit": "ab27ee459e",
       "id": "skelleftea-kommun",
       "namn": "Skellefteå kommun",
       "falt": "hela posten",
@@ -1806,7 +1806,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "588344d156",
+      "commit": "ab27ee459e",
       "id": "sambruk",
       "namn": "Sambruk",
       "falt": "hela posten",
@@ -1818,7 +1818,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "588344d156",
+      "commit": "ab27ee459e",
       "id": "region-vasterbotten",
       "namn": "Region Västerbotten",
       "falt": "hela posten",
@@ -1830,7 +1830,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "588344d156",
+      "commit": "ab27ee459e",
       "id": "region-ostergotland",
       "namn": "Region Östergötland",
       "falt": "hela posten",
@@ -1842,7 +1842,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "588344d156",
+      "commit": "ab27ee459e",
       "id": "region-halland",
       "namn": "Region Halland",
       "falt": "hela posten",
@@ -1854,7 +1854,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "588344d156",
+      "commit": "ab27ee459e",
       "id": "orebro-kommun",
       "namn": "Örebro kommun",
       "falt": "hela posten",
@@ -1866,7 +1866,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "588344d156",
+      "commit": "ab27ee459e",
       "id": "kungsbacka-kommun",
       "namn": "Kungsbacka kommun",
       "falt": "hela posten",
@@ -1878,7 +1878,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "588344d156",
+      "commit": "ab27ee459e",
       "id": "inera",
       "namn": "Inera",
       "falt": "hela posten",
@@ -1890,7 +1890,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "588344d156",
+      "commit": "ab27ee459e",
       "id": "goteborgs-stad",
       "namn": "Göteborgs Stad",
       "falt": "hela posten",
@@ -1902,7 +1902,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "80b6103c36",
+      "commit": "75c1a45b49",
       "id": "uu-ai-society",
       "namn": "UU AI Society",
       "falt": "hela posten",
@@ -1914,7 +1914,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "80b6103c36",
+      "commit": "75c1a45b49",
       "id": "stockholm-ai",
       "namn": "Stockholm AI",
       "falt": "hela posten",
@@ -1926,7 +1926,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "80b6103c36",
+      "commit": "75c1a45b49",
       "id": "soaif",
       "namn": "Svensk Odontologisk AI Förening (SOAIF)",
       "falt": "hela posten",
@@ -1938,7 +1938,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "80b6103c36",
+      "commit": "75c1a45b49",
       "id": "smhi",
       "namn": "Sveriges meteorologiska och hydrologiska institut",
       "falt": "hela posten",
@@ -1950,7 +1950,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "80b6103c36",
+      "commit": "75c1a45b49",
       "id": "skogsstyrelsen",
       "namn": "Skogsstyrelsen",
       "falt": "hela posten",
@@ -1962,7 +1962,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "80b6103c36",
+      "commit": "75c1a45b49",
       "id": "skatteverket",
       "namn": "Skatteverket",
       "falt": "hela posten",
@@ -1974,7 +1974,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "80b6103c36",
+      "commit": "75c1a45b49",
       "id": "scb",
       "namn": "Statistiska centralbyrån",
       "falt": "hela posten",
@@ -1986,7 +1986,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "80b6103c36",
+      "commit": "75c1a45b49",
       "id": "sais",
       "namn": "Swedish Artificial Intelligence Society (SAIS)",
       "falt": "hela posten",
@@ -1998,7 +1998,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "80b6103c36",
+      "commit": "75c1a45b49",
       "id": "riksarkivet",
       "namn": "Riksarkivet",
       "falt": "hela posten",
@@ -2010,7 +2010,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "80b6103c36",
+      "commit": "75c1a45b49",
       "id": "lund-ai-society",
       "namn": "Lund AI Society",
       "falt": "hela posten",
@@ -2022,7 +2022,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "80b6103c36",
+      "commit": "75c1a45b49",
       "id": "lnu-ai-society",
       "namn": "LNU AI Society",
       "falt": "hela posten",
@@ -2034,7 +2034,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "80b6103c36",
+      "commit": "75c1a45b49",
       "id": "liu-ai-society",
       "namn": "LiU AI Society",
       "falt": "hela posten",
@@ -2046,7 +2046,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "80b6103c36",
+      "commit": "75c1a45b49",
       "id": "kungliga-biblioteket",
       "namn": "Kungliga biblioteket",
       "falt": "hela posten",
@@ -2058,7 +2058,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "80b6103c36",
+      "commit": "75c1a45b49",
       "id": "kth-ai-society",
       "namn": "KTH AI Society",
       "falt": "hela posten",
@@ -2070,7 +2070,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "80b6103c36",
+      "commit": "75c1a45b49",
       "id": "kodcentrum",
       "namn": "Kodcentrum",
       "falt": "hela posten",
@@ -2082,7 +2082,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "80b6103c36",
+      "commit": "75c1a45b49",
       "id": "hub-ai",
       "namn": "Hub AI",
       "falt": "hela posten",
@@ -2094,7 +2094,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "80b6103c36",
+      "commit": "75c1a45b49",
       "id": "gaia",
       "namn": "Gothenburg Artificial Intelligence Alliance (GAIA)",
       "falt": "hela posten",
@@ -2106,7 +2106,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "80b6103c36",
+      "commit": "75c1a45b49",
       "id": "forsakringskassan",
       "namn": "Försäkringskassan",
       "falt": "hela posten",
@@ -2118,7 +2118,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "80b6103c36",
+      "commit": "75c1a45b49",
       "id": "dataforeningen",
       "namn": "Dataföreningen i Sverige",
       "falt": "hela posten",
@@ -2130,7 +2130,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "80b6103c36",
+      "commit": "75c1a45b49",
       "id": "climate-ai-nordics",
       "namn": "Climate AI Nordics",
       "falt": "hela posten",
@@ -2142,7 +2142,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "80b6103c36",
+      "commit": "75c1a45b49",
       "id": "chalmers-ai-society",
       "namn": "Chalmers AI Society (CAIS)",
       "falt": "hela posten",
@@ -2154,7 +2154,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "80b6103c36",
+      "commit": "75c1a45b49",
       "id": "arbetsformedlingen",
       "namn": "Arbetsförmedlingen",
       "falt": "hela posten",
@@ -2166,7 +2166,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "a1ccb8c87b",
+      "commit": "7392a9f572",
       "id": "pdc",
       "namn": "PDC Center for High Performance Computing",
       "falt": "hela posten",
@@ -2178,7 +2178,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "a1ccb8c87b",
+      "commit": "7392a9f572",
       "id": "lunarc",
       "namn": "LUNARC – Centre for Scientific and Technical Computing",
       "falt": "hela posten",
@@ -2190,7 +2190,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "a1ccb8c87b",
+      "commit": "7392a9f572",
       "id": "hpc2n",
       "namn": "HPC2N – High Performance Computing Center North",
       "falt": "hela posten",
@@ -2202,7 +2202,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "a1ccb8c87b",
+      "commit": "7392a9f572",
       "id": "ecodatacenter",
       "namn": "EcoDataCenter",
       "falt": "hela posten",
@@ -2214,7 +2214,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "a1ccb8c87b",
+      "commit": "7392a9f572",
       "id": "conapto",
       "namn": "Conapto",
       "falt": "hela posten",
@@ -2226,7 +2226,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "a1ccb8c87b",
+      "commit": "7392a9f572",
       "id": "bahnhof-cloud",
       "namn": "Bahnhof Cloud",
       "falt": "hela posten",
@@ -2238,7 +2238,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "a1ccb8c87b",
+      "commit": "7392a9f572",
       "id": "atnorth",
       "namn": "atNorth",
       "falt": "hela posten",
@@ -2250,7 +2250,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "a1ccb8c87b",
+      "commit": "7392a9f572",
       "id": "6g-ai-sweden",
       "namn": "6G AI Sweden",
       "falt": "hela posten",
@@ -2262,7 +2262,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "831487d2e5",
+      "commit": "be434e8636",
       "id": "vinnova",
       "namn": "Vinnova",
       "falt": "hela posten",
@@ -2274,7 +2274,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "831487d2e5",
+      "commit": "be434e8636",
       "id": "vetenskapsradet",
       "namn": "Vetenskapsrådet",
       "falt": "hela posten",
@@ -2286,7 +2286,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "831487d2e5",
+      "commit": "be434e8636",
       "id": "sting",
       "namn": "Sting",
       "falt": "hela posten",
@@ -2298,7 +2298,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "831487d2e5",
+      "commit": "be434e8636",
       "id": "stiftelsen-for-strategisk-forskning-ssf",
       "namn": "Stiftelsen för strategisk forskning (SSF)",
       "falt": "hela posten",
@@ -2310,7 +2310,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "831487d2e5",
+      "commit": "be434e8636",
       "id": "riksbankens-jubileumsfond",
       "namn": "Riksbankens Jubileumsfond",
       "falt": "hela posten",
@@ -2322,7 +2322,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "831487d2e5",
+      "commit": "be434e8636",
       "id": "northzone",
       "namn": "Northzone",
       "falt": "hela posten",
@@ -2334,7 +2334,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "831487d2e5",
+      "commit": "be434e8636",
       "id": "naii",
       "namn": "Nordic Artificial Intelligence Institute (NAII)",
       "falt": "hela posten",
@@ -2346,7 +2346,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "831487d2e5",
+      "commit": "be434e8636",
       "id": "museum-of-artificial-intelligence",
       "namn": "Museum of Artificial Intelligence",
       "falt": "hela posten",
@@ -2358,7 +2358,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "831487d2e5",
+      "commit": "be434e8636",
       "id": "mistra",
       "namn": "Mistra",
       "falt": "hela posten",
@@ -2370,7 +2370,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "831487d2e5",
+      "commit": "be434e8636",
       "id": "marianne-och-marcus-wallenbergs-stiftelse",
       "namn": "Marianne och Marcus Wallenbergs Stiftelse",
       "falt": "hela posten",
@@ -2382,7 +2382,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "831487d2e5",
+      "commit": "be434e8636",
       "id": "luminar-ventures",
       "namn": "Luminar Ventures",
       "falt": "hela posten",
@@ -2394,7 +2394,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "831487d2e5",
+      "commit": "be434e8636",
       "id": "kth-ventures",
       "namn": "KTH Ventures",
       "falt": "hela posten",
@@ -2406,7 +2406,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "831487d2e5",
+      "commit": "be434e8636",
       "id": "knut-och-alice-wallenbergs-stiftelse",
       "namn": "Knut och Alice Wallenbergs Stiftelse",
       "falt": "hela posten",
@@ -2418,7 +2418,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "831487d2e5",
+      "commit": "be434e8636",
       "id": "j12-ventures",
       "namn": "J12 Ventures",
       "falt": "hela posten",
@@ -2430,7 +2430,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "831487d2e5",
+      "commit": "be434e8636",
       "id": "iwib4ai",
       "namn": "International WomenX in Business for Ethical AI (IWIB4AI)",
       "falt": "hela posten",
@@ -2442,7 +2442,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "831487d2e5",
+      "commit": "be434e8636",
       "id": "internetstiftelsen",
       "namn": "Internetstiftelsen",
       "falt": "hela posten",
@@ -2454,7 +2454,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "831487d2e5",
+      "commit": "be434e8636",
       "id": "industrifonden",
       "namn": "Industrifonden",
       "falt": "hela posten",
@@ -2466,7 +2466,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "831487d2e5",
+      "commit": "be434e8636",
       "id": "forte",
       "namn": "Forte",
       "falt": "hela posten",
@@ -2478,7 +2478,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "831487d2e5",
+      "commit": "be434e8636",
       "id": "formas",
       "namn": "Formas",
       "falt": "hela posten",
@@ -2490,7 +2490,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "831487d2e5",
+      "commit": "be434e8636",
       "id": "creandum",
       "namn": "Creandum",
       "falt": "hela posten",
@@ -2502,7 +2502,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "831487d2e5",
+      "commit": "be434e8636",
       "id": "almi-invest",
       "namn": "Almi Invest",
       "falt": "hela posten",
@@ -2514,7 +2514,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "831487d2e5",
+      "commit": "be434e8636",
       "id": "ai-lund",
       "namn": "AI Lund",
       "falt": "hela posten",
@@ -2526,7 +2526,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "5355577f52",
+      "commit": "887a87b7d2",
       "id": "zensai",
       "namn": "ZensAI",
       "falt": "hela posten",
@@ -2538,7 +2538,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "5355577f52",
+      "commit": "887a87b7d2",
       "id": "visage-technologies",
       "namn": "Visage Technologies",
       "falt": "hela posten",
@@ -2550,7 +2550,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "5355577f52",
+      "commit": "887a87b7d2",
       "id": "univrses",
       "namn": "Univrses",
       "falt": "hela posten",
@@ -2562,7 +2562,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "5355577f52",
+      "commit": "887a87b7d2",
       "id": "synclair-vision",
       "namn": "Synclair Vision",
       "falt": "hela posten",
@@ -2574,7 +2574,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "5355577f52",
+      "commit": "887a87b7d2",
       "id": "spotscale",
       "namn": "Spotscale",
       "falt": "hela posten",
@@ -2586,7 +2586,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "5355577f52",
+      "commit": "887a87b7d2",
       "id": "sectra",
       "namn": "Sectra",
       "falt": "hela posten",
@@ -2598,7 +2598,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "5355577f52",
+      "commit": "887a87b7d2",
       "id": "prediktera",
       "namn": "Prediktera",
       "falt": "hela posten",
@@ -2610,7 +2610,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "5355577f52",
+      "commit": "887a87b7d2",
       "id": "noctie",
       "namn": "Noctie",
       "falt": "hela posten",
@@ -2622,7 +2622,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "5355577f52",
+      "commit": "887a87b7d2",
       "id": "leapscribe",
       "namn": "Leapscribe",
       "falt": "hela posten",
@@ -2634,7 +2634,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "5355577f52",
+      "commit": "887a87b7d2",
       "id": "interspectral",
       "namn": "Interspectral",
       "falt": "hela posten",
@@ -2646,7 +2646,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "5355577f52",
+      "commit": "887a87b7d2",
       "id": "imatrics",
       "namn": "iMatrics",
       "falt": "hela posten",
@@ -2658,7 +2658,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "5355577f52",
+      "commit": "887a87b7d2",
       "id": "ifs",
       "namn": "IFS",
       "falt": "hela posten",
@@ -2670,7 +2670,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "5355577f52",
+      "commit": "887a87b7d2",
       "id": "grantigo",
       "namn": "Grantigo",
       "falt": "hela posten",
@@ -2682,7 +2682,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "5355577f52",
+      "commit": "887a87b7d2",
       "id": "fair-ai-data",
       "namn": "Fair AI Data",
       "falt": "hela posten",
@@ -2694,7 +2694,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "5355577f52",
+      "commit": "887a87b7d2",
       "id": "dyno-robotics",
       "namn": "Dyno Robotics",
       "falt": "hela posten",
@@ -2706,7 +2706,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "5355577f52",
+      "commit": "887a87b7d2",
       "id": "ductus",
       "namn": "Ductus",
       "falt": "hela posten",
@@ -2718,7 +2718,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "5355577f52",
+      "commit": "887a87b7d2",
       "id": "codemill",
       "namn": "Codemill",
       "falt": "hela posten",
@@ -2730,7 +2730,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "5355577f52",
+      "commit": "887a87b7d2",
       "id": "c-phrase-technologies",
       "namn": "C-Phrase Technologies",
       "falt": "hela posten",
@@ -2742,7 +2742,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "5355577f52",
+      "commit": "887a87b7d2",
       "id": "arboair",
       "namn": "Arboair",
       "falt": "hela posten",
@@ -2754,7 +2754,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "5355577f52",
+      "commit": "887a87b7d2",
       "id": "amra-medical",
       "namn": "AMRA Medical",
       "falt": "hela posten",
@@ -2766,7 +2766,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "5355577f52",
+      "commit": "887a87b7d2",
       "id": "algoryx",
       "namn": "Algoryx",
       "falt": "hela posten",
@@ -2778,7 +2778,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "5355577f52",
+      "commit": "887a87b7d2",
       "id": "agricam",
       "namn": "Agricam",
       "falt": "hela posten",
@@ -2790,7 +2790,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "6bcab3e932",
+      "commit": "c7008fd88e",
       "id": "vidhance",
       "namn": "Vidhance",
       "falt": "hela posten",
@@ -2802,7 +2802,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "6bcab3e932",
+      "commit": "c7008fd88e",
       "id": "unibap",
       "namn": "Unibap",
       "falt": "hela posten",
@@ -2814,7 +2814,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "6bcab3e932",
+      "commit": "c7008fd88e",
       "id": "stream-analyze",
       "namn": "Stream Analyze",
       "falt": "hela posten",
@@ -2826,7 +2826,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "6bcab3e932",
+      "commit": "c7008fd88e",
       "id": "softwerk",
       "namn": "Softwerk",
       "falt": "hela posten",
@@ -2838,7 +2838,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "6bcab3e932",
+      "commit": "c7008fd88e",
       "id": "softrobot",
       "namn": "Softrobot",
       "falt": "hela posten",
@@ -2850,7 +2850,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "6bcab3e932",
+      "commit": "c7008fd88e",
       "id": "skeptiva",
       "namn": "Skeptiva",
       "falt": "hela posten",
@@ -2862,7 +2862,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "6bcab3e932",
+      "commit": "c7008fd88e",
       "id": "scaleout-systems",
       "namn": "Scaleout Systems",
       "falt": "hela posten",
@@ -2874,7 +2874,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "6bcab3e932",
+      "commit": "c7008fd88e",
       "id": "retenua",
       "namn": "Retenua",
       "falt": "hela posten",
@@ -2886,7 +2886,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "6bcab3e932",
+      "commit": "c7008fd88e",
       "id": "prevas",
       "namn": "Prevas",
       "falt": "hela posten",
@@ -2898,7 +2898,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "6bcab3e932",
+      "commit": "c7008fd88e",
       "id": "pavesight",
       "namn": "PaveSight",
       "falt": "hela posten",
@@ -2910,7 +2910,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "6bcab3e932",
+      "commit": "c7008fd88e",
       "id": "nuiteq",
       "namn": "NUITEQ",
       "falt": "hela posten",
@@ -2922,7 +2922,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "6bcab3e932",
+      "commit": "c7008fd88e",
       "id": "nomar",
       "namn": "Nomar",
       "falt": "hela posten",
@@ -2934,7 +2934,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "6bcab3e932",
+      "commit": "c7008fd88e",
       "id": "neurolearn",
       "namn": "Neurolearn",
       "falt": "hela posten",
@@ -2946,7 +2946,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "6bcab3e932",
+      "commit": "c7008fd88e",
       "id": "malvacom",
       "namn": "Malvacom",
       "falt": "hela posten",
@@ -2958,7 +2958,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "6bcab3e932",
+      "commit": "c7008fd88e",
       "id": "incredible",
       "namn": "Incredible",
       "falt": "hela posten",
@@ -2970,7 +2970,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "6bcab3e932",
+      "commit": "c7008fd88e",
       "id": "gimic",
       "namn": "Gimic",
       "falt": "hela posten",
@@ -2982,7 +2982,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "6bcab3e932",
+      "commit": "c7008fd88e",
       "id": "deep-forestry",
       "namn": "Deep Forestry",
       "falt": "hela posten",
@@ -2994,7 +2994,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "6bcab3e932",
+      "commit": "c7008fd88e",
       "id": "conifer-vision",
       "namn": "Conifer Vision",
       "falt": "hela posten",
@@ -3006,7 +3006,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "6bcab3e932",
+      "commit": "c7008fd88e",
       "id": "binary-brains",
       "namn": "Binary Brains",
       "falt": "hela posten",
@@ -3018,7 +3018,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "6bcab3e932",
+      "commit": "c7008fd88e",
       "id": "airforestry",
       "namn": "AirForestry",
       "falt": "hela posten",
@@ -3030,7 +3030,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "6bcab3e932",
+      "commit": "c7008fd88e",
       "id": "addcomply",
       "namn": "AddComply",
       "falt": "hela posten",
@@ -3042,7 +3042,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "84afaf0149",
+      "commit": "3e1fae1cf8",
       "id": "zaplar",
       "namn": "Zaplar",
       "falt": "hela posten",
@@ -3054,7 +3054,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "84afaf0149",
+      "commit": "3e1fae1cf8",
       "id": "vividon",
       "namn": "Vividon",
       "falt": "hela posten",
@@ -3066,7 +3066,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "84afaf0149",
+      "commit": "3e1fae1cf8",
       "id": "vionlabs",
       "namn": "Vionlabs",
       "falt": "hela posten",
@@ -3078,7 +3078,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "84afaf0149",
+      "commit": "3e1fae1cf8",
       "id": "stratipath",
       "namn": "Stratipath",
       "falt": "hela posten",
@@ -3090,7 +3090,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "84afaf0149",
+      "commit": "3e1fae1cf8",
       "id": "redpine",
       "namn": "Redpine",
       "falt": "hela posten",
@@ -3102,7 +3102,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "84afaf0149",
+      "commit": "3e1fae1cf8",
       "id": "proptechos",
       "namn": "ProptechOS",
       "falt": "hela posten",
@@ -3114,7 +3114,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "84afaf0149",
+      "commit": "3e1fae1cf8",
       "id": "pit",
       "namn": "Pit",
       "falt": "hela posten",
@@ -3126,7 +3126,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "84afaf0149",
+      "commit": "3e1fae1cf8",
       "id": "phyron",
       "namn": "Phyron",
       "falt": "hela posten",
@@ -3138,7 +3138,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "84afaf0149",
+      "commit": "3e1fae1cf8",
       "id": "lumoo",
       "namn": "Lumoo",
       "falt": "hela posten",
@@ -3150,7 +3150,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "84afaf0149",
+      "commit": "3e1fae1cf8",
       "id": "ipercept",
       "namn": "IPercept",
       "falt": "hela posten",
@@ -3162,7 +3162,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "84afaf0149",
+      "commit": "3e1fae1cf8",
       "id": "hedda",
       "namn": "Hedda",
       "falt": "hela posten",
@@ -3174,7 +3174,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "84afaf0149",
+      "commit": "3e1fae1cf8",
       "id": "flowity",
       "namn": "Flowity",
       "falt": "hela posten",
@@ -3186,7 +3186,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "84afaf0149",
+      "commit": "3e1fae1cf8",
       "id": "fictive-reality",
       "namn": "Fictive Reality",
       "falt": "hela posten",
@@ -3198,7 +3198,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "84afaf0149",
+      "commit": "3e1fae1cf8",
       "id": "epiminds",
       "namn": "Epiminds",
       "falt": "hela posten",
@@ -3210,7 +3210,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "84afaf0149",
+      "commit": "3e1fae1cf8",
       "id": "epidemic-sound",
       "namn": "Epidemic Sound",
       "falt": "hela posten",
@@ -3222,7 +3222,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "84afaf0149",
+      "commit": "3e1fae1cf8",
       "id": "conversy",
       "namn": "Conversy",
       "falt": "hela posten",
@@ -3234,7 +3234,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "84afaf0149",
+      "commit": "3e1fae1cf8",
       "id": "buddywise",
       "namn": "Buddywise",
       "falt": "hela posten",
@@ -3246,7 +3246,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "84afaf0149",
+      "commit": "3e1fae1cf8",
       "id": "avy",
       "namn": "Avy",
       "falt": "hela posten",
@@ -3258,7 +3258,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "84afaf0149",
+      "commit": "3e1fae1cf8",
       "id": "arkyv",
       "namn": "Arkyv",
       "falt": "hela posten",
@@ -3270,7 +3270,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "84afaf0149",
+      "commit": "3e1fae1cf8",
       "id": "antrino",
       "namn": "Antrino",
       "falt": "hela posten",
@@ -3282,7 +3282,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "84afaf0149",
+      "commit": "3e1fae1cf8",
       "id": "ai-vision-sweden",
       "namn": "AI Vision Sweden",
       "falt": "hela posten",
@@ -3294,7 +3294,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "87c3a00103",
+      "commit": "5e1344117d",
       "id": "tuteliq",
       "namn": "Tuteliq",
       "falt": "hela posten",
@@ -3306,7 +3306,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "87c3a00103",
+      "commit": "5e1344117d",
       "id": "substorm",
       "namn": "Substorm",
       "falt": "hela posten",
@@ -3318,7 +3318,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "87c3a00103",
+      "commit": "5e1344117d",
       "id": "ninetech",
       "namn": "Ninetech",
       "falt": "hela posten",
@@ -3330,7 +3330,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "87c3a00103",
+      "commit": "5e1344117d",
       "id": "digital-venue",
       "namn": "Digital Venue",
       "falt": "hela posten",
@@ -3342,7 +3342,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "87c3a00103",
+      "commit": "5e1344117d",
       "id": "cind",
       "namn": "CIND",
       "falt": "hela posten",
@@ -3354,7 +3354,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "87c3a00103",
+      "commit": "5e1344117d",
       "id": "careifai",
       "namn": "Careifai",
       "falt": "hela posten",
@@ -3366,7 +3366,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "87c3a00103",
+      "commit": "5e1344117d",
       "id": "brikka",
       "namn": "Brikka",
       "falt": "hela posten",
@@ -3378,7 +3378,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "87c3a00103",
+      "commit": "5e1344117d",
       "id": "atjoo",
       "namn": "ATJOO",
       "falt": "hela posten",
@@ -3390,7 +3390,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "2c5e1dda22",
+      "commit": "4cbd4423a4",
       "id": "xensam",
       "namn": "Xensam",
       "falt": "hela posten",
@@ -3402,7 +3402,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "2c5e1dda22",
+      "commit": "4cbd4423a4",
       "id": "volumental",
       "namn": "Volumental",
       "falt": "hela posten",
@@ -3414,7 +3414,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "2c5e1dda22",
+      "commit": "4cbd4423a4",
       "id": "validio",
       "namn": "Validio",
       "falt": "hela posten",
@@ -3426,7 +3426,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "2c5e1dda22",
+      "commit": "4cbd4423a4",
       "id": "tandem-health",
       "namn": "Tandem Health",
       "falt": "hela posten",
@@ -3438,7 +3438,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "2c5e1dda22",
+      "commit": "4cbd4423a4",
       "id": "sana",
       "namn": "Sana",
       "falt": "hela posten",
@@ -3450,7 +3450,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "2c5e1dda22",
+      "commit": "4cbd4423a4",
       "id": "rerun",
       "namn": "Rerun",
       "falt": "hela posten",
@@ -3462,7 +3462,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "2c5e1dda22",
+      "commit": "4cbd4423a4",
       "id": "quartr",
       "namn": "Quartr",
       "falt": "hela posten",
@@ -3474,7 +3474,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "2c5e1dda22",
+      "commit": "4cbd4423a4",
       "id": "myrspoven",
       "namn": "Myrspoven",
       "falt": "hela posten",
@@ -3486,7 +3486,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "2c5e1dda22",
+      "commit": "4cbd4423a4",
       "id": "mavenoid",
       "namn": "Mavenoid",
       "falt": "hela posten",
@@ -3498,7 +3498,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "2c5e1dda22",
+      "commit": "4cbd4423a4",
       "id": "lovable",
       "namn": "Lovable",
       "falt": "hela posten",
@@ -3510,7 +3510,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "2c5e1dda22",
+      "commit": "4cbd4423a4",
       "id": "lexplore",
       "namn": "Lexplore",
       "falt": "hela posten",
@@ -3522,7 +3522,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "2c5e1dda22",
+      "commit": "4cbd4423a4",
       "id": "legora",
       "namn": "Legora",
       "falt": "hela posten",
@@ -3534,7 +3534,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "2c5e1dda22",
+      "commit": "4cbd4423a4",
       "id": "imagimob",
       "namn": "Imagimob",
       "falt": "hela posten",
@@ -3546,7 +3546,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "2c5e1dda22",
+      "commit": "4cbd4423a4",
       "id": "hopsworks",
       "namn": "Hopsworks",
       "falt": "hela posten",
@@ -3558,7 +3558,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "2c5e1dda22",
+      "commit": "4cbd4423a4",
       "id": "greater-than",
       "namn": "Greater Than",
       "falt": "hela posten",
@@ -3570,7 +3570,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "2c5e1dda22",
+      "commit": "4cbd4423a4",
       "id": "furhat-robotics",
       "namn": "Furhat Robotics",
       "falt": "hela posten",
@@ -3582,7 +3582,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "2c5e1dda22",
+      "commit": "4cbd4423a4",
       "id": "einride",
       "namn": "Einride",
       "falt": "hela posten",
@@ -3594,7 +3594,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "2c5e1dda22",
+      "commit": "4cbd4423a4",
       "id": "doctrin",
       "namn": "Doctrin",
       "falt": "hela posten",
@@ -3606,7 +3606,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "2c5e1dda22",
+      "commit": "4cbd4423a4",
       "id": "depict",
       "namn": "Depict",
       "falt": "hela posten",
@@ -3618,7 +3618,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "2c5e1dda22",
+      "commit": "4cbd4423a4",
       "id": "dema",
       "namn": "Dema",
       "falt": "hela posten",
@@ -3630,7 +3630,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "2c5e1dda22",
+      "commit": "4cbd4423a4",
       "id": "contextvision",
       "namn": "ContextVision",
       "falt": "hela posten",
@@ -3642,7 +3642,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "2c5e1dda22",
+      "commit": "4cbd4423a4",
       "id": "arkion",
       "namn": "Arkion",
       "falt": "hela posten",
@@ -3654,7 +3654,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "dcd381a6e6",
+      "commit": "f7a5e67432",
       "id": "truecaller",
       "namn": "Truecaller",
       "falt": "hela posten",
@@ -3666,7 +3666,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "dcd381a6e6",
+      "commit": "f7a5e67432",
       "id": "tobii",
       "namn": "Tobii",
       "falt": "hela posten",
@@ -3678,7 +3678,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "dcd381a6e6",
+      "commit": "f7a5e67432",
       "id": "tendium",
       "namn": "Tendium",
       "falt": "hela posten",
@@ -3690,7 +3690,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "dcd381a6e6",
+      "commit": "f7a5e67432",
       "id": "spotify",
       "namn": "Spotify",
       "falt": "hela posten",
@@ -3702,7 +3702,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "dcd381a6e6",
+      "commit": "f7a5e67432",
       "id": "rebase-energy",
       "namn": "rebase.energy",
       "falt": "hela posten",
@@ -3714,7 +3714,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "dcd381a6e6",
+      "commit": "f7a5e67432",
       "id": "raysearch-laboratories",
       "namn": "RaySearch Laboratories",
       "falt": "hela posten",
@@ -3726,7 +3726,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "dcd381a6e6",
+      "commit": "f7a5e67432",
       "id": "netlight",
       "namn": "Netlight",
       "falt": "hela posten",
@@ -3738,7 +3738,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "dcd381a6e6",
+      "commit": "f7a5e67432",
       "id": "motorica",
       "namn": "Motorica",
       "falt": "hela posten",
@@ -3750,7 +3750,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "dcd381a6e6",
+      "commit": "f7a5e67432",
       "id": "modulai",
       "namn": "Modulai",
       "falt": "hela posten",
@@ -3762,7 +3762,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "dcd381a6e6",
+      "commit": "f7a5e67432",
       "id": "mentimeter",
       "namn": "Mentimeter",
       "falt": "hela posten",
@@ -3774,7 +3774,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "dcd381a6e6",
+      "commit": "f7a5e67432",
       "id": "manomotion",
       "namn": "ManoMotion",
       "falt": "hela posten",
@@ -3786,7 +3786,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "dcd381a6e6",
+      "commit": "f7a5e67432",
       "id": "maigon",
       "namn": "Maigon",
       "falt": "hela posten",
@@ -3798,7 +3798,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "dcd381a6e6",
+      "commit": "f7a5e67432",
       "id": "labelf",
       "namn": "Labelf",
       "falt": "hela posten",
@@ -3810,7 +3810,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "dcd381a6e6",
+      "commit": "f7a5e67432",
       "id": "knowit",
       "namn": "Knowit",
       "falt": "hela posten",
@@ -3822,7 +3822,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "dcd381a6e6",
+      "commit": "f7a5e67432",
       "id": "hiq",
       "namn": "HiQ",
       "falt": "hela posten",
@@ -3834,7 +3834,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "dcd381a6e6",
+      "commit": "f7a5e67432",
       "id": "ericsson",
       "namn": "Ericsson",
       "falt": "hela posten",
@@ -3846,7 +3846,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "dcd381a6e6",
+      "commit": "f7a5e67432",
       "id": "endra",
       "namn": "Endra",
       "falt": "hela posten",
@@ -3858,7 +3858,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "dcd381a6e6",
+      "commit": "f7a5e67432",
       "id": "echo-state",
       "namn": "Echo State",
       "falt": "hela posten",
@@ -3870,7 +3870,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "dcd381a6e6",
+      "commit": "f7a5e67432",
       "id": "detectify",
       "namn": "Detectify",
       "falt": "hela posten",
@@ -3882,7 +3882,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "dcd381a6e6",
+      "commit": "f7a5e67432",
       "id": "codon-consulting",
       "namn": "Codon Consulting",
       "falt": "hela posten",
@@ -3894,7 +3894,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "dcd381a6e6",
+      "commit": "f7a5e67432",
       "id": "alva-labs",
       "namn": "Alva Labs",
       "falt": "hela posten",
@@ -3906,7 +3906,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "dcd381a6e6",
+      "commit": "f7a5e67432",
       "id": "alice-labs",
       "namn": "Alice Labs",
       "falt": "hela posten",
@@ -3918,7 +3918,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "c709c1323e",
+      "commit": "b8e9c5833b",
       "id": "workvis",
       "namn": "WorkVis",
       "falt": "hela posten",
@@ -3930,7 +3930,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "c709c1323e",
+      "commit": "b8e9c5833b",
       "id": "steep",
       "namn": "Steep",
       "falt": "hela posten",
@@ -3942,7 +3942,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "c709c1323e",
+      "commit": "b8e9c5833b",
       "id": "pryvx",
       "namn": "PryvX",
       "falt": "hela posten",
@@ -3954,7 +3954,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "c709c1323e",
+      "commit": "b8e9c5833b",
       "id": "parsd",
       "namn": "Parsd",
       "falt": "hela posten",
@@ -3966,7 +3966,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "c709c1323e",
+      "commit": "b8e9c5833b",
       "id": "pandionai",
       "namn": "PandionAI",
       "falt": "hela posten",
@@ -3978,7 +3978,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "c709c1323e",
+      "commit": "b8e9c5833b",
       "id": "normain",
       "namn": "Normain",
       "falt": "hela posten",
@@ -3990,7 +3990,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "c709c1323e",
+      "commit": "b8e9c5833b",
       "id": "mindified",
       "namn": "Mindified",
       "falt": "hela posten",
@@ -4002,7 +4002,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "c709c1323e",
+      "commit": "b8e9c5833b",
       "id": "indicate-me",
       "namn": "Indicate me",
       "falt": "hela posten",
@@ -4014,7 +4014,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "c709c1323e",
+      "commit": "b8e9c5833b",
       "id": "hypertype",
       "namn": "Hypertype",
       "falt": "hela posten",
@@ -4026,7 +4026,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "c709c1323e",
+      "commit": "b8e9c5833b",
       "id": "flower",
       "namn": "Flower",
       "falt": "hela posten",
@@ -4038,7 +4038,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "c709c1323e",
+      "commit": "b8e9c5833b",
       "id": "filestar",
       "namn": "Filestar",
       "falt": "hela posten",
@@ -4050,7 +4050,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "c709c1323e",
+      "commit": "b8e9c5833b",
       "id": "elekta",
       "namn": "Elekta",
       "falt": "hela posten",
@@ -4062,7 +4062,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "c709c1323e",
+      "commit": "b8e9c5833b",
       "id": "astrid-education",
       "namn": "Astrid Education",
       "falt": "hela posten",
@@ -4074,7 +4074,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "263afabde8",
+      "commit": "0a1c6869ba",
       "id": "evroc",
       "namn": "evroc",
       "falt": "evidence",
@@ -4093,7 +4093,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "263afabde8",
+      "commit": "0a1c6869ba",
       "id": "elastx",
       "namn": "Elastx",
       "falt": "evidence",
@@ -4112,7 +4112,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "b65a88e162",
+      "commit": "30c835095a",
       "id": "sweden-ai-factory",
       "namn": "Sweden AI Factory",
       "falt": "hela posten",
@@ -4124,7 +4124,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "b65a88e162",
+      "commit": "30c835095a",
       "id": "staik",
       "namn": "Staik",
       "falt": "hela posten",
@@ -4136,7 +4136,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "b65a88e162",
+      "commit": "30c835095a",
       "id": "sferical-ai",
       "namn": "Sferical AI",
       "falt": "hela posten",
@@ -4148,7 +4148,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "b65a88e162",
+      "commit": "30c835095a",
       "id": "safespring",
       "namn": "Safespring",
       "falt": "hela posten",
@@ -4160,7 +4160,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "b65a88e162",
+      "commit": "30c835095a",
       "id": "profitbyte",
       "namn": "Profitbyte",
       "falt": "hela posten",
@@ -4172,7 +4172,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "b65a88e162",
+      "commit": "30c835095a",
       "id": "opper-ai",
       "namn": "Opper AI",
       "falt": "hela posten",
@@ -4184,7 +4184,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "b65a88e162",
+      "commit": "30c835095a",
       "id": "opensverige",
       "namn": "OpenSverige",
       "falt": "hela posten",
@@ -4196,7 +4196,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "b65a88e162",
+      "commit": "30c835095a",
       "id": "kalufs",
       "namn": "Kalufs",
       "falt": "hela posten",
@@ -4208,7 +4208,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "b65a88e162",
+      "commit": "30c835095a",
       "id": "juice-factory",
       "namn": "Juice Factory",
       "falt": "hela posten",
@@ -4220,7 +4220,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "b65a88e162",
+      "commit": "30c835095a",
       "id": "intric",
       "namn": "Intric",
       "falt": "hela posten",
@@ -4232,7 +4232,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "b65a88e162",
+      "commit": "30c835095a",
       "id": "grunden-ai",
       "namn": "grunden.ai",
       "falt": "hela posten",
@@ -4244,7 +4244,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "b65a88e162",
+      "commit": "30c835095a",
       "id": "glesys",
       "namn": "Glesys",
       "falt": "hela posten",
@@ -4256,7 +4256,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "b65a88e162",
+      "commit": "30c835095a",
       "id": "evroc",
       "namn": "evroc",
       "falt": "hela posten",
@@ -4268,7 +4268,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "b65a88e162",
+      "commit": "30c835095a",
       "id": "elastx",
       "namn": "Elastx",
       "falt": "hela posten",
@@ -4280,7 +4280,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "b65a88e162",
+      "commit": "30c835095a",
       "id": "berget-ai",
       "namn": "Berget AI",
       "falt": "hela posten",
@@ -4292,7 +4292,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "b65a88e162",
+      "commit": "30c835095a",
       "id": "aixia",
       "namn": "Aixia",
       "falt": "hela posten",
@@ -4304,7 +4304,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "b65a88e162",
+      "commit": "30c835095a",
       "id": "airon",
       "namn": "Airon",
       "falt": "hela posten",
@@ -4316,7 +4316,7 @@
     },
     {
       "datum": "2026-10-04",
-      "commit": "b65a88e162",
+      "commit": "30c835095a",
       "id": "aderian-gdm",
       "namn": "Aderian GDM",
       "falt": "hela posten",
