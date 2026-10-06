@@ -95,18 +95,21 @@ export function grupperaPerPlats(
 /**
  * Lägsta och högsta zoom när kartan passas in på ett urval. Ligger allt i en kommun
  * zoomas det in tills organisationerna syns, annars stannar kartan på kommunnivån.
+ * Den lägsta gränsen ligger strax över nivåbytet: i smal vy får en tät kommun annars inte plats.
  */
 export function zoomgranser(urval: Platspost[]): [number, number] {
   const kommuner = new Set(urval.filter(harPlats).map((o) => o.k));
-  if (kommuner.size <= 1) return [ZOOM_POSTER + 0.2, ZOOM_POSTER + 1.5];
+  if (kommuner.size <= 1) return [ZOOM_POSTER + 0.02, ZOOM_POSTER + 1.5];
   return [ZOOM_KOMMUN + 0.2, ZOOM_POSTER - 0.5];
 }
 
 /**
- * Platsen efter att besökaren själv har zoomat ut. Den som backar ur en nivå lämnar
- * platsen den hörde till, med marginal så att en liten rörelse inte ändrar något.
+ * Platsen efter att besökaren själv har zoomat från `fran` till `zoom`. Den som backar ur
+ * en nivå lämnar platsen den hörde till, med marginal så att en liten rörelse inte ändrar
+ * något. Den som zoomar in lämnar aldrig en plats, var zoomen än slutar.
  */
-export function platsEfterUtzoomning(zoom: number, plats: Plats): Plats {
+export function platsEfterUtzoomning(zoom: number, plats: Plats, fran = Infinity): Plats {
+  if (zoom >= fran) return plats;
   if (plats.lan && zoom < ZOOM_KOMMUN - 0.5) return { lan: '', kommun: '' };
   if (plats.kommun && zoom < ZOOM_POSTER - 2) return { lan: plats.lan, kommun: '' };
   return plats;

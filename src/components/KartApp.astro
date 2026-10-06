@@ -221,6 +221,8 @@ const etiketter = {
     let mitt = { lan: new Map<string, [number, number]>(), kommun: new Map<string, [number, number]>() };
     // Följer med kartans egna kamerarörelser, så att de går att skilja från besökarens.
     const AV_KOD = { avKod: true };
+    // Organisationer som är ensamma på sin plats i urvalet och därför ritas som sig själva.
+    let ensamma = { lan: new Set<string>(), kommun: new Set<string>() };
     let tips: Popup | null = null;
     let sokVal: SokVal[] = [];
     let sokAktiv = -1;
@@ -382,15 +384,23 @@ const etiketter = {
       }
     }
 
-    /** Sätter plats (län och eventuell kommun) och visar den i listan och på kartan. */
-    function sattPlats(lan: string, nyKommun = '', flytta = true) {
+    /**
+     * Sätter plats (län och eventuell kommun) och visar den i listan och på kartan.
+     * Vid utzoomning rörs inte kameran, eftersom besökaren redan har flyttat den.
+     */
+    function sattPlats(lan: string, nyKommun = '', utzoomning = false) {
       kommun = nyKommun;
       sattVal('lan', [lan]);
-      // Detaljvyn står kvar om organisationen ligger på platsen: då zoomar kartan in runt den.
       const vald = valdId ? alla.find((o) => o.id === valdId) : undefined;
-      if (!vald || (lan && vald.l !== lan) || (nyKommun && vald.k !== nyKommun)) stangDetalj(false);
+      const paPlatsen = !!vald && (!lan || vald.l === lan) && (!nyKommun || vald.k === nyKommun);
+      // Detaljvyn står kvar om organisationen ligger på platsen: då zoomar kartan in runt den.
+      // En utzoomning vidgar bara platsen och stänger därför aldrig det besökaren läser.
+      if (!utzoomning && !paPlatsen) stangDetalj(false);
+      // Platsen har ändrats under en öppen detaljvy. Posten före den i historiken bär den gamla
+      // platsen, så Tillbaka ska stänga detaljvyn här i stället för att backa dit.
+      else if (vald) detaljIHistorik = false;
       filtrera();
-      if (flytta) passaKarta();
+      if (!utzoomning) passaKarta();
     }
 
     function rensa(vad: string) {
@@ -754,17 +764,20 @@ const etiketter = {
     function uppdateraKarta() {
       const lan = grupperaPerPlats(urval, 'lan', mitt.lan);
       const kommuner = grupperaPerPlats(urval, 'kommun', mitt.kommun);
+      ensamma = { lan: lan.ensamma, kommun: kommuner.ensamma };
       (karta!.getSource('orgs') as GeoJSONSource | undefined)?.setData(tillGeoJson(urval, lan.ensamma, kommuner.ensamma));
       (karta!.getSource('lan-grupper') as GeoJSONSource | undefined)?.setData(grupperSomGeoJson(lan.grupper));
       (karta!.getSource('kommun-grupper') as GeoJSONSource | undefined)?.setData(grupperSomGeoJson(kommuner.grupper));
       uppdateraVald();
     }
 
-    // Den valda organisationen ritas i en egen källa, så att den syns även när
-    // den annars hade legat inne i en grupp.
+    // Den valda organisationen ritas i en egen källa, ovanpå allt annat. Ligger den inne i en grupp
+    // markeras den inte, för ringen skulle täcka gruppens siffra. Har ett filter tagit bort den ur
+    // urvalet finns den inte i någon grupp, och då ritas den på alla nivåer.
     function uppdateraVald() {
       const o = valdId ? alla.find((x) => x.id === valdId) : undefined;
-      (karta!.getSource('vald') as GeoJSONSource | undefined)?.setData(tillGeoJson(o ? [o] : []));
+      const utanfor = o && !urval.includes(o) ? new Set([o.id]) : undefined;
+      (karta!.getSource('vald') as GeoJSONSource | undefined)?.setData(tillGeoJson(o ? [o] : [], utanfor ?? ensamma.lan, utanfor ?? ensamma.kommun));
     }
 
     /**
@@ -866,7 +879,8 @@ const etiketter = {
         // så platsens namn får plats före namnen på enstaka organisationer intill.
         const ritaText = ({ niva, zoom, fran, till }: Gruppniva) => {
           const medZoom = (litet: unknown, fullt: unknown) => mellan(fran, till, litet, fullt);
-          // Platsens namn säger vad siffran räknar. Det läggs på den sida om cirkeln där det får plats.
+          // Platsens namn säger vad siffran räknar. Det läggs rakt över, under eller bredvid cirkeln, där
+          // det får plats. I ett hörn hamnar det mellan två cirklar och går att läsa som grannens.
           karta!.addLayer({
             id: `${niva}-grupp-namn`, type: 'symbol', source: `${niva}-grupper`, ...zoom,
             layout: {
@@ -907,53 +921,44 @@ const etiketter = {
           paint: { 'text-color': BLACK, 'text-halo-color': '#fdfbf7', 'text-halo-width': 1.8 },
         });
         GRUPPNIVAER.forEach(ritaText);
+        // Reserverar ytan för organisationer som ritas som sig själva på gruppnivåerna, så att ett
+        // platsnamn inte hamnar tvärs över en prick eller ett landmärke och ser ut att höra dit.
         karta!.addLayer({
-          id: 'vald-ring', type: 'circle', source: 'vald',
+          id: 'ensam-yta', type: 'symbol', source: 'orgs', maxzoom: ZOOM_POSTER, filter: synlig,
+          layout: { 'icon-image': 'tom', 'icon-size': 18, 'icon-allow-overlap': true, 'icon-padding': 0 },
+        });
+        karta!.addLayer({
+          id: 'vald-ring', type: 'circle', source: 'vald', filter: synlig,
           paint: { 'circle-color': '#fdfbf7', 'circle-radius': 15, 'circle-stroke-width': 3, 'circle-stroke-color': BLACK },
         });
         karta!.addLayer({
-          id: 'vald-punkt', type: 'circle', source: 'vald',
+          id: 'vald-punkt', type: 'circle', source: 'vald', filter: synlig,
           paint: { 'circle-color': ['match', ['get', 't'], ...Object.entries(FARG).flat(), FARG.bolag] as unknown as ExpressionSpecification, 'circle-radius': 9 },
         });
         karta!.addLayer({
-          id: 'vald-namn', type: 'symbol', source: 'vald',
+          id: 'vald-namn', type: 'symbol', source: 'vald', filter: synlig,
           layout: { 'text-field': ['get', 'n'], 'text-font': ['Noto Sans Bold'], 'text-size': 13, 'text-anchor': 'bottom', 'text-offset': [0, -1.6], 'text-max-width': 10, 'text-allow-overlap': true },
           paint: { 'text-color': BLACK, 'text-halo-color': '#fdfbf7', 'text-halo-width': 2 },
         });
 
-        // Klick på en grupp går en nivå in: kartan zoomar dit och panelen visar platsen.
         const grupplager = ['lan-grupp', 'kommun-grupp'];
-        // Grupper kan överlappa när hela landet är i bild. Den vars mitt ligger närmast pekaren gäller.
-        const narmast = (e: MapLayerMouseEvent) =>
-          (e.features ?? [])
-            .map((f) => {
-              const p = karta!.project((f.geometry as GeoJSON.Point).coordinates as [number, number]);
-              return { f, avstand: Math.hypot(p.x - e.point.x, p.y - e.point.y) };
-            })
-            .sort((a, b) => a.avstand - b.avstand)[0]?.f;
-        karta!.on('click', grupplager, (e) => {
-          const f = narmast(e);
-          const kod = String(f?.properties?.kod ?? '');
-          if (!f || !kod) return;
-          if (f.layer.id === 'lan-grupp') sattPlats(kod);
-          else sattPlats(kod.slice(0, 2), kod);
-        });
-        // Ett dubbelklick ska inte zooma ett vanligt steg i stället för att gå till platsen. Kartan
-        // avbryter ändå flygningen som klicket startade, så den startas om när dubbelklicket är hanterat.
-        karta!.on('dblclick', grupplager, (e) => {
-          e.preventDefault();
-          setTimeout(passaKarta, 0);
-        });
-        const oppnaPunkt = (e: MapLayerMouseEvent) => {
-          const id = e.features?.[0]?.properties?.id;
-          const o = id ? alla.find((x) => x.id === String(id)) : undefined;
-          if (o) visaDetalj(o, false);
+        // Landmärkeslagret läggs till senare; lager som saknas hoppas över tills dess.
+        const punktlager = ['punkter', 'landmarken'];
+        // En organisation som ritas som sig själv ligger ovanpå gruppernas cirklar. Pekar besökaren
+        // på den är det den som gäller, inte gruppen under.
+        const prickUnder = (e: MapLayerMouseEvent) => {
+          const lager = punktlager.filter((id) => karta!.getLayer(id));
+          return lager.length ? karta!.queryRenderedFeatures(e.point, { layers: lager })[0] : undefined;
         };
+        // Grupper kan överlappa. Den minsta ritas överst och är den besökaren ser under pekaren.
+        const overst = (e: MapLayerMouseEvent) =>
+          (e.features ?? []).slice().sort((a, b) => Number(a.properties?.antal ?? 0) - Number(b.properties?.antal ?? 0))[0];
+
         let tipsFor: string | null = null;
         const visaTips = (e: MapLayerMouseEvent) => {
-          const f = narmast(e);
+          const f = prickUnder(e) ?? overst(e);
           if (!f) return;
-          // Markören sätts vid varje rörelse: klustrets mouseleave nollställer den när pekaren kommer därifrån.
+          // Markören sätts vid varje rörelse, så att den inte nollställs när pekaren går mellan lager.
           karta!.getCanvas().style.cursor = 'pointer';
           const antal = Number(f.properties?.antal ?? 0);
           const id = String(f.properties?.id ?? `${f.layer.id}:${f.properties?.kod}`);
@@ -971,13 +976,43 @@ const etiketter = {
           karta!.getCanvas().style.cursor = '';
           tips?.remove();
         };
-        // En uppsättning lyssnare för båda lagren. Med en per lager släcker det ena lagrets
-        // mouseleave tipset som det andra just visade, och ett klick kan öppna två poster.
-        // Landmärkeslagret läggs till senare; lager som saknas hoppas över tills dess.
-        const punktlager = ['punkter', 'landmarken'];
-        karta!.on('click', punktlager, oppnaPunkt);
+        // En uppsättning lyssnare för alla lagren. Med en per lager släcker det ena lagrets
+        // mouseleave tipset som det andra just visade.
         karta!.on('mousemove', [...punktlager, ...grupplager], visaTips);
         karta!.on('mouseleave', [...punktlager, ...grupplager], doljTips);
+
+        // Klick på en grupp går en nivå in: kartan zoomar dit och panelen visar platsen.
+        // Tiden för klicket sparas. Ett dubbelklick eller dubbeltryck känns igen på den, inte på vad
+        // som ligger under pekaren: när andra trycket kommer har gruppen redan flugit därifrån.
+        let gruppklick = -Infinity;
+        const nyssGrupp = () => performance.now() - gruppklick < 700;
+        karta!.on('click', grupplager, (e) => {
+          if (nyssGrupp() || prickUnder(e)) return;
+          const f = overst(e);
+          const kod = String(f?.properties?.kod ?? '');
+          if (!f || !kod) return;
+          gruppklick = performance.now();
+          // Gruppen under pekaren finns inte kvar när kartan har flugit, så tipset släcks.
+          doljTips();
+          if (f.layer.id === 'lan-grupp') sattPlats(kod);
+          else sattPlats(kod.slice(0, 2), kod);
+        });
+        // Andra trycket ska varken zooma ett vanligt steg eller stanna halvvägs. Att hindra kartans
+        // egen zoom avbryter också flygningen dit, så den startas om.
+        const hallKursen = (e: { preventDefault(): void }) => {
+          if (!nyssGrupp()) return;
+          e.preventDefault();
+          setTimeout(passaKarta, 0);
+        };
+        karta!.on('dblclick', hallKursen);
+        karta!.on('touchstart', hallKursen);
+        karta!.on('click', punktlager, (e) => {
+          // Andra klicket i ett dubbelklick på en grupp: det som nu ligger under pekaren var inte målet.
+          if (nyssGrupp()) return;
+          const id = e.features?.[0]?.properties?.id;
+          const o = id ? alla.find((x) => x.id === String(id)) : undefined;
+          if (o) visaDetalj(o, false);
+        });
         karta!.on('click', (e) => {
           // Tryck på tom karta fäller ner bottenbladet i smal vy.
           const lager = [...grupplager, ...punktlager].filter((id) => karta!.getLayer(id));
@@ -1033,18 +1068,24 @@ const etiketter = {
           karta!.setFilter('namn', ['all', synlig, ['!', arLandmarke]]);
           // Den valda organisationen: större ring bakom, och ikonen i stället för pricken.
           karta!.setPaintProperty('vald-ring', 'circle-radius', ['case', arLandmarke, 24, 15]);
-          karta!.setFilter('vald-punkt', ['!', arLandmarke]);
-          karta!.addLayer({ id: 'vald-ikon', type: 'symbol', source: 'vald', filter: arLandmarke, layout: { 'icon-image': ikon, 'icon-allow-overlap': true } }, 'vald-namn');
+          karta!.setFilter('vald-punkt', ['all', synlig, ['!', arLandmarke]]);
+          karta!.setLayoutProperty('ensam-yta', 'icon-size', ['case', arLandmarke, 38, 18]);
+          karta!.addLayer({ id: 'vald-ikon', type: 'symbol', source: 'vald', filter: ['all', synlig, arLandmarke], layout: { 'icon-image': ikon, 'icon-allow-overlap': true } }, 'vald-namn');
           karta!.setLayoutProperty('vald-namn', 'text-offset', ['case', arLandmarke, ['literal', [0, -2.3]], ['literal', [0, -1.6]]]);
         };
         ritaLandmarken().catch((fel) => console.warn('Landmärkena gick inte att rita', fel));
         // Den som själv zoomar ut ur en nivå lämnar platsen den hörde till. Annars står kartan
         // kvar med bara den platsens organisationer när resten av landet kommer i bild.
+        // Zoomen före rörelsen följer med även för kartans egna rörelser, så att en avbruten flygning
+        // räknas från där den stannade. Före datan finns ingen första vy att lämna.
+        let zoomFore = karta!.getZoom();
         karta!.on('zoomend', (e) => {
-          if ((e as { avKod?: boolean }).avKod) return;
+          const fran = zoomFore;
+          zoomFore = karta!.getZoom();
+          if ((e as { avKod?: boolean }).avKod || !alla.length) return;
           const f = lasFilter();
-          const efter = platsEfterUtzoomning(karta!.getZoom(), { lan: f.lan, kommun: f.kommun });
-          if (efter.lan !== f.lan || efter.kommun !== f.kommun) sattPlats(efter.lan, efter.kommun, false);
+          const efter = platsEfterUtzoomning(zoomFore, { lan: f.lan, kommun: f.kommun }, fran);
+          if (efter.lan !== f.lan || efter.kommun !== f.kommun) sattPlats(efter.lan, efter.kommun, true);
         });
 
         kartaKlar = true;

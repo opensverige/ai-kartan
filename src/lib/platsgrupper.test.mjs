@@ -83,3 +83,19 @@ test('en liten utzoomning ändrar inte platsen', () => {
   assert.deepEqual(platsEfterUtzoomning(ZOOM_POSTER - 0.5, plats), plats);
   assert.deepEqual(platsEfterUtzoomning(ZOOM_KOMMUN + 1, { lan: '01', kommun: '' }), { lan: '01', kommun: '' });
 });
+
+test('den som zoomar in lämnar aldrig platsen, även när zoomen slutar under gränsen', () => {
+  const lan = { lan: '12', kommun: '' };
+  assert.deepEqual(platsEfterUtzoomning(4.7, lan, 4.3), lan);
+  const kommun = { lan: '01', kommun: '0180' };
+  assert.deepEqual(platsEfterUtzoomning(9.9, kommun, 8.3), kommun);
+});
+
+test('utzoomning från en högre zoom lämnar platsen som förut', () => {
+  assert.deepEqual(platsEfterUtzoomning(4.7, { lan: '12', kommun: '' }, 6.5), { lan: '', kommun: '' });
+});
+
+test('en tät kommun får gå ner till strax över nivåbytet, så att den får plats i smal vy', () => {
+  const [min] = zoomgranser(STHLM);
+  assert.ok(min >= ZOOM_POSTER && min < ZOOM_POSTER + 0.1);
+});
