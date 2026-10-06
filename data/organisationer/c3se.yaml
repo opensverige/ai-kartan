@@ -91,6 +91,18 @@ evidence:
     verified_at: 2026-10-04
     verified_by: agent
     note: Beskrivning från NAISS, inte från C3SE.
+  - url: https://www.c3se.chalmers.se/about/Vera/
+    kind: resurs
+    title: "Vera: kluster med GPU-noder och tilldelningar för 2026 till Chalmers institutioner"
+    status: claimed
+    verified_at: 2026-10-06
+    verified_by: agent
+  - url: https://supr.naiss.se/round/2026e-commons/
+    kind: resurs
+    title: "SUPR: omgången e-Commons 2026 är öppen för ansökningar om tid på Vera"
+    status: claimed
+    verified_at: 2026-10-06
+    verified_by: agent
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-04
+record_updated_at: 2026-10-06

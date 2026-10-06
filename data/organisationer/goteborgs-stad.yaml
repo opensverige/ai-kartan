@@ -88,6 +88,12 @@ evidence:
     verified_at: 2026-10-04
     verified_by: agent
     note: "AI Sweden samordnar projektet och listar kommunen bland de offentliga deltagarna i fas 1 (avslutad 2024)."
+  - url: https://goeteborgs-stad.mynewsdesk.com/pressreleases/pris-foer-utveckling-av-ny-teknologi-3431552
+    kind: case
+    title: "Kretslopp och vatten: egen beräkningsplattform för AI och eget system för läcksökning"
+    status: claimed
+    verified_at: 2026-10-06
+    verified_by: agent
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-04
+record_updated_at: 2026-10-06

@@ -96,6 +96,12 @@ evidence:
     verified_at: 2026-10-04
     verified_by: agent
     note: Sidan beskriver Berget AI som AI-infrastruktur och Opper som plattform för LLMops.
+  - url: https://tech.eu/2026/02/02/swedish-startup-berget-ai-lands-2-1m-as-demand-grows-for-sovereign-ai-in-europe/
+    kind: case
+    title: "Nyhetsartikel: Luminar Ventures leder runda på 2,1 miljoner euro i Berget AI"
+    status: confirmed
+    verified_at: 2026-10-06
+    verified_by: agent
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-04
+record_updated_at: 2026-10-06

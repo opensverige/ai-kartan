@@ -95,6 +95,18 @@ evidence:
     verified_at: 2026-10-04
     verified_by: agent
     note: Vinnova och Formas finansierar åtta projekt med sammanlagt 50 miljoner kronor.
+  - url: https://formas.se/soka-finansiering/alla-utlysningar/utlysningar/2025-04-14-utforska---nytankande-forskning-for-miljo-areella-naringar-och-samhallsbyggande-2025.html
+    kind: program
+    title: "Utlysning Utforska 2025: beslut 2026-04-21, två AI-projekt bland 85 beviljade"
+    status: claimed
+    verified_at: 2026-10-06
+    verified_by: agent
+  - url: https://formas.se/en/start-page/apply-for-funding/all-calls/calls/2024-02-23-research-driven-solutions-for-a-sustainable-society-2024.html
+    kind: program
+    title: "Utlysning 2024 om forskningsdrivna lösningar: beslut 2024-10-22, två AI-projekt bland 24"
+    status: claimed
+    verified_at: 2026-10-06
+    verified_by: agent
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-04
+record_updated_at: 2026-10-06

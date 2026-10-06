@@ -85,6 +85,18 @@ evidence:
     verified_at: 2026-10-04
     verified_by: agent
     note: Arbetet bedrivs av Analysfabriken, en enhet inom Trafikverkets underhåll.
+  - url: https://trafikverket.diva-portal.org/smash/get/diva2:1962928/FULLTEXT01.pdf
+    kind: publikation
+    title: "Rapport 2025: Trafikverkets AI i produktion, bland annat digital järnvägsbesiktning"
+    status: claimed
+    verified_at: 2026-10-06
+    verified_by: agent
+  - url: https://bransch.trafikverket.se/om-oss/aktuellt-for-dig-i-branschen3/aktuellt-for-dig-i-branschen/2025/2025-06/ai-effektiviserar-underhallet-och-trafikverkets-interna-verksamhet/
+    kind: case
+    title: "AI i underhållet och den interna verksamheten: digital besiktning på järnväg (juni 2025)"
+    status: claimed
+    verified_at: 2026-10-06
+    verified_by: agent
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-04
+record_updated_at: 2026-10-06

@@ -68,6 +68,18 @@ evidence:
     status: claimed
     verified_at: 2026-10-04
     verified_by: agent
+  - url: https://ju.se/en/about-us/school-of-engineering/organisation/computer-science-and-informatics/research-projects/explain.html
+    kind: publikation
+    title: "Projektet EXplAIn om förklarbar AI: publikationer med DiVA- och DOI-länkar"
+    status: claimed
+    verified_at: 2026-10-06
+    verified_by: agent
+  - url: https://www.diva-portal.org/smash/record.jsf?pid=diva2:1606938
+    kind: publikation
+    title: "Tidskriftsartikel 2022 om OCR-klassificering, med Jönköping AI Lab som författarhemvist"
+    status: confirmed
+    verified_at: 2026-10-06
+    verified_by: agent
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-04
+record_updated_at: 2026-10-06

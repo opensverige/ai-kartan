@@ -95,9 +95,15 @@ evidence:
     verified_at: 2026-10-04
     verified_by: agent
     note: Sidan beskriver Apica som byggt på AI/ML-flöden och AI-agenter, Hopsworks som plattform för dataintensiv AI och Viking Analytics som AI-baserad maskinövervakning.
+  - url: https://industrifonden.com/news-insights/trackpaw-secures-e2-3m-to-revolutionize-preclinical-research-with-ai-powered-monitoring
+    kind: case
+    title: "Nyhet 2025-08-18: Industrifonden leder såddrunda i TrackPaw ihop med annan fond"
+    status: claimed
+    verified_at: 2026-10-06
+    verified_by: agent
 
 links:
   linkedin: https://www.linkedin.com/company/industrifonden/
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-04
+record_updated_at: 2026-10-06

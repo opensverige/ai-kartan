@@ -86,6 +86,18 @@ evidence:
     status: claimed
     verified_at: 2026-10-04
     verified_by: agent
+  - url: https://www.hpc2n.umu.se/kebnekaise-local
+    kind: resurs
+    title: "Kebnekaise: tid söks i HPC2N:s lokala omgångar i SUPR av forskare vid partnerlärosäten"
+    status: claimed
+    verified_at: 2026-10-06
+    verified_by: agent
+  - url: https://supr.naiss.se/round/2026hpc2n/
+    kind: resurs
+    title: "SUPR: omgången HPC2N Local 2026 är öppen och omfattar Kebnekaise med GPU-resurs"
+    status: claimed
+    verified_at: 2026-10-06
+    verified_by: agent
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-04
+record_updated_at: 2026-10-06

@@ -75,6 +75,12 @@ evidence:
     status: claimed
     verified_at: 2026-10-04
     verified_by: agent
+  - url: https://github.com/ScilifelabDataCentre/gradio-flower-classification
+    kind: repo
+    title: "Kod till en app för bildklassificering av blommor med ett CNN-nätverk (VGG19)"
+    status: claimed
+    verified_at: 2026-10-06
+    verified_by: agent
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-04
+record_updated_at: 2026-10-06

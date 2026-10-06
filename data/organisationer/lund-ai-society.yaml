@@ -87,6 +87,12 @@ evidence:
     status: claimed
     verified_at: 2026-10-04
     verified_by: agent
+  - url: https://lundaisociety.com/events
+    kind: program
+    title: "Events: AI-hackathon i mars och april 2026 samt nätverksmiddag i september 2026"
+    status: claimed
+    verified_at: 2026-10-06
+    verified_by: agent
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-04
+record_updated_at: 2026-10-06
