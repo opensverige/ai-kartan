@@ -65,7 +65,7 @@ const s = d.statistik;
   <p>En organisation som själv publicerar en kontorsadress kan få exakta koordinater, med adressidan som källa. Länet härleds ur kommunkoden.</p>
 
   <h2 id="historik">Ändringshistoriken är vallgraven</h2>
-  <p>Git-repot är sanningen. Varje ändring, även den automatiska, går via en pull request och får datum, avsändare och diff. Ur historiken byggs <a href={url('/andringar')}>ändringsloggen</a>: varje ändrat fält med gammalt och nytt värde. Den är append-only och går inte att kopiera i efterhand genom att skrapa om kartan i dag.</p>
+  <p>Git-repot är sanningen. Varje ändring är en commit med datum, avsändare och diff. Nya poster och rättelser går via pull request. Den första datamängden lades direkt på huvudgrenen, och den automatiska historikfilen skrivs dit av en bot. Ur historiken byggs <a href={url('/andringar')}>ändringsloggen</a>: varje ändrat fält med gammalt och nytt värde. Den är append-only och går inte att kopiera i efterhand genom att skrapa om kartan i dag.</p>
 
   <h2 id="roller">Organisationer är källor, aldrig författare</h2>
   <p>En organisation kan skicka in uppgifter om sig själv, men posten ägs av kartan och uppgifterna märks som egen uppgift tills de bekräftats. Ingen kan köpa synlighet, placering eller ett märke. Listan sorteras alfabetiskt och filtren visar urval, inte betyg.</p>

@@ -72,7 +72,8 @@ if (larm && process.env.DISCORD_WEBHOOK_URL) {
   await fetch(process.env.DISCORD_WEBHOOK_URL, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ content: `**AI-kartan: färskhetslarm**\n\`\`\`\n${text}\n\`\`\`` }),
+    // allowed_mentions: ett organisationsnamn ska aldrig kunna pinga någon på servern.
+    body: JSON.stringify({ content: `**AI-kartan: färskhetslarm**\n\`\`\`\n${text}\n\`\`\``, allowed_mentions: { parse: [] } }),
   }).catch((e) => console.error('Discord-anrop misslyckades:', e.message));
 }
 

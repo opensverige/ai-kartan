@@ -1,10 +1,8 @@
-# Publicerar sajten till GitHub Pages. Fungerar när arkivet är publikt (eller org:en har Pages för privata arkiv).
-# Produktionsdomänen pekas i stället på Vercel via vercel.json; detta flöde är reservutgången.
+# Reservutgång: publicerar sajten till GitHub Pages. Startas bara för hand, och kräver att Pages är påslaget.
+# Produktionen ligger på Vercel (karta.opensverige.se) och byggs där vid varje push till main.
 name: Publicera till GitHub Pages
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -18,7 +16,6 @@ concurrency:
 
 jobs:
   bygg:
-    if: github.event.repository.visibility == 'public' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

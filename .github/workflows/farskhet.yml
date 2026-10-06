@@ -41,11 +41,13 @@ jobs:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
 
       - name: Skriv rapporten i sammanfattningen
+        env:
+          RAPPORT: ${{ steps.koll.outputs.rapport }}
         run: |
           {
             echo '## Färskhet'
             echo '```'
-            echo "${{ steps.koll.outputs.rapport }}"
+            printf '%s\n' "$RAPPORT"
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
 

@@ -15,9 +15,14 @@ permissions:
   pull-requests: write
   issues: write
 
+# En körning per ärende åt gången. En ny redigering avbryter den som pågår.
+concurrency:
+  group: arende-${{ github.event.issue.number }}
+  cancel-in-progress: true
+
 jobs:
   skapa-pr:
-    if: contains(github.event.issue.labels.*.name, 'ny-organisation')
+    if: github.event.issue.state == 'open' && contains(github.event.issue.labels.*.name, 'ny-organisation')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -29,7 +34,7 @@ jobs:
           node-version: 22
           cache: npm
 
-      - run: npm ci
+      - run: npm ci --ignore-scripts
 
       - name: Bygg YAML ur ärendet
         id: bygg
@@ -41,23 +46,31 @@ jobs:
       - name: Validera den nya filen
         id: validera
         continue-on-error: true
-        run: node scripts/validera.mjs "${{ steps.bygg.outputs.fil }}" > validering.txt 2>&1; echo "kod=$?" >> "$GITHUB_OUTPUT"; cat validering.txt
+        env:
+          FIL: ${{ steps.bygg.outputs.fil }}
+        run: |
+          kod=0
+          node scripts/validera.mjs "$FIL" > validering.txt 2>&1 || kod=$?
+          echo "kod=$kod" >> "$GITHUB_OUTPUT"
+          cat validering.txt
 
       - name: Kommentera fel i ärendet
         if: steps.validera.outputs.kod != '0'
         env:
           GH_TOKEN: ${{ github.token }}
+          NUMMER: ${{ github.event.issue.number }}
         run: |
           {
             echo "Tack! Formuläret kunde inte bli en pull request automatiskt. Så här sa valideringen:"
             echo
             echo '```'
-            cat validering.txt
+            # Valideringen citerar text ur ärendet. Utan bakåtfnuttar kan den inte bryta sig ur kodrutan.
+            tr -d '`' < validering.txt | head -n 40
             echo '```'
             echo
             echo "Redigera ärendet (knappen ••• → Edit) så körs kontrollen igen, eller fråga i Discord."
           } > kommentar.md
-          gh issue comment "${{ github.event.issue.number }}" --body-file kommentar.md
+          gh issue comment "$NUMMER" --body-file kommentar.md
 
       - name: Öppna pull request
         if: steps.validera.outputs.kod == '0'
@@ -69,13 +82,16 @@ jobs:
           FORFATTARE: ${{ github.event.issue.user.login }}
           FORFATTAR_ID: ${{ github.event.issue.user.id }}
           ENSKILD: ${{ contains(github.event.issue.body, 'enskild_firma') }}
+          NUMMER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
         run: |
-          gren="arende/${{ github.event.issue.number }}-$ID"
-          git config user.name "ai-kartan-bot"
-          git config user.email "ai-kartan-bot@users.noreply.github.com"
+          # En gren per ärende, så att ett ändrat namn uppdaterar samma pull request i stället för att skapa en ny.
+          gren="arende/$NUMMER"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -B "$gren"
           git add "$FIL"
-          meddelande="data: lägg till $NAMN (ärende #${{ github.event.issue.number }})"
+          meddelande="data: lägg till $NAMN (ärende #$NUMMER)"
           # Den som skickade in posten står som medförfattare och syns som bidragsgivare på repot.
           # Enskilda firmor undantas: namnet skulle ligga kvar i historiken även om posten tas bort.
           if [ "$ENSKILD" != "true" ]; then
@@ -84,15 +100,16 @@ jobs:
           git commit -m "$meddelande"
           git push --force -u origin "$gren"
           {
-            echo "Skapad automatiskt ur ärende #${{ github.event.issue.number }}. Uppgifterna är inskickade av organisationen själv och märkta som egen uppgift (claimed)."
+            echo "Skapad automatiskt ur ärende #$NUMMER. Uppgifterna är inskickade av organisationen själv och märkta som egen uppgift (claimed)."
             echo
-            echo "Granska mot [kriterierna](https://github.com/${{ github.repository }}/blob/main/kriterier.md) innan merge."
+            echo "Granska mot [kriterierna](https://github.com/$REPO/blob/main/kriterier.md) innan merge."
             echo
-            echo "Stänger #${{ github.event.issue.number }} när den mergas."
+            # "Closes" är ordet GitHub känner igen. Då stängs ärendet när pull requesten mergas.
+            echo "Closes #$NUMMER"
           } > pr-kropp.md
-          if gh pr view "$gren" >/dev/null 2>&1; then
+          if [ -n "$(gh pr list --head "$gren" --state open --json number --jq '.[0].number')" ]; then
             gh pr comment "$gren" --body "Uppdaterad efter ändring i ärendet."
           else
             gh pr create --head "$gren" --title "Lägg till $NAMN" --body-file pr-kropp.md
           fi
-          gh issue comment "${{ github.event.issue.number }}" --body "Tack! En pull request har skapats: $(gh pr view "$gren" --json url --jq .url). En människa granskar den mot kriterierna."
+          gh issue comment "$NUMMER" --body "Tack! En pull request har skapats: $(gh pr view "$gren" --json url --jq .url). En människa granskar den mot kriterierna."
