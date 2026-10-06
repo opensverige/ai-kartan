@@ -71,4 +71,4 @@ npm run build
 
 ## För den som granskar
 
-Granskningslistan står längst ned i [kriterier.md](kriterier.md). Ett avslag skrivs i pull requesten med hänvisning till kriteriet. Tips från det korta formuläret hanteras enligt [Från tips till post](#från-tips-till-post). Två maintainers utöver initiativtagaren innan publik lansering, med den här filen som rutin.
+Granskningslistan står längst ned i [kriterier.md](kriterier.md). Ett avslag skrivs i pull requesten med hänvisning till kriteriet. Tips från det korta formuläret hanteras enligt [Från tips till post](#från-tips-till-post). Den här filen är rutinen för alla som granskar.

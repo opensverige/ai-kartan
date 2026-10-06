@@ -8,6 +8,10 @@ dist/
 .DS_Store
 Thumbs.db
 
+# arbetsdokument med AI-lästa uppgifter om namngivna organisationer hör inte hemma i ett publikt repo
+docs/granskning-*
+docs/kriterieprov-*
+
 # lokal förhandsvisning
 .claude/launch.json
 

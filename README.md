@@ -13,11 +13,11 @@
 
 ---
 
-Dagens kartor släpper bara in aktiebolag som är högst tio år gamla och har minst två anställda. Soloutvecklaren, föreningen, kommunen och lärosätet syns inte. Vi listar alla som kan visa något de har byggt.
+Kartor över svensk AI är ofta kurerade: man ansöker och en grupp väljer. Den här kartan gör ett annat val. Tre kriterier avgör, och vem som helst kan föreslå en organisation. Enskilda firmor tas inte emot än, se [kriterierna](kriterier.md).
 
 **Varje uppgift har källa, datum och status.** Inget rankas, och ingen kan köpa en plats. Koden och datan är öppna, och vem som helst kan lägga till sig själv med en pull request. Byggt av [OpenSverige](https://opensverige.se), med samma metod som [infra.opensverige.se](https://infra.opensverige.se). Oberoende och inte statlig.
 
-→ **Sajten:** karta.opensverige.se (under uppbyggnad)<br>
+→ **Sajten:** [karta.opensverige.se](https://karta.opensverige.se)<br>
 → **Lägg till en organisation:** [tre fält i ett formulär](https://github.com/opensverige/ai-kartan/issues/new?template=1-lagg-till.yml) · [kriterierna](kriterier.md)<br>
 → **Diskutera:** [Discord](https://discord.gg/ZbV4qB34um)
 

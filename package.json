@@ -5,7 +5,7 @@
   "type": "module",
   "description": "Tech Embassy – Sveriges öppna AI-karta. Alla som bygger AI i Sverige, med källa och datum på varje uppgift.",
   "license": "AGPL-3.0-only",
-  "homepage": "https://github.com/opensverige/ai-kartan",
+  "homepage": "https://karta.opensverige.se",
   "engines": {
     "node": ">=22.12.0"
   },

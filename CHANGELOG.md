@@ -4,9 +4,15 @@ Kodens och funktionernas historik. Dataändringar loggas separat och automatiskt
 
 ## 2026-10-06
 
+- Ny sida Varför vi finns ersätter Om. Den säger kort vad kartan är, hur den skiljer sig från en kurerad karta, vem som granskar och vem som står bakom. Resten ligger i fällbara avsnitt. Sidan står först i menyn.
+- Arbetsflödena är härdade inför att repot blir publikt. Text ur ärenden och data hamnar aldrig i ett skalkommando, det långa formuläret kan inte skriva över en befintlig post, och varje ärende får en enda gren. Flödet för GitHub Pages startas bara för hand.
+- Ändringshistoriken skrivs inte över om git-historiken är avkortad, till exempel i en grund klon.
+- Texter som beskrev läget före lansering är rättade i README, metodsidan, integritetssidan och CONTRIBUTING.
+- En död länk i datan är lagad, och åtta noter som angav postort för ett bolags adress är nedkortade.
+- Ikonlista i `docs/ikonlista.md`: vilka ikoner kartan behöver, med filnamn och format.
 - Länkkontrollen skiljer på döda länkar och länkar som inte gick att nå. Lärosäten och myndigheter nekar ofta trafik från GitHubs servrar, och det stoppade pull requests i onödan. Nu stoppar bara en länk som servern säger är borta, eller en domän som inte finns.
 - Valideringen prövar belägg mot organisationstypen. Varje typ har en lista över sorters belägg som räknas, i `data/taxonomi/typer.json`, och en post behöver minst en länk som är dess egen. Båda ger en anmärkning, inte ett fel.
-- Förslag till förfinade kriterier i `docs/kriterier-forslag.md`, prövat mot befintliga poster i `docs/kriterieprov-2026-10-06.md`. Kriterierna i `kriterier.md` gäller tills förslaget är antaget.
+- Ett förslag till förfinade kriterier har prövats mot befintliga poster och ligger hos granskarna. Kriterierna i `kriterier.md` gäller tills förslaget är antaget.
 - Tätare lista på kartsidan: varje organisation tar en tredjedel så mycket höjd som förut, så att fler syns direkt. Beskrivningen visas på en rad, resten i detaljvyn. Listsidan har kvar de större korten.
 - Koppling till AI-Infra: organisationer som finns där är märkta i listan och länkar till sin sida i detaljvyn. Den som filtrerar på infrastruktur får en länk till jämförelsen överst i listan, och AI-Infra står i menyn.
 - Sidan Bidra går att skumma: vägarna in och vad vi behöver syns direkt, och resten ligger i fällbara avsnitt. Kodexemplet är kortare och visas först när man öppnar "Skriv hela posten själv". Avsnittet Rätta eller ta bort på organisationssidorna är också kortare.
