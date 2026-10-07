@@ -47,4 +47,5 @@ node scripts/andringar.mjs --skriv-ut   # se vad som ändrats
 | `src/components/KartApp.astro` | Karta, filter och lista (MapLibre, OpenFreeMap) |
 | `src/pages/organisation/[id].astro` | Permalänk per organisation |
 | `scripts/lib/granskning.mjs` | Granskningslistan som en människa bockar av på varje pull request med organisationer |
+| `scripts/lib/granskningskorning.mjs` | Körningen som läser pull requesten, skriver listan och sätter läget |
 | `.github/workflows/` | Validering, granskning mot kriterierna, historik, färskhet, länkkoll, ärende till PR, Pages |

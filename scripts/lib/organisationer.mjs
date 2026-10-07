@@ -62,12 +62,16 @@ export function lasGeo() {
   };
 }
 
-/** Läser alla organisationsfiler. Returnerar råa poster utan härledningar. */
-export function lasOrganisationer() {
-  if (!fs.existsSync(KATALOG_ORG)) return [];
-  const filer = fs.readdirSync(KATALOG_ORG).filter((f) => f.endsWith('.yaml') || f.endsWith('.yml')).sort();
+/**
+ * Läser alla organisationsfiler. Returnerar råa poster utan härledningar. En symbolisk länk läses
+ * inte: den kan peka på en fil som byts utan att organisationsfilen ändras. Valideringen stoppar den.
+ */
+export function lasOrganisationer(katalog = KATALOG_ORG) {
+  if (!fs.existsSync(katalog)) return [];
+  const filer = fs.readdirSync(katalog).filter((f) => f.endsWith('.yaml') || f.endsWith('.yml')).sort();
   return filer.map((fil) => {
-    const sokvag = path.join(KATALOG_ORG, fil);
+    const sokvag = path.join(katalog, fil);
+    if (fs.lstatSync(sokvag).isSymbolicLink()) return { fil, sokvag, text: '', data: null, fel: null, lank: true };
     const text = fs.readFileSync(sokvag, 'utf8');
     let data = null;
     let fel = null;
@@ -76,7 +80,7 @@ export function lasOrganisationer() {
     } catch (e) {
       fel = e.message;
     }
-    return { fil, sokvag, text, data, fel };
+    return { fil, sokvag, text, data, fel, lank: false };
   });
 }
 

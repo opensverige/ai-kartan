@@ -4,6 +4,7 @@
 #
 # PR:er som skapas med GITHUB_TOKEN triggar inte andra flöden. Sätt hemligheten BOT_TOKEN
 # (en finmaskig token med contents + pull-requests) om valideringen ska köras automatiskt på PR:en.
+# Granskningslistan startas därför uttryckligen i sista steget.
 name: Nytt ärende till pull request
 
 on:
@@ -14,6 +15,8 @@ permissions:
   contents: write
   pull-requests: write
   issues: write
+  # För att starta granskningslistan på pull requesten, se sista steget.
+  actions: write
 
 # En körning per ärende åt gången. En ny redigering avbryter den som pågår.
 concurrency:
@@ -113,3 +116,17 @@ jobs:
             gh pr create --head "$gren" --title "Lägg till $NAMN" --body-file pr-kropp.md
           fi
           gh issue comment "$NUMMER" --body "Tack! En pull request har skapats: $(gh pr view "$gren" --json url --jq .url). En människa granskar den mot kriterierna."
+
+      - name: Starta granskningslistan på pull requesten
+        if: steps.validera.outputs.kod == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMMER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+          STANDARDGREN: ${{ github.event.repository.default_branch }}
+        run: |
+          # Varje ny commit på grenen behöver en ny körning. Annars står listan kvar med gammalt underlag.
+          pr="$(gh pr list --repo "$REPO" --head "arende/$NUMMER" --state open --json number --jq '.[0].number')"
+          if [ -n "$pr" ]; then
+            gh workflow run granskning.yml --repo "$REPO" --ref "$STANDARDGREN" -f pr="$pr"
+          fi

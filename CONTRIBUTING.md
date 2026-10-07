@@ -71,9 +71,18 @@ npm run build
 
 ## För den som granskar
 
-Varje pull request som rör en fil i `data/organisationer/` får en kommentar med rubriken Granskning mot kriterierna. Där står kriterierna som punkter, en uppsättning per organisation, tillsammans med det filen säger om organisationsnummer, webbplats och belägg. Öppna källorna, pröva varje punkt och bocka av den. Kontrollen med samma namn är gul tills allt är avbockat.
+Varje pull request som rör en fil i `data/organisationer/` får en kommentar med rubriken Granskning mot kriterierna. Där står granskningslistan ur [kriterier.md](kriterier.md) som punkter, en uppsättning per organisation. Under varje organisation står det filen själv anger: namn, typ, organisationsnummer med källa, beskrivning, webbplats och belägg. Ingen maskin har öppnat källorna. Öppna dem, pröva varje punkt och bocka av den. Läget med samma namn är gult tills allt är avbockat.
 
 - Du bockar av genom att klicka i rutorna. Det kräver skrivrätt i repot.
-- Ändras en organisations fil efter att du har bockat av nollställs dess punkter.
-- AI får hjälpa dig att kontrollera att ett belägg visar det som påstås, men listan är din. En agent bockar aldrig av den.
-- Samma lista står längst ned i [kriterier.md](kriterier.md). Ett avslag skrivs i pull requesten med hänvisning till kriteriet. Tips från det korta formuläret hanteras enligt [Från tips till post](#från-tips-till-post). Den här filen är rutinen för alla som granskar.
+- En bock gäller filens text som den såg ut när du bockade. Ändras filen nollställs organisationens punkter.
+- AI får hjälpa dig att kontrollera att ett belägg visar det som påstås, men listan är din. Bockar som en bot eller en app sätter tas bort igen. En agent som arbetar inloggad som du går inte att skilja från dig. Den regeln vilar därför på dig.
+- Listan gäller organisationer. Ändringar av kriterier, schema, validering och flöden granskas inte av den, även när läget är grönt.
+- Sista punkten i kriterier.md, att `npm run validera` är grön, prövas av kontrollen Validera data och bygg.
+- Högst 30 organisationer per pull request. Fler än så delas upp.
+- Ett avslag skrivs i pull requesten med hänvisning till kriteriet. Tips från det korta formuläret hanteras enligt [Från tips till post](#från-tips-till-post). Den här filen är rutinen för alla som granskar.
+
+### Göra granskningen tvingande
+
+Läget heter Granskning mot kriterierna. Det blir tvingande när det läggs till som obligatorisk kontroll för `main` under Settings → Rules, tillsammans med Validera data och bygg. Då går ingen pull request med en organisation att merga innan listan är avbockad, inte heller för den som äger repot. Raden Granskningslista / Skriv listan och sätt läget är flödets egen körning och ska inte väljas.
+
+En pull request som var öppen innan flödet fanns får inget läge av sig själv. Kör flödet Granskningslista för hand med pull requestens nummer: Actions → Granskningslista → Run workflow. Pull requests ur ärendeformuläret startar flödet själva.
