@@ -2,6 +2,10 @@
 
 Kodens och funktionernas historik. Dataändringar loggas separat och automatiskt i `history/changelog.json` och på sajten under Ändringar. Samma rader som här finns maskinläsbart i `history/bygglogg.json`.
 
+## 2026-10-07
+
+- Myndigheternas och kommunernas ikoner ritas först när kartan är inzoomad till organisationerna. På översikten är en myndighet som är ensam på sin plats en prick som alla andra. Förut stod ikonen ensam bland gruppernas cirklar och drog blicken till sig.
+
 ## 2026-10-06
 
 - Medlemsvyn fungerar bättre i telefon och med skärmläsare. Antalen per region står i kortets text även i smal vy, kartans källrad ligger fri från knapparna, kortet ligger vid sidan på en liggande telefon, och fokus följer med när vyn öppnas från sökningen eller stängs med Escape.
