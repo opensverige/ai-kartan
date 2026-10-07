@@ -154,6 +154,11 @@ function kontrolleraPost(post) {
   const senast = senastVerifierad(data);
   if (senast && data.record_updated_at && senast > data.record_updated_at) w(`record_updated_at (${data.record_updated_at}) är äldre än senaste verifiering (${senast}). Uppdatera datumet.`);
 
+  // 10. Nedlagd kräver belägg: värdet visas som "nedlagd eller avregistrerad" på organisationens sida.
+  if (data.active?.value === false && data.active?.status !== 'confirmed') {
+    w('active: false visas som "nedlagd eller avregistrerad". Belägg det mot register eller ta bort fältet.');
+  }
+
   return { fel, varningar };
 }
 

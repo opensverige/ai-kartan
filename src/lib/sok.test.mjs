@@ -95,3 +95,45 @@ test('en tom träfflista förklarar vad kartan inte har', () => {
   assert.equal(tomtSvar('bananer'), null);
   assert.equal(tomtSvar(''), null);
 });
+
+test('ord som också är namn på inbyggda egenskaper kraschar inte sökningen', () => {
+  // "constructors" får stammen "constructor", som finns på varje objekt i JavaScript.
+  for (const q of ['constructor', 'constructors', 'constructorsystem', '__proto__', '__proto__s', 'tostring', 'hasownproperty', 'valueof']) {
+    assert.doesNotThrow(() => sok(q), q);
+    assert.deepEqual(sok(q).namn, [], q);
+  }
+});
+
+test('typens pluralord ger samma organisationer som filtret', () => {
+  const alla = [
+    post('Verket', 'Har byggt en tjänst som sorterar ärenden.', { t: 'myndighet' }),
+    post('Leverantören', 'Säljer till myndigheter och kommuner.'),
+    post('Staden', 'Har en chattbot.', { t: 'kommun_region' }),
+    post('Högskolan', 'Forskar om språkmodeller.', { t: 'larosate' }),
+    post('Nätverket', 'Ordnar träffar.', { t: 'community' }),
+    post('Fonden', 'Investerar i tidiga skeden.', { t: 'finansiar' }),
+    post('Armen', 'Bygger en plockrobot.', { a: ['robotik'] }),
+  ];
+  const namn = (q) => {
+    const t = tolka(q, alla);
+    return alla.filter((o) => traffar(o, t)).map((o) => o.n);
+  };
+  // Förut gav "myndigheter" bara den som råkade nämna ordet i sin beskrivning.
+  assert.deepEqual(namn('myndigheter'), ['Verket', 'Leverantören']);
+  assert.deepEqual(namn('kommuner'), ['Leverantören', 'Staden']);
+  assert.deepEqual(namn('kommuner och regioner'), ['Staden']);
+  assert.deepEqual(namn('lärosäten'), ['Högskolan']);
+  assert.deepEqual(namn('communities'), ['Nätverket']);
+  assert.deepEqual(namn('föreningar'), ['Nätverket']);
+  assert.deepEqual(namn('finansiärer'), ['Fonden']);
+  assert.deepEqual(namn('robotar'), ['Armen']);
+});
+
+test('pluralorden i sökningen pekar på typer som finns i taxonomin', () => {
+  const typer = new Set(JSON.parse(fs.readFileSync(new URL('../../data/taxonomi/typer.json', import.meta.url), 'utf8')).map((t) => t.id));
+  for (const ord of ['myndigheter', 'kommuner', 'regioner', 'kommuner och regioner', 'larosaten', 'communities', 'foreningar', 'finansiarer']) {
+    assert.ok(Object.hasOwn(ALIAS, ord), `${ord} saknas`);
+    assert.equal(ALIAS[ord][0], 't');
+    assert.ok(typer.has(ALIAS[ord][1]), `${ord} pekar på en typ som inte finns`);
+  }
+});
