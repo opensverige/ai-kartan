@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-07T14:39:25Z",
-  "antal": 357,
+  "generated_at": "2026-10-07T15:26:45Z",
+  "antal": 358,
   "senaste_andring": "2026-10-07",
   "rader": [
     {
@@ -41,6 +41,18 @@
       "status": "confirmed",
       "gammal_status": "claimed",
       "kalla": "https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/556878229501"
+    },
+    {
+      "datum": "2026-10-07",
+      "commit": "e1cd5099a7",
+      "id": "nyterio",
+      "namn": "NYTERIO",
+      "falt": "hela posten",
+      "andring": "tillagd",
+      "gammalt": null,
+      "nytt": null,
+      "status": null,
+      "kalla": "https://nyterio.se"
     },
     {
       "datum": "2026-10-07",
