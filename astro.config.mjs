@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
+import vercel from '@astrojs/vercel';
 import fs from 'node:fs';
 
 // Sajten är helt statisk. Allt byggs från data/organisationer/*.yaml.
@@ -25,6 +26,11 @@ export default defineConfig({
   site,
   base,
   output: 'static',
+  adapter: vercel({
+    webAnalytics: {
+      enabled: true,
+    },
+  }),
   trailingSlash: 'ignore',
   compressHTML: true,
   build: {
