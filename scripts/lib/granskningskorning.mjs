@@ -12,6 +12,8 @@
 //     skulle bli om pull requesten slogs ihop nu. Sammanslagningen räknas ut med git självt, se
 //     scripts/lib/granskningsgit.mjs. Listan visar alltså det som faktiskt går in, också när main
 //     har flyttat sig sedan grenen skapades. Läget sätts på den commit som slogs ihop i uträkningen.
+//     Går det inte att säga säkert vad som går in blir läget rött: vid en konflikt, när grenens
+//     commits ger något annat en och en än tillsammans, och när main har ändrat samma organisation.
 //   - Vilka punkter som är avbockade står i flödets egen kommentar.
 //   - Att en människa har gått igenom listan intygas i en egen kommentar, skriven av någon med
 //     skrivrätt, aldrig redigerad och nyare än listans senaste ändring. En bot kan kryssa i en
@@ -22,7 +24,7 @@
 
 import { tolkaYaml } from './organisationer.mjs';
 import { GitFel } from './granskningsgit.mjs';
-import { arOrganisationsfil, iOrganisationsmappen, arRegelfil, version, lista, avlas, utfall, behoverRitasOm, arIntyg, MARKOR, KONTEXT, MAPP, MAX_ORGANISATIONER } from './granskning.mjs';
+import { arOrganisationsfil, iOrganisationsmappen, arRegelfil, ren, version, lista, avlas, utfall, behoverRitasOm, arIntyg, MARKOR, KONTEXT, MAPP, MAX_ORGANISATIONER } from './granskning.mjs';
 
 /** Ett svar från GitHub som inte var 2xx. `status` är svarskoden. */
 export class ApiFel extends Error {
@@ -80,7 +82,7 @@ export function jamforTrad(bas, ihop, huvud = ihop) {
     } else if (!arOrganisationsfil(sokvag)) ogiltiga.push({ sokvag, skal: 'filnamnet är inte ett id med gemener, siffror och bindestreck följt av .yaml' });
     else if (h.type !== 'blob' || !VANLIG_FIL.has(h.mode)) ogiltiga.push({ sokvag, skal: 'är inte en vanlig fil, till exempel en symbolisk länk' });
     else if (!(h.size <= MAX_FILSTORLEK)) ogiltiga.push({ sokvag, skal: 'filen är för stor för att vara en organisation' });
-    // Skiljer sig filen från grenens egen har main ändrat i den också, och git har slagit ihop de två.
+    // Skiljer sig filen från grenens egen har main ändrat i den också, och git har slagit ihop de två. Se `kor`.
     else filer.push({ sokvag, status: g ? 'modified' : 'added', blob: h.sha, basblob: g?.type === 'blob' ? g.sha : null, blandad: !samma(h, egen.get(sokvag)) });
   }
   // Mappen själv, eller mappen den ligger i, kan vara utbytt mot en länk, en fil eller ett annat
@@ -245,7 +247,14 @@ export async function kor({ api, git, repo, nummer, torrt = false, korning = nul
       const oforandrad = async () => torrt || (await spets(api, repo, gren)) === bas;
       await git.hamta([bas, sha]);
       const ihop = await git.slaIhop(bas, sha);
-      const hinder = ihop.konflikt ? 'Grenen går inte att slå ihop med main utan konflikter. Lös dem, så räknas listan om.' : await hinderIHistoriken(git, bas, sha, ihop.trad);
+      let hinder = ihop.konflikt ? 'Grenen går inte att slå ihop med main utan konflikter. Lös dem, så räknas listan om.' : await hinderIHistoriken(git, bas, sha, ihop.trad);
+      const { filer, ogiltiga, regelfiler } = hinder ? {} : jamforTrad(await git.rader(bas), await git.rader(ihop.trad), await git.rader(sha));
+      // Har main ändrat i samma fil slår git ihop de två ändringarna. Hur den filen blir beror på
+      // vem som slår ihop: två sätt att räkna kan båda gå igenom utan konflikt och ändå ge olika
+      // text. Den får därför inte granskas här. När grenen har tagit in main är filen i grenen
+      // den som går in, och det är den som pull requesten visar.
+      const blandad = filer?.find((f) => f.blandad);
+      if (blandad) hinder = `Main har också ändrat ${ren(blandad.sokvag.split('/').pop(), 40)}. Ta in main i grenen, så räknas listan om.`;
       if (hinder) {
         logg(`Går inte att granska: ${hinder}`);
         const resultat = { state: 'failure', description: hinder };
@@ -257,7 +266,6 @@ export async function kor({ api, git, repo, nummer, torrt = false, korning = nul
         await skrivLage(api, repo, sha, { ...resultat, target_url: pr.html_url });
         return { resultat, kommentar: '', lage: null };
       }
-      const { filer, ogiltiga, regelfiler } = jamforTrad(await git.rader(bas), await git.rader(ihop.trad), await git.rader(sha));
       const lage = { ogiltiga, regelfiler };
 
       const kommentarer = await allaKommentarer(api, repo, nummer);

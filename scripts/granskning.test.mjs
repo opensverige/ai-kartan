@@ -80,15 +80,6 @@ test('ett byte av id syns som en borttagen och en ny, och punkten för borttagni
   assert.match(kropp, /samma organisation kvar under ett nytt id/);
 });
 
-test('har main också ändrat i filen sägs det, och listan ritas om när det ändras', () => {
-  const egen = [fil('ett', 'A', 'modified')];
-  const blandad = [{ ...egen[0], blandad: true }];
-  assert.equal(lista(egen, HAR).includes('Main har också ändrat'), false);
-  assert.match(lista(blandad, HAR), /Main har också ändrat i den här filen/);
-  assert.equal(behoverRitasOm(blandad, {}, lista(egen, HAR)), true);
-  assert.equal(behoverRitasOm(blandad, {}, lista(blandad, HAR)), false);
-});
-
 test('är mappen själv utbytt säger läget det, inte att en fil ligger fel', () => {
   const ogiltiga = [{ sokvag: 'data/organisationer', skal: 'är inte längre en vanlig mapp, utan till exempel en symbolisk länk', mapp: true }];
   const u = utfall(avlas([], lista([], { ...HAR, ogiltiga }), { ogiltiga }));

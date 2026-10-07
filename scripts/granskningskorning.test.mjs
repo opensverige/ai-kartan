@@ -638,23 +638,47 @@ test('en commit i main som inte rör organisationen ändrar varken bockar eller 
   assert.deepEqual(skrivningar(g.v).slice(fore), []);
 });
 
-test('ändrar main samma organisation efter intyget visas det sammanslagna, och intyget gäller inte', async () => {
+test('ändrar main samma organisation efter intyget måste grenen ta in main innan något kan bli grönt', async () => {
   const post = (namn, webb) => `id: exempel\nname:\n  value: ${namn}\ntype:\n  value: bolag\nrad1: a\nrad2: b\nrad3: c\nrad4: d\nrad5: e\nwebsite: ${webb}\n`;
-  const g = github({ bas: [README, org('exempel', { text: post('Exempel AB', 'https://exempel.se') })], huvud: [README, org('exempel', { text: post('Nytt namn AB', 'https://exempel.se') })], ratt: RATT });
+  const egen = post('Nytt namn AB', 'https://exempel.se');
+  const g = github({ bas: [README, org('exempel', { text: post('Exempel AB', 'https://exempel.se') })], huvud: [README, org('exempel', { text: egen })], ratt: RATT });
   await kor(grund(g));
   bocka(g.v);
   g.v.kommentera('granskare', '/granskad');
   await kor(grund(g));
   assert.equal(sist(g.v).state, 'success');
-  // Main ändrar webbplatsen i samma fil. Git slår ihop de två ändringarna utan konflikt, och
-  // filen som går in är då en som ingen har sett.
+  const kropp = listan(g.v).body;
+  // Main ändrar webbplatsen i samma fil. Git slår ihop de två ändringarna utan konflikt, men
+  // filen som då går in har ingen sett, och hur den blir beror på vem som slår ihop.
   g.v.main([README, org('exempel', { text: post('Exempel AB', 'https://annan.example') })]);
+  await kor(grund(g));
+  assert.equal(sist(g.v).state, 'failure');
+  assert.match(sist(g.v).description, /Main har också ändrat/);
+  assert.ok(sist(g.v).description.length <= 140);
+  assert.equal(listan(g.v).body, kropp);
+  // När grenen har tagit in main är filen i grenen den som går in. Då visas den, och bockarna börjar om.
+  g.v.push([README, org('exempel', { text: post('Nytt namn AB', 'https://annan.example') })], [g.v.huvud, g.v.bas]);
   await kor(grund(g));
   assert.equal(sist(g.v).state, 'pending');
   assert.match(sist(g.v).description, new RegExp(`0 av ${PUNKTER.andrad.length}`));
   assert.match(listan(g.v).body, /Nytt namn AB/);
   assert.match(listan(g.v).body, /annan\.example/);
-  assert.match(listan(g.v).body, /efter sammanslagningen med main/);
+});
+
+test('en sammanslagning som gömmer en ändring utanför mappen stoppas också', async () => {
+  // Första commiten flyttar ut organisationen ur mappen och skriver om den. Sammanslagningen
+  // med main ställer för hand tillbaka den gamla texten, utanför mappen där ingen prövning ser
+  // det. Sista commiten flyttar tillbaka filen. Slutresultatet är main oförändrad, men
+  // uppspelade en och en ger de vanliga commiterna den omskrivna texten.
+  const elak = org('exempel', { text: yaml('exempel', 'https://elak.example') });
+  const dok = { namn: 'docs/a.md', text: 'a' };
+  const g = github({ bas: [README, org('exempel')], huvud: [README, { namn: 'utkast-exempel.yaml', text: elak.text }] });
+  g.v.main([README, org('exempel'), dok]);
+  g.v.push([README, dok, { namn: 'utkast-exempel.yaml', text: yaml('exempel') }], [g.v.huvud, g.v.bas]);
+  g.v.push([README, dok, org('exempel')]);
+  await kor(grund(g));
+  assert.equal(sist(g.v).state, 'failure');
+  assert.match(sist(g.v).description, /en och en/);
 });
 
 test('en konflikt mot main gör kontrollen röd tills den är löst', async () => {

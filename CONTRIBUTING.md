@@ -84,8 +84,11 @@ Det här gäller:
 - Bara en människa med skrivrätt i repot kan intyga. Kommentaren ska vara ny och skriven av dig själv: en kommentar som har redigerats, som har dolts eller som en app har skrivit i ditt namn räknas inte.
 - Listan under varje organisation är ett utdrag ur filen. Anteckningar och en del fält visas inte där. Läs hela filen i pull requesten innan du intygar.
 - En bock gäller filen som den såg ut när du bockade. Ändras filen nollställs organisationens punkter, och intyget gäller inte längre.
-- Listan visar det som går in i `main` om pull requesten slås ihop nu. När `main` får en ny commit blir ett grönt läge gult och räknas om av sig självt inom någon minut. Har `main` ändrat samma organisation visar listan filen som den blir efter sammanslagningen, punkterna nollställs och ett nytt intyg behövs.
-- Läget blir rött när listan inte går att lita på. Det gäller när grenen har konflikter mot `main`, och när grenens commits ger ett annat resultat en och en än tillsammans. Det senare spelar roll för Rebase and merge, som för in varje commit för sig. Lös konflikten, eller slå ihop grenens commits till en, så räknas listan om.
+- Listan visar det som går in i `main` om pull requesten slås ihop nu. När `main` får en ny commit blir ett grönt läge gult och räknas om av sig självt inom någon minut.
+- Läget blir rött när det inte går att säga säkert vad som går in. Läget säger vilket av tre skäl det är:
+  - Grenen har konflikter mot `main`. Lös dem.
+  - `main` har ändrat samma organisation som grenen. Ta in `main` i grenen (Update branch, eller `git merge main`). Då är filen i grenen den som går in, punkterna börjar om och ett nytt intyg behövs.
+  - Grenens commits ger ett annat resultat en och en än tillsammans. Det spelar roll för Rebase and merge, som för in varje commit för sig. Slå ihop grenens commits till en.
 - Ändras listan efter ditt intyg, till exempel för att någon bockar ur en punkt, behövs ett nytt `/granskad`. Dölj varken listan eller intyget: en dold kommentar räknas som ändrad.
 - Läget sitter på pull requestens senaste commit. Två pull requests med samma senaste commit delar därför läge och skriver över varandras. Stäng dubbletten och kör om flödet på den riktiga.
 - AI får hjälpa dig att kontrollera att ett belägg visar det som påstås, men listan och intyget är dina. En bot kan kryssa i en ruta, och därför räcker inte rutorna: det är din kommentar som räknas. En agent som arbetar inloggad som du går inte att skilja från dig. Den regeln vilar därför på dig.

@@ -29,7 +29,7 @@ export const INTYG = '/granskad';
 /** Står i en kommentar som ber om uppdelning i stället för att visa en lista. */
 const DELA = '<!-- granskning-dela-upp -->';
 /** Höjs när listans utseende ändras, så att öppna pull requests får den nya listan. */
-const RITVERSION = 5;
+const RITVERSION = 6;
 
 // Punkterna för en ny organisation är granskningslistan i kriterier.md, ord för ord. Ett test
 // jämför dem. Sista punkten där, att valideringen är grön, prövas av CI och är ingen ruta här.
@@ -197,8 +197,7 @@ export function forvantade(filer) {
  */
 export function avtryck(filer, { ogiltiga = [], regelfiler = false } = {}) {
   const delar = forMangaFiler(filer) ? ['för många', filer.length] : forvantade(filer);
-  const blandade = filer.filter((f) => f.blandad).map(idFor);
-  return sha256(JSON.stringify([RITVERSION, delar, ogiltiga.map((o) => [o.sokvag, o.skal]), regelfiler, blandade])).slice(0, 32);
+  return sha256(JSON.stringify([RITVERSION, delar, ogiltiga.map((o) => [o.sokvag, o.skal]), regelfiler])).slice(0, 32);
 }
 
 const avtrycksrad = (filer, lage) => `<!-- g-avtryck:${avtryck(filer, lage)} -->`;
@@ -255,8 +254,7 @@ const REGELRAD = '**Pull requesten ändrar också regelfiler**: kriterier, schem
 /**
  * Kommentaren för en pull request. `filer` är organisationsfilerna som ändras, med `sokvag`,
  * `status` (added, modified eller removed), `version` (se `version`), `data` (filens innehåll,
- * eller null) och `blandad` (sant när main också har ändrat i filen). En punkt som var avbockad
- * i `tidigare` står kvar avbockad om filen är oförändrad.
+ * eller null). En punkt som var avbockad i `tidigare` står kvar avbockad om filen är oförändrad.
  */
 export function lista(filer, { repo, nummer = null, ogiltiga = [], regelfiler = false, maxByte = MAX_BYTE }, tidigare = '') {
   const lage = { ogiltiga, regelfiler };
@@ -289,10 +287,7 @@ export function lista(filer, { repo, nummer = null, ogiltiga = [], regelfiler = 
       // Länken går till pull requestens egen vy av filen. Den visar alltid den version som gäller,
       // och listan behöver då inte skrivas om för en commit som inte rör filen.
       const vy = nummer ? `[${fil.status === 'modified' ? 'Ändringen' : 'Filen'} i pull requesten](https://github.com/${repo}/pull/${nummer}/files#diff-${sha256(fil.sokvag)}). ` : '';
-      ut.push(`${vy}Det här står i filen. Ingen maskin har öppnat källorna åt dig.`, '');
-      // Länken ovan visar grenens egen version. Den som går in i main är en annan när main också har ändrat filen.
-      if (fil.blandad) ut.push('**Main har också ändrat i den här filen.** Det som visas här är filen som den blir efter sammanslagningen med main, inte som den ser ut i grenen.', '');
-      ut.push(...underlag(fil), '');
+      ut.push(`${vy}Det här står i filen. Ingen maskin har öppnat källorna åt dig.`, '', ...underlag(fil), '');
     }
     for (const [nyckel, text] of punkterFor(fil)) {
       const m = markor(fil, nyckel);

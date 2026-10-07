@@ -4,7 +4,7 @@ Kodens och funktionernas historik. Dataändringar loggas separat och automatiskt
 
 ## 2026-10-08
 
-- Granskningen mot kriterierna tål fler sätt att slå ihop. Grenens commits spelas upp en och en, som Rebase and merge gör, och ger de ett annat resultat än en vanlig sammanslagning blir läget rött. När main ändras blir gröna lägen gula tills de är omräknade, också när en pull request med `[skip ci]` i rubriken slås ihop. Varje körning räknar om allt, så en körning som tränger undan en annan gör samma arbete.
+- Granskningen mot kriterierna tål fler sätt att slå ihop. Grenens commits spelas upp en och en, som Rebase and merge gör, och ger de ett annat resultat än en vanlig sammanslagning blir läget rött. Har main ändrat samma organisation som grenen måste grenen ta in main innan listan går att bocka av. När main ändras blir gröna lägen gula tills de är omräknade, också när en pull request med `[skip ci]` i rubriken slås ihop. Varje körning räknar om allt, så en körning som tränger undan en annan gör samma arbete.
 - Valideringen räknar dagens datum i svensk tid. Förut stoppades en post som daterats strax efter midnatt.
 
 ## 2026-10-07
