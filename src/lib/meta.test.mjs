@@ -3,7 +3,7 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { metabeskrivning, brodsmulor } from './meta.ts';
+import { metabeskrivning, brodsmulor, medVersion } from './meta.ts';
 
 test('en kort text lämnas som den är', () => {
   assert.equal(metabeskrivning('Bolag i Lund: Bygger språkmodeller.'), 'Bolag i Lund: Bygger språkmodeller.');
@@ -44,4 +44,17 @@ test('brödsmulor blir en BreadcrumbList med position och adress', () => {
     [2, 'Organisationer', 'https://karta.opensverige.se/organisationer'],
     [3, 'Lovable', 'https://karta.opensverige.se/organisation/lovable'],
   ]);
+});
+
+test('en bild får en version i adressen som följer innehållet', () => {
+  const gammal = new TextEncoder().encode('gammal bild');
+  const ny = new TextEncoder().encode('ny bild');
+  // Delningstjänster sparar bilden per adress. Byts bilden måste adressen bytas, annars visas den gamla.
+  assert.match(medVersion('/og-image.jpg', gammal), /^\/og-image\.jpg\?v=[0-9a-f]{8}$/);
+  assert.equal(medVersion('/og-image.jpg', gammal), medVersion('/og-image.jpg', gammal));
+  assert.notEqual(medVersion('/og-image.jpg', gammal), medVersion('/og-image.jpg', ny));
+});
+
+test('en bild som inte går att läsa behåller sin adress', () => {
+  assert.equal(medVersion('/og-image.jpg', null), '/og-image.jpg');
 });

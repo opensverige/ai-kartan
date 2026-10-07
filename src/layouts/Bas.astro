@@ -3,7 +3,11 @@ import '../styles/global.css';
 import Sidhuvud from '../components/Sidhuvud.astro';
 import Sidfot from '../components/Sidfot.astro';
 import Besoksrakning from '../components/Besoksrakning.astro';
+import fs from 'node:fs';
+import path from 'node:path';
 import { SAJT, absolutUrl, url } from '../lib/data';
+import { medVersion } from '../lib/meta';
+import { ROT } from '../../scripts/lib/organisationer.mjs';
 
 interface Props {
   titel: string;
@@ -23,7 +27,9 @@ interface Props {
 const { titel, beskrivning, stig, bild = '/og-image.jpg', noindex = false, bred = false, jsonLd, ogTyp = 'website', helTitel = false, app = false } = Astro.props;
 const fullTitel = helTitel ? titel : `${titel} | ${SAJT.namn}`;
 const kanonisk = absolutUrl(stig);
-const bildUrl = absolutUrl(bild);
+// Delningsbilden får en version ur sitt innehåll, så att en ny bild inte fastnar i någons cache.
+const bildfil = path.join(ROT, 'public', bild);
+const bildUrl = absolutUrl(medVersion(bild, fs.existsSync(bildfil) ? fs.readFileSync(bildfil) : null));
 // Besök räknas bara på den publika sajten. Lokalt, i förhandsvisningar och i andra byggen räknas inget.
 const raknaBesok = process.env.VERCEL_ENV === 'production';
 ---

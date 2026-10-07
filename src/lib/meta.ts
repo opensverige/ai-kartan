@@ -27,3 +27,18 @@ export function brodsmulor(steg: [string, string][]): Record<string, unknown> {
     itemListElement: steg.map(([name, item], i) => ({ '@type': 'ListItem', position: i + 1, name, item })),
   };
 }
+
+/**
+ * Adressen till en bild, med en version som räknas ur bildens innehåll. Delningstjänster som
+ * LinkedIn och Slack sparar bilden per adress, så en ny bild på samma adress syns aldrig.
+ * `innehall` är filens bytes, eller null om filen inte gick att läsa: då lämnas adressen orörd.
+ */
+export function medVersion(stig: string, innehall: Uint8Array | null): string {
+  if (!innehall) return stig;
+  let h = 2166136261;
+  for (const b of innehall) {
+    h ^= b;
+    h = Math.imul(h, 16777619) >>> 0;
+  }
+  return `${stig}?v=${h.toString(16).padStart(8, '0')}`;
+}

@@ -25,14 +25,14 @@ Skalning: illustrationen har inget jämnt rutnät, så den krymps med ytmedelvä
 granne. Färgerna multipliceras med alfakanalen före krympningen, annars drar de genomskinliga
 pixlarna in mörka kanter. Små ogenomskinliga ikoner skärps lätt efteråt.
 
-OG-bilderna (1200 x 630) ligger på kritvit botten #fbfaf7: handen till vänster mot nederkanten, rubriken i
-bläck #0f0e0b med ordet AI i mossgrönt, två mono-rader under (28 px, #5b5549), 60 px marginal till höger.
+OG-bilderna (1200 x 630) ska synas i ett flöde: en enda mättad färg över hela ytan, handen så stor att
+den går ut genom bildens kanter, och rubriken i gemener nere till höger. Systersajten AI-Infra gör samma
+sak i blått. Kartan är gul, så att de två tillsammans blir Sveriges färger.
 """
 
 import argparse
 import json
 import math
-import re
 import sys
 import tempfile
 import urllib.request
@@ -47,19 +47,24 @@ KALLA = Path(__file__).resolve().parent / "logotyp.png"
 ALFA_GRANS = 128       # täckning under den här räknas inte till motivet när dess ruta mäts
 HAND_ANDEL = 0.71      # så stor del av ikonutsnittets höjd är hand och nål; resten är handled och underarm
 SAKER_RADIE = 0.40     # maskbara ikoner: det viktiga ska ligga inom den här andelen av sidan från mitten
-OG_MOTIVBREDD = 440    # handens bredd i OG-bilderna (px)
+OG_MOTIVBREDD = 800    # motivets bredd i OG-bilderna (px). Större än bilden rymmer: handen ska gå ut genom kanterna
+OG_MOTIV_X = -64       # motivets vänsterkant. Negativt: handleden skärs av bildens vänsterkant
+OG_MOTIV_Y = -44       # motivets överkant. Negativt: fingertopparna skärs av bildens överkant
 
 KRITVIT = "#fbfaf7"
 MOSS = "#2d492d"
 BLACK = "#0f0e0b"      # rubrikens bläck, samma som --ink på sajten
-DAMPAD = "#5b5549"     # mono-raderna i OG-bilderna
+OG_BOTTEN = "#ffd60a"  # OG-bildernas botten: flaggans gula, uppskruvad
+OG_TEXT = BLACK        # rubriken i OG-bilderna
 OG_HOGERMARGINAL = 60  # inget i OG-bilderna får komma närmare högerkanten än så här (px)
+OG_NEDERMARGINAL = 62  # rubrikens sista baslinje ligger så här långt från nederkanten (px)
+OG_TEXTBREDD = 660     # bredaste rubrikraden får inte bli längre än så här (px), annars krockar den med handen
 
-# Rubriker och rad under dem i OG-bilderna.
-OG_SV = ("Alla som bygger", "AI i Sverige.")
-OG_EN = ("Everyone building", "AI in Sweden.")
-# Mono-raden är 935 px lång i 28 px och ryms inte bredvid logotypen, så den bryts vid punkten (som tas bort).
-OG_RAD = ("karta.opensverige.se", "källa och datum på varje uppgift")
+# Rubrikerna i OG-bilderna, i gemener som på AI-Infra. AI är ett namn och behåller versalerna.
+OG_SV = ("alla som bygger", "AI i Sverige.")
+OG_EN = ("everyone building", "AI in Sweden.")
+# Adressen, liten i övre högra hörnet.
+OG_ADRESS = "techembassy.se"
 
 TYPSNITT = {
     "BricolageGrotesque.ttf":
@@ -266,73 +271,46 @@ def rubrikfont(mapp, storlek):
         return ImageFont.truetype("arialbd.ttf", storlek), False
 
 
-def rita_rubrikrad(d, x, y, rad, font):
-    """En rubrikrad i bläck, men ordet AI i mossgrönt. Delarna placeras efter radens verkliga breddsteg."""
-    delar = re.split(r"(\bAI\b)", rad)
-    gjort = ""
-    for bit in delar:
-        if bit:
-            d.text((x + font.getlength(gjort), y), bit, font=font, fill=MOSS if bit == "AI" else BLACK, anchor="ls")
-            gjort += bit
-
-
-def og_bild(rader, font_rubrik, font_rad, motiv):
-    """1200 x 630 på kritvit botten: handen till vänster mot nederkanten, rubrik och mono-rader till höger."""
+def og_bild(rader, font_rubrik, font_adress, motiv):
+    """1200 x 630 i en mättad färg: handen stor från vänster, rubriken högerställd mot nederkanten."""
     B, H = 1200, 630
-    rand, glapp = 60, 48
-    ut = Image.new("RGBA", (B, H), hex_rgb(KRITVIT) + (255,))
+    ut = Image.new("RGBA", (B, H), hex_rgb(OG_BOTTEN) + (255,))
 
-    # Handen, vänsterkant `rand` från bildkanten. Armen går ut genom nederkanten.
+    # Handen är större än bilden. Fingertopparna, handleden och armen går ut genom kanterna, nålen pekar in.
     hel = hela_motivet(motiv)
     mw = OG_MOTIVBREDD
     mh = round(hel.height * mw / hel.width)
-    ut.alpha_composite(krymp(hel, (mw, mh)), (rand, H - mh))
+    lager = Image.new("RGBA", (B, H), (0, 0, 0, 0))
+    lager.paste(krymp(hel, (mw, mh)), (OG_MOTIV_X, OG_MOTIV_Y))
+    ut.alpha_composite(lager)
 
-    # Texten: rubrik och två mono-rader under den, centrerade som ett block efter bläckets ytterkanter.
-    text_x = rand + mw + glapp
+    # Rubriken: högerställd, sista raden på nedermarginalen.
     d = ImageDraw.Draw(ut)
-    radavstand = round(font_rubrik.size * 1.06)
-    monoavstand = 40
-    ytor, toppar, bottnar = [], [], []
-    for i, rad in enumerate(rader):
-        bb = font_rubrik.getbbox(rad, anchor="ls")
-        ytor.append(i * radavstand)
-        toppar.append(i * radavstand + bb[1])
-        bottnar.append(i * radavstand + bb[3])
-    mono_start = (len(rader) - 1) * radavstand + round(font_rubrik.size * 0.86)
-    monoytor = []
-    for i, rad in enumerate(OG_RAD):
-        bb = font_rad.getbbox(rad, anchor="ls")
-        monoytor.append(mono_start + i * monoavstand)
-        toppar.append(monoytor[-1] + bb[1])
-        bottnar.append(monoytor[-1] + bb[3])
-    start = round((H - (max(bottnar) - min(toppar))) / 2 - min(toppar))
-
-    for rad, y in zip(rader, ytor):
-        rita_rubrikrad(d, text_x, start + y, rad, font_rubrik)
-    for rad, y in zip(OG_RAD, monoytor):
-        d.text((text_x, start + y), rad, font=font_rad, fill=DAMPAD, anchor="ls")
-    return ut.convert("RGB"), text_x
+    hoger = B - OG_HOGERMARGINAL
+    radavstand = round(font_rubrik.size * 1.04)
+    for i, rad in enumerate(reversed(rader)):
+        d.text((hoger, H - OG_NEDERMARGINAL - i * radavstand), rad, font=font_rubrik, fill=OG_TEXT, anchor="rs")
+    d.text((hoger, 74), OG_ADRESS, font=font_adress, fill=OG_TEXT, anchor="rs")
+    return ut.convert("RGB")
 
 
 def skriv_og(motiv, typsnittsmapp, ut):
-    font_rad = ImageFont.truetype(str(typsnittsmapp / "JetBrainsMono-Regular.ttf"), 28)
-    hogergrans = 1200 - OG_HOGERMARGINAL
+    font_adress = ImageFont.truetype(str(typsnittsmapp / "JetBrainsMono-Regular.ttf"), 28)
     filer = []
     for rader, namn in ((OG_SV, "og-image.jpg"), (OG_EN, "og-image-en.jpg")):
-        # Största rubrikstorlek (högst 84 px) där bredaste raden ryms inom högermarginalen.
-        storlek = 84
+        # Största rubrikstorlek (högst 96 px) där bredaste raden ryms på sin yta.
+        storlek = 96
         while True:
             font, variabel = rubrikfont(typsnittsmapp, storlek)
-            bild, text_x = og_bild(rader, font, font_rad, motiv)
-            breddast = max(max(font.getlength(r) for r in rader), max(font_rad.getlength(r) for r in OG_RAD))
-            if text_x + breddast <= hogergrans or storlek <= 40:
+            breddast = max(font.getlength(r) for r in rader)
+            if breddast <= OG_TEXTBREDD or storlek <= 40:
                 break
             storlek -= 2
+        bild = og_bild(rader, font, font_adress, motiv)
         sokvag = ut / namn
-        bild.save(sokvag, format="JPEG", quality=88, subsampling=0, optimize=True)
+        bild.save(sokvag, format="JPEG", quality=90, subsampling=0, optimize=True)
         filer.append(sokvag)
-        print(f"  {namn}: rubrik {storlek} px, texten slutar {text_x + breddast:.0f} px från vänster (gräns {hogergrans})"
+        print(f"  {namn}: rubrik {storlek} px, bredaste raden {breddast:.0f} px (gräns {OG_TEXTBREDD})"
               + ("" if variabel else " (reservfont)"))
     return filer
 
