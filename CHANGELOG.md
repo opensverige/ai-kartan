@@ -4,6 +4,7 @@ Kodens och funktionernas historik. Dataändringar loggas separat och automatiskt
 
 ## 2026-10-07
 
+- Ny delningsbild: gul botten, handen med kartnålen stor från vänster och rubriken i gemener nere till höger, i samma stil som AI-Infra. Bilden bär adressen techembassy.se. Dess adress får en version ur innehållet, så att LinkedIn och andra tjänster hämtar den nya i stället för den de har sparat.
 - Sajten räknar besök, utan kakor. Räkningen görs med Vercel Web Analytics. Vercel driver redan sajten, så ingen ny part får veta vem som besöker den. Adressen räknas utan frågedel, så söktext och filter följer inte med, och den som har slagit på Do Not Track eller Global Privacy Control räknas inte. Integritetssidan säger vad som sparas. Förut stod det där att sajten inte hade någon besöksstatistik.
 - Myndigheternas och kommunernas ikoner ritas först när kartan är inzoomad till organisationerna. På översikten är en myndighet som är ensam på sin plats en prick som alla andra. Förut stod ikonen ensam bland gruppernas cirklar och drog blicken till sig.
 
