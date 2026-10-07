@@ -88,7 +88,14 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       </div>
 
       <noscript>
-        <style>{'.post--skelett { display: none; } .enkel-lista { margin: 16px 0; padding-left: 28px; line-height: 1.9; } .enkel-lista span { color: hsl(var(--ink-mute)); }'}</style>
+        {/* is:inline: annars lyfter Astro ut stilen ur noscript, och då gäller den inte. Sista regeln
+            fäller upp bladet i telefon, där beskedet annars ligger utanför skärmen utan att gå att nå. */}
+        <style is:inline>
+          .post--skelett { display: none; }
+          .enkel-lista { margin: 16px 0; padding-left: 28px; line-height: 1.9; }
+          .enkel-lista span { color: hsl(var(--ink-mute)); }
+          @media (max-width: 900px) { .app[data-lage='karta'] .panel { transform: none !important; } }
+        </style>
         <p class="lista__tom lista__tom--ram">
           <strong>Kartan och listan kräver JavaScript.</strong>
           <span>Alla organisationer finns också <a href={url('/plats')}>per kommun och län</a> och som <a href={url('/data')}>öppen data</a>.</span>
@@ -412,6 +419,12 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     function filtrera(skriv = true) {
       // Utan data finns inget att filtrera. Annars raderar första knapptrycket felmeddelandet.
       if (datafel) return;
+      // Datan har inte kommit än. Sökningen körs när den gör det. Listan står kvar med sina
+      // platshållare i stället för att säga att ingenting matchar.
+      if (!alla.length) {
+        if (skriv) skrivUrl(lasFilter());
+        return;
+      }
       saknadOrg = false;
       const f = lasFilter();
       // Sökningen tolkas en gång mot alla organisationer, oavsett vilka filter som är valda.
@@ -906,8 +919,10 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
 
     /* ---------- Karta ---------- */
 
+    // På en liggande telefon är kartytan låg. Då tar marginalerna annars så mycket att södra Sverige
+    // hamnar under bladet.
     const kartMarginal = (): Required<PaddingOptions> =>
-      smal.matches ? { top: 84, bottom: 96, left: 24, right: 24 } : { top: 96, bottom: 48, left: 48, right: 72 };
+      smal.matches ? (window.innerHeight < 520 ? { top: 16, bottom: 72, left: 24, right: 24 } : { top: 84, bottom: 96, left: 24, right: 24 }) : { top: 96, bottom: 48, left: 48, right: 72 };
 
     /** `el` och `ek` säger om organisationen är ensam i sitt län respektive sin kommun och då ritas som sig själv. */
     function tillGeoJson(poster: Post[], ensamILan?: Set<string>, ensamIKommun?: Set<string>): GeoJSON.FeatureCollection {
@@ -1170,6 +1185,17 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       if (medlemslage) sattMedlemsvy(false, true, false);
     }
 
+    /**
+     * Kartan kan utebli: webbläsaren saknar WebGL, kartbiblioteket eller kartunderlaget går inte att
+     * hämta. Då ska det stå, i stället för en tom yta. Listan och sökningen fungerar ändå.
+     */
+    function visaKartfel() {
+      const el = document.getElementById('karta');
+      if (!el || kartaKlar || el.querySelector('.karta__fel')) return;
+      el.insertAdjacentHTML('beforeend', '<p class="karta__fel" role="status"><strong>Kartan gick inte att visa.</strong> Listan och sökningen fungerar som vanligt.</p>');
+      app.classList.add('app--utan-karta');
+    }
+
     async function startaKarta() {
       const el = document.getElementById('karta');
       if (!el) return;
@@ -1185,13 +1211,6 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       const { Map: Karta, Popup: Tips, setWorkerUrl } = await import('maplibre-gl');
       // Workern serveras från sajten; se scripts/kopiera-maplibre-worker.mjs.
       if (app.dataset.worker) setWorkerUrl(new URL(app.dataset.worker, location.href).href);
-      // Kartan kan utebli: webbläsaren saknar WebGL, eller kartunderlaget går inte att nå.
-      // Då ska det stå, i stället för en tom yta. Listan och sökningen fungerar ändå.
-      const kartfel = () => {
-        if (kartaKlar || el.querySelector('.karta__fel')) return;
-        el.insertAdjacentHTML('beforeend', '<p class="karta__fel" role="status"><strong>Kartan gick inte att visa.</strong> Listan och sökningen fungerar som vanligt.</p>');
-        app.classList.add('app--utan-karta');
-      };
       try {
         karta = new Karta({
           container: el,
@@ -1199,21 +1218,29 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
           // Hela Sverige i bild oavsett skärmstorlek.
           bounds: SVERIGE,
           fitBoundsOptions: { padding: kartMarginal() },
-          minZoom: 3,
+          minZoom: 2.4,
           maxZoom: 14,
           attributionControl: { compact: true },
         });
       } catch {
         karta = null;
-        kartfel();
+        visaKartfel();
         return;
       }
       (window as unknown as { aiKartan?: unknown }).aiKartan = { karta };
       // Ett fel innan kartan är klar betyder att underlaget inte kom. Kommer det ändå tas beskedet bort.
-      karta.on('error', kartfel);
-      karta.on('load', () => {
+      karta.on('error', visaKartfel);
+      // Stilen räcker för att rita organisationerna. Händelsen load väntar på alla kartbrickor och
+      // typsnitt i vyn, och på ett svagt mobilnät kom prickarna då tiotals sekunder efter listan.
+      karta.once('style.load', () => {
         el.querySelector('.karta__fel')?.remove();
         app.classList.remove('app--utan-karta');
+        // Baskartan skriver namn på engelska och med kyrilliska tecken. Svenska namn först, där de finns.
+        // Görs innan något ritas, så att typsnitten för de andra skrivsätten aldrig hämtas.
+        for (const lager of karta!.getStyle().layers ?? []) {
+          if (lager.type !== 'symbol' || !JSON.stringify(lager.layout?.['text-field'] ?? '').includes('name')) continue;
+          karta!.setLayoutProperty(lager.id, 'text-field', ['coalesce', ['get', 'name:sv'], ['get', 'name:latin'], ['get', 'name']]);
+        }
         // Positron är kallgrå. Några ytor värms upp så att kartan hör ihop med gränssnittet.
         const varm: [string, 'background-color' | 'fill-color', string][] = [
           ['background', 'background-color', '#f2eee5'],
@@ -1733,7 +1760,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     lasUrl(start);
     kopplaSok();
     sattBlad('titt');
-    if (medKarta) void startaKarta();
+    if (medKarta) startaKarta().catch(visaKartfel);
     fetch(app.dataset.api!)
       .then((r) => {
         if (!r.ok) throw new Error(String(r.status));
@@ -1773,6 +1800,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         // Bara ett fel i hämtningen är ett datafel. Ett fel i visningen ska inte skylla på uppkopplingen.
         () => {
           datafel = true;
+          if (medKarta) sattBlad('oppen');
           antalEl.textContent = 'Ingen data';
           lista.innerHTML =
             '<li class="lista__tom"><strong>Kunde inte läsa datan.</strong><span>Kontrollera uppkopplingen och försök igen.</span>' +
@@ -3350,6 +3378,13 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
 
   /* Liggande telefon: ett blad i botten tar hela höjden. Kortet ligger vid sidan, som i bred vy. */
   @media (max-width: 900px) and (max-height: 520px) {
+    /* I en låg vy tog bannern och den klistrade foten hela detaljbladet, så att namnet inte syntes. */
+    .detalj__banner {
+      height: 56px;
+    }
+    .detalj__fot {
+      position: static;
+    }
     .medlemskort {
       top: 12px;
       right: auto;
