@@ -37,7 +37,17 @@ const IDAG = new Date().toISOString().slice(0, 10);
 const FORBJUDNA_NYCKLAR =
   /^(kontakt|kontaktperson|contact|e-?post|email|e_mail|mail|telefon|phone|tel|mobil|vd|ceo|cto|cfo|grundare|founder|founders|styrelse|board|anstallda|anställda|employees|headcount|team|personal|personnummer|agare|ägare|owner|owners|ledning|management)$/i;
 const EPOST = /[\w.+-]+@[\w-]+\.[\w.-]+/;
-const PERSONNUMMER = /(?<!\d)(?:19|20)?\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])[-+]?\d{4}(?!\d)/;
+// Dagen är 01–31, eller 61–91 i ett samordningsnummer. Juridiska personer har 20 eller mer där månaden står.
+const PERSONNUMMER = /(?<!\d)(?:19|20)?\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01]|6[1-9]|[78]\d|9[01])[-+ ]?\d{4}(?!\d)/;
+/** Sant för en organisations sida på LinkedIn. Adressen läses som webbläsaren läser den, så att "company/../in/namn" inte slinker igenom. */
+function arLinkedinOrganisation(adress) {
+  try {
+    const u = new URL(adress);
+    return /^https?:$/.test(u.protocol) && /(^|\.)linkedin\.com$/.test(u.hostname) && /^\/(company|school|showcase)\/[^/]/.test(u.pathname);
+  } catch {
+    return false;
+  }
+}
 const MARKNADSORD = /\b(ledande|världsledande|bäst[a]?|nummer ett|revolutionerande|unik[ta]?|banbrytande|marknadsledande)\b/i;
 const KALLTYP_FAR_BEKRAFTA = new Set(tax.kalltyper.filter((k) => k.may_confirm).map((k) => k.id));
 
@@ -133,6 +143,9 @@ function kontrolleraPost(post) {
     if (data.self_submitted !== true) e('enskild_firma: posten får bara skapas av personen själv. Sätt self_submitted: true.');
     if (data.coordinates) e('enskild_firma: exakta koordinater är inte tillåtna. Ta bort coordinates.');
   }
+  if (typeof data.links?.linkedin === 'string' && !arLinkedinOrganisation(data.links.linkedin)) {
+    e('links.linkedin: ska vara organisationens sida (https://www.linkedin.com/company/…), aldrig en personprofil.');
+  }
   for (const traff of allaNycklarOchStrangar(data)) {
     if (traff.typ === 'nyckel' && FORBJUDNA_NYCKLAR.test(traff.nyckel)) {
       e(`Personuppgifter: fältet "${traff.stig.join('.')}" finns inte i schemat och får inte läggas till.`);
@@ -162,10 +175,32 @@ function kontrolleraPost(post) {
   return { fel, varningar };
 }
 
+/** Webbplatsen i en form som går att jämföra: värd utan www och sökväg utan avslutande snedstreck. */
+function webbnyckel(adress) {
+  try {
+    const u = new URL(adress);
+    return `${u.hostname.toLowerCase().replace(/^www\./, '')}${u.pathname.replace(/\/+$/, '').toLowerCase()}${u.search}`;
+  } catch {
+    return String(adress).replace(/\/+$/, '').toLowerCase();
+  }
+}
+
+/** Vilka filer som delar på varje värde. Dubbletter söks bland alla poster, även när bara några valideras. */
+function filerPer(poster, nyckel) {
+  const ut = new Map();
+  for (const post of poster) {
+    const k = post.data ? nyckel(post.data) : null;
+    if (k) ut.set(k, [...(ut.get(k) ?? []), post.fil]);
+  }
+  return ut;
+}
+
 function huvud() {
   let poster = lasOrganisationer();
   // Jämförs mot alla poster, även när bara några filer valideras.
   const utanEget = utanEgetBelagg(poster.filter((p) => p.data).map((p) => p.data));
+  const idn = filerPer(poster, (d) => (typeof d.id === 'string' ? d.id : null));
+  const webbar = filerPer(poster, (d) => (typeof d.website === 'string' && d.website ? webbnyckel(d.website) : null));
   if (valdaFiler.length) {
     const valda = new Set(valdaFiler.map((f) => path.basename(f)));
     poster = poster.filter((p) => valda.has(p.fil));
@@ -176,26 +211,20 @@ function huvud() {
   }
 
   const resultat = [];
-  const idn = new Map();
-  const webbar = new Map();
   let antalFel = 0;
   let antalVarningar = 0;
 
   for (const post of poster) {
     const r = kontrolleraPost(post);
     const id = post.data?.id;
-    if (id) {
-      if (idn.has(id)) r.fel.push(`id "${id}" används redan i ${idn.get(id)}.`);
-      idn.set(id, post.fil);
-    }
+    const sammaId = (typeof id === 'string' ? (idn.get(id) ?? []) : []).filter((f) => f !== post.fil);
+    if (sammaId.length) r.fel.push(`id "${id}" används redan i ${sammaId[0]}.`);
     if (utanEget.has(id)) {
       r.varningar.push(`evidence: inget eget belägg. Alla länkar används också av ${utanEget.get(id).join(', ')}. Lägg till en länk som visar organisationens eget arbete.`);
     }
-    const webb = post.data?.website?.replace(/\/+$/, '').toLowerCase();
-    if (webb) {
-      if (webbar.has(webb)) r.fel.push(`website ${webb} används redan i ${webbar.get(webb)}. En organisation, en post.`);
-      webbar.set(webb, post.fil);
-    }
+    const webb = typeof post.data?.website === 'string' && post.data.website ? webbnyckel(post.data.website) : null;
+    const sammaWebb = (webb ? (webbar.get(webb) ?? []) : []).filter((f) => f !== post.fil);
+    if (sammaWebb.length) r.fel.push(`website ${webb} används redan i ${sammaWebb[0]}. En organisation, en post.`);
     antalFel += r.fel.length;
     antalVarningar += r.varningar.length;
     resultat.push({ fil: post.fil, id, ...r });
