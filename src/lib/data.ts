@@ -350,6 +350,9 @@ export function absolutUrl(stig: string): string {
   return `${site}${url(stig)}`;
 }
 
+/** Så många rader visar sidan Ändringar. Äldre dagar finns bara i JSON, och dit ska flödet då länka. */
+export const ANDRINGAR_PA_SIDAN = 600;
+
 /** Kompakt post för kartan och listan i webbläsaren. */
 export function tillKartpost(o: Org) {
   return {

@@ -78,7 +78,7 @@ const citat = `OpenSverige AI-kartan, ”${org.name.value}”, hämtad ${idag}, 
       <p class="org__beskrivning">{org.description.value} <StatusMarke status={org.description.status} kort /></p>
       <p class="rad">
         <a class="knapp knapp--ghost knapp--liten" href={org.website} rel="noopener">{org.website.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}</a>
-        {org.h.position && <a class="knapp knapp--ghost knapp--liten ej-utskrift" href={url(`/?org=${org.id}`)}>Visa på kartan</a>}
+        {org.h.position && <a class="knapp knapp--ghost knapp--liten ej-utskrift" href={url(`/?org=${org.id}#karta`)}>Visa på kartan</a>}
         {org.links?.github && <a class="knapp knapp--ghost knapp--liten" href={org.links.github} rel="noopener">GitHub</a>}
         {org.links?.huggingface && <a class="knapp knapp--ghost knapp--liten" href={org.links.huggingface} rel="noopener">Hugging Face</a>}
         {org.links?.linkedin && <a class="knapp knapp--ghost knapp--liten" href={org.links.linkedin} rel="noopener">LinkedIn</a>}

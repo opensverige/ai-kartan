@@ -538,3 +538,15 @@ body.app-sida .huvud {
     margin-top: 32px;
   }
 }
+
+/* Ett ankare ska landa under det klistrade sidhuvudet, inte bakom det. Fällbara avsnitt rullas
+   fram av skriptet i Sida.astro och behöver samma marginal. */
+:target,
+details {
+  scroll-margin-top: calc(var(--huvud-h) + 16px);
+}
+
+/* En bred tabell rullar i sin egen ram. Annars går hela sidan att dra i sidled på en telefon. */
+.tabellram {
+  overflow-x: auto;
+}

@@ -69,6 +69,8 @@ const raknaBesok = process.env.VERCEL_ENV === 'production';
   </head>
   <body class:list={[{ 'app-sida': app }]}>
     <a class="hoppa visuellt-dold" href="#innehall">Hoppa till innehållet</a>
+    {/* På kartsidan ligger filtren efter alla organisationskort i tabbordningen. */}
+    {app && <a class="hoppa visuellt-dold" href="#filter">Hoppa till filtren</a>}
     <Sidhuvud />
     <main id="innehall" class:list={['huvud', { 'huvud--bred': bred }]}>
       <slot />

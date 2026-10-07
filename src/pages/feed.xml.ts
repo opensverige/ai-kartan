@@ -1,7 +1,10 @@
 import type { APIRoute } from 'astro';
-import { hamtaData, absolutUrl, SAJT } from '../lib/data';
+import { hamtaData, absolutUrl, SAJT, ANDRINGAR_PA_SIDAN } from '../lib/data';
 
 const esc = (s: unknown) => String(s ?? '').replace(/[<>&"']/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&#39;' })[c]!);
+
+/** Så många rader visas per dag. Resten nås genom länken till dagen. */
+const MAX_RADER = 200;
 
 export const GET: APIRoute = () => {
   const d = hamtaData();
@@ -10,21 +13,34 @@ export const GET: APIRoute = () => {
     if (!perDag.has(r.datum)) perDag.set(r.datum, []);
     perDag.get(r.datum)!.push(r);
   }
-  const dagar = [...perDag.keys()].sort().reverse().slice(0, 60);
+  const allaDagar = [...perDag.keys()].sort().reverse();
+  const dagar = allaDagar.slice(0, 60);
+  // Sidan Ändringar visar dagar tills ett visst antal rader är visade. En äldre dag har inget
+  // ankare där, och då leder länken till hela historiken i stället.
+  const paSidan = new Set<string>();
+  let visade = 0;
+  for (const dag of allaDagar) {
+    if (visade >= ANDRINGAR_PA_SIDAN) break;
+    paSidan.add(dag);
+    visade += perDag.get(dag)!.length;
+  }
+  const lankTill = (dag: string) => absolutUrl(paSidan.has(dag) ? `/andringar#${dag}` : '/api/andringar.json');
   const uppdaterad = dagar[0] ? `${dagar[0]}T12:00:00Z` : `${d.byggd}T00:00:00Z`;
   const poster = dagar
     .map((dag) => {
       const rader = perDag.get(dag)!;
       const lista = rader
-        .slice(0, 200)
+        .slice(0, MAX_RADER)
         .map((r) => `<li><a href="${esc(absolutUrl(`/organisation/${r.id}`))}">${esc(r.namn)}</a>: ${esc(r.falt)} ${esc(r.andring)}${r.nytt !== null && r.nytt !== undefined && r.falt !== 'hela posten' ? ` → ${esc(typeof r.nytt === 'object' ? JSON.stringify(r.nytt) : r.nytt)}` : ''}</li>`)
         .join('');
+      // Kapas listan sägs det, så att ingen tror att flödet visar allt.
+      const resten = rader.length > MAX_RADER ? `<p>Och ${rader.length - MAX_RADER} till. <a href="${esc(lankTill(dag))}">Se alla ändringar den dagen.</a></p>` : '';
       return `<entry>
   <title>${esc(`Ändringar ${dag}: ${rader.length} ${rader.length === 1 ? 'uppgift' : 'uppgifter'}`)}</title>
   <id>${esc(absolutUrl(`/andringar#${dag}`))}</id>
-  <link href="${esc(absolutUrl(`/andringar#${dag}`))}"/>
+  <link href="${esc(lankTill(dag))}"/>
   <updated>${dag}T12:00:00Z</updated>
-  <content type="html">${esc(`<ul>${lista}</ul>`)}</content>
+  <content type="html">${esc(`<ul>${lista}</ul>${resten}`)}</content>
 </entry>`;
     })
     .join('\n');

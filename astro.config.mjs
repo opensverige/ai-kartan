@@ -42,7 +42,10 @@ export default defineConfig({
       serialize(item) {
         const id = item.url.match(/\/organisation\/([^/]+)\/?$/)?.[1];
         const datum = id ? andrad.get(id) : DATASIDA.test(item.url) ? senastAndrad : undefined;
-        return datum ? { ...item, lastmod: new Date(datum).toISOString() } : item;
+        // Sidorna nås utan avslutande snedstreck, och det är den adressen som står i canonical.
+        // Med snedstreck svarar varje adress i sitemappen med en vidarepekning.
+        const adress = item.url.replace(/^(https?:\/\/[^/]+\/.+?)\/+$/, '$1');
+        return { ...item, url: adress, ...(datum ? { lastmod: new Date(datum).toISOString() } : {}) };
       },
     }),
   ],

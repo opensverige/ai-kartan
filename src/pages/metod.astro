@@ -2,6 +2,7 @@
 import Sida from '../layouts/Sida.astro';
 import StatusMarke from '../components/StatusMarke.astro';
 import { hamtaData, url, formateraDatum, SAJT } from '../lib/data';
+import { talord } from '../lib/text';
 
 const d = hamtaData();
 const s = d.statistik;
@@ -17,7 +18,8 @@ const s = d.statistik;
   <p class="meta">dataset {d.byggd} · {s.antal} organisationer · senast verifierad {formateraDatum(s.senast_verifierad)} · {s.antal_over_180_dagar} poster över 180 dagar utan omkontroll</p>
 
   <h2 id="status">Statusdisciplin</h2>
-  <p>Varje fält, inte varje post, har en av fyra statusar. Statusen säger var uppgiften kommer ifrån, inte hur bra organisationen är.</p>
+  <p>Varje fält, inte varje post, har en av {talord(d.taxonomi.status.length)} statusar. Statusen säger var uppgiften kommer ifrån, inte hur bra organisationen är.</p>
+  <div class="tabellram">
   <table class="tabell">
     <thead><tr><th>Status</th><th>Betyder</th></tr></thead>
     <tbody>
@@ -26,10 +28,12 @@ const s = d.statistik;
       ))}
     </tbody>
   </table>
+  </div>
   <p>Vi ändrar aldrig status på begäran. Men vi läser gärna bevis: publicera dokumentet på en publik adress och skicka länken i ett <a href={`${SAJT.repo}/issues/new/choose`} rel="noopener">ärende</a> eller i <a href={SAJT.discord} rel="noopener">Discord</a>.</p>
 
   <h2 id="kallor">Källtyper och vad de får bekräfta</h2>
   <p>Organisationens egen webbplats, egna dokument och eget bidrag ger alltid <em>egen uppgift</em>. Bara register, myndigheter, oberoende tredje part och akademiska källor kan ge <em>bekräftad</em>. Regeln ligger i koden och stoppar en pull request som bryter mot den.</p>
+  <div class="tabellram">
   <table class="tabell">
     <thead><tr><th>Källtyp</th><th>Exempel</th><th>Kan ge bekräftad</th></tr></thead>
     <tbody>
@@ -38,6 +42,7 @@ const s = d.statistik;
       ))}
     </tbody>
   </table>
+  </div>
 
   <h2 id="kontroll">Hur en uppgift kontrolleras</h2>
   <ol>

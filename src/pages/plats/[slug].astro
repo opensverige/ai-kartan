@@ -3,6 +3,7 @@ import Bas from '../../layouts/Bas.astro';
 import OrgKort from '../../components/OrgKort.astro';
 import { hamtaData, url, absolutUrl } from '../../lib/data';
 import { brodsmulor } from '../../lib/meta';
+import { antal, typrad } from '../../lib/text';
 import type { Plats } from '../../lib/data';
 
 export function getStaticPaths() {
@@ -18,7 +19,8 @@ const perTyp = Object.entries(
   plats.organisationer.reduce<Record<string, number>>((acc, o) => ((acc[o.type.value] = (acc[o.type.value] ?? 0) + 1), acc), {}),
 ).sort((a, b) => b[1] - a[1]);
 const titel = `AI i ${plats.namn}`;
-const beskrivning = `${n} ${n === 1 ? 'organisation' : 'organisationer'} som bygger AI med säte i ${plats.namn} kommun, ${plats.lan_namn}. Med källa och datum på varje uppgift.`;
+// Kommunens namn står utan ordet kommun: det böjs olika för olika kommuner (Stockholms, Falu, Umeå).
+const beskrivning = `${antal(n, 'organisation', 'organisationer')} som bygger AI med säte i ${plats.namn}, ${plats.lan_namn}. Med källa och datum på varje uppgift.`;
 const samling = {
   '@context': 'https://schema.org',
   '@type': 'CollectionPage',
@@ -50,7 +52,7 @@ const jsonLd = [
     <p class="kicker mt-2">Kommun · {plats.lan_namn}</p>
     <h1>AI i {plats.namn}</h1>
     <p class="ingress">
-      {n} {n === 1 ? 'organisation' : 'organisationer'} med säte i {plats.namn} kommun bygger AI: {perTyp.map(([t, c], i) => `${c} ${(d.etikett.typer.get(t)?.plural ?? t).toLowerCase()}${i < perTyp.length - 1 ? ', ' : '.'}`).join('')}
+      {antal(n, 'organisation', 'organisationer')} med säte i {plats.namn} bygger AI: {typrad(perTyp, (id) => d.etikett.typer.get(id))}.
       Kartan visar kommunen, aldrig en gatuadress.
     </p>
     <p class="rad">

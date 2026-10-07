@@ -4,7 +4,8 @@
 // Sökfältet ligger i sidhuvudet (Sidhuvud.astro) och kopplas in härifrån.
 import 'maplibre-gl/dist/maplibre-gl.css';
 import Filterrad from './Filterrad.astro';
-import { hamtaData, typikoner, url, formateraDatum, SAJT } from '../lib/data';
+import { hamtaData, tillKartpost, typikoner, url, formateraDatum, SAJT } from '../lib/data';
+import { medVersion } from '../lib/meta';
 import { ikon } from '../lib/ikoner';
 import { medlemsvy, type Medlemsdata } from '../lib/medlemmar';
 import medlemsdata from '../../data/gemenskap/regioner.json';
@@ -15,6 +16,9 @@ interface Props {
 const { lage = 'karta' } = Astro.props;
 const d = hamtaData();
 const s = d.statistik;
+// Sidan hämtas alltid färsk, men kartdatan får ligga en timme i webbläsaren. Adressen bär därför en
+// version ur innehållet, så att en återkommande besökare aldrig får ny sida med gammal lista.
+const kartdata = medVersion(url('/api/karta.json'), new TextEncoder().encode(JSON.stringify(d.organisationer.map(tillKartpost))));
 const etiketter = {
   typer: Object.fromEntries(d.taxonomi.typer.map((t) => [t.id, t.label])),
   erbjuder: Object.fromEntries(d.taxonomi.erbjuder.map((t) => [t.id, t.label])),
@@ -30,7 +34,7 @@ const kraftan = url('/ikoner/opensverige.png');
 const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 100);
 ---
 
-<div class="app" data-lage={lage} data-api={url('/api/karta.json')} data-orgbas={url('/organisation/')} data-bidra={url('/bidra')} data-csv={url('/api/data.csv')} data-infra={SAJT.infra} data-infralogo={url('/ai-infra.png')} data-worker={url('/vendor/maplibre/maplibre-gl-worker.mjs')} data-kartbas={url('/')} data-kraftan={kraftan} data-metod={url('/metod')}>
+<div class="app" data-lage={lage} data-api={kartdata} data-orgbas={url('/organisation/')} data-bidra={url('/bidra')} data-csv={url('/api/data.csv')} data-infra={SAJT.infra} data-infralogo={url('/ai-infra.png')} data-worker={url('/vendor/maplibre/maplibre-gl-worker.mjs')} data-kartbas={url('/')} data-kraftan={kraftan} data-metod={url('/metod')}>
   {lage === 'lista' && <Filterrad />}
 
   <section class="panel" id="panel" data-blad="titt" aria-label="Organisationer">
@@ -84,7 +88,15 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       </div>
 
       <noscript>
-        <style>{'.post--skelett { display: none; } .enkel-lista { margin: 16px 0; padding-left: 28px; line-height: 1.9; } .enkel-lista span { color: hsl(var(--ink-mute)); }'}</style>
+        {/* is:inline: annars lyfter Astro ut stilen ur noscript, och då gäller den inte. Sista regeln
+            fäller upp bladet i telefon, där beskedet annars ligger utanför skärmen utan att gå att nå. */}
+        <style is:inline>
+          .post--skelett { display: none; }
+          .enkel-lista { margin: 16px 0; padding-left: 28px; line-height: 1.9; }
+          .enkel-lista span { color: hsl(var(--ink-mute)); }
+          @media (max-width: 900px) { .app[data-lage='karta'] .panel { transform: none !important; } }
+          @media (max-width: 900px) and (max-height: 520px) { .app[data-lage='karta'] .panel__intro { display: none; } }
+        </style>
         <p class="lista__tom lista__tom--ram">
           <strong>Kartan och listan kräver JavaScript.</strong>
           <span>Alla organisationer finns också <a href={url('/plats')}>per kommun och län</a> och som <a href={url('/data')}>öppen data</a>.</span>
@@ -201,7 +213,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
   import { urvalSomCsv } from '../lib/csv';
   import { grupperaPerPlats, platsEfterUtzoomning, platsmitt, zoomgranser, ZOOM_KOMMUN, ZOOM_POSTER, type Platsgrupp } from '../lib/platsgrupper';
   import { arPaskagg, cirkel, type Medlemsvy } from '../lib/medlemmar';
-  import { normalisera, tolka, traffar, tomtSvar, type Tolkning } from '../lib/sok';
+  import { normalisera, tolka, traffar, tomtSvar, finnsI, type Tolkning } from '../lib/sok';
 
   type Post = {
     id: string; n: string; t: string; o: string[]; a: string[]; k: string | null; kn: string | null;
@@ -274,7 +286,17 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     let urval: Rad[] = [];
     let platser: PlatsTraff[] = [];
     let kommun = '';
+    // Länet så som det stod i adressen, till skillnad från det som härleds ur en kommunkod.
+    let lanIAdress = '';
+    // Frågedelen i adressen när den senast lästes eller skrevs. Byts bara ankaret finns inget att läsa om.
+    let sokdel = location.search;
     let valdId = medKarta ? start.get('org') : null;
+    // Länken Visa på kartan slutar på #karta. I telefon lämnas bladet då nedfällt, så att platsen syns.
+    let kartanForst = location.hash === '#karta';
+    // Sant när adressen pekade på en organisation som inte finns. Då sägs det överst i listan.
+    let saknadOrg = false;
+    // Sant när datan inte gick att hämta. Då står felet kvar tills sidan laddas om.
+    let datafel = false;
     // Sant när detaljvyn har en egen post i webbläsarens historik, så att Bakåt stänger den.
     let detaljIHistorik = false;
     let karta: MapLibreMap | null = null;
@@ -364,17 +386,33 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       const adress = qs ? `${location.pathname}?${qs}` : location.pathname;
       if (nyPost) history.pushState(null, '', adress);
       else history.replaceState(null, '', adress);
+      sokdel = location.search;
     }
 
     function lasUrl(p: URLSearchParams) {
       const lista = (namn: string) => (p.get(namn) || '').split(',').filter(Boolean);
       kommun = p.get('kommun') || '';
+      lanIAdress = p.get('lan') || '';
       if (sokFalt) sokFalt.value = p.get('q') || '';
       sattVal('erbjuder', lista('erbjuder'));
       sattVal('typ', lista('typ'));
       sattVal('omrade', lista('omrade'));
       // En kommun ligger alltid i ett län; koden börjar med länets två siffror.
       sattVal('lan', [p.get('lan') || kommun.slice(0, 2)]);
+    }
+
+    /**
+     * Adressen kan bära en plats som inte finns, eller en kommun i fel län. Då gäller det som går
+     * att visa: hela landet, eller kommunens eget län. Körs när datan finns, för att veta vilka
+     * kommuner som har organisationer.
+     */
+    function rattaPlats() {
+      if (!alla.length) return;
+      // En kommun som inte finns säger ingenting om länet. Då gäller bara det län adressen själv angav.
+      const okand = kommun !== '' && !alla.some((o) => o.k === kommun);
+      if (okand) kommun = '';
+      const lan = kommun ? kommun.slice(0, 2) : okand ? lanIAdress : lasFilter().lan;
+      sattVal('lan', [lan && etiketter.lan[lan] ? lan : '']);
     }
 
     /** En sökning ska aldrig kunna slå ut listan. Går tolkningen fel söks orden som de står. */
@@ -388,6 +426,15 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     }
 
     function filtrera(skriv = true) {
+      // Utan data finns inget att filtrera. Annars raderar första knapptrycket felmeddelandet.
+      if (datafel) return;
+      // Datan har inte kommit än. Sökningen körs när den gör det. Listan står kvar med sina
+      // platshållare i stället för att säga att ingenting matchar.
+      if (!alla.length) {
+        if (skriv) skrivUrl(lasFilter());
+        return;
+      }
+      saknadOrg = false;
       const f = lasFilter();
       // Sökningen tolkas en gång mot alla organisationer, oavsett vilka filter som är valda.
       const tolkning = tolkaSakert(f.q);
@@ -408,13 +455,15 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     function uppdateraHuvud(f: Filter) {
       const n = urval.length;
       const utanPlats = urval.filter((o) => o.lat === null).length;
-      antalEl.textContent = `${n} ${plural(n)}`;
+      const plats = platsNamn(f);
+      // I listläget finns ingen rubrik som bär platsen. Då står den här, så att en vald kommun syns.
+      antalEl.textContent = `${n} ${plural(n)}${!rubrik && plats ? ` i ${plats}` : ''}`;
       visaUrval.textContent = `Visa ${n} ${plural(n)}`;
 
-      const plats = platsNamn(f);
       if (rubrik) rubrik.textContent = plats ?? stdRubrik;
       if (antalTal) antalTal.textContent = n === alla.length ? String(n) : `${n} av ${alla.length}`;
-      if (antalNot) antalNot.textContent = plural(n) + (medKarta && utanPlats ? ` · ${utanPlats} utan plats på kartan` : '');
+      // Ordet böjs efter talet närmast: "1 av 328 organisationer".
+      if (antalNot) antalNot.textContent = plural(n === alla.length ? n : alla.length) + (medKarta && utanPlats ? ` · ${utanPlats} utan plats på kartan` : '');
       if (ingress) {
         if (plats) ingress.textContent = `Organisationer som bygger AI i ${plats}. Varje uppgift har källa, datum och status.`;
         else ingress.innerHTML = stdIngress;
@@ -526,6 +575,8 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     }
 
     function renderLista() {
+      // Felmeddelandet står i listan. Det ska stå kvar även när sorteringen byts.
+      if (datafel) return;
       const frag = document.createDocumentFragment();
       const sorterade = sorterat();
       const f = lasFilter();
@@ -535,12 +586,18 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         li.innerHTML = infralank('AI-infrastruktur i detalj', 'Pris, datacenter och ägande per leverantör på AI-Infra', infra);
         frag.appendChild(li);
       }
-      // Den som söker jobb får träffar på dem som bygger AI för arbetsmarknaden. Då står det också
-      // att kartan inte har några annonser, och var de finns.
-      if (sorterade.length && tomtSvar(f.q)?.sort === 'jobb') {
+      // Den som söker jobb får träffar på dem som bygger AI för arbetsmarknaden, och den som söker
+      // pris får träff på "Enterprise". Då står det också vad kartan inte har, och var det finns.
+      if (sorterade.length && tomtSvar(f.q)) {
         const li = document.createElement('li');
         li.className = 'lista__tom';
         li.innerHTML = saknasHtml(f.q, 'span') ?? '';
+        frag.appendChild(li);
+      }
+      if (saknadOrg) {
+        const li = document.createElement('li');
+        li.className = 'lista__tom';
+        li.innerHTML = `<strong>Organisationen i länken finns inte på kartan.</strong><span>Den kan ha bytt adress eller tagits bort. Sök på namnet, eller <a href="${bidra}">lägg till den</a>.</span>`;
         frag.appendChild(li);
       }
       for (const o of sorterade) {
@@ -606,10 +663,13 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       const iHistorik = nyPost && vyDetalj.hidden;
       valdId = o.id;
       vyDetalj.innerHTML = detaljHtml(o);
+      vyDetalj.dataset.id = o.id;
       vyDetalj.hidden = false;
       vyDetalj.scrollTop = 0;
       vyLista.hidden = true;
       app.classList.remove('app--utan-panel');
+      const visaPanel = app.querySelector<HTMLButtonElement>('#visa-panel');
+      if (visaPanel) visaPanel.hidden = true;
       sattBlad('oppen');
       lista.querySelectorAll('.post--aktiv').forEach((el) => el.classList.remove('post--aktiv'));
       lista.querySelector(`[data-id="${CSS.escape(o.id)}"]`)?.classList.add('post--aktiv');
@@ -633,12 +693,15 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       valdId = null;
       detaljIHistorik = false;
       vyDetalj.hidden = true;
+      delete vyDetalj.dataset.id;
       vyDetalj.replaceChildren();
       vyLista.hidden = false;
       if (id) {
         const rad = lista.querySelector<HTMLElement>(`[data-id="${CSS.escape(id)}"]`);
         rad?.classList.remove('post--aktiv');
         rad?.scrollIntoView({ block: 'nearest' });
+        // Korten ovanför ritas först när de kommer i bild och växer då. En gång till, när de har sin höjd.
+        requestAnimationFrame(() => rad?.scrollIntoView({ block: 'nearest' }));
         if (fokus) rad?.querySelector<HTMLElement>('a')?.focus({ preventScroll: true });
       }
       if (karta && kartaKlar) uppdateraVald();
@@ -685,7 +748,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       const hittade = alla.map((o) => ({ o, p: poang(o) })).filter((x) => x.p >= 0);
       hittade.sort((a, b) => b.p - a.p || a.o.n.localeCompare(b.o.n, 'sv'));
       const platsTraffar = platser
-        .filter((p) => ord.every((t) => p.nn.includes(t)))
+        .filter((p) => ord.every((t) => finnsI(p.nn, t)))
         .sort((a, b) => Number(b.nn.startsWith(nq)) - Number(a.nn.startsWith(nq)) || b.antal - a.antal);
       return { org: hittade.slice(0, 6).map((x) => x.o), platser: platsTraffar.slice(0, 4), totalt: hittade.length, visat: tolkning.visat };
     }
@@ -730,7 +793,8 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       };
       let html = '';
       // Påskägget: den som söker på föreningen eller på kräftan får vägen till medlemsvyn.
-      if (arPaskagg(q)) {
+      // Utan karta finns ingen sådan vy att gå till.
+      if (arPaskagg(q) && !utanKarta()) {
         const bild = `<span class="logo logo--liten logo--ikon" aria-hidden="true"><img src="${esc(app.dataset.kraftan ?? '')}" alt=""></span>`;
         html += '<div role="group" aria-label="OpenSverige"><p class="sokgrupp">Du hittade kräftan</p>';
         html += rad({ typ: 'vy' }, bild, 'Var är OpenSverige?', 'Visa medlemmarna på kartan, region för region');
@@ -747,14 +811,17 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         for (const p of t.platser) html += rad({ typ: 'plats', p }, `<span class="logo logo--liten logo--plats" aria-hidden="true">${ikon('nal', 17)}</span>`, markera(p.namn, q), `${esc(p.under)} · ${p.antal} ${plural(p.antal)}`);
         html += '</div>';
       }
-      if (sokVal.length && tomtSvar(q)?.sort === 'jobb') html = (saknasHtml(q, 'p') ?? '') + html;
+      if (sokVal.length && tomtSvar(q)) html = (saknasHtml(q, 'p') ?? '') + html;
       if (!sokVal.length) {
         html =
           saknasHtml(q, 'p') ??
           `<p class="soktom"><strong>Inga träffar på ”${esc(q)}”.</strong> Sökningen går på namn, beskrivning, plats, typ och område.</p>`;
       }
+      // Sökrutan söker bland alla organisationer. Med ett filter eller en plats vald är det fler än listan visar.
+      const f = lasFilter();
+      const var_ = f.lan || f.kommun || f.typ.length || f.erbjuder.length || f.omrade.length ? 'bland alla organisationer' : 'i listan';
       const fot = q
-        ? `<span class="sokfot__antal">${t.totalt} ${t.totalt === 1 ? 'träff' : 'träffar'} i listan${t.visat ? ` · sökte på ”${esc(t.visat)}”` : ''}</span>`
+        ? `<span class="sokfot__antal">${t.totalt} ${t.totalt === 1 ? 'träff' : 'träffar'} ${var_}${t.visat ? ` · sökte på ”${esc(t.visat)}”` : ''}</span>`
         : '<span class="sokfot__antal">Skriv för att söka direkt</span>';
       sokLada.innerHTML =
         `<div class="soklista" role="listbox" id="soklista" aria-label="Sökträffar">${html}</div>` +
@@ -834,7 +901,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         } else if (e.key === 'Enter') {
           e.preventDefault();
           if (sokAktiv >= 0 && sokVal[sokAktiv]) valjSokval(sokVal[sokAktiv]);
-          else if (arPaskagg(sokFalt.value)) valjSokval({ typ: 'vy' });
+          else if (arPaskagg(sokFalt.value) && !utanKarta()) valjSokval({ typ: 'vy' });
           else {
             // Den som söker vidare vill se organisationer, inte medlemsvyn.
             if (medlemslage) sattMedlemsvy(false);
@@ -864,8 +931,10 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
 
     /* ---------- Karta ---------- */
 
+    // På en liggande telefon är kartytan låg. Då tar marginalerna annars så mycket att södra Sverige
+    // hamnar under bladet.
     const kartMarginal = (): Required<PaddingOptions> =>
-      smal.matches ? { top: 84, bottom: 96, left: 24, right: 24 } : { top: 96, bottom: 48, left: 48, right: 72 };
+      smal.matches ? (window.innerHeight < 520 ? { top: 16, bottom: 72, left: 24, right: 24 } : { top: 84, bottom: 96, left: 24, right: 24 }) : { top: 96, bottom: 48, left: 48, right: 72 };
 
     /** `el` och `ek` säger om organisationen är ensam i sitt län respektive sin kommun och då ritas som sig själv. */
     function tillGeoJson(poster: Post[], ensamILan?: Set<string>, ensamIKommun?: Set<string>): GeoJSON.FeatureCollection {
@@ -937,6 +1006,8 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     /* ---------- Medlemsvyn ---------- */
 
     const ORGKALLOR = ['orgs', 'lan-grupper', 'kommun-grupper', 'vald'];
+    /** Källorna som sajten själv lägger på kartan. Allt annat är kartbilden under dem. */
+    const EGNA_KALLOR = new Set([...ORGKALLOR, 'medlemmar', 'medlemmar-ytor']);
     const MEDLEMSLAGER = ['medlemmar-yta', 'medlemmar-kant', 'medlemmar-ikon'];
     const KRAFTROD = '#c2511f';
     let kameraFore: { center: [number, number]; zoom: number } | null = null;
@@ -1073,6 +1144,16 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
      * Slår på eller av medlemsvyn. `flyttaKameran` är falskt när besökaren redan är på väg någon
      * annanstans, till exempel till en plats eller en organisation.
      */
+    /**
+     * Källraden är utfälld tills kartan rörs och täcker då den sydligaste regionens antal i
+     * medlemsvyn. Den fälls ihop, och knappen i hörnet visar den igen.
+     */
+    function fallIhopKallrad() {
+      const kallrad = app.querySelector('.maplibregl-ctrl-attrib');
+      kallrad?.classList.remove('maplibregl-compact-show');
+      kallrad?.removeAttribute('open');
+    }
+
     function sattMedlemsvy(pa: boolean, skriv = true, flyttaKameran = true) {
       if (!medlemsdata) return;
       if (!karta || !kartaKlar) {
@@ -1098,6 +1179,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         if (smal.matches) sattBlad('titt');
         ritaMedlemmar();
         visaMedlemslager();
+        fallIhopKallrad();
         void laddaKraftan()
           .catch((fel) => console.warn('Kräftan gick inte att ladda', fel))
           .then(() => medlemslage && bytte && landaBrickor());
@@ -1123,6 +1205,20 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       if (medlemslage) sattMedlemsvy(false, true, false);
     }
 
+    /**
+     * Kartan kan utebli: webbläsaren saknar WebGL, kartbiblioteket eller kartunderlaget går inte att
+     * hämta. Då ska det stå, i stället för en tom yta. Listan och sökningen fungerar ändå.
+     */
+    function visaKartfel() {
+      const el = document.getElementById('karta');
+      if (!el || kartaKlar) return;
+      el.querySelector('.karta__fel')?.remove();
+      el.insertAdjacentHTML('beforeend', '<p class="karta__fel" role="status"><strong>Kartan gick inte att visa.</strong> Listan och sökningen fungerar som vanligt.</p>');
+      app.classList.add('app--utan-karta');
+    }
+    /** Sant när kartan har gett upp. Då göms det som bara finns på kartan. */
+    const utanKarta = () => app.classList.contains('app--utan-karta');
+
     async function startaKarta() {
       const el = document.getElementById('karta');
       if (!el) return;
@@ -1138,18 +1234,64 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       const { Map: Karta, Popup: Tips, setWorkerUrl } = await import('maplibre-gl');
       // Workern serveras från sajten; se scripts/kopiera-maplibre-worker.mjs.
       if (app.dataset.worker) setWorkerUrl(new URL(app.dataset.worker, location.href).href);
-      karta = new Karta({
-        container: el,
-        style: 'https://tiles.openfreemap.org/styles/positron',
-        // Hela Sverige i bild oavsett skärmstorlek.
-        bounds: SVERIGE,
-        fitBoundsOptions: { padding: kartMarginal() },
-        minZoom: 3,
-        maxZoom: 14,
-        attributionControl: { compact: true },
-      });
+      try {
+        karta = new Karta({
+          container: el,
+          style: 'https://tiles.openfreemap.org/styles/positron',
+          // Hela Sverige i bild oavsett skärmstorlek.
+          bounds: SVERIGE,
+          fitBoundsOptions: { padding: kartMarginal() },
+          minZoom: 2,
+          maxZoom: 14,
+          attributionControl: { compact: true },
+        });
+      } catch {
+        karta = null;
+        visaKartfel();
+        return;
+      }
       (window as unknown as { aiKartan?: unknown }).aiKartan = { karta };
-      karta.on('load', () => {
+      // Ett fel om en enskild kartbricka eller symbolbild är inte att kartan uteblev: stilen kommer
+      // strax ändå. Beskedet visas därför först om stilen inte finns efter en stund.
+      let felvakt: number | undefined;
+      // Kartbrickor som har kommit och som har fallit. Kommer ingen alls sägs det, så att prickarna
+      // inte står oförklarade på en tom yta.
+      let brickor = 0;
+      let brickfel = 0;
+      const underlagsfel = () => {
+        if (brickor > 0 || brickfel < 3 || el.querySelector('.karta__fel')) return;
+        el.insertAdjacentHTML('beforeend', '<p class="karta__fel karta__fel--underlag" role="status"><strong>Kartbilden gick inte att hämta.</strong> Organisationerna visas ändå.</p>');
+      };
+      karta.on('error', (e) => {
+        const { sourceId: kalla, tile } = e as { sourceId?: string; tile?: unknown };
+        if (kalla) {
+          // Ett fel utan kartbricka gäller källan själv. Då begärs inga kartbrickor alls, och det räcker för beskedet.
+          brickfel += !tile && !EGNA_KALLOR.has(kalla) ? 3 : 1;
+          if (kartaKlar) underlagsfel();
+          return;
+        }
+        if (!kartaKlar && felvakt === undefined) felvakt = window.setTimeout(() => !kartaKlar && visaKartfel(), 4000);
+      });
+      karta.on('sourcedata', (e) => {
+        // Kartbiblioteket fäller ut källraden när baskartans källa har svarat. Öppnas medlemsvyn
+        // från adressen sker det efter att vyn har fällt ihop den.
+        if (medlemslage && e.sourceDataType === 'metadata' && !EGNA_KALLOR.has(e.sourceId)) fallIhopKallrad();
+        if (!e.tile || EGNA_KALLOR.has(e.sourceId)) return;
+        brickor += 1;
+        el.querySelector('.karta__fel--underlag')?.remove();
+      });
+      // Stilen räcker för att rita organisationerna. Händelsen load väntar på alla kartbrickor och
+      // typsnitt i vyn, och på ett svagt mobilnät kom prickarna då tiotals sekunder efter listan.
+      karta.once('style.load', () => {
+        window.clearTimeout(felvakt);
+        el.querySelector('.karta__fel')?.remove();
+        app.classList.remove('app--utan-karta');
+        // Baskartan skriver namn på engelska och med kyrilliska tecken. Svenska namn först, där de finns.
+        // Görs innan något ritas, så att typsnitten för de andra skrivsätten aldrig hämtas.
+        for (const lager of karta!.getStyle().layers ?? []) {
+          if (lager.type !== 'symbol' || !JSON.stringify(lager.layout?.['text-field'] ?? '').includes('name')) continue;
+          karta!.setLayoutProperty(lager.id, 'text-field', ['coalesce', ['get', 'name:sv'], ['get', 'name:latin'], ['get', 'name']]);
+        }
         // Positron är kallgrå. Några ytor värms upp så att kartan hör ihop med gränssnittet.
         const varm: [string, 'background-color' | 'fill-color', string][] = [
           ['background', 'background-color', '#f2eee5'],
@@ -1220,7 +1362,9 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
               'icon-image': 'tom', 'icon-size': medZoom(['*', 1.04, radie], ['*', 1.8, radie]), 'icon-allow-overlap': true, 'icon-padding': 0,
               'symbol-sort-key': minstOverst,
             },
-            paint: { 'text-color': '#fdfbf7' },
+            // Mörk kontur: en ensam organisations prick kan ligga över cirkeln, och dess vita kant
+            // åt annars upp en siffra. Stockholms 136 lästes som 36 på en liten telefon.
+            paint: { 'text-color': '#fdfbf7', 'text-halo-color': BLACK, 'text-halo-width': 1.6 },
           });
         };
         GRUPPNIVAER.forEach(ritaCirklar);
@@ -1446,8 +1590,34 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       if (medlemslage) return;
       if (kartaKlar) forstaVyVisad = true;
       const o = valdId ? alla.find((x) => x.id === valdId) : undefined;
-      if (o) return visaDetalj(o, true, false);
-      valdId = null;
+      if (o) {
+        // Datan kommer oftast före kartan. Då visas detaljvyn redan, och i telefon kan besökaren ha
+        // fällt ner bladet för att se kartan. Den ritas inte om: kartan flyttas bara dit.
+        if (!vyDetalj || vyDetalj.hidden || vyDetalj.dataset.id !== o.id) {
+          visaDetalj(o, true, false);
+          if (kartanForst && smal.matches) sattBlad('titt');
+          kartanForst = false;
+          return;
+        }
+        if (karta && kartaKlar) {
+          uppdateraVald();
+          if (o.lat !== null && o.lng !== null) karta.flyTo({ center: [o.lng, o.lat], zoom: Math.max(karta.getZoom(), ZOOM_POSTER + 0.5) }, AV_KOD);
+        }
+        return;
+      }
+      if (valdId) {
+        // Länken pekar på en organisation som inte finns, till exempel efter ett bytt id.
+        // Adressen rättas, så att det inte är den trasiga länken som kopieras vidare.
+        valdId = null;
+        saknadOrg = true;
+        renderLista();
+        skrivUrl(lasFilter());
+        // I telefon ligger listan i det nedfällda bladet. Beskedet ska synas utan att någon letar,
+        // även på en liggande telefon där listans inledning fyller bladet.
+        if (smal.matches) sattBlad('oppen');
+        uppdateraGrepp();
+        lista.querySelector('.lista__tom')?.scrollIntoView({ block: 'nearest' });
+      }
       const f = lasFilter();
       if (kartaKlar && (f.lan || f.kommun)) passaKarta();
     }
@@ -1461,6 +1631,23 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       filtrera();
     });
     form.addEventListener('submit', (e) => e.preventDefault());
+    // Ett tryck på det län som redan är valt ger ingen ändring att lyssna på. Är en kommun vald
+    // vidgar trycket urvalet till hela länet. Om länet var valt före trycket avgörs när fingret sätts ner.
+    let lanFore: string | null = null;
+    const lanruta = (mal: EventTarget | null) => {
+      const el = mal instanceof Element ? mal.closest('label, input') : null;
+      const ruta = el instanceof HTMLInputElement ? el : el?.querySelector<HTMLInputElement>('input[name="lan"]');
+      return ruta?.name === 'lan' ? ruta : null;
+    };
+    form.addEventListener('pointerdown', (e) => {
+      const ruta = lanruta(e.target);
+      lanFore = ruta?.checked ? ruta.value : null;
+    });
+    form.addEventListener('click', (e) => {
+      const ruta = lanruta(e.target);
+      if (ruta && kommun && ruta.value && ruta.value === lanFore) sattPlats(ruta.value);
+      lanFore = null;
+    });
     sortEl.addEventListener('change', renderLista);
 
     app.addEventListener('click', (e) => {
@@ -1591,8 +1778,13 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
 
     // Bakåt och framåt i webbläsaren: läs om hela läget ur adressen.
     window.addEventListener('popstate', () => {
+      // En hopplänk byter bara ankaret. Då ska varken listan ritas om eller ett besked försvinna.
+      if (location.search === sokdel) return;
+      sokdel = location.search;
       const p = new URLSearchParams(location.search);
+      const fore = `${lasFilter().lan}/${kommun}`;
       lasUrl(p);
+      rattaPlats();
       const id = medKarta ? p.get('org') : null;
       const o = id ? alla.find((x) => x.id === id) : undefined;
       // Listan ritas om först, så att fokus kan lämnas tillbaka till rätt kort.
@@ -1600,7 +1792,16 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       if (o) visaDetalj(o, true, false);
       else stangDetalj(false, true);
       detaljIHistorik = false;
-      if (medKarta && (p.get('vy') === 'medlemmar') !== medlemslage) sattMedlemsvy(!medlemslage, false);
+      const platsAndrad = fore !== `${lasFilter().lan}/${kommun}`;
+      if (medKarta && (p.get('vy') === 'medlemmar') !== medlemslage) {
+        // Lämnas medlemsvyn samtidigt som platsen har ändrats ska kartan visa platsen, inte kameran från före vyn.
+        if (medlemslage && platsAndrad) {
+          sattMedlemsvy(false, false, false);
+          if (!o && kartaKlar) passaKarta();
+        } else sattMedlemsvy(!medlemslage, false);
+      }
+      // Platsen har ändrats i adressen. Då ska kartan visa den, inte stå kvar där den var.
+      else if (!o && !medlemslage && kartaKlar && platsAndrad) passaKarta();
     });
     smal.addEventListener('change', () => {
       form.classList.remove('filteryta--oppen');
@@ -1625,7 +1826,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     lasUrl(start);
     kopplaSok();
     sattBlad('titt');
-    if (medKarta) void startaKarta();
+    if (medKarta) startaKarta().catch(visaKartfel);
     fetch(app.dataset.api!)
       .then((r) => {
         if (!r.ok) throw new Error(String(r.status));
@@ -1658,15 +1859,19 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       })
       .then(
         () => {
+          rattaPlats();
           filtrera();
           if (medKarta) forstaVy();
         },
         // Bara ett fel i hämtningen är ett datafel. Ett fel i visningen ska inte skylla på uppkopplingen.
         () => {
+          datafel = true;
+          if (medKarta) sattBlad('oppen');
           antalEl.textContent = 'Ingen data';
           lista.innerHTML =
             '<li class="lista__tom"><strong>Kunde inte läsa datan.</strong><span>Kontrollera uppkopplingen och försök igen.</span>' +
             '<button type="button" class="knapp knapp--liten" data-ladda-om>Försök igen</button></li>';
+          lista.querySelector('.lista__tom')?.scrollIntoView({ block: 'nearest' });
         },
       );
   }
@@ -2402,9 +2607,53 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     background: hsl(var(--yta) / 0.92);
     font-size: 11px;
   }
+  /* I en smal kartyta når rutan fram till kartans källrad. Då ligger den ovanför den. */
+  @media (max-width: 1180px) {
+    .app .karta__not {
+      bottom: 38px;
+    }
+  }
   .maplibregl-ctrl-attrib {
     font-family: var(--font-mono);
     font-size: 10px;
+  }
+  .app .karta__fel {
+    position: absolute;
+    inset: 50% auto auto 50%;
+    transform: translate(-50%, -50%);
+    z-index: 4;
+    width: min(34ch, calc(100% - 48px));
+    margin: 0;
+    padding: 14px 18px;
+    border: 1px solid hsl(var(--kant));
+    border-radius: var(--r-kort, 12px);
+    background: hsl(var(--yta));
+    text-align: center;
+    font-size: 14px;
+  }
+  .app .karta__fel strong {
+    display: block;
+    margin-bottom: 2px;
+  }
+  /* Kartan finns, men kartbilden under den gör det inte. En smalare rad upptill, så att prickarna syns. */
+  .app .karta__fel--underlag {
+    inset: 84px auto auto 50%;
+    transform: translateX(-50%);
+    width: auto;
+    max-width: calc(100% - 48px);
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+  .app .karta__fel--underlag strong {
+    display: inline;
+  }
+  body:has(.app[data-vy='medlemmar']) .hoppa[href='#filter'] {
+    display: none;
+  }
+  /* Utan karta finns inget att zooma i eller byta vy på. */
+  .app--utan-karta .kartknappar,
+  .app--utan-karta .karta__not {
+    display: none;
   }
 
   /* ---------- Medlemsvyn ---------- */
@@ -3211,6 +3460,15 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
 
   /* Liggande telefon: ett blad i botten tar hela höjden. Kortet ligger vid sidan, som i bred vy. */
   @media (max-width: 900px) and (max-height: 520px) {
+    /* I en låg vy tog bannern och den klistrade foten hela detaljbladet, så att namnet inte syntes.
+       Logotypen skjuter upp över den lägre bannern, så knappen flyttas åt sidan om den. */
+    .detalj__banner {
+      height: 56px;
+      padding-left: 124px;
+    }
+    .detalj__fot {
+      position: static;
+    }
     .medlemskort {
       top: 12px;
       right: auto;

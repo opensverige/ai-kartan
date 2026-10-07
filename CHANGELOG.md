@@ -4,6 +4,19 @@ Kodens och funktionernas historik. Dataändringar loggas separat och automatiskt
 
 ## 2026-10-07
 
+- Organisationerna ritas på kartan så fort kartans stil finns, i stället för när alla kartbrickor har kommit. På ett svagt mobilnät kom prickarna förut tiotals sekunder efter listan. Baskartan skriver namn på svenska där de finns: Norge och Danmark i stället för Norway och Denmark, och inga kyrilliska namn.
+- Sajten säger till när något inte går. Går kartbiblioteket inte att hämta står det i kartytan. I telefon syns ett datafel direkt, utan att listan först måste öppnas. En sökning innan datan har kommit visar inte längre noll organisationer. Utan JavaScript syns beskedet och vägarna vidare även i telefon.
+- På en liggande telefon ryms hela landet ovanför listan, och en organisations namn syns i detaljvyn.
+- Sökningen "gotland" gav 24 organisationer i Östergötland. Nu ska ordet stå i början av ett ord. Kartsidan har en länk för tangentbordet som hoppar till filtren, som annars ligger efter alla organisationskort. Ett tryck på det län som redan är valt vidgar urvalet från kommunen till hela länet.
+- Bättre i telefon. Antalet i en gruppcirkel har en mörk kontur, så att en prick intill inte äter upp en siffra: Stockholms 136 lästes som 36 på en liten skärm. Menyn rullar på en liggande telefon, så att sista raden går att nå. Tabellerna på Metod och Öppen data rullar i sin egen ram i stället för att dra med hela sidan i sidled. Ankare landar under sidhuvudet, inte bakom det. Sökfältets ledtext slutar med tre punkter när den inte ryms.
+- Visa på kartan från en organisations sida visar kartan i telefon, med bladet nedfällt. Förut öppnades samma uppgifter igen över kartan. En delad länk öppnar detaljbladet som förut.
+- Den som söker på pris, kunder, ägare eller certifikat får veta att kartan inte har sådana uppgifter, även när orden råkar ge träffar. Förut gav "pris" bara en träff på ett bolag med Enterprise i namnet.
+- Kartan säger till när den inte går att visa. Saknar webbläsaren WebGL, eller går kartunderlaget inte att nå, står det i kartytan i stället för att den är tom. Listan och sökningen fungerar ändå.
+- En länk till en organisation som inte finns säger det överst i listan, och adressen rättas. En plats i adressen som inte finns ger hela landet i stället för en tom lista med koden som rubrik.
+- I telefon fälls detaljbladet inte upp igen när kartan blir klar. Bakåt och framåt flyttar kartan med platsen. Felmeddelandet när datan inte går att hämta står kvar när man skriver.
+- Kartdatans adress bär en version ur innehållet. Förut kunde en återkommande besökare få en ny sida med en timme gammal lista efter en publicering.
+- Texter som böjdes fel är rättade: "1 av 329 organisationer", "1 myndighet" i stället för "1 myndigheter" på kommunsidorna, "1 kommun" på länssidorna och rätt antal statusar på metodsidan. Sökrutans fot säger att den räknar bland alla organisationer när ett filter är valt, och listsidan visar vilken kommun som är vald.
+- Sitemappen listar adresserna utan avslutande snedstreck, som de står i canonical. Förut svarade varje adress i den med en vidarepekning. Atom-flödet säger när en dags lista är kapad.
 - Sökningen tål alla ord. Ordet "constructors" och några till slog ut kartan med felet "Kunde inte läsa datan". Nu ger de inga träffar, som de ska, och ett fel i sökningen kan inte längre tömma listan. Organisationer hittas på sitt id, så att "scb", "foi" och "smhi" ger rätt myndighet, och typernas pluralord ("myndigheter", "kommuner", "lärosäten") ger samma organisationer som filtret.
 - Kolumnen Källa på organisationens sida bryter inte längre "Egen webbplats" mitt i ordet.
 - Importen från AI-Infra sätter inte längre fältet Aktiv. Det byggde på om tjänsten var lanserad, och tre bolag visades därför som nedlagda. Valideringen varnar när en post är markerad som nedlagd utan belägg mot register.
