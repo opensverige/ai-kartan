@@ -1,8 +1,59 @@
 {
-  "generated_at": "2026-10-07T13:00:08Z",
-  "antal": 354,
+  "generated_at": "2026-10-07T15:26:45Z",
+  "antal": 358,
   "senaste_andring": "2026-10-07",
   "rader": [
+    {
+      "datum": "2026-10-07",
+      "commit": "22a3beb888",
+      "id": "sferical-ai",
+      "namn": "Sferical AI",
+      "falt": "active",
+      "andring": "ändrad",
+      "gammalt": false,
+      "nytt": true,
+      "status": "confirmed",
+      "gammal_status": "claimed",
+      "kalla": "https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559520401601"
+    },
+    {
+      "datum": "2026-10-07",
+      "commit": "22a3beb888",
+      "id": "profitbyte",
+      "namn": "Profitbyte",
+      "falt": "active",
+      "andring": "ändrad",
+      "gammalt": false,
+      "nytt": true,
+      "status": "confirmed",
+      "gammal_status": "claimed",
+      "kalla": "https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/556779981101"
+    },
+    {
+      "datum": "2026-10-07",
+      "commit": "22a3beb888",
+      "id": "aixia",
+      "namn": "Aixia",
+      "falt": "active",
+      "andring": "ändrad",
+      "gammalt": false,
+      "nytt": true,
+      "status": "confirmed",
+      "gammal_status": "claimed",
+      "kalla": "https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/556878229501"
+    },
+    {
+      "datum": "2026-10-07",
+      "commit": "e1cd5099a7",
+      "id": "nyterio",
+      "namn": "NYTERIO",
+      "falt": "hela posten",
+      "andring": "tillagd",
+      "gammalt": null,
+      "nytt": null,
+      "status": null,
+      "kalla": "https://nyterio.se"
+    },
     {
       "datum": "2026-10-07",
       "commit": "b838feb670",

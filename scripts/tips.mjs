@@ -12,6 +12,7 @@
 import fs from 'node:fs';
 import { lasOrganisationer } from './lib/organisationer.mjs';
 import { bedomTips, skrivSvar } from './lib/tips.mjs';
+import { arendetext } from './lib/arende.mjs';
 
 const argv = process.argv.slice(2);
 const arg = (namn) => {
@@ -19,9 +20,9 @@ const arg = (namn) => {
   return i >= 0 ? argv[i + 1] : null;
 };
 
-const kropp = arg('--fil') ? fs.readFileSync(arg('--fil'), 'utf8') : (process.env.ISSUE_BODY ?? '');
+const kropp = arg('--fil') ? fs.readFileSync(arg('--fil'), 'utf8') : arendetext();
 if (!kropp.trim()) {
-  console.error('Ingen ärendetext. Sätt ISSUE_BODY eller använd --fil.');
+  console.error('Ingen ärendetext. Använd --fil, eller sätt ISSUE_BODY.');
   process.exit(1);
 }
 

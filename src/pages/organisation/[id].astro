@@ -265,8 +265,9 @@ const citat = `OpenSverige AI-kartan, ”${org.name.value}”, hämtad ${idag}, 
     margin-top: 4px;
     max-width: 48ch;
   }
-  .fakta__kalla a {
-    word-break: break-word;
+  /* Källtypen är ett par korta ord. De hålls ihop, så att kolumnen inte krymper och bryter mitt i ordet. */
+  .fakta__kalla {
+    white-space: nowrap;
   }
   .belagg {
     list-style: none;

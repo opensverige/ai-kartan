@@ -377,10 +377,20 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       sattVal('lan', [p.get('lan') || kommun.slice(0, 2)]);
     }
 
+    /** En sökning ska aldrig kunna slå ut listan. Går tolkningen fel söks orden som de står. */
+    function tolkaSakert(q: string): Tolkning {
+      try {
+        return tolka(q, alla);
+      } catch {
+        const ord = normalisera(q.trim()).split(/\s+/).filter(Boolean);
+        return { tom: ord.length === 0, grupper: ord.map((o) => [o]), steg: 'rak', visat: '' };
+      }
+    }
+
     function filtrera(skriv = true) {
       const f = lasFilter();
       // Sökningen tolkas en gång mot alla organisationer, oavsett vilka filter som är valda.
-      const tolkning = tolka(f.q, alla);
+      const tolkning = tolkaSakert(f.q);
       urval = alla.filter((o) => passar(o, f, tolkning));
       renderLista();
       uppdateraHuvud(f);
@@ -663,7 +673,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       const nq = normalisera(q.trim());
       const ord = nq.split(/\s+/).filter(Boolean);
       if (!ord.length) return { org: [], platser: platser.filter((p) => p.typ === 'kommun').slice(0, 5), totalt: 0, visat: '' };
-      const tolkning = tolka(q, alla);
+      const tolkning = tolkaSakert(q);
       const poang = (o: Rad): number => {
         if (!traffar(o, tolkning)) return -1;
         if (o.nn === nq) return 100;
@@ -1625,8 +1635,9 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         alla = data.organisationer.map((o) => ({
           ...o,
           nn: normalisera(o.n),
+          // Id:t är ofta förkortningen folk söker på: scb, foi, smhi.
           ns: normalisera(
-            [o.n, o.d, o.kn ?? '', o.ln ?? '', etiketter.typer[o.t] ?? '', ...o.o.map((x) => etiketter.erbjuder[x] ?? ''), ...o.a.map((x) => etiketter.omraden[x] ?? '')].join(' '),
+            [o.n, o.id.replace(/-/g, ' '), o.d, o.kn ?? '', o.ln ?? '', etiketter.typer[o.t] ?? '', ...o.o.map((x) => etiketter.erbjuder[x] ?? ''), ...o.a.map((x) => etiketter.omraden[x] ?? '')].join(' '),
           ),
         }));
         const perPlats = new Map<string, PlatsTraff>();
@@ -1644,15 +1655,20 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         }
         platser = [...perPlats.values()].sort((a, b) => b.antal - a.antal || a.namn.localeCompare(b.namn, 'sv'));
         mitt = { lan: platsmitt(alla, 'lan'), kommun: platsmitt(alla, 'kommun') };
-        filtrera();
-        if (medKarta) forstaVy();
       })
-      .catch(() => {
-        antalEl.textContent = 'Ingen data';
-        lista.innerHTML =
-          '<li class="lista__tom"><strong>Kunde inte läsa datan.</strong><span>Kontrollera uppkopplingen och försök igen.</span>' +
-          '<button type="button" class="knapp knapp--liten" data-ladda-om>Försök igen</button></li>';
-      });
+      .then(
+        () => {
+          filtrera();
+          if (medKarta) forstaVy();
+        },
+        // Bara ett fel i hämtningen är ett datafel. Ett fel i visningen ska inte skylla på uppkopplingen.
+        () => {
+          antalEl.textContent = 'Ingen data';
+          lista.innerHTML =
+            '<li class="lista__tom"><strong>Kunde inte läsa datan.</strong><span>Kontrollera uppkopplingen och försök igen.</span>' +
+            '<button type="button" class="knapp knapp--liten" data-ladda-om>Försök igen</button></li>';
+        },
+      );
   }
 </script>
 
