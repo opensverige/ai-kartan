@@ -175,10 +175,9 @@ async function huvud() {
       org.kommun = fakta(null, 'unknown', null, null, IDAG);
     }
 
-    const live = p.availability_status?.value;
-    if (live) {
-      org.active = fakta(live === 'live', 'claimed', p.availability_status.source_url ?? permalank, KALLTYP[p.availability_status.source_type] ?? 'infra_dataset', p.availability_status.verified_at ?? IDAG);
-    }
+    // AI-Infras availability_status säger om tjänsten är lanserad, inte om organisationen finns.
+    // Fältet active visas som "nedlagd eller avregistrerad" när det är falskt och sätts därför
+    // aldrig härifrån. Det beläggs mot register.
 
     // Ordna nycklarna som i mallen.
     const ordning = ['id', 'name', 'legal_name', 'type', 'org_number', 'website', 'description', 'offers', 'areas', 'kommun', 'coordinates', 'founded', 'active', 'evidence', 'links', 'self_submitted', 'record_created_at', 'record_updated_at'];

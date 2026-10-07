@@ -54,6 +54,10 @@ export const ALIAS: Record<string, Etikett> = {
   funding: ['o', 'finansiering'], grants: ['o', 'finansiering'], research: ['o', 'forskning'],
   compute: ['o', 'infrastruktur'], cloud: ['o', 'infrastruktur'], inference: ['o', 'infrastruktur'],
   meetup: ['o', 'community'], meetups: ['o', 'community'], courses: ['o', 'utbildning'], training: ['o', 'utbildning'],
+  // Typernas pluralord, som de står i filtret. Utan dem ger "myndigheter" bara dem som råkar nämna ordet.
+  myndigheter: ['t', 'myndighet'], kommuner: ['t', 'kommun_region'], regioner: ['t', 'kommun_region'], 'kommuner och regioner': ['t', 'kommun_region'],
+  larosaten: ['t', 'larosate'], communities: ['t', 'community'], foreningar: ['t', 'community'], finansiarer: ['t', 'finansiar'],
+  robotar: ['a', 'robotik'],
 };
 
 /** Ord som räknas som samma sak. Ett alternativ kan vara flera ord, och då ska alla finnas. */
@@ -121,7 +125,8 @@ const gruppTraff = (o: Sokpost, grupper: Alternativ[][]): boolean => grupper.eve
 
 /** Ordet eller frasen själv, plus etiketten och synonymerna som hör till. */
 function medSlakt(ord: string): Alternativ[] {
-  const alias = ALIAS[ord];
+  // Ordet kan vara vad som helst, även "constructor". Bara listans egna nycklar räknas.
+  const alias = Object.prototype.hasOwnProperty.call(ALIAS, ord) ? ALIAS[ord] : null;
   return [ord, ...(alias ? [alias] : []), ...(SYNONYMER.get(ord) ?? [])];
 }
 
