@@ -1,19 +1,7 @@
 // Bedömer ett tips från det korta formuläret "Lägg till en organisation".
 // Ren logik utan in- och utmatning, så att reglerna går att testa: scripts/tips.test.mjs.
 
-import { parsa, ikryssade, normaliseraUrl } from './arende.mjs';
-
-const BORTTAGET = '[borttaget]';
-const NUMMER = /(?<!\d)(?:(?:19|20)\d{6}|\d{6})[-+ ]?\d{4}(?!\d)/g;
-
-/** De nummer i texten som ser ut som personnummer eller samordningsnummer.
- *  Där står månaden på tredje och fjärde plats. Juridiska personer har alltid 20 eller mer där. */
-function personnummerI(text) {
-  return (text.match(NUMMER) ?? []).filter((nummer) => {
-    const tio = nummer.replace(/\D/g, '').slice(-10);
-    return Number(tio.slice(2, 4)) < 20;
-  });
-}
+import { parsa, ikryssade, normaliseraUrl, personnummerI, utanNummer, arNummer } from './arende.mjs';
 
 /** Länken om den går att läsa som en webbadress med domän, annars null. */
 function lank(varde) {
@@ -29,7 +17,8 @@ function lank(varde) {
 function adress(u) {
   try {
     const { hostname, pathname } = new URL(u);
-    return { vard: hostname.toLowerCase().replace(/^www\./, ''), stig: pathname.replace(/\/+$/, '').toLowerCase() };
+    // En sökväg som bara är språk eller land, som /se eller /sv, är hela webbplatsen.
+    return { vard: hostname.toLowerCase().replace(/^www\./, ''), stig: pathname.replace(/\/+$/, '').toLowerCase().replace(/^\/(sv|se|en|sv-se|en-se)$/, '') };
   } catch {
     return null;
   }
@@ -46,15 +35,16 @@ const jamforNamn = (s) =>
     .trim();
 
 /** Organisationen på kartan som tipset verkar gälla, eller null. */
-function hittaDubblett(namn, webbplats, organisationer) {
+export function hittaDubblett(namn, webbplats, organisationer) {
   const tips = webbplats ? adress(webbplats) : null;
   const tipsNamn = jamforNamn(namn);
   const traff = organisationer.find((o) => {
     if (tipsNamn && jamforNamn(o.namn) === tipsNamn) return true;
     const finns = o.webbplats ? adress(o.webbplats) : null;
-    // Samma värd räcker inte: flera organisationer kan dela till exempel github.com.
-    // Det är en dubblett först när sökvägen är densamma eller någon av dem pekar på hela webbplatsen.
-    return Boolean(tips && finns && tips.vard === finns.vard && (tips.stig === finns.stig || !tips.stig || !finns.stig));
+    // Samma värd räcker inte: flera organisationer kan dela till exempel github.com, och en
+    // institution har en undersida på sitt lärosätes webbplats. Det är en dubblett när sökvägen
+    // är densamma, eller när den befintliga organisationen har hela webbplatsen som sin.
+    return Boolean(tips && finns && tips.vard === finns.vard && (tips.stig === finns.stig || !finns.stig));
   });
   return traff ? { id: traff.id, namn: traff.namn } : null;
 }
@@ -70,13 +60,10 @@ export function bedomTips(kropp, organisationer) {
   const angivetOrgnr = (f['Organisationsnummer (valfritt)'] || '').trim();
 
   // En enskild firmas organisationsnummer är personens personnummer, hur det än ser ut.
-  const bort = new Set([...personnummerI(namn), ...personnummerI(angivetOrgnr)]);
-  if (enskild && angivetOrgnr) bort.add(angivetOrgnr);
-  let rensadKropp = null;
-  if (bort.size) {
-    rensadKropp = kropp;
-    for (const nummer of bort) rensadKropp = rensadKropp.split(nummer).join(BORTTAGET);
-  }
+  // Ett streck eller ett "nej" i fältet är däremot inget nummer och ska inte bytas ut i ärendet.
+  const bort = [...personnummerI(namn), ...personnummerI(angivetOrgnr)];
+  if (enskild && arNummer(angivetOrgnr)) bort.push(angivetOrgnr);
+  const rensadKropp = utanNummer(kropp, bort);
 
   const webbplats = lank(f['Webbplats']);
   const belagg = lank(f['Länk till något ni byggt med AI']);
@@ -119,7 +106,7 @@ export function skrivSvar(resultat, { sajt, repo, andrad = false }) {
   } else if (resultat.dubblett) {
     stycken.push(
       `Tack! ${resultat.dubblett.namn} verkar redan finnas på kartan: ${sajt}/organisation/${resultat.dubblett.id}`,
-      'Stämmer något inte där? Använd knappen Begär rättelse på den sidan. Gäller tipset en annan organisation, skriv det i en kommentar så tittar vi.',
+      'Stämmer något inte där? Använd knappen Rätta via GitHub längst ned på den sidan. Gäller tipset en annan organisation, skriv det i en kommentar så tittar vi.',
     );
   } else {
     stycken.push(andrad ? 'Tack, ärendet är uppdaterat och ser bra ut.' : 'Tack! Tipset är mottaget.');

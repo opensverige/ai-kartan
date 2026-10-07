@@ -38,10 +38,20 @@ jobs:
 
       - name: Bygg YAML ur ärendet
         id: bygg
+        # Ärendets text läses ur händelsefilen, inte genom env: det som står i env skrivs ut i
+        # körningens logg, och där ska ett personnummer aldrig hamna.
         env:
-          ISSUE_BODY: ${{ github.event.issue.body }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
-        run: node scripts/ny-organisation.mjs --fran-arende
+        run: node scripts/ny-organisation.mjs --fran-arende --rensad kropp.md --fel fel.md
+
+      # Först av allt: ett personnummer ska inte stå kvar medan resten av jobbet går.
+      # Skriptet avbryter efter en rensning, och svaret om varför skrivs av steget Kommentera fel.
+      - name: Ta bort personnummer ur ärendet
+        if: ${{ !cancelled() && steps.bygg.outputs.rensad == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMMER: ${{ github.event.issue.number }}
+        run: gh issue edit "$NUMMER" --body-file kropp.md
 
       - name: Validera den nya filen
         id: validera
@@ -54,19 +64,30 @@ jobs:
           echo "kod=$kod" >> "$GITHUB_OUTPUT"
           cat validering.txt
 
+      # Körs både när formuläret inte gick att läsa och när valideringen sa nej. Annars får den
+      # som skickade in bara en röd körning som ingen utanför repot ser.
       - name: Kommentera fel i ärendet
-        if: steps.validera.outputs.kod != '0'
+        if: ${{ !cancelled() && (steps.bygg.outcome == 'failure' || (steps.bygg.outcome == 'success' && steps.validera.outputs.kod != '0')) }}
         env:
           GH_TOKEN: ${{ github.token }}
           NUMMER: ${{ github.event.issue.number }}
         run: |
           {
-            echo "Tack! Formuläret kunde inte bli en pull request automatiskt. Så här sa valideringen:"
-            echo
-            echo '```'
-            # Valideringen citerar text ur ärendet. Utan bakåtfnuttar kan den inte bryta sig ur kodrutan.
-            tr -d '`' < validering.txt | head -n 40
-            echo '```'
+            if [ -s fel.md ]; then
+              # Skriptets eget svar. Det upprepar aldrig fritext ur ärendet.
+              echo "Tack! Formuläret kunde inte bli en pull request automatiskt."
+              echo
+              cat fel.md
+            elif [ -s validering.txt ]; then
+              echo "Tack! Formuläret kunde inte bli en pull request automatiskt. Så här sa valideringen:"
+              echo
+              echo '```'
+              # Valideringen citerar text ur ärendet. Utan bakåtfnuttar kan den inte bryta sig ur kodrutan.
+              tr -d '`' < validering.txt | head -n 40
+              echo '```'
+            else
+              echo "Tack! Formuläret kunde inte läsas automatiskt. En människa tittar på ärendet."
+            fi
             echo
             echo "Redigera ärendet (knappen ••• → Edit) så körs kontrollen igen, eller fråga i Discord."
           } > kommentar.md
