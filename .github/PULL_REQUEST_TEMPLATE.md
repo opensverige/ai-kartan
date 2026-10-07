@@ -15,4 +15,4 @@
 - [ ] `npm run validera` går igenom lokalt (eller så litar jag på CI)
 - [ ] Jag följer [kriterierna](../blob/main/kriterier.md) och [OpenSveriges manifest](https://github.com/opensverige/.github/blob/main/manifesto.md)
 
-Rör pull requesten en organisation dyker en kommentar upp här nedanför: Granskning mot kriterierna. Den är granskarens, inte din. En människa bockar av den innan något går in.
+Rör pull requesten en organisation dyker en kommentar upp här nedanför: Granskning mot kriterierna. Den är granskarens, inte din. En människa bockar av den och intygar med `/granskad` innan något går in.

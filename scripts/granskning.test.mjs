@@ -5,11 +5,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { createHash } from 'node:crypto';
-import { arOrganisationsfil, arRegelfil, ren, sakerLank, version, rutor, lista, avlas, utfall, MARKOR, MAX_ORGANISATIONER, MAX_BYTE, PUNKTER } from './lib/granskning.mjs';
+import { arOrganisationsfil, arRegelfil, ren, sakerLank, version, rutor, lista, avlas, utfall, forvantade, avtryck, behoverRitasOm, arIntyg, MARKOR, MAX_ORGANISATIONER, MAX_BYTE, PUNKTER, INTYG } from './lib/granskning.mjs';
 
 const REPO = 'opensverige/ai-kartan';
-const SHA = 'a'.repeat(40);
-const HAR = { repo: REPO, sha: SHA, nummer: 7 };
+const HAR = { repo: REPO, nummer: 7 };
 const post = (id, extra = {}) => ({
   id,
   name: { value: 'Exempelbolaget', status: 'claimed' },
@@ -51,7 +50,12 @@ test('en ny organisation får en ruta per punkt i granskningslistan', () => {
   assert.equal(tomma(kropp).length, PUNKTER.ny.length);
   assert.equal(avlas(filer, kropp).totalt, 6);
   assert.match(kropp, /kriterier\.md/);
-  assert.match(kropp, new RegExp(`${REPO}/blob/${SHA}/data/organisationer/exempel\\.yaml`));
+  // Länken går till pull requestens egen vy av filen. Listan beror då inte på vilken commit som är sist.
+  const ankare = createHash('sha256').update('data/organisationer/exempel.yaml').digest('hex');
+  assert.ok(kropp.includes(`[Filen i pull requesten](https://github.com/${REPO}/pull/7/files#diff-${ankare})`));
+  assert.doesNotMatch(kropp, /\/blob\/[0-9a-f]{40}\//);
+  // Listan säger hur den blir grön.
+  assert.ok(kropp.includes(`skriv sedan \`${INTYG}\` i en ny kommentar`));
 });
 
 test('en ändrad organisation och en borttagen får kortare listor', () => {
@@ -85,9 +89,32 @@ test('listan är klar först när varje punkt är avbockad', () => {
   assert.equal(avlas(filer, halv).kvar.every((k) => k.id === 'tva'), true);
   const hel = bocka(tom);
   assert.deepEqual([avlas(filer, hel).klara, avlas(filer, hel).totalt], [12, 12]);
-  assert.equal(utfall(avlas(filer, hel)).state, 'success');
   assert.equal(utfall(avlas(filer, halv)).state, 'pending');
   assert.match(utfall(avlas(filer, halv)).description, /6 av 12/);
+});
+
+test('avbockat räcker inte: kontrollen blir grön först när en människa har intygat', () => {
+  const filer = [fil('ett', 'A')];
+  const hel = avlas(filer, bocka(lista(filer, HAR)));
+  // Alla rutor är ikryssade, men ingen har intygat. Det är så det ser ut när en bot har bockat.
+  const utan = utfall(hel);
+  assert.equal(utan.state, 'pending');
+  assert.ok(utan.description.includes(INTYG));
+  const med = utfall(hel, { intygadAv: 'granskare' });
+  assert.equal(med.state, 'success');
+  assert.match(med.description, /intygade av granskare/);
+  // Ett intyg som är äldre än listans senaste ändring gäller inte.
+  const gammalt = utfall(hel, { intygForaldrat: true });
+  assert.equal(gammalt.state, 'pending');
+  assert.match(gammalt.description, /ändrats efter intyget/);
+  // Ett intyg hjälper inte en lista som inte är avbockad.
+  assert.equal(utfall(avlas(filer, lista(filer, HAR)), { intygadAv: 'granskare' }).state, 'pending');
+  for (const u of [utan, med, gammalt]) assert.ok(u.description.length <= 140);
+});
+
+test('bara ordet för sig är ett intyg', () => {
+  for (const ja of ['/granskad', '  /granskad', '/Granskad', '/granskad\n\nAllt stämmer.', '/granskad.', '/granskad, tack']) assert.equal(arIntyg(ja), true, ja);
+  for (const nej of ['granskad', 'Jag skriver /granskad sen', '/granskade', '/granskad-inte', '/granskad/x', '', null, '> /granskad']) assert.equal(arIntyg(nej), false, String(nej));
 });
 
 test('en ändrad fil nollställer sina punkter, de andra står kvar', () => {
@@ -125,16 +152,23 @@ test('en fil utan version går inte att lista', () => {
   assert.throws(() => lista([{ ...fil('ett', 'A'), version: 'abc1234' }], HAR), /version/);
 });
 
-test('bockar som en obehörig har satt går att ta bort ur listan', () => {
-  const filer = [fil('ett', 'A')];
-  const tom = lista(filer, HAR);
-  const k1 = `<!-- g:ett:${filer[0].version}:k1 -->`;
-  const k2 = `<!-- g:ett:${filer[0].version}:k2 -->`;
-  const bada = bocka(tom, (rad) => rad.includes(':k1 ') || rad.includes(':k2 '));
-  const ny = lista(filer, HAR, bada, { bort: [k2] });
-  assert.equal(rutor(ny).get(k1), true);
-  assert.equal(rutor(ny).get(k2), false);
-  assert.equal(avlas(filer, ny).klara, 1);
+test('listan säger själv om den behöver ritas om', () => {
+  const filer = [fil('ett', 'A'), fil('tva', 'B')];
+  const kropp = lista(filer, HAR);
+  assert.equal(behoverRitasOm(filer, {}, kropp), false);
+  // Avbockade rutor är ingen anledning att rita om. Då skulle den som bockar bli avbruten.
+  assert.equal(behoverRitasOm(filer, {}, bocka(kropp)), false);
+  // Nytt innehåll, en ny fil, en otillåten fil eller ändrade regelfiler är det.
+  assert.equal(behoverRitasOm([fil('ett', 'A'), fil('tva', 'B2')], {}, kropp), true);
+  assert.equal(behoverRitasOm([...filer, fil('tre', 'C')], {}, kropp), true);
+  assert.equal(behoverRitasOm(filer, { ogiltiga: [{ sokvag: 'data/organisationer/X.yaml', skal: 'namn' }] }, kropp), true);
+  assert.equal(behoverRitasOm(filer, { regelfiler: true }, kropp), true);
+  // En rad som någon har tagit bort eller klistrat in två gånger gör också det.
+  assert.equal(behoverRitasOm(filer, {}, kropp.split('\n').filter((r) => !r.includes(':k2 ')).join('\n')), true);
+  assert.equal(behoverRitasOm(filer, {}, `${kropp}\n${kropp.split('\n').find((r) => r.includes(':k1 '))}`), true);
+  assert.equal(behoverRitasOm(filer, {}, ''), true);
+  assert.equal(forvantade(filer).length, 12);
+  assert.notEqual(avtryck(filer), avtryck(filer, { regelfiler: true }));
 });
 
 test('text ur filen kan inte smyga in en avbockad ruta eller en markör', () => {
@@ -211,13 +245,23 @@ test('en pull request utan organisationer behöver ingen granskning mot kriterie
 });
 
 test('ändras regelfiler sägs det, så att grönt inte läses som att de är granskade', () => {
-  for (const f of ['kriterier.md', 'schema/organisation.schema.json', 'data/taxonomi/typer.yaml', 'scripts/validera.mjs', 'scripts/granskning.mjs', 'scripts/lib/granskning.mjs', 'scripts/lib/granskningskorning.mjs', '.github/workflows/granskning.yml'])
+  // Valideringen läser genom organisationer.mjs och belagg.mjs. En ändring där ändrar vad som blir grönt.
+  for (const f of ['kriterier.md', 'schema/organisation.schema.json', 'data/taxonomi/typer.yaml', 'scripts/validera.mjs', 'scripts/granskning.mjs', 'scripts/lib/granskning.mjs', 'scripts/lib/granskningskorning.mjs', 'scripts/lib/organisationer.mjs', 'scripts/lib/belagg.mjs', '.github/workflows/granskning.yml'])
     assert.equal(arRegelfil(f), true, f);
   for (const f of ['README.md', 'src/pages/kriterier.astro', 'data/organisationer/x.yaml', 'scripts/lib/sok.mjs']) assert.equal(arRegelfil(f), false, f);
-  const u = utfall(avlas([], ''), '', { regelfiler: true });
+  const u = utfall(avlas([], ''), { regelfiler: true });
   assert.equal(u.state, 'success');
   assert.match(u.description, /regel/i);
   assert.ok(u.description.length <= 140);
+  // Det sägs också när organisationer ändras i samma pull request, i listan och i läget.
+  const filer = [fil('ett', 'A')];
+  const kropp = lista(filer, { ...HAR, regelfiler: true });
+  assert.match(kropp, /ändrar också regelfiler/);
+  assert.doesNotMatch(lista(filer, HAR), /regelfiler/);
+  for (const lage of [utfall(avlas(filer, kropp), { regelfiler: true }), utfall(avlas(filer, bocka(kropp)), { regelfiler: true }), utfall(avlas(filer, bocka(kropp)), { regelfiler: true, intygadAv: 'granskare' })]) {
+    assert.match(lage.description, /Regelfiler ändras också/);
+    assert.ok(lage.description.length <= 140);
+  }
 });
 
 test('en fil som inte får ligga i mappen gör kontrollen röd, aldrig grön', () => {
@@ -227,9 +271,9 @@ test('en fil som inte får ligga i mappen gör kontrollen röd, aldrig grön', (
   assert.equal(u.state, 'failure');
   assert.match(u.description, /Evil\.yaml/);
   assert.ok(u.description.length <= 140);
-  // Även när allt annat är avbockat.
+  // Även när allt annat är avbockat och intygat.
   const filer = [fil('ett', 'A')];
-  assert.equal(utfall(avlas(filer, bocka(lista(filer, HAR)), { ogiltiga })).state, 'failure');
+  assert.equal(utfall(avlas(filer, bocka(lista(filer, HAR)), { ogiltiga }), { intygadAv: 'granskare' }).state, 'failure');
   assert.match(lista(filer, { ...HAR, ogiltiga }), /Evil\.yaml/);
 });
 
@@ -258,11 +302,21 @@ test('en lista som blir för lång för en kommentar stoppas i stället för att
   assert.ok(Buffer.byteLength(vanlig) < MAX_BYTE / 2);
 });
 
-test('utfallet säger vem som bockade av sist och ryms i en statusrad', () => {
+test('utfallet säger vem som intygade och ryms i en statusrad', () => {
   const filer = [fil('ett', 'A')];
-  const u = utfall(avlas(filer, bocka(lista(filer, HAR))), 'granskare');
+  const u = utfall(avlas(filer, bocka(lista(filer, HAR))), { intygadAv: 'granskare' });
   assert.match(u.description, /granskare/);
   assert.ok(u.description.length <= 140);
+  // Namnet rensas, och ett långt namn får inte tränga ut resten.
+  assert.doesNotMatch(utfall(avlas(filer, bocka(lista(filer, HAR))), { intygadAv: '<b>@elak</b>' }).description, /[<>@]/);
+});
+
+test('ett och-tecken i text ur filen kan inte bli ett omnämnande eller en länk', () => {
+  // GitHub tolkar &commat; som @ och &num; som #. Skrivs och-tecknet som &amp; händer inte det.
+  assert.equal(ren('&commat;alla'), '&amp;commat;alla');
+  assert.equal(ren('&num;1 och H&M'), '&amp;num;1 och H&amp;M');
+  const kropp = lista([fil('elak', 'E', 'added', post('elak', { name: { value: 'Hej &commat;octocat', status: 'claimed' }, description: { value: 'Se &num;1 och mailto:a&commat;ond.example', status: 'claimed' } }))], HAR);
+  assert.doesNotMatch(kropp, /&(?!amp;)/, 'ett och-tecken står oskyddat i listan');
 });
 
 test('rensad text är en rad utan tecken som styr Markdown', () => {

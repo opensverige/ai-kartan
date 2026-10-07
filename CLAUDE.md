@@ -17,7 +17,7 @@ Tech Embassy – Sveriges öppna AI-karta. En statisk Astro-sajt byggd från `da
 7. **Ändra aldrig status på begäran** av en organisation. Läs bevis, uppdatera källa och datum.
 8. **Inga hemligheter i repot.** Inga nycklar, tokens eller `.env`-filer.
 9. **Kör `npm run validera`** innan du är klar. Grön validering är ett krav, inte ett mål.
-10. **Bocka aldrig av granskningslistan.** Kommentaren Granskning mot kriterierna på en pull request är människans. Redigera den aldrig, och merga aldrig en pull request som rör en organisation innan en människa har bockat av den.
+10. **Bocka aldrig av granskningslistan, och intyga den aldrig.** Kommentaren Granskning mot kriterierna på en pull request är människans. Redigera den aldrig, skriv aldrig `/granskad`, och merga aldrig en pull request som rör en organisation innan en människa har bockat av och intygat den.
 
 ## Arbetsflöde
 

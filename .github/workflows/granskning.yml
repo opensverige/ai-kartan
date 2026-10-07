@@ -1,16 +1,22 @@
 # Ser till att kriterierna gås igenom av en människa innan en organisation går in på kartan.
 #
 # Varje pull request som rör en fil i data/organisationer får en kommentar med kriterierna per
-# organisation. Läget "Granskning mot kriterierna" är gult tills varje punkt är avbockad.
-# Görs läget tvingande för main går pull requesten inte att merga innan dess.
+# organisation. Läget "Granskning mot kriterierna" är gult tills varje punkt är avbockad och en
+# människa med skrivrätt har skrivit /granskad i en egen kommentar. Görs läget tvingande för
+# main går pull requesten inte att merga innan dess.
 #
 # Säkerhet:
 #   - pull_request_target kör flödet och skripten ur main, aldrig ur pull requesten.
 #     Pull requestens filer hämtas som data genom GitHubs API och körs aldrig.
-#   - Inget ur pull requesten eller kommentaren sätts in i ett skalkommando.
-#   - Bara flödets egen kommentar räknas som lista, och text ur filerna rensas innan den visas.
-#   - En bock gäller filens hela text. Byts texten nollställs bocken.
-#   - Bockar som sätts av någon annan än en människa med skrivrätt tas bort igen.
+#   - Inget ur pull requesten eller kommentarerna sätts in i ett skalkommando.
+#   - Körningen minns ingenting. Varje gång räknar den ut läget på nytt: vilka organisationer som
+#     ändras ur kodförrådets träd, vad som är avbockat ur flödets egen kommentar, och vem som har
+#     intygat ur kommentarerna. Vilken händelse som startade körningen spelar ingen roll, så en
+#     körning som uteblir eller hoppas över kan inte ge grönt.
+#   - En bock gäller filens version. Ändras filen nollställs bocken.
+#   - Rutorna kan kryssas i av vem som helst med skrivrätt, även en bot. Därför krävs intyget:
+#     en kommentar som ingen har redigerat, skriven av en människa med skrivrätt efter listans
+#     senaste ändring.
 #
 # Flödet heter något annat än läget med flit. Den gröna bocken för själva körningen ska inte
 # gå att förväxla med läget, som är det som ska göras tvingande.
@@ -18,10 +24,11 @@ name: Granskningslista
 
 on:
   pull_request_target:
-    types: [opened, synchronize, reopened, ready_for_review]
+    # edited täcker att pull requesten byter basgren, till exempel till main.
+    types: [opened, synchronize, reopened, ready_for_review, edited]
     branches: [main]
   issue_comment:
-    types: [edited]
+    types: [created, edited, deleted]
   # För pull requests som inte startar flödet av sig själva: de som skapas ur ärendeformuläret
   # och de som var öppna innan flödet fanns. Ange pull requestens nummer.
   workflow_dispatch:
@@ -33,32 +40,36 @@ on:
 
 permissions: {}
 
-# En körning i taget per pull request, och ingen körning tappas: varje redigering av listan ska
-# prövas. Kommentarer som inte är listan får en egen grupp, så att de inte tar plats i kön.
+# En körning i taget per pull request. Väntar redan en körning ersätts den av en nyare, och det
+# är rätt: varje körning räknar om allt, så den senaste räcker. En kommentar som inte rör
+# granskningen får en egen grupp, så att den inte tränger undan en körning som behövs.
+#
+# En kommentar rör granskningen om den sitter på en pull request och antingen är flödets egen
+# lista, eller är ett intyg (börjar med /granskad) från någon som hör till repot, eller var ett
+# intyg innan den redigerades. Samma villkor står på jobbet nedan.
 concurrency:
-  group: granskning-${{ (github.event_name != 'issue_comment' || (github.event.issue.pull_request != null && github.event.comment.user.login == 'github-actions[bot]')) && (github.event.pull_request.number || github.event.issue.number || inputs.pr) || github.run_id }}
-  queue: max
+  group: granskning-${{ (github.event_name != 'issue_comment' || (github.event.issue.pull_request != null && (github.event.comment.user.login == 'github-actions[bot]' || startsWith(github.event.changes.body.from, '/granskad') || (startsWith(github.event.comment.body, '/granskad') && (github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'MEMBER' || github.event.comment.author_association == 'COLLABORATOR'))))) && (github.event.pull_request.number || github.event.issue.number || inputs.pr) || github.run_id }}
 
 jobs:
   granskning:
     name: Skriv listan och sätt läget
-    # En redigerad kommentar räknas bara om den sitter på en pull request och är flödets egen.
-    # Vem som redigerade prövas i skriptet, så att även en bots redigering blir behandlad.
-    if: github.event_name != 'issue_comment' || (github.event.issue.pull_request != null && github.event.comment.user.login == 'github-actions[bot]')
+    if: github.event_name != 'issue_comment' || (github.event.issue.pull_request != null && (github.event.comment.user.login == 'github-actions[bot]' || startsWith(github.event.changes.body.from, '/granskad') || (startsWith(github.event.comment.body, '/granskad') && (github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'MEMBER' || github.event.comment.author_association == 'COLLABORATOR'))))
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: read
       pull-requests: write
       statuses: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: ${{ github.event.repository.default_branch }}
           persist-credentials: false
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
+          cache: npm
 
       - run: npm ci --ignore-scripts
 
@@ -66,5 +77,4 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           PR_NUMMER: ${{ github.event.pull_request.number || github.event.issue.number || inputs.pr }}
-          HANDELSE: ${{ github.event_name }}
         run: node scripts/granskning.mjs

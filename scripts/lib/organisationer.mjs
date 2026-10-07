@@ -63,6 +63,14 @@ export function lasGeo() {
 }
 
 /**
+ * Tolkar en organisationsfils text. Granskningen läser filer genom samma funktion som bygget, så
+ * att det en granskare får se alltid är det som publiceras.
+ */
+export function tolkaYaml(text) {
+  return YAML.parse(text, { prettyErrors: true });
+}
+
+/**
  * Läser alla organisationsfiler. Returnerar råa poster utan härledningar. En symbolisk länk läses
  * inte: den kan peka på en fil som byts utan att organisationsfilen ändras. Valideringen stoppar den.
  */
@@ -76,7 +84,7 @@ export function lasOrganisationer(katalog = KATALOG_ORG) {
     let data = null;
     let fel = null;
     try {
-      data = YAML.parse(text, { prettyErrors: true });
+      data = tolkaYaml(text);
     } catch (e) {
       fel = e.message;
     }

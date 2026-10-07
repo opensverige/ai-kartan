@@ -1,15 +1,16 @@
-// Granskningslistan: det en människa bockar av innan en organisation får gå in på kartan.
+// Granskningslistan: det en människa går igenom innan en organisation får gå in på kartan.
 //
 // Varje pull request som rör en fil i data/organisationer får en kommentar med kriterierna
-// per organisation. Kontrollen blir grön först när varje punkt är avbockad.
-// Kriterierna själva står i kriterier.md. Den här filen bestämmer bara hur listan ser ut och
-// hur den läses av. Körningen som använder den är scripts/lib/granskningskorning.mjs.
+// per organisation. Kontrollen blir grön först när varje punkt är avbockad och en människa med
+// skrivrätt har intygat det i en egen kommentar. Kriterierna själva står i kriterier.md.
+// Den här filen bestämmer hur listan ser ut och hur den läses av. Körningen som använder den är
+// scripts/lib/granskningskorning.mjs.
 //
 // Allt som kommer ur en pull request är opålitligt: filnamn, namn, länkar och rubriker.
 // En punkt känns därför igen på en dold markör som bara den här koden skriver, och text ur
-// filerna rensas så att den inte kan bilda en egen rad, en egen markör eller en länk.
-// Markören bär en kontrollsumma av hela filens text. En bock gäller alltså exakt den text
-// som visades när den sattes, och ingen annan.
+// filerna rensas så att den inte kan bilda en egen rad, en egen markör, en länk eller ett
+// omnämnande. Markören bär en kontrollsumma av filens version. En bock gäller alltså exakt
+// den version som visades när den sattes, och ingen annan.
 
 import { createHash } from 'node:crypto';
 
@@ -21,8 +22,12 @@ export const KONTEXT = 'Granskning mot kriterierna';
 export const MAX_ORGANISATIONER = 30;
 /** Så lång får kommentaren bli. GitHub tar emot 262 144 byte. */
 export const MAX_BYTE = 200_000;
+/** Det en granskare skriver i en egen kommentar för att intyga att listan är genomgången. */
+export const INTYG = '/granskad';
 /** Står i en kommentar som ber om uppdelning i stället för att visa en lista. */
 const DELA = '<!-- granskning-dela-upp -->';
+/** Höjs när listans utseende ändras, så att öppna pull requests får den nya listan. */
+const RITVERSION = 3;
 
 // Punkterna för en ny organisation är granskningslistan i kriterier.md, ord för ord. Ett test
 // jämför dem. Sista punkten där, att valideringen är grön, prövas av CI och är ingen ruta här.
@@ -72,13 +77,17 @@ export function iOrganisationsmappen(sokvag) {
   return String(sokvag).startsWith('data/organisationer/');
 }
 
-/** Filer som bestämmer vem som får vara med och hur det prövas. De granskas inte av den här listan. */
+/**
+ * Filer som bestämmer vem som får vara med och hur det prövas: kriterierna, schemat, taxonomin,
+ * valideringen med det den läser genom, granskningen själv och flödena. De granskas inte av
+ * den här listan, och listan säger till när de ändras.
+ */
 export function arRegelfil(sokvag) {
-  return /^(kriterier\.md$|schema\/|data\/taxonomi\/|scripts\/validera\.mjs$|scripts\/granskning\.mjs$|scripts\/lib\/granskning[^/]*\.mjs$|\.github\/workflows\/)/.test(String(sokvag));
+  return /^(kriterier\.md$|schema\/|data\/taxonomi\/|scripts\/validera\.mjs$|scripts\/granskning\.mjs$|scripts\/lib\/(granskning[^/]*|organisationer|belagg)\.mjs$|\.github\/workflows\/)/.test(String(sokvag));
 }
 
 /** En rad text utan tecken som styr Markdown eller HTML, högst `max` tecken. Annat än text blir tomt. */
-export function ren(text, max = 80) {
+function rensa(text, max = 80) {
   let t = typeof text === 'string' ? text : typeof text === 'number' && Number.isFinite(text) ? String(text) : '';
   t = t
     .slice(0, 4000)
@@ -99,6 +108,14 @@ export function ren(text, max = 80) {
   return t.replace(/\s+/g, ' ').trim().slice(0, max);
 }
 
+/**
+ * Som `rensa`, för text som ska stå i löpande Markdown. Ett & skrivs som &amp;, så att
+ * "&commat;namn" inte blir ett omnämnande och "&num;1" inte en länk till ett ärende.
+ */
+export function ren(text, max = 80) {
+  return rensa(text, max).replace(/&/g, '&amp;');
+}
+
 /** Adressen om den är en vanlig webbadress som går att skriva som länk, annars null. */
 export function sakerLank(url) {
   if (typeof url !== 'string' || url.length > 300 || !/^https?:\/\/[A-Za-z0-9._~:/?#@!$&'*+,;=%-]+$/.test(url)) return null;
@@ -115,12 +132,15 @@ export function sakerLank(url) {
 /** Värdnamnet står i klartext före länken, så att det syns vart den går. */
 const lank = (url) => (sakerLank(url) ? `\`${new URL(url).hostname.replace(/[^A-Za-z0-9.:-]/g, '').slice(0, 100)}\` <${url}>` : '(adressen går inte att visa som länk)');
 
+const sha256 = (text) => createHash('sha256').update(text).digest('hex');
+
 /**
- * Kontrollsumman som markören bär. Den räknas på status och hela filens text, så att en bock
- * bara gäller den text som visades och bara den lista (ny, ändrad eller borttagen) den sattes i.
+ * Kontrollsumman som markören bär. Den räknas på status och på filens version (hela blob-id:t
+ * hos git, för en ändrad fil även versionen den ändras från). En bock gäller då bara den
+ * version som visades, och bara den lista (ny, ändrad eller borttagen) den sattes i.
  */
-export function version(status, text) {
-  return createHash('sha256').update(`${status}\n${text}`).digest('hex');
+export function version(status, innehall) {
+  return sha256(`${status}\n${innehall}`);
 }
 
 function markor(fil, nyckel) {
@@ -137,6 +157,34 @@ export function rutor(kropp) {
     if (m) ut.set(m[2], ut.has(m[2]) ? null : m[1] !== ' ');
   }
   return ut;
+}
+
+const forMangaFiler = (filer) => filer.length > MAX_ORGANISATIONER;
+
+/** Markörerna som ska finnas i listan, i den ordning de står. */
+export function forvantade(filer) {
+  if (forMangaFiler(filer)) return [];
+  return filer.flatMap((fil) => punkterFor(fil).map(([nyckel]) => markor(fil, nyckel)));
+}
+
+/**
+ * Ett avtryck av det listan ska visa. Står i kommentaren, så att körningen ser om listan behöver
+ * ritas om utan att hämta varje fil. Det är ingen spärr: vad som räknas avgörs alltid av
+ * markörerna, som räknas ut ur kodförrådet och aldrig läses ur kommentaren.
+ */
+export function avtryck(filer, { ogiltiga = [], regelfiler = false } = {}) {
+  const delar = forMangaFiler(filer) ? ['för många', filer.length] : forvantade(filer);
+  return sha256(JSON.stringify([RITVERSION, delar, ogiltiga.map((o) => [o.sokvag, o.skal]), regelfiler])).slice(0, 32);
+}
+
+const avtrycksrad = (filer, lage) => `<!-- g-avtryck:${avtryck(filer, lage)} -->`;
+
+/** Sant om kommentaren inte längre visar det den ska: annat innehåll, eller rader som saknas. */
+export function behoverRitasOm(filer, lage, kropp) {
+  const text = String(kropp ?? '');
+  if (!text.startsWith(MARKOR) || !text.includes(avtrycksrad(filer, lage))) return true;
+  const finns = rutor(text);
+  return forvantade(filer).some((m) => finns.get(m) === undefined || finns.get(m) === null);
 }
 
 /** Det filen själv säger om ett fälts status. Flödet har inte prövat det. */
@@ -164,60 +212,65 @@ function underlag(fil) {
   return rader;
 }
 
-const delaUpp = (huvud, text) => [...huvud, text, '', DELA].join('\n');
+const REGELRAD = '**Pull requesten ändrar också regelfiler**: kriterier, schema, validering eller flöden. De granskas inte av den här listan.';
 
 /**
  * Kommentaren för en pull request. `filer` är organisationsfilerna som ändras, med `sokvag`,
  * `status` (added, modified eller removed), `version` (se `version`), `data` (filens innehåll,
  * eller null) och för ett gammalt id som byter namn `ersattAv`. En punkt som var avbockad i
- * `tidigare` står kvar avbockad om filen är oförändrad. Markörerna i `bort` bockas ur.
+ * `tidigare` står kvar avbockad om filen är oförändrad.
  */
-export function lista(filer, { repo, sha, nummer = null, ogiltiga = [], maxByte = MAX_BYTE }, tidigare = '', { bort = [] } = {}) {
+export function lista(filer, { repo, nummer = null, ogiltiga = [], regelfiler = false, maxByte = MAX_BYTE }, tidigare = '') {
+  const lage = { ogiltiga, regelfiler };
   const huvud = [MARKOR, `## ${KONTEXT}`, ''];
-  if (filer.length > MAX_ORGANISATIONER) {
-    return delaUpp(huvud, `Den här pull requesten rör ${filer.length} organisationer. Det är fler än en människa kan granska ordentligt på en gång. Dela upp den i delar om högst ${MAX_ORGANISATIONER}.`);
+  const delaUpp = (text) => [...huvud, text, '', DELA, avtrycksrad(filer, lage)].join('\n');
+  if (forMangaFiler(filer)) {
+    return delaUpp(`Den här pull requesten rör ${filer.length} organisationer. Det är fler än en människa kan granska ordentligt på en gång. Dela upp den i delar om högst ${MAX_ORGANISATIONER}.`);
   }
   const avbockade = rutor(tidigare);
-  for (const m of bort) avbockade.set(m, false);
   const ut = [...huvud];
   if (ogiltiga.length) {
     ut.push('**Det här får inte ligga i `data/organisationer`.** Kontrollen är röd tills det är borta eller rättat.', '');
-    for (const o of ogiltiga.slice(0, 20)) ut.push(`- \`${ren(o.sokvag, 120)}\`: ${ren(o.skal, 120)}`);
+    for (const o of ogiltiga.slice(0, 20)) ut.push(`- \`${rensa(o.sokvag, 120)}\`: ${ren(o.skal, 120)}`);
     if (ogiltiga.length > 20) ut.push(`- och ${ogiltiga.length - 20} till`);
     ut.push('');
   }
   if (filer.length) {
     ut.push(
-      `Den här pull requesten rör ${filer.length} ${filer.length === 1 ? 'organisation' : 'organisationer'}. Kontrollen blir grön först när en människa har bockat av varje punkt. [Kriterierna](https://github.com/${repo}/blob/main/kriterier.md) gäller, inga andra. Ett avslag skrivs som en kommentar med hänvisning till kriteriet.`,
+      `Den här pull requesten rör ${filer.length} ${filer.length === 1 ? 'organisation' : 'organisationer'}. [Kriterierna](https://github.com/${repo}/blob/main/kriterier.md) gäller, inga andra. Ett avslag skrivs som en kommentar med hänvisning till kriteriet.`,
       '',
-      'AI får hjälpa till att kontrollera att ett belägg visar det som påstås, men bockar aldrig av listan. Att `npm run validera` är grön prövas av en egen kontroll.',
+      `**Så blir kontrollen grön:** öppna källorna, bocka av varje punkt, och skriv sedan \`${INTYG}\` i en ny kommentar. Bara en människa med skrivrätt i repot kan intyga. AI får hjälpa till att kontrollera att ett belägg visar det som påstås, men bockar aldrig av listan och intygar aldrig. Att \`npm run validera\` är grön prövas av en egen kontroll.`,
     );
+    if (regelfiler) ut.push('', REGELRAD);
   }
   for (const fil of filer) {
     const id = idFor(fil);
-    const hur = fil.status === 'removed' ? (nyttId(fil) ? `ersätts av \`${nyttId(fil)}\`` : 'tas bort') : fil.status === 'added' ? 'ny' : 'ändrad';
+    const nytt = nyttId(fil);
+    const hur = fil.status === 'removed' ? (nytt ? `ersätts av \`${nytt}\`` : 'tas bort') : fil.status === 'added' ? 'ny' : 'ändrad';
     ut.push('', `### \`${id}\` · ${hur}`, '');
     if (fil.status !== 'removed') {
-      const lankar = [`[Filen i den här versionen](https://github.com/${repo}/blob/${sha}/${fil.sokvag})`];
-      if (fil.status === 'modified' && nummer) lankar.push(`[ändringen](https://github.com/${repo}/pull/${nummer}/files#diff-${createHash('sha256').update(fil.sokvag).digest('hex')})`);
-      ut.push(`${lankar.join(' · ')}. Det här står i filen. Ingen maskin har öppnat källorna åt dig.`, '', ...underlag(fil), '');
+      // Länken går till pull requestens egen vy av filen. Den visar alltid den version som gäller,
+      // och listan behöver då inte skrivas om för en commit som inte rör filen.
+      const vy = nummer ? `[${fil.status === 'modified' ? 'Ändringen' : 'Filen'} i pull requesten](https://github.com/${repo}/pull/${nummer}/files#diff-${sha256(fil.sokvag)}). ` : '';
+      ut.push(`${vy}Det här står i filen. Ingen maskin har öppnat källorna åt dig.`, '', ...underlag(fil), '');
     }
     for (const [nyckel, text] of punkterFor(fil)) {
       const m = markor(fil, nyckel);
       ut.push(`- [${avbockade.get(m) ? 'x' : ' '}] ${text} ${m}`);
     }
   }
-  if (filer.length) ut.push('', '_Punkterna för en organisation nollställs när dess fil ändras._');
+  if (filer.length) ut.push('', `_Punkterna för en organisation nollställs när dess fil ändras. Ändras listan efter att någon har skrivit \`${INTYG}\` behövs ett nytt intyg._`);
+  ut.push('', avtrycksrad(filer, lage));
   const text = ut.join('\n');
   if (Buffer.byteLength(text) > maxByte) {
-    return delaUpp(huvud, `Den här pull requesten rör ${filer.length} organisationer, och listan blir för lång för en kommentar. Dela upp den i mindre delar.`);
+    return delaUpp(`Den här pull requesten rör ${filer.length} organisationer, och listan blir för lång för en kommentar. Dela upp den i mindre delar.`);
   }
   return text;
 }
 
 /** Läser av en kommentar mot de punkter som ska finnas. Punkter som saknas räknas som inte avbockade. */
 export function avlas(filer, kropp, { ogiltiga = [] } = {}) {
-  const forManga = filer.length > MAX_ORGANISATIONER || String(kropp ?? '').includes(DELA);
+  const forManga = forMangaFiler(filer) || String(kropp ?? '').includes(DELA);
   const finns = String(kropp ?? '').startsWith(MARKOR) ? rutor(kropp) : new Map();
   const kvar = [];
   let totalt = 0;
@@ -233,15 +286,29 @@ export function avlas(filer, kropp, { ogiltiga = [] } = {}) {
   return { totalt, klara: totalt - kvar.length, kvar, manipulerad: saknas > 0, forManga, ogiltiga };
 }
 
-/** Kontrollens läge och den rad som visas bredvid den. */
-export function utfall(lage, vem = '', { regelfiler = false } = {}) {
+/** Sant om kommentaren är ett intyg: den börjar med ordet, och inget annat ord börjar likadant. */
+export function arIntyg(text) {
+  return new RegExp(`^\\s*${INTYG}(?![\\w/-])`, 'i').test(String(text ?? ''));
+}
+
+/**
+ * Kontrollens läge och den rad som visas bredvid den. `intygadAv` är den människa med skrivrätt
+ * som har intygat listan efter dess senaste ändring. `intygForaldrat` är sant när det finns ett
+ * intyg, men listan har ändrats efter det.
+ */
+export function utfall(lage, { intygadAv = '', intygForaldrat = false, regelfiler = false } = {}) {
+  const rad = (text) => text.slice(0, 140);
   if (lage.ogiltiga?.length) {
-    const forsta = ren(String(lage.ogiltiga[0].sokvag).split('/').pop(), 50);
-    return { state: 'failure', description: `Får inte ligga i data/organisationer: ${forsta}${lage.ogiltiga.length > 1 ? ` och ${lage.ogiltiga.length - 1} till` : ''}`.slice(0, 140) };
+    const forsta = rensa(String(lage.ogiltiga[0].sokvag).split('/').pop(), 50);
+    return { state: 'failure', description: rad(`Får inte ligga i data/organisationer: ${forsta}${lage.ogiltiga.length > 1 ? ` och ${lage.ogiltiga.length - 1} till` : ''}`) };
   }
   if (lage.forManga) return { state: 'failure', description: `För många organisationer i en pull request. Dela upp den i delar om högst ${MAX_ORGANISATIONER}.` };
   if (lage.totalt === 0) return { state: 'success', description: regelfiler ? 'Inga organisationer ändras. Regelfiler ändras, och de granskas inte här.' : 'Inga organisationer ändras' };
-  if (lage.klara < lage.totalt) return { state: 'pending', description: `${lage.klara} av ${lage.totalt} punkter avbockade av en människa` };
-  const av = ren(vem, 39);
-  return { state: 'success', description: `Alla ${lage.totalt} punkter avbockade${av ? `, senast av ${av}` : ''}`.slice(0, 140) };
+  const regler = regelfiler ? ' Regelfiler ändras också.' : '';
+  if (lage.klara < lage.totalt) return { state: 'pending', description: rad(`${lage.klara} av ${lage.totalt} punkter avbockade.${regler}`) };
+  const av = rensa(intygadAv, 39);
+  if (!av) {
+    return { state: 'pending', description: rad(intygForaldrat ? `Listan har ändrats efter intyget. Skriv ${INTYG} i en ny kommentar.${regler}` : `Alla ${lage.totalt} punkter avbockade. Skriv ${INTYG} i en kommentar för att intyga.${regler}`) };
+  }
+  return { state: 'success', description: rad(`Alla ${lage.totalt} punkter avbockade och intygade av ${av}.${regler}`) };
 }

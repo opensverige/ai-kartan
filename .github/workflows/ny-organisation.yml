@@ -18,10 +18,11 @@ permissions:
   # För att starta granskningslistan på pull requesten, se sista steget.
   actions: write
 
-# En körning per ärende åt gången. En ny redigering avbryter den som pågår.
+# En körning per ärende åt gången. En körning som har börjat får gå klart: har den hunnit lägga
+# upp en ny version ska den också hinna starta granskningslistan för den.
 concurrency:
   group: arende-${{ github.event.issue.number }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   skapa-pr:
@@ -131,15 +132,21 @@ jobs:
             # "Closes" är ordet GitHub känner igen. Då stängs ärendet när pull requesten mergas.
             echo "Closes #$NUMMER"
           } > pr-kropp.md
-          if [ -n "$(gh pr list --head "$gren" --state open --json number --jq '.[0].number')" ]; then
-            gh pr comment "$gren" --body "Uppdaterad efter ändring i ärendet."
+          # Bara repots egen gren räknas. En sökning på grennamnet träffar annars också en gren med
+          # samma namn i någon annans kopia av repot, och då hade fel pull request fått svaret.
+          egen() { gh api "repos/$REPO/pulls?state=open&head=${REPO%%/*}:$gren" --jq '.[0].number // empty'; }
+          pr="$(egen)"
+          if [ -n "$pr" ]; then
+            gh pr comment "$pr" --repo "$REPO" --body "Uppdaterad efter ändring i ärendet."
           else
             gh pr create --head "$gren" --title "Lägg till $NAMN" --body-file pr-kropp.md
+            pr="$(egen)"
           fi
-          gh issue comment "$NUMMER" --body "Tack! En pull request har skapats: $(gh pr view "$gren" --json url --jq .url). En människa granskar den mot kriterierna."
+          gh issue comment "$NUMMER" --body "Tack! En pull request har skapats: https://github.com/$REPO/pull/$pr. En människa granskar den mot kriterierna."
 
+      # Körs även om en kommentar i steget före misslyckades: den nya versionen ligger redan uppe.
       - name: Starta granskningslistan på pull requesten
-        if: steps.validera.outputs.kod == '0'
+        if: ${{ !cancelled() && steps.validera.outputs.kod == '0' }}
         env:
           GH_TOKEN: ${{ github.token }}
           NUMMER: ${{ github.event.issue.number }}
@@ -147,7 +154,7 @@ jobs:
           STANDARDGREN: ${{ github.event.repository.default_branch }}
         run: |
           # Varje ny commit på grenen behöver en ny körning. Annars står listan kvar med gammalt underlag.
-          pr="$(gh pr list --repo "$REPO" --head "arende/$NUMMER" --state open --json number --jq '.[0].number')"
+          pr="$(gh api "repos/$REPO/pulls?state=open&head=${REPO%%/*}:arende/$NUMMER" --jq '.[0].number // empty')"
           if [ -n "$pr" ]; then
             gh workflow run granskning.yml --repo "$REPO" --ref "$STANDARDGREN" -f pr="$pr"
           fi
