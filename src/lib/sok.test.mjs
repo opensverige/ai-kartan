@@ -4,7 +4,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { normalisera, tolka, traffar, tomtSvar, ALIAS } from './sok.ts';
+import { normalisera, tolka, traffar, tomtSvar, finnsI, ALIAS } from './sok.ts';
 
 const post = (n, d, extra = {}) => ({ n, t: 'bolag', o: [], a: [], ...extra, nn: normalisera(n), ns: normalisera(`${n} ${d}`) });
 const ALLA = [
@@ -136,4 +136,26 @@ test('pluralorden i sökningen pekar på typer som finns i taxonomin', () => {
     assert.equal(ALIAS[ord][0], 't');
     assert.ok(typer.has(ALIAS[ord][1]), `${ord} pekar på en typ som inte finns`);
   }
+});
+
+test('"gotland" träffar Gotland, inte Östergötland', () => {
+  const alla = [
+    post('Linköpingsbolaget', 'Bygger robotar. Linköping, Östergötlands län.'),
+    post('Visbybolaget', 'Bygger sensorer. Gotland, Gotlands län.'),
+    post('Region Gotland', 'Har en chattbot för invånare.', { t: 'kommun_region' }),
+  ];
+  const namn = (q) => {
+    const t = tolka(q, alla);
+    return alla.filter((o) => traffar(o, t)).map((o) => o.n);
+  };
+  assert.deepEqual(namn('gotland'), ['Visbybolaget', 'Region Gotland']);
+  assert.deepEqual(namn('gotlands'), ['Visbybolaget']);
+  // Östergötland hittas fortfarande på sitt eget namn, och på en del av det.
+  assert.deepEqual(namn('östergötland'), ['Linköpingsbolaget']);
+  assert.deepEqual(namn('ostergot'), ['Linköpingsbolaget']);
+  // Samma regel gäller platsförslagen i sökrutan.
+  assert.equal(finnsI('ostergotlands lan', 'gotland'), false);
+  assert.equal(finnsI('gotlands lan', 'gotland'), true);
+  assert.equal(finnsI('storage', 'rag'), false);
+  assert.equal(finnsI('dokumenthantering', 'dokument'), true);
 });

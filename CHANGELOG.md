@@ -4,6 +4,7 @@ Kodens och funktionernas historik. Dataändringar loggas separat och automatiskt
 
 ## 2026-10-07
 
+- Sökningen "gotland" gav 24 organisationer i Östergötland. Nu ska ordet stå i början av ett ord. Kartsidan har en länk för tangentbordet som hoppar till filtren, som annars ligger efter alla organisationskort. Ett tryck på det län som redan är valt vidgar urvalet från kommunen till hela länet.
 - Bättre i telefon. Antalet i en gruppcirkel har en mörk kontur, så att en prick intill inte äter upp en siffra: Stockholms 136 lästes som 36 på en liten skärm. Menyn rullar på en liggande telefon, så att sista raden går att nå. Tabellerna på Metod och Öppen data rullar i sin egen ram i stället för att dra med hela sidan i sidled. Ankare landar under sidhuvudet, inte bakom det. Sökfältets ledtext slutar med tre punkter när den inte ryms.
 - Visa på kartan från en organisations sida visar kartan i telefon, med bladet nedfällt. Förut öppnades samma uppgifter igen över kartan. En delad länk öppnar detaljbladet som förut.
 - Den som söker på pris, kunder, ägare eller certifikat får veta att kartan inte har sådana uppgifter, även när orden råkar ge träffar. Förut gav "pris" bara en träff på ett bolag med Enterprise i namnet.

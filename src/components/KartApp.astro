@@ -205,7 +205,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
   import { urvalSomCsv } from '../lib/csv';
   import { grupperaPerPlats, platsEfterUtzoomning, platsmitt, zoomgranser, ZOOM_KOMMUN, ZOOM_POSTER, type Platsgrupp } from '../lib/platsgrupper';
   import { arPaskagg, cirkel, type Medlemsvy } from '../lib/medlemmar';
-  import { normalisera, tolka, traffar, tomtSvar, type Tolkning } from '../lib/sok';
+  import { normalisera, tolka, traffar, tomtSvar, finnsI, type Tolkning } from '../lib/sok';
 
   type Post = {
     id: string; n: string; t: string; o: string[]; a: string[]; k: string | null; kn: string | null;
@@ -724,7 +724,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       const hittade = alla.map((o) => ({ o, p: poang(o) })).filter((x) => x.p >= 0);
       hittade.sort((a, b) => b.p - a.p || a.o.n.localeCompare(b.o.n, 'sv'));
       const platsTraffar = platser
-        .filter((p) => ord.every((t) => p.nn.includes(t)))
+        .filter((p) => ord.every((t) => finnsI(p.nn, t)))
         .sort((a, b) => Number(b.nn.startsWith(nq)) - Number(a.nn.startsWith(nq)) || b.antal - a.antal);
       return { org: hittade.slice(0, 6).map((x) => x.o), platser: platsTraffar.slice(0, 4), totalt: hittade.length, visat: tolkning.visat };
     }
@@ -1548,6 +1548,23 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       filtrera();
     });
     form.addEventListener('submit', (e) => e.preventDefault());
+    // Ett tryck på det län som redan är valt ger ingen ändring att lyssna på. Är en kommun vald
+    // vidgar trycket urvalet till hela länet. Om länet var valt före trycket avgörs när fingret sätts ner.
+    let lanFore: string | null = null;
+    const lanruta = (mal: EventTarget | null) => {
+      const el = mal instanceof Element ? mal.closest('label, input') : null;
+      const ruta = el instanceof HTMLInputElement ? el : el?.querySelector<HTMLInputElement>('input[name="lan"]');
+      return ruta?.name === 'lan' ? ruta : null;
+    };
+    form.addEventListener('pointerdown', (e) => {
+      const ruta = lanruta(e.target);
+      lanFore = ruta?.checked ? ruta.value : null;
+    });
+    form.addEventListener('click', (e) => {
+      const ruta = lanruta(e.target);
+      if (ruta && kommun && ruta.value && ruta.value === lanFore) sattPlats(ruta.value);
+      lanFore = null;
+    });
     sortEl.addEventListener('change', renderLista);
 
     app.addEventListener('click', (e) => {

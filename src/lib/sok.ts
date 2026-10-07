@@ -106,14 +106,23 @@ function stammar(ord: string): string[] {
   return ut;
 }
 
+/** Platsnamn som också är slutet på ett annat platsnamn. De ska stå i början av ett ord. */
+const ORDSTART = new Set(['gotland', 'gotlands']);
 const ordgranser = new Map<string, RegExp>();
-/** Ett ord på högst tre tecken ska stå i början av ett ord. Annars träffar "rag" i "storage". */
-function ordTraff(o: Sokpost, ord: string): boolean {
-  if (ord.length > 3) return o.ns.includes(ord);
+
+/**
+ * Sant om ordet finns i texten. Båda är normaliserade. Ett ord på högst tre tecken ska stå i
+ * början av ett ord, annars träffar "rag" i "storage". Detsamma gäller "gotland", som annars
+ * träffar Östergötland.
+ */
+export function finnsI(text: string, ord: string): boolean {
+  if (ord.length > 3 && !ORDSTART.has(ord)) return text.includes(ord);
   let monster = ordgranser.get(ord);
   if (!monster) ordgranser.set(ord, (monster = new RegExp(`(^|[^a-z0-9])${ord.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`)));
-  return monster.test(o.ns);
+  return monster.test(text);
 }
+
+const ordTraff = (o: Sokpost, ord: string): boolean => finnsI(o.ns, ord);
 
 function altTraff(o: Sokpost, alt: Alternativ): boolean {
   if (typeof alt === 'string') return alt.split(' ').every((ord) => ordTraff(o, ord));
