@@ -71,4 +71,33 @@ npm run build
 
 ## För den som granskar
 
-Granskningslistan står längst ned i [kriterier.md](kriterier.md). Ett avslag skrivs i pull requesten med hänvisning till kriteriet. Tips från det korta formuläret hanteras enligt [Från tips till post](#från-tips-till-post). Den här filen är rutinen för alla som granskar.
+Varje pull request som rör en fil i `data/organisationer/` får en kommentar med rubriken Granskning mot kriterierna. Där står granskningslistan ur [kriterier.md](kriterier.md) som punkter, en uppsättning per organisation. Under varje organisation står det filen själv anger: namn, typ, organisationsnummer med källa, beskrivning, webbplats och belägg. Ingen maskin har öppnat källorna.
+
+Så granskar du:
+
+1. Öppna källorna och pröva varje punkt.
+2. Bocka av punkterna genom att klicka i rutorna.
+3. Skriv `/granskad` ensamt på första raden i en ny kommentar. Det är ditt intyg, och först då blir läget grönt. Under raden får du skriva vad du vill.
+
+Det här gäller:
+
+- Bara en människa med skrivrätt i repot kan intyga. Kommentaren ska vara ny och skriven av dig själv: en kommentar som har redigerats, som har dolts eller som en app har skrivit i ditt namn räknas inte.
+- Listan under varje organisation är ett utdrag ur filen. Anteckningar och en del fält visas inte där. Läs hela filen i pull requesten innan du intygar.
+- En bock gäller filen som den såg ut när du bockade. Ändras filen nollställs organisationens punkter, och intyget gäller inte längre.
+- Listan visar det som går in i `main` om pull requesten slås ihop nu. När `main` får en ny commit räknas läget om av sig självt inom någon minut. Har `main` ändrat samma organisation visar listan filen som den blir efter sammanslagningen, punkterna nollställs och ett nytt intyg behövs.
+- Läget blir rött när listan inte går att lita på: grenen har konflikter mot `main`, eller en sammanslagning i grenens historik har ändrat organisationer för hand. Lös konflikten, eller gör om grenen utan den sammanslagningen, så räknas listan om.
+- Ändras listan efter ditt intyg, till exempel för att någon bockar ur en punkt, behövs ett nytt `/granskad`. Dölj varken listan eller intyget: en dold kommentar räknas som ändrad.
+- Läget sitter på pull requestens senaste commit. Två pull requests med samma senaste commit delar därför läge och skriver över varandras. Stäng dubbletten och kör om flödet på den riktiga.
+- AI får hjälpa dig att kontrollera att ett belägg visar det som påstås, men listan och intyget är dina. En bot kan kryssa i en ruta, och därför räcker inte rutorna: det är din kommentar som räknas. En agent som arbetar inloggad som du går inte att skilja från dig. Den regeln vilar därför på dig.
+- Listan gäller organisationer. Ändringar av kriterier, schema, validering och flöden granskas inte av den, även när läget är grönt. Listan och läget säger till när sådana filer ändras.
+- Sista punkten i kriterier.md, att `npm run validera` är grön, prövas av kontrollen Validera data och bygg.
+- Högst 30 organisationer per pull request. Fler än så delas upp.
+- Ett avslag skrivs i pull requesten med hänvisning till kriteriet. Tips från det korta formuläret hanteras enligt [Från tips till post](#från-tips-till-post). Den här filen är rutinen för alla som granskar.
+
+### Göra granskningen tvingande
+
+Läget heter Granskning mot kriterierna. Det blir tvingande när det läggs till som obligatorisk kontroll för `main` under Settings → Rules, tillsammans med Validera data och bygg. Då går ingen pull request med en organisation att merga innan listan är avbockad och intygad, inte heller för den som äger repot. Raden Granskningslista / Skriv listan och sätt läget är flödets egen körning och ska inte väljas.
+
+Efter en ny commit i `main` tar det någon minut innan läget är omräknat för de öppna pull requesterna. Under den tiden kan ett äldre grönt läge stå kvar. Den som vill stänga det fönstret helt slår också på Require branches to be up to date before merging. Då måste grenen uppdateras mot `main` före varje merge.
+
+En pull request får sitt läge när den öppnas, när den ändras och när `main` ändras. Saknas läget ändå går flödet Granskningslista att köra för hand med pull requestens nummer: Actions → Granskningslista → Run workflow.

@@ -71,6 +71,10 @@ function kontrolleraPost(post) {
   const e = (m) => fel.push(m);
   const w = (m) => varningar.push(m);
 
+  if (post.lank) {
+    e('Filen är en symbolisk länk. En organisation ska vara en vanlig fil.');
+    return { fel, varningar };
+  }
   if (post.fel) {
     e(`YAML går inte att läsa: ${post.fel}`);
     return { fel, varningar };

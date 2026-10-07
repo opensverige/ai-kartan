@@ -17,6 +17,7 @@ Tech Embassy – Sveriges öppna AI-karta. En statisk Astro-sajt byggd från `da
 7. **Ändra aldrig status på begäran** av en organisation. Läs bevis, uppdatera källa och datum.
 8. **Inga hemligheter i repot.** Inga nycklar, tokens eller `.env`-filer.
 9. **Kör `npm run validera`** innan du är klar. Grön validering är ett krav, inte ett mål.
+10. **Bocka aldrig av granskningslistan, och intyga den aldrig.** Kommentaren Granskning mot kriterierna på en pull request är människans. Redigera den aldrig, skriv aldrig `/granskad`, och merga aldrig en pull request som rör en organisation innan en människa har bockat av och intygat den.
 
 ## Arbetsflöde
 
@@ -45,4 +46,7 @@ node scripts/andringar.mjs --skriv-ut   # se vad som ändrats
 | `src/lib/data.ts` | Laddar allt en gång per bygge |
 | `src/components/KartApp.astro` | Karta, filter och lista (MapLibre, OpenFreeMap) |
 | `src/pages/organisation/[id].astro` | Permalänk per organisation |
-| `.github/workflows/` | Validering, historik, färskhet, länkkoll, ärende till PR, Pages |
+| `scripts/lib/granskning.mjs` | Granskningslistan som en människa bockar av på varje pull request med organisationer |
+| `scripts/lib/granskningskorning.mjs` | Körningen som läser pull requesten, skriver listan och sätter läget |
+| `scripts/lib/granskningsgit.mjs` | Räknar med git ut vad pull requesten skulle ändra i main om den slogs ihop nu |
+| `.github/workflows/` | Validering, granskning mot kriterierna, historik, färskhet, länkkoll, ärende till PR, Pages |

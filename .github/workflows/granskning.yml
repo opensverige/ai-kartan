@@ -1,0 +1,115 @@
+# Ser till att kriterierna gås igenom av en människa innan en organisation går in på kartan.
+#
+# Varje pull request som rör en fil i data/organisationer får en kommentar med kriterierna per
+# organisation. Läget "Granskning mot kriterierna" är gult tills varje punkt är avbockad och en
+# människa med skrivrätt har skrivit /granskad i en egen kommentar. Görs läget tvingande för
+# main går pull requesten inte att merga innan dess.
+#
+# Säkerhet:
+#   - pull_request_target kör flödet och skripten ur main, aldrig ur pull requesten.
+#     Pull requestens commits hämtas som data till ett git-förråd utan arbetskatalog. Inget ur
+#     dem checkas ut eller körs.
+#   - Inget ur pull requesten eller kommentarerna sätts in i ett skalkommando.
+#   - Körningen minns ingenting. Varje gång räknar den ut läget på nytt: vilka organisationer som
+#     ändras, vad som är avbockat i flödets egen kommentar, och vem som har intygat. Vilken
+#     händelse som startade körningen spelar ingen roll, så en körning som uteblir eller hoppas
+#     över kan inte ge grönt.
+#   - Vilka organisationer som ändras är skillnaden mellan main som den är nu och det main blir
+#     om pull requesten slås ihop nu. Sammanslagningen räknas ut med git. När main får en ny
+#     commit räknas därför läget om för varje öppen pull request, se jobbet efter-main.
+#   - En bock gäller filens version. Ändras filen nollställs bocken.
+#   - Rutorna kan kryssas i av vem som helst med skrivrätt, även en bot. Därför krävs intyget:
+#     en kommentar som ingen har redigerat, skriven av en människa med skrivrätt efter listans
+#     senaste ändring.
+#
+# Flödet heter något annat än läget med flit. Den gröna bocken för själva körningen ska inte
+# gå att förväxla med läget, som är det som ska göras tvingande.
+name: Granskningslista
+
+on:
+  pull_request_target:
+    # edited täcker att pull requesten byter basgren, till exempel till main.
+    types: [opened, synchronize, reopened, ready_for_review, edited]
+    branches: [main]
+  issue_comment:
+    types: [created, edited, deleted]
+  # En ny commit i main kan ändra vad en öppen pull request skulle föra in. Se jobbet efter-main.
+  push:
+    branches: [main]
+  # För pull requests som inte startar flödet av sig själva: de som skapas ur ärendeformuläret
+  # och de som var öppna innan flödet fanns. Ange pull requestens nummer.
+  workflow_dispatch:
+    inputs:
+      pr:
+        description: Pull requestens nummer
+        required: true
+        type: number
+
+permissions: {}
+
+# En körning i taget per pull request. Väntar redan en körning ersätts den av en nyare, och det
+# är rätt: varje körning räknar om allt, så den senaste räcker. En kommentar som inte rör
+# granskningen får en egen grupp, så att den inte tränger undan en körning som behövs.
+#
+# En kommentar rör granskningen om den sitter på en pull request och antingen är flödets egen
+# lista eller nämner /granskad, nu eller innan den redigerades. Vem som skrev den prövas i
+# skriptet: GitHub säger inte alltid här att någon hör till organisationen. Samma villkor står på
+# jobbet granskning nedan. En commit i main får också en egen grupp: den rör alla pull requests.
+concurrency:
+  group: granskning-${{ (github.event_name != 'issue_comment' || (github.event.issue.pull_request != null && (github.event.comment.user.login == 'github-actions[bot]' || contains(github.event.comment.body, '/granskad') || contains(github.event.changes.body.from, '/granskad')))) && (github.event.pull_request.number || github.event.issue.number || inputs.pr) || github.run_id }}
+
+jobs:
+  granskning:
+    name: Skriv listan och sätt läget
+    if: github.event_name != 'push' && (github.event_name != 'issue_comment' || (github.event.issue.pull_request != null && (github.event.comment.user.login == 'github-actions[bot]' || contains(github.event.comment.body, '/granskad') || contains(github.event.changes.body.from, '/granskad'))))
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      pull-requests: write
+      statuses: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci --ignore-scripts
+
+      - name: Skriv listan och sätt läget
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMMER: ${{ github.event.pull_request.number || github.event.issue.number || inputs.pr }}
+        run: node scripts/granskning.mjs
+
+  # Main har fått en ny commit. Det som en öppen pull request skulle föra in kan då vara något
+  # annat än det listan visar, till exempel om samma organisation har ändrats i main. Varje öppen
+  # pull request får därför en egen körning av jobbet ovan. Körningarna startas som
+  # workflow_dispatch: det är den enda händelse som flödets egen token får starta flöden med.
+  efter-main:
+    name: Räkna om öppna pull requests
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      actions: write
+      pull-requests: read
+    steps:
+      - name: Starta en körning per öppen pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          GREN: ${{ github.event.repository.default_branch }}
+        run: |
+          gh api --paginate "repos/$REPO/pulls?state=open&base=$GREN&per_page=100" --jq '.[].number' > oppna.txt
+          # Går en start fel ska de andra pull requesterna ändå få sin körning.
+          fel=0
+          while read -r pr; do
+            gh workflow run granskning.yml --repo "$REPO" --ref "$GREN" -f pr="$pr" || fel=1
+          done < oppna.txt
+          exit "$fel"
