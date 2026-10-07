@@ -1,0 +1,109 @@
+id: noetive
+
+name:
+  value: Noetive
+  status: claimed
+  source_url: https://www.noetive.io
+  source_type: own_site
+  verified_at: 2026-10-08
+  verified_by: agent
+
+legal_name:
+  value: Noetive AB
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559497021101
+  source_type: company_register
+  verified_at: 2026-10-08
+  verified_by: agent
+  note: "Namn enligt momsregistret, hämtat via EU:s tjänst VIES. Webbplatsens villkor anger Noetive AB med samma organisationsnummer."
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559497021101
+  source_type: company_register
+  verified_at: 2026-10-08
+  verified_by: agent
+  note: "Bolagsformen är härledd ur det registrerade namnet. Momsregistret har inget eget fält för bolagsform."
+
+org_number:
+  value: "559497-0211"
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559497021101
+  source_type: company_register
+  verified_at: 2026-10-08
+  verified_by: agent
+
+website: https://www.noetive.io
+
+description:
+  value: Utvecklar Semantik, en meddelandeförmedlare för AI-agenter. Meddelanden bäddas in och levereras till prenumerationer vars fråga i språket SemQL matchar innehållet. Utvecklar också Bud, e-post och kalender för agenter, en MCP-server och Riffle, en webbläsare för agenter med öppen källkod.
+  status: claimed
+  source_url: https://www.noetive.io/semantik
+  source_type: own_site
+  verified_at: 2026-10-08
+  verified_by: agent
+
+offers:
+  value: [produkt, oppen_kallkod]
+  status: claimed
+  source_url: https://www.noetive.io
+  source_type: own_site
+  verified_at: 2026-10-08
+  verified_by: agent
+
+areas:
+  value: [agenter_automation]
+  status: claimed
+  source_url: https://www.noetive.io
+  source_type: own_site
+  verified_at: 2026-10-08
+  verified_by: agent
+
+kommun:
+  value: "1401"
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559497021101
+  source_type: company_register
+  verified_at: 2026-10-08
+  verified_by: agent
+  note: "Härryda. Härledd från postorten Landvetter i den registrerade adressen i momsregistret. Sätet enligt Bolagsverket är inte kontrollerat."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559497021101
+  source_type: company_register
+  verified_at: 2026-10-08
+  verified_by: agent
+  note: "Giltigt momsregistreringsnummer enligt VIES 2026-10-08."
+
+evidence:
+  - url: https://www.noetive.io/semantik
+    kind: produkt
+    title: "Semantik: meddelandeförmedlare som matchar meddelanden mot prenumerationer med inbäddningar och frågespråket SemQL"
+    status: claimed
+    verified_at: 2026-10-08
+    verified_by: agent
+  - url: https://github.com/noetive/agent-swarms-orchestrator-semantik-demo
+    kind: repo
+    title: "Demo där en ledaragent startar arbetaragenter utifrån vilka meddelanden Semantik matchar"
+    status: claimed
+    verified_at: 2026-10-08
+    verified_by: agent
+    note: Länken som angavs i tipset, ärende 28. Kodförrådet skapades 2026-10-07 och har licensen Apache-2.0.
+  - url: https://github.com/noetive/noetive-mcp
+    kind: repo
+    title: "MCP-server som kopplar AI-agenter till Semantik"
+    status: claimed
+    verified_at: 2026-10-08
+    verified_by: agent
+  - url: https://github.com/noetive/riffle
+    kind: repo
+    title: "Riffle: MCP-server och kommandoradsverktyg som låter en agent läsa och använda webbsidor"
+    status: claimed
+    verified_at: 2026-10-08
+    verified_by: agent
+
+record_created_at: 2026-10-08
+record_updated_at: 2026-10-08
