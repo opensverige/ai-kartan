@@ -1,0 +1,106 @@
+id: kntnt
+
+name:
+  value: Kntnt
+  status: claimed
+  source_url: https://www.kntnt.se
+  source_type: own_site
+  verified_at: 2026-10-07
+  verified_by: agent
+
+legal_name:
+  value: Kntnt Sweden AB
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/556886295601
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Namn enligt momsregistret, hämtat via EU:s tjänst VIES. Sidfoten på kntnt.se anger samma namn och organisationsnummer. Kodförrådets beskrivning och NOTICE-fil anger Kntnt Sweden AB."
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/556886295601
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Bolagsformen är härledd ur det registrerade namnet. Momsregistret har inget eget fält för bolagsform."
+
+org_number:
+  value: "556886-2956"
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/556886295601
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Numret står i sidfoten på kntnt.se och är giltigt i momsregistret med namnet Kntnt Sweden AB."
+
+website: https://www.kntnt.se
+
+description:
+  value: Publicerar Kntnt Skills, en samling instruktioner och skript (agent skills) med öppen källkod för kodagenter som Claude Code, Codex och OpenCode. Samlingen omfattar bland annat delegering till underagenter, bygge av ärenden i beroendeordning och val av AI-modell.
+  status: claimed
+  source_url: https://github.com/Kntnt/skills
+  source_type: own_docs
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Enligt kodförrådets README. Bolaget beskriver sig på kntnt.se som kommunikationsbyrå. Sidorna i webbplatskartan på kntnt.se (tjänster, metod, priser, om) nämner inte AI. Bolagets onlinemagasin på samma domän har en krönika från 2019 om vad artificiell intelligens är."
+
+offers:
+  value: [oppen_kallkod]
+  status: claimed
+  source_url: https://github.com/Kntnt/skills
+  source_type: own_docs
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Förrådet är publicerat under Apache License 2.0."
+
+areas:
+  value: [agenter_automation]
+  status: claimed
+  source_url: https://github.com/Kntnt/skills
+  source_type: own_docs
+  verified_at: 2026-10-07
+  verified_by: agent
+
+kommun:
+  value: "1480"
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/556886295601
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Göteborg. Härledd från postorten Torslanda i den registrerade adressen i momsregistret; Torslanda ligger i Göteborgs kommun. Sidfoten på kntnt.se anger en adress i Göteborg. Sätet enligt Bolagsverket är inte kontrollerat."
+
+founded:
+  value: 2013
+  status: claimed
+  source_url: https://www.kntnt.se/om/historia/
+  source_type: own_site
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Grundat 2013 enligt webbplatsens historiksida. Registreringsåret i bolagsregistret är inte kontrollerat."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/556886295601
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Giltigt momsregistreringsnummer enligt VIES 2026-10-07."
+
+evidence:
+  - url: https://github.com/Kntnt/skills
+    kind: repo
+    title: "Kntnt Skills: agent skills för kodagenter, med hanterare och skript i Python, under Apache 2.0"
+    status: claimed
+    verified_at: 2026-10-07
+    verified_by: agent
+    note: "Förrådets beskrivning anger Kntnt Sweden AB. NOTICE-filen anger att programvaran är utvecklad hos Kntnt Sweden AB och länkar till kntnt.se. Sidorna i webbplatskartan på kntnt.se länkar inte till förrådet."
+
+links:
+  github: https://github.com/Kntnt
+
+record_created_at: 2026-10-07
+record_updated_at: 2026-10-07

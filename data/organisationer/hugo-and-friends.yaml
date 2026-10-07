@@ -1,0 +1,108 @@
+id: hugo-and-friends
+
+name:
+  value: Hugo & Friends
+  status: claimed
+  source_url: https://byhugo.se
+  source_type: own_site
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Tjänsterna publiceras under namnet By Hugo! och adressen hugoandfriends.se leder vidare till byhugo.se."
+
+legal_name:
+  value: Hugo & Friends AB
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559555998901
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Namn enligt momsregistret, hämtat via EU:s tjänst VIES. Webbplatsen byhugo.se anger Hugo & Friends AB med samma organisationsnummer som bolaget bakom tjänsterna."
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559555998901
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Bolagsformen är härledd ur det registrerade namnet. Momsregistret har inget eget fält för bolagsform."
+
+org_number:
+  value: "559555-9989"
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559555998901
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+
+website: https://byhugo.se
+
+description:
+  value: Bolaget bakom By Hugo! utvecklar och driver B2B-tjänster. BolagsAPI ger tillgång till svensk bolagsdata via REST och MCP. Rekly kopplar AI-klienter till Fortnox, där användaren godkänner förslag före ändringar. Hamn AI är ett OpenAI-kompatibelt API för lokala språkmodeller och svensk transkribering.
+  status: claimed
+  source_url: https://byhugo.se
+  source_type: own_site
+  verified_at: 2026-10-07
+  verified_by: agent
+
+offers:
+  value: [produkt, infrastruktur]
+  status: claimed
+  source_url: https://byhugo.se
+  source_type: own_site
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Egna tjänster och inferens-API enligt webbplatsen."
+
+areas:
+  value: [agenter_automation, generell]
+  status: claimed
+  source_url: https://byhugo.se
+  source_type: own_site
+  verified_at: 2026-10-07
+  verified_by: agent
+
+kommun:
+  value: "2026"
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559555998901
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Gagnef. Härledd från postorten i den registrerade adressen i momsregistret. Webbplatsen anger säte i Gagnef. Sätet enligt Bolagsverket är inte kontrollerat."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559555998901
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Giltigt momsregistreringsnummer enligt VIES 2026-10-07."
+
+evidence:
+  - url: https://github.com/HugoAndFriends/BolagsAPI-mcp-server
+    kind: repo
+    title: "BolagsAPI MCP-server på GitHub: nio verktyg som ger AI-agenter tillgång till svensk företagsdata (MIT)"
+    status: claimed
+    verified_at: 2026-10-07
+    verified_by: agent
+    note: Servern anropar BolagsAPI:s REST-API och kräver en API-nyckel därifrån. Kodförrådet ändrades senast 2026-01-29.
+  - url: https://rekly.se
+    kind: produkt
+    title: "Rekly: MCP-server som kopplar Fortnox till AI-klienter, med godkännande före varje ändring"
+    status: claimed
+    verified_at: 2026-10-07
+    verified_by: agent
+  - url: https://hamnai.se
+    kind: produkt
+    title: "Hamn AI: OpenAI-kompatibelt API för inferens med öppna modeller i ett privat kluster i Sverige"
+    status: claimed
+    verified_at: 2026-10-07
+    verified_by: agent
+
+links:
+  github: https://github.com/HugoAndFriends
+
+record_created_at: 2026-10-07
+record_updated_at: 2026-10-07
