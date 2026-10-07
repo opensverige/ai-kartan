@@ -187,7 +187,7 @@ test('ett intyg gäller listan som den såg ut, inte ändringar efteråt', async
   bocka(g.v);
   await kor(grund(g));
   assert.equal(sist(g.v).state, 'pending');
-  assert.match(sist(g.v).description, /ändrats efter intyget/);
+  assert.match(sist(g.v).description, /ändrats eller dolts efter intyget/);
   // Ett nytt intyg gör den grön igen.
   g.v.kommentera('granskare', '/granskad');
   await kor(grund(g));
@@ -244,7 +244,7 @@ test('skrivs listan om gäller inget äldre intyg, redan i samma körning', asyn
   assert.match(listan(g.v).body, /ändrar också regelfiler/);
   assert.equal(listan(g.v).body.split('\n').filter((r) => r.startsWith('- [x] ')).length, ANTAL_NY);
   assert.deepEqual([sist(g.v).state, sist(g.v).sha], ['pending', C2]);
-  assert.match(sist(g.v).description, /ändrats efter intyget/);
+  assert.match(sist(g.v).description, /ändrats eller dolts efter intyget/);
   // Samma svar nästa gång: läget får inte växla mellan två körningar utan att något har hänt.
   await kor(grund(g));
   assert.equal(sist(g.v).state, 'pending');

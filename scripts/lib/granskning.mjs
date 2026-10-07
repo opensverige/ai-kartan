@@ -294,7 +294,7 @@ export function lista(filer, { repo, nummer = null, ogiltiga = [], regelfiler = 
       ut.push(`- [${avbockade.get(m) ? 'x' : ' '}] ${text} ${m}`);
     }
   }
-  if (filer.length) ut.push('', `_Punkterna för en organisation nollställs när dess fil ändras. Ändras listan efter att någon har skrivit \`${INTYG}\` behövs ett nytt intyg._`);
+  if (filer.length) ut.push('', `_Punkterna för en organisation nollställs när dess fil ändras. Ändras eller döljs listan efter att någon har skrivit \`${INTYG}\` behövs ett nytt intyg._`);
   ut.push('', avtrycksrad(filer, lage));
   const text = ut.join('\n');
   if (Buffer.byteLength(text) > maxByte) {
@@ -346,7 +346,7 @@ export function utfall(lage, { intygadAv = '', intygForaldrat = false, regelfile
   if (lage.klara < lage.totalt) return { state: 'pending', description: rad(`${lage.klara} av ${lage.totalt} punkter avbockade.${regler}`) };
   const av = rensa(intygadAv, 39);
   if (!av) {
-    return { state: 'pending', description: rad(intygForaldrat ? `Listan har ändrats efter intyget. Skriv ${INTYG} i en ny kommentar.${regler}` : `Alla ${lage.totalt} punkter avbockade. Skriv ${INTYG} i en kommentar för att intyga.${regler}`) };
+    return { state: 'pending', description: rad(intygForaldrat ? `Listan har ändrats eller dolts efter intyget. Skriv ${INTYG} i en ny kommentar.${regler}` : `Alla ${lage.totalt} punkter avbockade. Skriv ${INTYG} i en kommentar för att intyga.${regler}`) };
   }
   return { state: 'success', description: rad(`Alla ${lage.totalt} punkter avbockade och intygade av ${av}.${regler}`) };
 }

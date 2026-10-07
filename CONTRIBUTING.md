@@ -84,7 +84,8 @@ Det här gäller:
 - Bara en människa med skrivrätt i repot kan intyga. Kommentaren ska vara ny och skriven av dig själv: en kommentar som har redigerats, som har dolts eller som en app har skrivit i ditt namn räknas inte.
 - Listan under varje organisation är ett utdrag ur filen. Anteckningar och en del fält visas inte där. Läs hela filen i pull requesten innan du intygar.
 - En bock gäller filen som den såg ut när du bockade. Ändras filen nollställs organisationens punkter, och intyget gäller inte längre.
-- Ändras listan efter ditt intyg, till exempel för att någon bockar ur en punkt, behövs ett nytt `/granskad`.
+- Ändras listan efter ditt intyg, till exempel för att någon bockar ur en punkt, behövs ett nytt `/granskad`. Dölj varken listan eller intyget: en dold kommentar räknas som ändrad.
+- Läget sitter på pull requestens senaste commit. Två pull requests med samma senaste commit delar därför läge och skriver över varandras. Stäng dubbletten och kör om flödet på den riktiga.
 - AI får hjälpa dig att kontrollera att ett belägg visar det som påstås, men listan och intyget är dina. En bot kan kryssa i en ruta, och därför räcker inte rutorna: det är din kommentar som räknas. En agent som arbetar inloggad som du går inte att skilja från dig. Den regeln vilar därför på dig.
 - Listan gäller organisationer. Ändringar av kriterier, schema, validering och flöden granskas inte av den, även när läget är grönt. Listan och läget säger till när sådana filer ändras.
 - Sista punkten i kriterier.md, att `npm run validera` är grön, prövas av kontrollen Validera data och bygg.

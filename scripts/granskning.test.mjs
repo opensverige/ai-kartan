@@ -106,7 +106,7 @@ test('avbockat räcker inte: kontrollen blir grön först när en människa har 
   // Ett intyg som är äldre än listans senaste ändring gäller inte.
   const gammalt = utfall(hel, { intygForaldrat: true });
   assert.equal(gammalt.state, 'pending');
-  assert.match(gammalt.description, /ändrats efter intyget/);
+  assert.match(gammalt.description, /ändrats eller dolts efter intyget/);
   // Ett intyg hjälper inte en lista som inte är avbockad.
   assert.equal(utfall(avlas(filer, lista(filer, HAR)), { intygadAv: 'granskare' }).state, 'pending');
   for (const u of [utan, med, gammalt]) assert.ok(u.description.length <= 140);
