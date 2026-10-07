@@ -22,7 +22,7 @@ const post = (id, extra = {}) => ({
 });
 /** En organisationsfil så som körningen lämnar den till listan. `innehall` står för filens text. */
 const fil = (id, innehall, status = 'added', data = post(id)) => ({ sokvag: `data/organisationer/${id}.yaml`, status, version: version(status, innehall), data, fel: null });
-const borttagen = (id, ersattAv = null) => ({ sokvag: `data/organisationer/${id}.yaml`, status: 'removed', version: version('removed', ersattAv ?? ''), data: null, fel: null, ersattAv });
+const borttagen = (id) => ({ sokvag: `data/organisationer/${id}.yaml`, status: 'removed', version: version('removed', ''), data: null, fel: null });
 const bocka = (kropp, villkor = () => true) => kropp.split('\n').map((rad) => (rad.startsWith('- [ ] ') && villkor(rad) ? rad.replace('- [ ] ', '- [x] ') : rad)).join('\n');
 const tomma = (kropp) => kropp.split('\n').filter((r) => r.startsWith('- [ ] '));
 
@@ -72,12 +72,29 @@ test('en ändrad organisation länkas till ändringen, inte bara till filen', ()
   assert.ok(kropp.includes(`https://github.com/${REPO}/pull/7/files#diff-${ankare}`));
 });
 
-test('ett namnbyte ger en punkt om att det gamla id:t försvinner', () => {
-  const filer = [borttagen('gammalt-namn', 'nytt-namn'), fil('nytt-namn', 'A')];
+test('ett byte av id syns som en borttagen och en ny, och punkten för borttagningen säger det', () => {
+  const filer = [borttagen('gammalt-namn'), fil('nytt-namn', 'A')];
   const kropp = lista(filer, HAR);
   assert.equal(avlas(filer, kropp).totalt, 7);
-  assert.match(kropp, /`gammalt-namn` · ersätts av `nytt-namn`/);
-  assert.match(kropp, /samma organisation/);
+  assert.match(kropp, /`gammalt-namn` · tas bort/);
+  assert.match(kropp, /samma organisation kvar under ett nytt id/);
+});
+
+test('har main också ändrat i filen sägs det, och listan ritas om när det ändras', () => {
+  const egen = [fil('ett', 'A', 'modified')];
+  const blandad = [{ ...egen[0], blandad: true }];
+  assert.equal(lista(egen, HAR).includes('Main har också ändrat'), false);
+  assert.match(lista(blandad, HAR), /Main har också ändrat i den här filen/);
+  assert.equal(behoverRitasOm(blandad, {}, lista(egen, HAR)), true);
+  assert.equal(behoverRitasOm(blandad, {}, lista(blandad, HAR)), false);
+});
+
+test('är mappen själv utbytt säger läget det, inte att en fil ligger fel', () => {
+  const ogiltiga = [{ sokvag: 'data/organisationer', skal: 'är inte längre en vanlig mapp, utan till exempel en symbolisk länk', mapp: true }];
+  const u = utfall(avlas([], lista([], { ...HAR, ogiltiga }), { ogiltiga }));
+  assert.equal(u.state, 'failure');
+  assert.match(u.description, /^Mappen data\/organisationer har bytts mot något annat/);
+  assert.match(lista([], { ...HAR, ogiltiga }), /`data\/organisationer`: är inte längre en vanlig mapp/);
 });
 
 test('listan är klar först när varje punkt är avbockad', () => {
@@ -288,6 +305,7 @@ test('för många organisationer i samma pull request stoppas', () => {
   const kropp = lista(filer, HAR);
   assert.match(kropp, /Dela upp/);
   assert.equal(utfall(avlas(filer, kropp)).state, 'failure');
+  assert.match(utfall(avlas(filer, kropp)).description, /^För många organisationer/);
 });
 
 test('en lista som blir för lång för en kommentar stoppas i stället för att krascha', () => {
@@ -302,6 +320,8 @@ test('en lista som blir för lång för en kommentar stoppas i stället för att
   assert.match(trang, /Dela upp/);
   assert.equal(trang.includes('- [ ] '), false);
   assert.equal(utfall(avlas(filer, trang)).state, 'failure');
+  // Läget säger vad som är fel. Organisationerna är inte för många, det är listan som är för lång.
+  assert.match(utfall(avlas(filer, trang)).description, /^Listan blir för lång/);
   // En vanlig full pull request ryms med god marginal.
   const vanlig = lista(Array.from({ length: MAX_ORGANISATIONER }, (_, i) => fil(`org-${i}`, `A${i}`)), HAR);
   assert.ok(vanlig.includes('- [ ] '));

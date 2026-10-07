@@ -1,16 +1,17 @@
 // Körningen bakom granskningslistan: läser en pull request, skriver listan och sätter kontrollens läge.
 // Reglerna för hur listan ser ut och läses av står i scripts/lib/granskning.mjs.
 //
-// Alla anrop till GitHub går genom `api`, som den som anropar skickar in. Då går hela körningen
-// att pröva mot ett låtsas-GitHub (scripts/granskningskorning.test.mjs).
+// Alla anrop till GitHub går genom `api` och allt som git räknar ut genom `git`. Båda skickas in
+// av den som anropar. Då går hela körningen att pröva mot ett låtsas-GitHub ovanpå ett riktigt
+// git-förråd (scripts/granskningskorning.test.mjs).
 //
 // Körningen minns ingenting mellan gångerna och bryr sig inte om vilken händelse som startade den.
-// Varje gång räknar den ut läget på nytt ur det GitHub självt håller reda på:
+// Varje gång räknar den ut läget på nytt:
 //
-//   - Vilka organisationer som ändras räknas ur två träd i kodförrådet: pull requestens senaste
-//     commit och commiten där den grenade av. Båda pekas ut av id:n ur samma läsning, och ett
-//     träd kan inte ändras i efterhand. Listan kan alltså aldrig gälla något annat än den commit
-//     som får läget.
+//   - Vilka organisationer som ändras är skillnaden mellan main som den är just nu och det main
+//     skulle bli om pull requesten slogs ihop nu. Sammanslagningen räknas ut med git självt, se
+//     scripts/lib/granskningsgit.mjs. Listan visar alltså det som faktiskt går in, också när main
+//     har flyttat sig sedan grenen skapades. Läget sätts på den commit som slogs ihop i uträkningen.
 //   - Vilka punkter som är avbockade står i flödets egen kommentar.
 //   - Att en människa har gått igenom listan intygas i en egen kommentar, skriven av någon med
 //     skrivrätt, aldrig redigerad och nyare än listans senaste ändring. En bot kan kryssa i en
@@ -20,7 +21,8 @@
 // Går något fel blir läget "error", aldrig grönt, och listan rörs inte.
 
 import { tolkaYaml } from './organisationer.mjs';
-import { arOrganisationsfil, iOrganisationsmappen, arRegelfil, version, lista, avlas, utfall, behoverRitasOm, arIntyg, MARKOR, KONTEXT, MAX_ORGANISATIONER } from './granskning.mjs';
+import { GitFel } from './granskningsgit.mjs';
+import { arOrganisationsfil, iOrganisationsmappen, arRegelfil, version, lista, avlas, utfall, behoverRitasOm, arIntyg, MARKOR, KONTEXT, MAPP, MAX_ORGANISATIONER } from './granskning.mjs';
 
 /** Ett svar från GitHub som inte var 2xx. `status` är svarskoden. */
 export class ApiFel extends Error {
@@ -34,6 +36,8 @@ const VANLIG_FIL = new Set(['100644', '100755']);
 const MAX_FILSTORLEK = 200_000;
 const BOT = 'github-actions[bot]';
 const ID = /^[0-9a-f]{40}$/;
+/** Fler sammanslagningar än så här i en gren går inte att pröva en och en. */
+const MAX_SAMMANSLAGNINGAR = 20;
 
 /**
  * Hur länge ett anrop ska vänta innan det prövas igen, i millisekunder, eller null om felet inte
@@ -51,59 +55,83 @@ export function vantetid(status, huvuden, nu = Date.now(), tak = 15 * 60_000) {
 }
 
 /**
- * Vad som skiljer pull requestens träd från trädet där den grenade av. `bas` och `huvud` är
- * raderna ur GitHubs träd-API. Svaret är organisationsfilerna som ändras, det som inte får ligga
- * i mappen, och om någon regelfil ändras.
+ * Vad som skiljer två träd åt. `bas` är main, `ihop` är main med pull requesten sammanslagen och
+ * `huvud` är pull requestens eget träd. Alla tre är rader ur git, se `rader` i granskningsgit.mjs.
+ * Svaret är organisationsfilerna som ändras, det som inte får ligga i mappen, och om någon
+ * regelfil ändras.
  */
-export function jamforTrad(bas, huvud) {
+export function jamforTrad(bas, ihop, huvud = ihop) {
   const blad = (rader) => new Map(rader.filter((t) => t.type !== 'tree').map((t) => [t.path, t]));
+  const samma = (a, b) => Boolean(a && b) && a.sha === b.sha && a.mode === b.mode && a.type === b.type;
   const fore = blad(bas);
-  const efter = blad(huvud);
+  const efter = blad(ihop);
+  const egen = blad(huvud);
   const filer = [];
   const ogiltiga = [];
   let regelfiler = false;
   for (const sokvag of new Set([...fore.keys(), ...efter.keys()])) {
     const g = fore.get(sokvag);
     const h = efter.get(sokvag);
-    if (g && h && g.sha === h.sha && g.mode === h.mode && g.type === h.type) continue;
+    if (samma(g, h)) continue;
     if (arRegelfil(sokvag)) regelfiler = true;
     if (!iOrganisationsmappen(sokvag)) continue;
     if (!h) {
-      if (arOrganisationsfil(sokvag)) filer.push({ sokvag, status: 'removed', basblob: g.sha, ersattAv: null });
+      if (arOrganisationsfil(sokvag)) filer.push({ sokvag, status: 'removed', basblob: g.sha });
     } else if (!arOrganisationsfil(sokvag)) ogiltiga.push({ sokvag, skal: 'filnamnet är inte ett id med gemener, siffror och bindestreck följt av .yaml' });
     else if (h.type !== 'blob' || !VANLIG_FIL.has(h.mode)) ogiltiga.push({ sokvag, skal: 'är inte en vanlig fil, till exempel en symbolisk länk' });
     else if (!(h.size <= MAX_FILSTORLEK)) ogiltiga.push({ sokvag, skal: 'filen är för stor för att vara en organisation' });
-    else filer.push({ sokvag, status: g ? 'modified' : 'added', blob: h.sha, basblob: g?.type === 'blob' ? g.sha : null });
+    // Skiljer sig filen från grenens egen har main ändrat i den också, och git har slagit ihop de två.
+    else filer.push({ sokvag, status: g ? 'modified' : 'added', blob: h.sha, basblob: g?.type === 'blob' ? g.sha : null, blandad: !samma(h, egen.get(sokvag)) });
   }
-  // Ett namnbyte syns som en borttagen och en ny fil med samma innehåll. Då sägs vilken som ersätter vilken.
-  const nya = filer.filter((f) => f.status === 'added');
-  for (const fil of filer.filter((f) => f.status === 'removed')) {
-    const samma = nya.filter((n) => n.blob === fil.basblob);
-    if (samma.length === 1) fil.ersattAv = samma[0].sokvag;
+  // Mappen själv, eller mappen den ligger i, kan vara utbytt mot en länk, en fil eller ett annat
+  // kodförråd. Då finns inga filer att lista, och det är det som ska sägas.
+  for (const mapp of MAPP.split('/').map((_, i, delar) => delar.slice(0, i + 1).join('/'))) {
+    if (efter.has(mapp) && !samma(fore.get(mapp), efter.get(mapp))) {
+      return { filer: [], ogiltiga: [{ sokvag: mapp, skal: 'är inte längre en vanlig mapp, utan till exempel en symbolisk länk', mapp: true }], regelfiler };
+    }
   }
   for (const fil of filer) {
-    fil.version = fil.status === 'removed' ? version('removed', fil.ersattAv ?? '') : version(fil.status, fil.status === 'modified' ? `${fil.basblob}\n${fil.blob}` : fil.blob);
+    fil.version = fil.status === 'removed' ? version('removed', '') : version(fil.status, fil.status === 'modified' ? `${fil.basblob}\n${fil.blob}` : fil.blob);
   }
   const efterNamn = (a, b) => a.sokvag.localeCompare(b.sokvag);
   return { filer: filer.sort(efterNamn), ogiltiga: ogiltiga.sort(efterNamn), regelfiler };
 }
 
-async function trad(api, repo, sha) {
-  if (!ID.test(String(sha))) throw new Error('GitHub gav inget giltigt id för en commit.');
-  const svar = await api('GET', `/repos/${repo}/git/trees/${sha}?recursive=1`);
-  if (svar.truncated || !Array.isArray(svar.tree)) throw new Error('Kodförrådet är för stort för att läsas i ett svep.');
-  return svar.tree;
+/** Den senaste commiten i en gren, läst just nu. */
+async function spets(api, repo, gren) {
+  const svar = await api('GET', `/repos/${repo}/git/ref/heads/${String(gren).split('/').map(encodeURIComponent).join('/')}`);
+  if (svar?.ref !== `refs/heads/${gren}` || svar.object?.type !== 'commit' || !ID.test(String(svar.object?.sha))) throw new Error('GitHub gav inget giltigt id för grenens senaste commit.');
+  return svar.object.sha;
+}
+
+/**
+ * Det som hindrar en granskning, som en rad att visa i läget, eller null.
+ *
+ * En sammanslagning i grenens egen historik får inte ha ändrat organisationer för hand. Listan
+ * visar slutresultatet, men den som slår ihop med Rebase and merge får med grenens vanliga
+ * commits och inte dess sammanslagningar. Det en sammanslagning har tagit bort eller skrivit om
+ * skulle då gå in i main utan att ha stått i listan.
+ */
+async function hinderIHistoriken(git, bas, sha) {
+  const alla = await git.sammanslagningar(bas, sha, MAX_SAMMANSLAGNINGAR + 1);
+  if (alla.length > MAX_SAMMANSLAGNINGAR) return 'Grenens historik har för många sammanslagningar för att granskas. Gör om grenen med färre.';
+  for (const s of alla) {
+    const utanHand = s.foraldrar.length === 2 ? await git.slaIhop(s.foraldrar[0], s.foraldrar[1]) : null;
+    if (!utanHand || (await git.mapp(utanHand.trad, MAPP)) !== (await git.mapp(s.sha, MAPP))) {
+      return 'En sammanslagning i grenens historik ändrar organisationer för hand. Gör om grenen utan den.';
+    }
+  }
+  return null;
 }
 
 /** Hämtar filens text, samma version som markören gäller, och tolkar den som bygget gör. */
-async function lasFil(api, repo, fil) {
+async function lasFil(git, fil) {
   if (fil.status === 'removed' || fil.data !== undefined || fil.fel) return;
-  if (!ID.test(String(fil.blob))) throw new Error(`Filen ${fil.sokvag} saknar version hos GitHub.`);
-  const blob = await api('GET', `/repos/${repo}/git/blobs/${fil.blob}`);
-  const text = Buffer.from(String(blob.content ?? ''), blob.encoding === 'base64' ? 'base64' : 'utf8').toString('utf8');
+  if (!ID.test(String(fil.blob))) throw new Error(`Filen ${fil.sokvag} saknar version hos git.`);
   try {
-    fil.data = tolkaYaml(text);
+    fil.data = tolkaYaml(await git.text(fil.blob));
   } catch (fel) {
+    if (fel instanceof GitFel) throw fel;
     fil.fel = fel.message;
   }
 }
@@ -185,10 +213,11 @@ async function skrivLage(api, repo, sha, lage) {
 
 /**
  * Kör granskningen för en pull request.
+ *   git       ett förråd att räkna i, se scripts/lib/granskningsgit.mjs
  *   torrt     skriver ingenting, returnerar bara vad som skulle hända
  *   korning   länk till flödeskörningen, visas om något går fel
  */
-export async function kor({ api, repo, nummer, torrt = false, korning = null, logg = console.log }) {
+export async function kor({ api, git, repo, nummer, torrt = false, korning = null, logg = console.log }) {
   const pr = await api('GET', `/repos/${repo}/pulls/${nummer}`);
   // En torrkörning skriver ingenting och får därför titta även på en stängd pull request.
   if (pr.state !== 'open' && !torrt) {
@@ -197,31 +226,49 @@ export async function kor({ api, repo, nummer, torrt = false, korning = null, lo
   }
   // Läget sitter på en commit. En pull request mot en annan gren får därför inte sätta det:
   // samma commit kan samtidigt vara på väg in i main med en organisation i sig.
-  if (pr.base?.ref !== pr.base?.repo?.default_branch) {
+  const gren = pr.base?.ref;
+  if (!gren || gren !== pr.base?.repo?.default_branch) {
     logg(`Pull request ${nummer} går inte mot standardgrenen. Inget läge sätts.`);
     return { hoppad: 'annan basgren än standardgrenen' };
   }
   const sha = pr.head?.sha;
-  if (!ID.test(String(sha)) || !ID.test(String(pr.base?.sha))) throw new Error('GitHub gav inget giltigt id för pull requestens commits.');
+  if (!ID.test(String(sha))) throw new Error('GitHub gav inget giltigt id för pull requestens senaste commit.');
 
   try {
-    // Var pull requesten grenade av. Båda id:na kommer ur samma läsning, och svaret beror bara på dem.
-    const jamforelse = await api('GET', `/repos/${repo}/compare/${pr.base.sha}...${sha}?per_page=1`);
-    const bas = await trad(api, repo, jamforelse.merge_base_commit?.sha);
-    const huvud = await trad(api, repo, sha);
-    const { filer, ogiltiga, regelfiler } = jamforTrad(bas, huvud);
-    const lage = { ogiltiga, regelfiler };
-
-    // Listan kan ändras medan körningen arbetar: någon bockar i eller ur en punkt. Den läses
-    // därför om precis före skrivningen, och har den ändrats börjar räkningen om.
+    // Main kan flytta sig och listan kan ändras medan körningen arbetar. Båda läses därför om
+    // precis före skrivningen, och har något ändrats börjar räkningen om från början.
     for (let forsok = 1; ; forsok++) {
+      const omIgen = (vad) => {
+        if (forsok >= 3) throw new Error(`${vad} ändrades gång på gång medan läget räknades ut.`);
+      };
+      // Mains senaste commit läses här, inte ur pull requesten: commiten som en pull request
+      // sägs utgå från flyttas inte hos GitHub när main flyttas.
+      const bas = await spets(api, repo, gren);
+      const oforandrad = async () => torrt || (await spets(api, repo, gren)) === bas;
+      await git.hamta([bas, sha]);
+      const ihop = await git.slaIhop(bas, sha);
+      const hinder = ihop.konflikt ? 'Grenen går inte att slå ihop med main utan konflikter. Lös dem, så räknas listan om.' : await hinderIHistoriken(git, bas, sha);
+      if (hinder) {
+        logg(`Går inte att granska: ${hinder}`);
+        const resultat = { state: 'failure', description: hinder };
+        if (torrt) return { resultat, kommentar: '', lage: null };
+        if (!(await oforandrad())) {
+          omIgen('Main');
+          continue;
+        }
+        await skrivLage(api, repo, sha, { ...resultat, target_url: pr.html_url });
+        return { resultat, kommentar: '', lage: null };
+      }
+      const { filer, ogiltiga, regelfiler } = jamforTrad(await git.rader(bas), await git.rader(ihop.trad), await git.rader(sha));
+      const lage = { ogiltiga, regelfiler };
+
       const kommentarer = await allaKommentarer(api, repo, nummer);
       const egen = kommentarer.find(arLista);
       let kropp = egen?.body ?? '';
       // Listan ritas bara om när den ska visa något annat än den gör. Annars skulle den som bockar
       // bli avbruten, och ett intyg skulle sluta gälla utan att något har ändrats.
       if ((filer.length > 0 || ogiltiga.length > 0 || egen) && behoverRitasOm(filer, lage, kropp)) {
-        if (filer.length <= MAX_ORGANISATIONER) for (const fil of filer) await lasFil(api, repo, fil);
+        if (filer.length <= MAX_ORGANISATIONER) for (const fil of filer) await lasFil(git, fil);
         kropp = lista(filer, { repo, nummer, ...lage }, kropp);
       }
       const skrivs = kropp !== (egen?.body ?? '');
@@ -236,12 +283,16 @@ export async function kor({ api, repo, nummer, torrt = false, korning = null, lo
       logg(`${filer.length} organisationsfiler · ${avlast.klara} av ${avlast.totalt} punkter avbockade · ${resultat.state}: ${resultat.description}`);
       if (torrt) return { resultat, kommentar: kropp, lage: avlast };
 
+      if (!(await oforandrad())) {
+        omIgen('Main');
+        continue;
+      }
       let lank = egen?.html_url ?? pr.html_url;
       if (skrivs && egen) {
         const nu = await api('GET', `/repos/${repo}/issues/comments/${egen.id}`);
         if (nu.body !== egen.body) {
-          if (forsok < 3) continue;
-          throw new Error('Listan ändrades gång på gång medan den skulle skrivas om.');
+          omIgen('Listan');
+          continue;
         }
         lank = (await api('PATCH', `/repos/${repo}/issues/comments/${egen.id}`, { body: kropp })).html_url ?? lank;
       } else if (skrivs) {

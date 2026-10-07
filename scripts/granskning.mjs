@@ -1,14 +1,16 @@
 #!/usr/bin/env node
 // Skriver granskningslistan på en pull request och sätter kontrollens läge.
-// Körs av .github/workflows/granskning.yml, alltid ur main. Pull requestens filer hämtas som
-// data genom GitHubs API och körs aldrig. Reglerna för listan står i scripts/lib/granskning.mjs
-// och själva körningen i scripts/lib/granskningskorning.mjs.
+// Körs av .github/workflows/granskning.yml, alltid ur main. Pull requestens commits hämtas som
+// data till ett tillfälligt git-förråd utan arbetskatalog. Inget ur dem checkas ut eller körs.
+// Reglerna för listan står i scripts/lib/granskning.mjs, själva körningen i
+// scripts/lib/granskningskorning.mjs och det git räknar ut i scripts/lib/granskningsgit.mjs.
 //
 //   GH_TOKEN=… GITHUB_REPOSITORY=ägare/repo PR_NUMMER=12 node scripts/granskning.mjs
 //   … node scripts/granskning.mjs --torrt     skriver ingenting, visar bara vad som skulle hända
 
 import fs from 'node:fs';
 import { kor, vantetid, arOvidkommande, ApiFel } from './lib/granskningskorning.mjs';
+import { tillfalligt } from './lib/granskningsgit.mjs';
 
 const torrt = process.argv.includes('--torrt');
 const token = process.env.GH_TOKEN ?? '';
@@ -57,19 +59,28 @@ async function api(metod, stig, kropp) {
   }
 }
 
-const korning = process.env.GITHUB_RUN_ID ? `${process.env.GITHUB_SERVER_URL ?? 'https://github.com'}/${repo}/actions/runs/${process.env.GITHUB_RUN_ID}` : null;
+const server = process.env.GITHUB_SERVER_URL ?? 'https://github.com';
+const korning = process.env.GITHUB_RUN_ID ? `${server}/${repo}/actions/runs/${process.env.GITHUB_RUN_ID}` : null;
 
-try {
-  // En ny kommentar från någon som inte får intyga kan inte ha ändrat något. Då behövs ingen körning.
+/** Sant om händelsen som startade körningen är en ny kommentar från någon som ändå inte får intyga. */
+async function ingentingAttGora() {
   const fil = process.env.GITHUB_EVENT_PATH;
   const handelse = fil && fs.existsSync(fil) ? JSON.parse(fs.readFileSync(fil, 'utf8')) : null;
-  if (!torrt && handelse && (await arOvidkommande({ api, repo, handelse: process.env.GITHUB_EVENT_NAME, atgard: handelse.action, kommentar: handelse.comment }))) {
+  return Boolean(handelse) && !torrt && (await arOvidkommande({ api, repo, handelse: process.env.GITHUB_EVENT_NAME, atgard: handelse.action, kommentar: handelse.comment }));
+}
+
+let forrad = null;
+try {
+  if (await ingentingAttGora()) {
     console.log('Kommentaren kommer från någon som inte får intyga. Ingenting att göra.');
-    process.exit(0);
+  } else {
+    forrad = await tillfalligt({ kalla: `${server}/${repo}.git`, token });
+    const ut = await kor({ api, git: forrad.git, repo, nummer, torrt, korning });
+    if (torrt && !ut.hoppad) console.log(`\n--- kommentaren ---\n${ut.kommentar || '(ingen kommentar)'}`);
   }
-  const ut = await kor({ api, repo, nummer, torrt, korning });
-  if (torrt && !ut.hoppad) console.log(`\n--- kommentaren ---\n${ut.kommentar || '(ingen kommentar)'}`);
 } catch (fel) {
   console.error(`Granskningen gick inte att köra: ${fel.message}`);
-  process.exit(1);
+  process.exitCode = 1;
+} finally {
+  await forrad?.stang().catch(() => {});
 }

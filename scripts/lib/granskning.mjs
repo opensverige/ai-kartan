@@ -16,6 +16,8 @@ import { createHash } from 'node:crypto';
 
 /** Står först i kommentaren. Så hittar flödet sin egen kommentar igen. */
 export const MARKOR = '<!-- granskning-mot-kriterierna -->';
+/** Mappen där organisationerna ligger, en fil per organisation. */
+export const MAPP = 'data/organisationer';
 /** Namnet på kontrollen som syns på pull requesten och som kan göras tvingande. */
 export const KONTEXT = 'Granskning mot kriterierna';
 /** Fler organisationer än så här i en pull request går inte att granska ordentligt. */
@@ -27,7 +29,7 @@ export const INTYG = '/granskad';
 /** Står i en kommentar som ber om uppdelning i stället för att visa en lista. */
 const DELA = '<!-- granskning-dela-upp -->';
 /** Höjs när listans utseende ändras, så att öppna pull requests får den nya listan. */
-const RITVERSION = 4;
+const RITVERSION = 5;
 
 // Punkterna för en ny organisation är granskningslistan i kriterier.md, ord för ord. Ett test
 // jämför dem. Sista punkten där, att valideringen är grön, prövas av CI och är ingen ruta här.
@@ -44,7 +46,8 @@ const ANDRAD = [
   ['kvar', 'Organisationen uppfyller fortfarande de tre kriterierna.'],
   ['pu', 'Inga personuppgifter, och beskrivningen är neutral och beskriver vad som byggs.'],
 ];
-const BORTTAGEN = [['bort', 'Borttagningen är begärd av organisationen eller följer av kriterium 3.']];
+// Filnamnet är id:t. En post som byter id syns därför som en borttagen och en ny i samma lista.
+const BORTTAGEN = [['bort', 'Borttagningen är begärd av organisationen, följer av kriterium 3, eller så finns samma organisation kvar under ett nytt id i den här pull requesten.']];
 export const PUNKTER = { ny: NY, andrad: ANDRAD, borttagen: BORTTAGEN };
 
 /** Svenska ord för källtyper och sorters belägg, som i data/taxonomi. Okända värden visas rensade. */
@@ -54,19 +57,7 @@ const ord = (tabell, varde) => (typeof varde === 'string' && Object.hasOwn(tabel
 
 const idUr = (sokvag) => String(sokvag).replace(/^data\/organisationer\//, '').replace(/\.ya?ml$/, '');
 const idFor = (fil) => idUr(fil.sokvag);
-/** Det nya id:t när en post byter namn, eller null. Bara ett giltigt id skrivs ut. */
-function nyttId(fil) {
-  const id = fil.ersattAv ? idUr(fil.ersattAv) : '';
-  return /^[a-z0-9]+(-[a-z0-9]+)*$/.test(id) ? id : null;
-}
-
-function punkterFor(fil) {
-  if (fil.status === 'added') return NY;
-  if (fil.status !== 'removed') return ANDRAD;
-  const nytt = nyttId(fil);
-  if (!nytt) return BORTTAGEN;
-  return [['bort', `Posten försvinner under det här id:t och ersätts av \`${nytt}\`. Det är samma organisation, eller så är borttagningen begärd eller följer av kriterium 3.`]];
-}
+const punkterFor = (fil) => (fil.status === 'added' ? NY : fil.status === 'removed' ? BORTTAGEN : ANDRAD);
 
 export function arOrganisationsfil(sokvag) {
   return /^data\/organisationer\/[a-z0-9]+(-[a-z0-9]+)*\.ya?ml$/.test(String(sokvag));
@@ -195,7 +186,8 @@ export function forvantade(filer) {
  */
 export function avtryck(filer, { ogiltiga = [], regelfiler = false } = {}) {
   const delar = forMangaFiler(filer) ? ['för många', filer.length] : forvantade(filer);
-  return sha256(JSON.stringify([RITVERSION, delar, ogiltiga.map((o) => [o.sokvag, o.skal]), regelfiler])).slice(0, 32);
+  const blandade = filer.filter((f) => f.blandad).map(idFor);
+  return sha256(JSON.stringify([RITVERSION, delar, ogiltiga.map((o) => [o.sokvag, o.skal]), regelfiler, blandade])).slice(0, 32);
 }
 
 const avtrycksrad = (filer, lage) => `<!-- g-avtryck:${avtryck(filer, lage)} -->`;
@@ -252,8 +244,8 @@ const REGELRAD = '**Pull requesten ändrar också regelfiler**: kriterier, schem
 /**
  * Kommentaren för en pull request. `filer` är organisationsfilerna som ändras, med `sokvag`,
  * `status` (added, modified eller removed), `version` (se `version`), `data` (filens innehåll,
- * eller null) och för ett gammalt id som byter namn `ersattAv`. En punkt som var avbockad i
- * `tidigare` står kvar avbockad om filen är oförändrad.
+ * eller null) och `blandad` (sant när main också har ändrat i filen). En punkt som var avbockad
+ * i `tidigare` står kvar avbockad om filen är oförändrad.
  */
 export function lista(filer, { repo, nummer = null, ogiltiga = [], regelfiler = false, maxByte = MAX_BYTE }, tidigare = '') {
   const lage = { ogiltiga, regelfiler };
@@ -280,14 +272,16 @@ export function lista(filer, { repo, nummer = null, ogiltiga = [], regelfiler = 
   }
   for (const fil of filer) {
     const id = idFor(fil);
-    const nytt = nyttId(fil);
-    const hur = fil.status === 'removed' ? (nytt ? `ersätts av \`${nytt}\`` : 'tas bort') : fil.status === 'added' ? 'ny' : 'ändrad';
+    const hur = fil.status === 'removed' ? 'tas bort' : fil.status === 'added' ? 'ny' : 'ändrad';
     ut.push('', `### \`${id}\` · ${hur}`, '');
     if (fil.status !== 'removed') {
       // Länken går till pull requestens egen vy av filen. Den visar alltid den version som gäller,
       // och listan behöver då inte skrivas om för en commit som inte rör filen.
       const vy = nummer ? `[${fil.status === 'modified' ? 'Ändringen' : 'Filen'} i pull requesten](https://github.com/${repo}/pull/${nummer}/files#diff-${sha256(fil.sokvag)}). ` : '';
-      ut.push(`${vy}Det här står i filen. Ingen maskin har öppnat källorna åt dig.`, '', ...underlag(fil), '');
+      ut.push(`${vy}Det här står i filen. Ingen maskin har öppnat källorna åt dig.`, '');
+      // Länken ovan visar grenens egen version. Den som går in i main är en annan när main också har ändrat filen.
+      if (fil.blandad) ut.push('**Main har också ändrat i den här filen.** Det som visas här är filen som den blir efter sammanslagningen med main, inte som den ser ut i grenen.', '');
+      ut.push(...underlag(fil), '');
     }
     for (const [nyckel, text] of punkterFor(fil)) {
       const m = markor(fil, nyckel);
@@ -305,7 +299,8 @@ export function lista(filer, { repo, nummer = null, ogiltiga = [], regelfiler = 
 
 /** Läser av en kommentar mot de punkter som ska finnas. Punkter som saknas räknas som inte avbockade. */
 export function avlas(filer, kropp, { ogiltiga = [] } = {}) {
-  const forManga = forMangaFiler(filer) || String(kropp ?? '').includes(DELA);
+  const delad = String(kropp ?? '').includes(DELA);
+  const forManga = forMangaFiler(filer) || delad;
   const finns = String(kropp ?? '').startsWith(MARKOR) ? rutor(kropp) : new Map();
   const kvar = [];
   let totalt = 0;
@@ -318,7 +313,7 @@ export function avlas(filer, kropp, { ogiltiga = [] } = {}) {
       if (!lage) kvar.push({ id: idFor(fil), nyckel });
     }
   }
-  return { totalt, klara: totalt - kvar.length, kvar, manipulerad: saknas > 0, forManga, ogiltiga };
+  return { totalt, klara: totalt - kvar.length, kvar, manipulerad: saknas > 0, forManga, forLang: delad && !forMangaFiler(filer), ogiltiga };
 }
 
 /**
@@ -337,9 +332,11 @@ export function arIntyg(text) {
 export function utfall(lage, { intygadAv = '', intygForaldrat = false, regelfiler = false } = {}) {
   const rad = (text) => text.slice(0, 140);
   if (lage.ogiltiga?.length) {
+    if (lage.ogiltiga[0].mapp) return { state: 'failure', description: `Mappen ${MAPP} har bytts mot något annat än en vanlig mapp.` };
     const forsta = rensa(String(lage.ogiltiga[0].sokvag).split('/').pop(), 50);
     return { state: 'failure', description: rad(`Får inte ligga i data/organisationer: ${forsta}${lage.ogiltiga.length > 1 ? ` och ${lage.ogiltiga.length - 1} till` : ''}`) };
   }
+  if (lage.forLang) return { state: 'failure', description: 'Listan blir för lång för en kommentar. Dela upp pull requesten i mindre delar.' };
   if (lage.forManga) return { state: 'failure', description: `För många organisationer i en pull request. Dela upp den i delar om högst ${MAX_ORGANISATIONER}.` };
   if (lage.totalt === 0) return { state: 'success', description: regelfiler ? 'Inga organisationer ändras. Regelfiler ändras, och de granskas inte här.' : 'Inga organisationer ändras' };
   const regler = regelfiler ? ' Regelfiler ändras också.' : '';

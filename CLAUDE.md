@@ -48,4 +48,5 @@ node scripts/andringar.mjs --skriv-ut   # se vad som ändrats
 | `src/pages/organisation/[id].astro` | Permalänk per organisation |
 | `scripts/lib/granskning.mjs` | Granskningslistan som en människa bockar av på varje pull request med organisationer |
 | `scripts/lib/granskningskorning.mjs` | Körningen som läser pull requesten, skriver listan och sätter läget |
+| `scripts/lib/granskningsgit.mjs` | Räknar med git ut vad pull requesten skulle ändra i main om den slogs ihop nu |
 | `.github/workflows/` | Validering, granskning mot kriterierna, historik, färskhet, länkkoll, ärende till PR, Pages |

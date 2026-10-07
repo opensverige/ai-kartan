@@ -4,44 +4,78 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createHash } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
+import { mkdtempSync, rmSync } from 'node:fs';
+import { devNull, tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { kor, jamforTrad, vantetid, arOvidkommande, ApiFel } from './lib/granskningskorning.mjs';
+import { oppna, GitFel } from './lib/granskningsgit.mjs';
 import { MARKOR, KONTEXT, PUNKTER } from './lib/granskning.mjs';
 
 const REPO = 'opensverige/ai-kartan';
 const ANTAL_NY = PUNKTER.ny.length;
-const BAS = '0'.repeat(40);
-const C1 = '1'.repeat(40);
-const C2 = '2'.repeat(40);
-const blobSha = (text) => createHash('sha1').update(`blob ${Buffer.byteLength(text)}\0${text}`).digest('hex');
 const yaml = (id, webb = 'https://exempel.se') => `id: ${id}\nname:\n  value: Exempel AB\ntype:\n  value: bolag\nwebsite: ${webb}\n`;
 const org = (id, extra = {}) => ({ namn: `data/organisationer/${id}.yaml`, text: yaml(id), ...extra });
 const BOT = { login: 'github-actions[bot]', type: 'Bot' };
 const README = { namn: 'README.md', text: 'hej' };
 
+const GITMILJO = { PATH: process.env.PATH, GIT_CONFIG_NOSYSTEM: '1', GIT_CONFIG_GLOBAL: devNull };
+const kataloger = [];
+test.after(() => kataloger.forEach((k) => rmSync(k, { recursive: true, force: true })));
+
 /**
- * Ett låtsas-GitHub. Varje commit är hela sitt träd: en lista med { namn, text, mode, storlek }.
- * `bas` är trädet där pull requesten grenade av och `huvud` trädet i dess senaste commit.
- * `vid(metod, stig, v)` körs före varje anrop och får ändra läget eller returnera en statuskod att svara med.
+ * Ett riktigt git-förråd i en tillfällig mapp. `commit` gör en commit av en lista filer
+ * ({ namn, text, mode }) med de föräldrar som anges, och ger dess id. Sammanslagningar och
+ * historik prövas alltså mot git självt, inte mot en efterbildning.
  */
-function github({ bas = [README], huvud = [README], basgren = 'main', oppen = true, kommentarer = [], ratt = {}, vid = () => null, stympat = false } = {}) {
+function forrad() {
+  const katalog = mkdtempSync(join(tmpdir(), 'granskningsprov-'));
+  kataloger.push(katalog);
+  execFileSync('git', ['init', '--quiet', '--bare', katalog], { env: GITMILJO });
+  let n = 0;
+  const data = (text) => Buffer.concat([Buffer.from(`data ${Buffer.byteLength(text)}\n`), Buffer.from(text), Buffer.from('\n')]);
+  const commit = (filer, foraldrar = []) => {
+    n += 1;
+    const delar = [Buffer.from(`commit refs/prov/c${n}\ncommitter Prov <prov@example.se> ${1_700_000_000 + n} +0000\n`), data(`commit ${n}`)];
+    foraldrar.forEach((p, i) => delar.push(Buffer.from(`${i === 0 ? 'from' : 'merge'} ${p}\n`)));
+    delar.push(Buffer.from('deleteall\n'));
+    for (const f of filer) delar.push(Buffer.from(`M ${f.mode ?? '100644'} inline ${JSON.stringify(f.namn)}\n`), data(f.text ?? ''));
+    delar.push(Buffer.from('\n'));
+    execFileSync('git', ['fast-import', '--quiet'], { cwd: katalog, env: GITMILJO, input: Buffer.concat(delar) });
+    return execFileSync('git', ['rev-parse', `refs/prov/c${n}`], { cwd: katalog, env: GITMILJO }).toString().trim();
+  };
+  return { katalog, commit, git: oppna(katalog) };
+}
+
+/**
+ * Ett låtsas-GitHub ovanpå ett riktigt git-förråd. `bas` är filerna i main när pull requesten
+ * öppnas och `huvud` filerna i dess första commit.
+ * `vid(metod, stig, v)` körs före varje anrop och får ändra läget eller returnera en statuskod att
+ * svara med. Anrop till git kommer som metoden GIT med kommandots namn som stig.
+ */
+function github({ bas = [README], huvud = [README], basgren = 'main', oppen = true, kommentarer = [], ratt = {}, vid = () => null } = {}) {
   let klocka = Date.parse('2026-10-07T12:00:00Z');
+  const f = forrad();
   const v = {
-    huvud: C1,
-    commits: { [BAS]: bas, [C1]: huvud },
     kommentarer: [],
     statusar: [],
     anrop: [],
     nastaId: 5000,
+    commit: f.commit,
     /** Tiden går en sekund för varje sak som händer, så att ordningen alltid går att läsa av. */
     nu() {
       klocka += 1000;
       return new Date(klocka).toISOString().replace('.000Z', 'Z');
     },
-    /** En ny commit på pull requestens gren. */
-    push(sha, filer) {
-      v.commits[sha] = filer;
-      v.huvud = sha;
+    /** En ny commit på pull requestens gren. Utan andra föräldrar bygger den på grenens senaste. */
+    push(filer, foraldrar = [v.huvud]) {
+      v.huvud = f.commit(filer, foraldrar);
+      return v.huvud;
+    },
+    /** En ny commit i main, till exempel en annan pull request som har slagits ihop. */
+    main(filer, foraldrar = [v.bas]) {
+      v.bas = f.commit(filer, foraldrar);
+      return v.bas;
     },
     /** Någon skriver en kommentar. */
     kommentera(login, body, { type = 'User', viaApp = null } = {}) {
@@ -56,8 +90,11 @@ function github({ bas = [README], huvud = [README], basgren = 'main', oppen = tr
       k.updated_at = v.nu();
     },
   };
+  v.bas = f.commit(bas);
+  // Commiten som pull requesten sägs utgå från. Hos GitHub flyttas den inte när main flyttas.
+  const oppnadMot = v.bas;
+  v.huvud = v.forsta = f.commit(huvud, [v.bas]);
   for (const k of kommentarer) v.kommentera(k.login, k.body, k);
-  const rad = (a) => ({ path: a.namn, mode: a.mode ?? '100644', type: a.typ ?? 'blob', sha: a.sha ?? blobSha(a.text ?? ''), size: a.storlek ?? Buffer.byteLength(a.text ?? '') });
   const api = async (metod, stig, kropp) => {
     const [rent, fraga = ''] = stig.split('?');
     const kod = vid(metod, rent, v);
@@ -65,14 +102,8 @@ function github({ bas = [README], huvud = [README], basgren = 'main', oppen = tr
     if (kod) throw new ApiFel(metod, stig, kod);
     const sida = Number(new URLSearchParams(fraga).get('page') ?? 1);
     let m;
-    if (metod === 'GET' && /\/pulls\/\d+$/.test(rent)) return { state: oppen ? 'open' : 'closed', html_url: 'https://github.com/x/pull/7', head: { sha: v.huvud }, base: { ref: basgren, sha: BAS, repo: { default_branch: 'main' } } };
-    if (metod === 'GET' && (m = rent.match(/\/compare\/([0-9a-f]{40})\.\.\.([0-9a-f]{40})$/))) return { merge_base_commit: { sha: m[1] }, files: [] };
-    if (metod === 'GET' && (m = rent.match(/\/git\/trees\/([0-9a-f]{40})$/))) return { truncated: stympat, tree: (v.commits[m[1]] ?? []).map(rad) };
-    if (metod === 'GET' && (m = rent.match(/\/git\/blobs\/([0-9a-f]{40})$/))) {
-      const a = Object.values(v.commits).flat().find((x) => rad(x).sha === m[1]);
-      if (!a) throw new ApiFel(metod, stig, 404);
-      return { encoding: 'base64', size: Buffer.byteLength(a.text ?? ''), content: Buffer.from(a.text ?? '').toString('base64') };
-    }
+    if (metod === 'GET' && /\/pulls\/\d+$/.test(rent)) return { state: oppen ? 'open' : 'closed', html_url: 'https://github.com/x/pull/7', head: { sha: v.huvud }, base: { ref: basgren, sha: oppnadMot, repo: { default_branch: 'main' } } };
+    if (metod === 'GET' && /\/git\/ref\/heads\/main$/.test(rent)) return { ref: 'refs/heads/main', object: { type: 'commit', sha: v.bas } };
     if (metod === 'GET' && /\/issues\/\d+\/comments$/.test(rent)) return v.kommentarer.slice((sida - 1) * 100, sida * 100).map((k) => ({ ...k }));
     if (metod === 'GET' && (m = rent.match(/\/issues\/comments\/(\d+)$/))) {
       const k = v.kommentarer.find((x) => x.id === Number(m[1]));
@@ -97,14 +128,25 @@ function github({ bas = [README], huvud = [README], basgren = 'main', oppen = tr
     }
     throw new Error(`Oväntat anrop: ${metod} ${stig}`);
   };
-  return { api, v };
+  const git = Object.fromEntries(
+    Object.entries(f.git).map(([namn, kommando]) => [
+      namn,
+      async (...arg) => {
+        const kod = vid('GIT', namn, v);
+        v.anrop.push(`GIT ${namn}`);
+        if (kod) throw new GitFel(namn, kod);
+        return kommando(...arg);
+      },
+    ]),
+  );
+  return { api, git, v };
 }
 
-const grund = (g, extra = {}) => ({ api: g.api, repo: REPO, nummer: 7, logg: () => {}, ...extra });
+const grund = (g, extra = {}) => ({ api: g.api, git: g.git, repo: REPO, nummer: 7, logg: () => {}, ...extra });
 const listan = (v) => v.kommentarer.find((k) => k.user?.login === BOT.login && String(k.body).startsWith(MARKOR));
 const lagen = (v) => v.anrop.filter((a) => a.startsWith('POST') && a.includes('/statuses/')).length;
 const sist = (v) => v.statusar.at(-1);
-const skrivningar = (v) => v.anrop.filter((a) => !a.startsWith('GET '));
+const skrivningar = (v) => v.anrop.filter((a) => !a.startsWith('GET ') && !a.startsWith('GIT '));
 const bockad = (kropp, villkor = () => true) => kropp.split('\n').map((rad) => (rad.startsWith('- [ ] ') && villkor(rad) ? rad.replace('- [ ] ', '- [x] ') : rad)).join('\n');
 const bocka = (v, villkor) => v.redigera(listan(v), (b) => bockad(b, villkor));
 const RATT = { granskare: 'write' };
@@ -121,7 +163,7 @@ test('en ny organisation får en lista och ett gult läge', async () => {
   const g = github({ huvud: [README, org('exempel')] });
   await kor(grund(g));
   assert.equal(listan(g.v).body.split('\n').filter((r) => r.startsWith('- [ ] ')).length, ANTAL_NY);
-  assert.deepEqual([sist(g.v).state, sist(g.v).context, sist(g.v).sha], ['pending', KONTEXT, C1]);
+  assert.deepEqual([sist(g.v).state, sist(g.v).context, sist(g.v).sha], ['pending', KONTEXT, g.v.forsta]);
   assert.match(sist(g.v).description, new RegExp(`0 av ${ANTAL_NY}`));
 });
 
@@ -139,7 +181,7 @@ test('när en människa med skrivrätt har intygat blir läget grönt', async ()
   assert.equal(sist(g.v).state, 'success');
   assert.match(sist(g.v).description, /intygade av granskare/);
   // Listan skrivs inte om när den redan stämmer. Annars skulle intyget sluta gälla.
-  assert.deepEqual(skrivningar(g.v).slice(fore), [`POST /repos/${REPO}/statuses/${C1}`]);
+  assert.deepEqual(skrivningar(g.v).slice(fore), [`POST /repos/${REPO}/statuses/${g.v.forsta}`]);
   // Ett läge som redan står skrivs inte en gång till. GitHub tar bara emot tusen lägen per commit.
   for (let n = 0; n < 5; n++) await kor(grund(g));
   assert.equal(skrivningar(g.v).slice(fore).length, 1);
@@ -210,9 +252,9 @@ test('nytt innehåll i filen nollställer bockarna och intyget', async () => {
   g.v.kommentera('granskare', '/granskad');
   await kor(grund(g));
   assert.equal(sist(g.v).state, 'success');
-  g.v.push(C2, [README, org('exempel', { text: yaml('exempel', 'https://annan.example') })]);
+  g.v.push([README, org('exempel', { text: yaml('exempel', 'https://annan.example') })]);
   await kor(grund(g));
-  assert.deepEqual([sist(g.v).state, sist(g.v).sha], ['pending', C2]);
+  assert.deepEqual([sist(g.v).state, sist(g.v).sha], ['pending', g.v.huvud]);
   assert.match(sist(g.v).description, new RegExp(`0 av ${ANTAL_NY}`));
   assert.match(listan(g.v).body, /annan\.example/);
   // Det gamla intyget räcker inte, ens när rutorna är ikryssade igen.
@@ -226,9 +268,9 @@ test('en commit som inte rör filen behåller både bockar och intyg', async () 
   g.v.kommentera('granskare', '/granskad');
   await kor(grund(g));
   const kropp = listan(g.v).body;
-  g.v.push(C2, [{ namn: 'README.md', text: 'ändrad' }, org('exempel')]);
+  g.v.push([{ namn: 'README.md', text: 'ändrad' }, org('exempel')]);
   await kor(grund(g));
-  assert.deepEqual([sist(g.v).state, sist(g.v).sha], ['success', C2]);
+  assert.deepEqual([sist(g.v).state, sist(g.v).sha], ['success', g.v.huvud]);
   assert.equal(listan(g.v).body, kropp);
 });
 
@@ -239,11 +281,11 @@ test('skrivs listan om gäller inget äldre intyg, redan i samma körning', asyn
   assert.equal(sist(g.v).state, 'success');
   // En ny commit ändrar en regelfil. Organisationens fil är orörd, så bockarna står kvar, men
   // listan får en ny rad och är alltså inte längre den som intygades.
-  g.v.push(C2, [README, org('exempel'), { namn: 'kriterier.md', text: 'nya kriterier' }]);
+  g.v.push([README, org('exempel'), { namn: 'kriterier.md', text: 'nya kriterier' }]);
   await kor(grund(g));
   assert.match(listan(g.v).body, /ändrar också regelfiler/);
   assert.equal(listan(g.v).body.split('\n').filter((r) => r.startsWith('- [x] ')).length, ANTAL_NY);
-  assert.deepEqual([sist(g.v).state, sist(g.v).sha], ['pending', C2]);
+  assert.deepEqual([sist(g.v).state, sist(g.v).sha], ['pending', g.v.huvud]);
   assert.match(sist(g.v).description, /ändrats eller dolts efter intyget/);
   // Samma svar nästa gång: läget får inte växla mellan två körningar utan att något har hänt.
   await kor(grund(g));
@@ -251,22 +293,23 @@ test('skrivs listan om gäller inget äldre intyg, redan i samma körning', asyn
 });
 
 test('läget gäller alltid den commit som lästes, även om pull requesten flyttas under körningen', async () => {
-  // Trädet för en commit kan inte ändras. En ny commit mitt i körningen får därför inte kunna
+  // En commit kan inte ändras i efterhand. En ny commit mitt i körningen får därför inte kunna
   // ge grönt åt den gamla: den gamla har fortfarande en organisation i sig.
-  for (const nar of ['/compare/', '/git/trees/', '/issues/7/comments']) {
+  for (const nar of ['/git/ref/', 'slaIhop', 'rader', '/issues/7/comments']) {
     let flyttad = false;
     const g = github({
       huvud: [README, org('smyg')],
       vid: (metod, stig, v) => {
         if (!flyttad && stig.includes(nar)) {
           flyttad = true;
-          v.push(C2, [README]);
+          v.push([README]);
         }
         return null;
       },
     });
     await kor(grund(g));
-    assert.deepEqual([sist(g.v).state, sist(g.v).sha], ['pending', C1], nar);
+    assert.equal(flyttad, true, nar);
+    assert.deepEqual([sist(g.v).state, sist(g.v).sha], ['pending', g.v.forsta], nar);
     assert.match(listan(g.v).body, /`smyg` · ny/, nar);
   }
 });
@@ -292,7 +335,7 @@ test('en fil med otillåtet namn i mappen gör kontrollen röd, inte grön', asy
 });
 
 test('en för stor fil gör kontrollen röd i stället för att ge en lista att bocka av', async () => {
-  const g = github({ huvud: [README, org('exempel', { storlek: 300_000 })], ratt: RATT });
+  const g = github({ huvud: [README, org('exempel', { text: `id: exempel\n# ${'x'.repeat(300_000)}\n` })], ratt: RATT });
   await kor(grund(g));
   assert.equal(sist(g.v).state, 'failure');
   assert.match(listan(g.v).body, /för stor/);
@@ -313,11 +356,14 @@ test('granskningen tolkar filen som bygget gör', async () => {
   assert.match(listan(g.v).body, /Namn enligt filen: `Aliasbolaget`/);
 });
 
-test('ett namnbyte listar både den nya posten och det gamla id:t', async () => {
-  const g = github({ bas: [README, org('berget-ai')], huvud: [README, { namn: 'data/organisationer/nytt-namn.yaml', text: yaml('berget-ai') }] });
+test('ett byte av id listar både den nya posten och den som försvinner', async () => {
+  // Filnamnet är id:t, och id:t står också i filen. Ett byte är därför alltid en ny fil och en borttagen.
+  const g = github({ bas: [README, org('berget-ai')], huvud: [README, org('berget')] });
   await kor(grund(g));
   assert.match(sist(g.v).description, new RegExp(`0 av ${ANTAL_NY + 1}`));
-  assert.match(listan(g.v).body, /`berget-ai` · ersätts av `nytt-namn`/);
+  assert.match(listan(g.v).body, /`berget-ai` · tas bort/);
+  assert.match(listan(g.v).body, /`berget` · ny/);
+  assert.match(listan(g.v).body, /kvar under ett nytt id/);
 });
 
 test('en fil som flyttas ut ur mappen räknas som borttagen', async () => {
@@ -348,8 +394,8 @@ test('en stängd pull request lämnas i fred', async () => {
 });
 
 test('går ett anrop fel blir läget fel i stället för grönt, och listan rörs inte', async () => {
-  for (const del of ['/compare/', '/git/trees/', '/git/blobs/', '/issues/7/comments']) {
-    const g = github({ huvud: [README, org('exempel')], vid: (metod, stig) => (metod === 'GET' && stig.includes(del) ? 500 : null) });
+  for (const del of ['/git/ref/', '/issues/7/comments', 'hamta', 'slaIhop', 'sammanslagningar', 'rader', 'text']) {
+    const g = github({ huvud: [README, org('exempel')], vid: (metod, stig) => (metod !== 'POST' && stig.includes(del) ? 500 : null) });
     await assert.rejects(kor(grund(g)), /500/, del);
     assert.equal(listan(g.v), undefined, del);
     assert.deepEqual([sist(g.v).state, sist(g.v).context], ['error', KONTEXT], del);
@@ -366,10 +412,11 @@ test('går rätten inte att slå upp räknas intyget inte, och läget blir fel',
   assert.equal(sist(g.v).state, 'error');
 });
 
-test('ett träd som GitHub har kapat stoppar kontrollen', async () => {
-  const g = github({ huvud: [README, org('exempel')], stympat: true });
+test('en commit som inte finns i förrådet stoppar kontrollen', async () => {
+  const g = github({ huvud: [README, org('exempel')] });
+  g.v.huvud = 'f'.repeat(40);
   await assert.rejects(kor(grund(g)));
-  assert.equal(sist(g.v).state, 'error');
+  assert.deepEqual([sist(g.v).state, sist(g.v).sha], ['error', 'f'.repeat(40)]);
 });
 
 test('tusentals kommentarer stoppar inte kontrollen, och ett intyg långt ner hittas', async () => {
@@ -420,11 +467,11 @@ test('en lista som redan stämmer kostar inga filhämtningar', async () => {
   const fore = g.v.anrop.length;
   await kor(grund(g));
   const nya = g.v.anrop.slice(fore);
-  assert.equal(nya.filter((a) => a.includes('/git/blobs/')).length, 0);
+  assert.equal(nya.filter((a) => a === 'GIT text').length, 0);
   assert.equal(nya.filter((a) => a.startsWith('PATCH')).length, 0);
-  // Pull requesten, jämförelsen, två träd, kommentarerna och commitens läge. Inget som växer med
-  // antalet filer, och inget skrivs när ingenting har ändrats.
-  assert.deepEqual(nya.map((a) => a.split(' ')[0]), ['GET', 'GET', 'GET', 'GET', 'GET', 'GET']);
+  // Pull requesten, mains spets, kommentarerna, mains spets en gång till och commitens läge.
+  // Inget som växer med antalet filer, och inget skrivs när ingenting har ändrats.
+  assert.deepEqual(nya.filter((a) => !a.startsWith('GIT ')).map((a) => a.split(' ')[0]), ['GET', 'GET', 'GET', 'GET', 'GET']);
 });
 
 test('en torrkörning skriver ingenting', async () => {
@@ -437,8 +484,8 @@ test('en torrkörning skriver ingenting', async () => {
 
 test('skillnaden mellan två träd bryr sig om innehåll, filtyp och namn, inte om ordning', () => {
   const t = (path, sha, mode = '100644', size = 10) => ({ path, mode, type: 'blob', sha, size });
-  const bas = [t('a.txt', 'a1'), t('data/organisationer/kvar.yaml', 'k1'), t('data/organisationer/bort.yaml', 'b1'), t('data/organisationer/andrad.yaml', 'x1'), { path: 'data', mode: '040000', type: 'tree', sha: 't1' }];
-  const huvud = [t('data/organisationer/ny.yaml', 'n1'), t('data/organisationer/andrad.yaml', 'x2'), t('data/organisationer/kvar.yaml', 'k1'), t('a.txt', 'a1'), { path: 'data', mode: '040000', type: 'tree', sha: 't2' }];
+  const bas = [t('a.txt', 'a1'), t('data/organisationer/kvar.yaml', 'k1'), t('data/organisationer/bort.yaml', 'b1'), t('data/organisationer/andrad.yaml', 'x1')];
+  const huvud = [t('data/organisationer/ny.yaml', 'n1'), t('data/organisationer/andrad.yaml', 'x2'), t('data/organisationer/kvar.yaml', 'k1'), t('a.txt', 'a1')];
   const ut = jamforTrad(bas, huvud);
   assert.deepEqual(ut.filer.map((f) => [f.sokvag.split('/').pop(), f.status]), [['andrad.yaml', 'modified'], ['bort.yaml', 'removed'], ['ny.yaml', 'added']]);
   assert.deepEqual([ut.ogiltiga, ut.regelfiler], [[], false]);
@@ -448,6 +495,9 @@ test('skillnaden mellan två träd bryr sig om innehåll, filtyp och namn, inte 
   const v1 = jamforTrad([t('data/organisationer/a.yaml', 'gammal1')], [t('data/organisationer/a.yaml', 'ny')]).filer[0].version;
   const v2 = jamforTrad([t('data/organisationer/a.yaml', 'gammal2')], [t('data/organisationer/a.yaml', 'ny')]).filer[0].version;
   assert.notEqual(v1, v2);
+  // Det tredje trädet är grenens eget. Skiljer sig filen där från den sammanslagna har main ändrat i den.
+  assert.equal(jamforTrad([], [t('data/organisationer/a.yaml', 'ihop')], [t('data/organisationer/a.yaml', 'ihop')]).filer[0].blandad, false);
+  assert.equal(jamforTrad([], [t('data/organisationer/a.yaml', 'ihop')], [t('data/organisationer/a.yaml', 'grenens')]).filer[0].blandad, true);
 });
 
 test('när anropsbudgeten är slut väntar körningen, om det går över inom rimlig tid', () => {
@@ -487,7 +537,7 @@ test('det någon bockar ur medan körningen arbetar skrivs inte över', async ()
   // Körningen läser listan, räknar, och skriver om den. Bockar granskaren ur en punkt däremellan
   // får den inte komma tillbaka ikryssad.
   const g = await avbockad();
-  g.v.push(C2, [README, org('exempel'), { namn: 'kriterier.md', text: 'nya kriterier' }]);
+  g.v.push([README, org('exempel'), { namn: 'kriterier.md', text: 'nya kriterier' }]);
   let gjort = false;
   const vid = (metod, stig, v) => {
     // Precis före skrivningen läser körningen kommentaren en gång till. Då har granskaren hunnit bocka ur.
@@ -497,7 +547,7 @@ test('det någon bockar ur medan körningen arbetar skrivs inte över', async ()
     }
     return null;
   };
-  await kor(grund({ api: (m, s, k) => (vid(m, s.split('?')[0], g.v), g.api(m, s, k)), v: g.v }));
+  await kor(grund({ ...g, api: (m, s, k) => (vid(m, s.split('?')[0], g.v), g.api(m, s, k)) }));
   assert.equal(gjort, true);
   assert.equal(listan(g.v).body.split('\n').filter((r) => r.startsWith('- [x] ')).length, ANTAL_NY - 1);
   assert.match(sist(g.v).description, new RegExp(`${ANTAL_NY - 1} av ${ANTAL_NY}`));
@@ -516,4 +566,186 @@ test('en ny kommentar från någon utan skrivrätt behöver ingen körning', asy
   assert.equal(await arOvidkommande({ api: g.api, repo: REPO, handelse: 'issue_comment', atgard: 'deleted', kommentar: { user: { login: 'lasare', type: 'User' } } }), false);
   assert.equal(await arOvidkommande({ api: g.api, repo: REPO, handelse: 'pull_request_target', atgard: 'synchronize' }), false);
   assert.equal(await arOvidkommande({ api: g.api, repo: REPO, handelse: 'workflow_dispatch' }), false);
+});
+
+test('main räknas från sin senaste commit, inte från den pull requesten öppnades mot', async () => {
+  // En annan pull request har lagt in en organisation i main. Den här grenen tar in main och tar
+  // sedan bort organisationen igen. Mot commiten den öppnades mot syns ingenting, men slås den
+  // ihop försvinner organisationen.
+  const g = github();
+  g.v.main([README, org('nyterio')]);
+  g.v.push([README, org('nyterio')], [g.v.huvud, g.v.bas]);
+  g.v.push([README]);
+  await kor(grund(g));
+  assert.equal(sist(g.v).state, 'pending');
+  assert.match(listan(g.v).body, /`nyterio` · tas bort/);
+});
+
+test('det som main redan har och grenen inte ändrar är ingen ändring', async () => {
+  // Grenen lade till samma organisation och tog bort den igen, utan att ta in main. Slås den ihop
+  // står organisationen kvar, och då finns inget att granska.
+  const g = github();
+  g.v.main([README, org('nyterio')]);
+  g.v.push([README, org('nyterio')]);
+  g.v.push([README]);
+  await kor(grund(g));
+  assert.deepEqual([sist(g.v).state, sist(g.v).description], ['success', 'Inga organisationer ändras']);
+  assert.equal(listan(g.v), undefined);
+});
+
+test('en commit i main som inte rör organisationen ändrar varken bockar eller intyg', async () => {
+  const g = await avbockad();
+  g.v.kommentera('granskare', '/granskad');
+  await kor(grund(g));
+  assert.equal(sist(g.v).state, 'success');
+  const kropp = listan(g.v).body;
+  const fore = skrivningar(g.v).length;
+  g.v.main([{ namn: 'README.md', text: 'en annan pull request har slagits ihop' }]);
+  await kor(grund(g));
+  assert.equal(sist(g.v).state, 'success');
+  assert.equal(listan(g.v).body, kropp);
+  assert.deepEqual(skrivningar(g.v).slice(fore), []);
+});
+
+test('ändrar main samma organisation efter intyget visas det sammanslagna, och intyget gäller inte', async () => {
+  const post = (namn, webb) => `id: exempel\nname:\n  value: ${namn}\ntype:\n  value: bolag\nrad1: a\nrad2: b\nrad3: c\nrad4: d\nrad5: e\nwebsite: ${webb}\n`;
+  const g = github({ bas: [README, org('exempel', { text: post('Exempel AB', 'https://exempel.se') })], huvud: [README, org('exempel', { text: post('Nytt namn AB', 'https://exempel.se') })], ratt: RATT });
+  await kor(grund(g));
+  bocka(g.v);
+  g.v.kommentera('granskare', '/granskad');
+  await kor(grund(g));
+  assert.equal(sist(g.v).state, 'success');
+  // Main ändrar webbplatsen i samma fil. Git slår ihop de två ändringarna utan konflikt, och
+  // filen som går in är då en som ingen har sett.
+  g.v.main([README, org('exempel', { text: post('Exempel AB', 'https://annan.example') })]);
+  await kor(grund(g));
+  assert.equal(sist(g.v).state, 'pending');
+  assert.match(sist(g.v).description, new RegExp(`0 av ${PUNKTER.andrad.length}`));
+  assert.match(listan(g.v).body, /Nytt namn AB/);
+  assert.match(listan(g.v).body, /annan\.example/);
+  assert.match(listan(g.v).body, /efter sammanslagningen med main/);
+});
+
+test('en konflikt mot main gör kontrollen röd tills den är löst', async () => {
+  const g = github({ bas: [README, org('exempel')], huvud: [README, org('exempel', { text: yaml('exempel', 'https://ny.example') })] });
+  await kor(grund(g));
+  const kropp = listan(g.v).body;
+  g.v.main([README, org('exempel', { text: yaml('exempel', 'https://tredje.example') })]);
+  await kor(grund(g));
+  assert.equal(sist(g.v).state, 'failure');
+  assert.match(sist(g.v).description, /konflikt/);
+  assert.ok(sist(g.v).description.length <= 140);
+  assert.equal(listan(g.v).body, kropp);
+});
+
+test('flyttas main medan körningen arbetar räknas allt om', async () => {
+  let flyttad = false;
+  const g = github({
+    bas: [README, org('exempel')],
+    huvud: [README, org('exempel', { text: yaml('exempel', 'https://ny.example') })],
+    vid: (metod, stig, v) => {
+      // Main får en commit som krockar, efter att sammanslagningen är uträknad men före skrivningen.
+      if (!flyttad && stig.includes('/issues/7/comments')) {
+        flyttad = true;
+        v.main([README, org('exempel', { text: yaml('exempel', 'https://tredje.example') })]);
+      }
+      return null;
+    },
+  });
+  await kor(grund(g));
+  assert.equal(flyttad, true);
+  assert.equal(g.v.statusar.length, 1);
+  assert.equal(sist(g.v).state, 'failure');
+  assert.equal(listan(g.v), undefined);
+});
+
+test('försvinner konflikten medan körningen arbetar blir läget inte rött', async () => {
+  // Main krockar med grenen när körningen börjar, men har flyttat sig igen innan läget skrivs.
+  // Ett rött läge för en main som inte längre finns ska inte bli stående.
+  const andrad = org('exempel', { text: yaml('exempel', 'https://ny.example') });
+  let flyttad = false;
+  const g = github({
+    bas: [README, org('exempel')],
+    huvud: [README, andrad],
+    vid: (metod, stig, v) => {
+      if (!flyttad && metod === 'GIT' && stig === 'slaIhop') {
+        flyttad = true;
+        v.main([README, andrad]);
+      }
+      return null;
+    },
+  });
+  g.v.main([README, org('exempel', { text: yaml('exempel', 'https://tredje.example') })]);
+  await kor(grund(g));
+  assert.equal(flyttad, true);
+  assert.equal(g.v.statusar.length, 1);
+  // Main har nu samma ändring som grenen. Då finns inget kvar att granska.
+  assert.deepEqual([sist(g.v).state, sist(g.v).description], ['success', 'Inga organisationer ändras']);
+});
+
+test('en gren som slår ihop två commits som redan finns i main kan inte smyga bort en organisation', async () => {
+  // Main innehåller en sammanslagning av två sidogrenar. Grenen här gör om samma sammanslagning
+  // för hand och tappar organisationen på vägen. Då finns två commits som grenen och main har
+  // gemensamt, och en jämförelse mot bara den ena visar ingenting.
+  const annan = { namn: 'README.md', text: 'ny text' };
+  const g = github();
+  const a = g.v.commit([README, org('nyterio')], [g.v.bas]);
+  const b = g.v.commit([annan], [g.v.bas]);
+  g.v.main([annan, org('nyterio')], [a, b]);
+  g.v.push([annan], [b, a]);
+  await kor(grund(g));
+  assert.equal(sist(g.v).state, 'failure');
+  assert.match(sist(g.v).description, /sammanslagning/);
+});
+
+test('en sammanslagning som ändrar organisationer för hand stoppas', async () => {
+  // Grenens första commit lägger till en organisation. Sedan tas main in, och i den
+  // sammanslagningen tas organisationen bort för hand. Slutresultatet ser tomt ut, men den som
+  // slår ihop med Rebase and merge får med den första commiten och inte sammanslagningen.
+  const dok = { namn: 'docs/a.md', text: 'a' };
+  const g = github({ huvud: [README, org('smyg')] });
+  g.v.main([README, dok]);
+  g.v.push([README, dok], [g.v.huvud, g.v.bas]);
+  await kor(grund(g));
+  assert.equal(sist(g.v).state, 'failure');
+  assert.match(sist(g.v).description, /sammanslagning/);
+  assert.ok(sist(g.v).description.length <= 140);
+});
+
+test('en gren som har tagit in main på vanligt sätt granskas som vanligt', async () => {
+  const dok = { namn: 'docs/a.md', text: 'a' };
+  const g = github({ huvud: [README, org('exempel')] });
+  g.v.main([README, dok]);
+  g.v.push([README, org('exempel'), dok], [g.v.huvud, g.v.bas]);
+  await kor(grund(g));
+  assert.equal(sist(g.v).state, 'pending');
+  assert.match(listan(g.v).body, /`exempel` · ny/);
+});
+
+test('byts mappen mot en länk blir kontrollen röd och säger varför', async () => {
+  const g = github({ bas: [README, org('ett'), org('tva')], huvud: [README, { namn: 'data/organisationer', mode: '120000', text: '../annat' }] });
+  await kor(grund(g));
+  assert.equal(sist(g.v).state, 'failure');
+  assert.match(sist(g.v).description, /mapp/i);
+  assert.match(listan(g.v).body, /vanlig mapp/);
+  assert.equal(listan(g.v).body.includes('- [ ] '), false);
+});
+
+test('git läser trädet som det är, även med ovanliga filnamn', async () => {
+  const f = forrad();
+  const c = f.commit([README, { namn: 'data/organisationer/med mellanslag\noch ny rad.yaml', text: 'x' }, { namn: 'data/organisationer/länk.yaml', mode: '120000', text: '../x' }, org('vanlig')]);
+  const rader = await f.git.rader(c);
+  assert.deepEqual(rader.map((r) => [r.path, r.mode, r.type]), [
+    ['README.md', '100644', 'blob'],
+    ['data/organisationer/länk.yaml', '120000', 'blob'],
+    ['data/organisationer/med mellanslag\noch ny rad.yaml', '100644', 'blob'],
+    ['data/organisationer/vanlig.yaml', '100644', 'blob'],
+  ]);
+  assert.equal(rader.at(-1).size, Buffer.byteLength(yaml('vanlig')));
+  assert.equal(await f.git.text(rader.at(-1).sha), yaml('vanlig'));
+  assert.match(await f.git.mapp(c, 'data/organisationer'), /^[0-9a-f]{40}$/);
+  assert.equal(await f.git.mapp(c, 'data/saknas'), null);
+  // Det som inte är ett id släpps aldrig fram till git.
+  await assert.rejects(f.git.rader('--help'));
+  await assert.rejects(f.git.slaIhop(c, 'main'));
 });
