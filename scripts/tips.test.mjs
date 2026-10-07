@@ -178,3 +178,32 @@ test('skriptet ber inte flödet rensa när inget nummer tagits bort', () => {
     fs.rmSync(katalog, { recursive: true, force: true });
   }
 });
+
+test('utfyllnad i nummerfältet för en enskild firma förstör inte resten av ärendet', () => {
+  // Ett streck eller ett "nej" är inget nummer. Förut byttes tecknet ut i hela ärendet, även i länkarna.
+  for (const fyll of ['-', '.', 'x', 'nej', 'har inget']) {
+    const r = bedomTips(arende({ namn: 'Nord-AI Konsult', webbplats: 'https://nord-ai-konsult.se', belagg: 'https://nord-ai-konsult.se/x', orgnr: fyll, enskild: true }), BEFINTLIGA);
+    assert.equal(r.rensadKropp, null, `"${fyll}" ska inte räknas som ett nummer`);
+    assert.equal(r.tips.webbplats, 'https://nord-ai-konsult.se');
+    assert.equal(r.tips.orgnr, '');
+    assert.deepEqual(r.fel, []);
+  }
+});
+
+test('ett tips om en hel webbplats är inte en dubblett av en organisation på en undersida', () => {
+  // Ett lärosätes institution har en undersida som webbplats. Lärosätet självt är en annan organisation.
+  const finns = [{ id: 'rpl-kth', namn: 'Robotik, perception och lärande, KTH', webbplats: 'https://www.kth.se/is/rpl' }];
+  assert.equal(bedomTips(arende({ namn: 'Kungliga Tekniska högskolan', webbplats: 'https://www.kth.se', belagg: 'https://www.kth.se/ai' }), finns).dubblett, null);
+  // Samma undersida är fortfarande en dubblett.
+  assert.equal(bedomTips(arende({ namn: 'RPL', webbplats: 'https://kth.se/is/rpl/', belagg: 'https://www.kth.se/ai' }), finns).dubblett?.id, 'rpl-kth');
+});
+
+test('svaret på en dubblett hänvisar till en knapp som finns på organisationens sida', () => {
+  const r = bedomTips(arende({ webbplats: 'https://exempelbolaget.se' }), BEFINTLIGA);
+  const svar = skrivSvar(r, LANKAR);
+  assert.match(svar, /Rätta via GitHub/);
+  assert.doesNotMatch(svar, /Begär rättelse/);
+  // Knappen ska heta likadant på sidan som i svaret.
+  const sida = fs.readFileSync(path.join(import.meta.dirname, '..', 'src', 'pages', 'organisation', '[id].astro'), 'utf8');
+  assert.match(sida, />Rätta via GitHub</);
+});

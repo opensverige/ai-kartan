@@ -26,3 +26,29 @@ export function normaliseraUrl(u) {
   if (!/^https?:\/\//i.test(u)) u = `https://${u}`;
   return u.replace(/\/+$/, '');
 }
+
+export const BORTTAGET = '[borttaget]';
+const NUMMER = /(?<!\d)(?:(?:19|20)\d{6}|\d{6})[-+ ]?\d{4}(?!\d)/g;
+
+/**
+ * De nummer i texten som ser ut som personnummer eller samordningsnummer.
+ * Där står månaden på tredje och fjärde plats. Juridiska personer har alltid 20 eller mer där.
+ */
+export function personnummerI(text) {
+  return (String(text ?? '').match(NUMMER) ?? []).filter((nummer) => {
+    const tio = nummer.replace(/\D/g, '').slice(-10);
+    return Number(tio.slice(2, 4)) < 20;
+  });
+}
+
+/** Ärendetexten med numren utbytta, eller null om det inte fanns något att ta bort. */
+export function utanNummer(kropp, nummer) {
+  const bort = [...new Set(nummer)].filter(Boolean);
+  if (!bort.length) return null;
+  let rensad = kropp;
+  for (const n of bort) rensad = rensad.split(n).join(BORTTAGET);
+  return rensad;
+}
+
+/** Sant om texten innehåller så många siffror att den kan vara ett nummer, inte bara utfyllnad. */
+export const arNummer = (text) => (String(text ?? '').match(/\d/g) ?? []).length >= 6;
