@@ -71,4 +71,9 @@ npm run build
 
 ## För den som granskar
 
-Granskningslistan står längst ned i [kriterier.md](kriterier.md). Ett avslag skrivs i pull requesten med hänvisning till kriteriet. Tips från det korta formuläret hanteras enligt [Från tips till post](#från-tips-till-post). Den här filen är rutinen för alla som granskar.
+Varje pull request som rör en fil i `data/organisationer/` får en kommentar med rubriken Granskning mot kriterierna. Där står kriterierna som punkter, en uppsättning per organisation, tillsammans med det filen säger om organisationsnummer, webbplats och belägg. Öppna källorna, pröva varje punkt och bocka av den. Kontrollen med samma namn är gul tills allt är avbockat.
+
+- Du bockar av genom att klicka i rutorna. Det kräver skrivrätt i repot.
+- Ändras en organisations fil efter att du har bockat av nollställs dess punkter.
+- AI får hjälpa dig att kontrollera att ett belägg visar det som påstås, men listan är din. En agent bockar aldrig av den.
+- Samma lista står längst ned i [kriterier.md](kriterier.md). Ett avslag skrivs i pull requesten med hänvisning till kriteriet. Tips från det korta formuläret hanteras enligt [Från tips till post](#från-tips-till-post). Den här filen är rutinen för alla som granskar.

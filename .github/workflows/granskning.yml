@@ -1,0 +1,59 @@
+# Ser till att kriterierna gås igenom av en människa innan en organisation går in på kartan.
+#
+# Varje pull request som rör en fil i data/organisationer får en kommentar med kriterierna per
+# organisation. Kontrollen "Granskning mot kriterierna" är gul tills varje punkt är avbockad.
+# Görs kontrollen tvingande för main går pull requesten inte att merga innan dess.
+#
+# Säkerhet:
+#   - pull_request_target kör flödet och skripten ur main, aldrig ur pull requesten.
+#     Pull requestens filer hämtas som data genom GitHubs API och körs aldrig.
+#   - Inget ur pull requesten eller kommentaren sätts in i ett skalkommando.
+#   - Bara flödets egen kommentar räknas som lista, och text ur filerna rensas innan den visas.
+name: Granskning mot kriterierna
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, ready_for_review]
+  issue_comment:
+    types: [edited]
+
+permissions: {}
+
+concurrency:
+  group: granskning-${{ github.event.pull_request.number || github.event.issue.number }}
+  cancel-in-progress: false
+
+jobs:
+  granskning:
+    name: Lista och läge
+    # En redigerad kommentar räknas bara om den sitter på en pull request, är flödets egen och
+    # redigerades av en människa.
+    if: >-
+      github.event_name == 'pull_request_target' ||
+      (github.event.issue.pull_request != null &&
+       github.event.comment.user.login == 'github-actions[bot]' &&
+       github.event.sender.type == 'User')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      statuses: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: npm ci --ignore-scripts
+
+      - name: Skriv listan och sätt kontrollens läge
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMMER: ${{ github.event.pull_request.number || github.event.issue.number }}
+          HANDELSE: ${{ github.event_name }}
+          AVSANDARE: ${{ github.event.sender.login }}
+        run: node scripts/granskning.mjs
