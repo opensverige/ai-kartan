@@ -1,0 +1,97 @@
+id: nyterio
+
+name:
+  value: NYTERIO
+  status: claimed
+  source_url: https://nyterio.se
+  source_type: own_site
+  verified_at: 2026-10-07
+  verified_by: agent
+
+legal_name:
+  value: Nyterio AB
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559596979001
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Namn enligt momsregistret, hämtat via EU:s tjänst VIES. Webbplatsen anger NYTERIO AB med samma organisationsnummer."
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559596979001
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Bolagsformen är härledd ur det registrerade namnet. Momsregistret har inget eget fält för bolagsform."
+
+org_number:
+  value: "559596-9790"
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559596979001
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+
+website: https://nyterio.se
+
+description:
+  value: Utvecklar NYTERIO, en plattform för processkartläggning. Tjänsten läser en organisations befintliga dokument med språkmodeller och föreslår ett processbibliotek i tre nivåer med flödesscheman, som användarna granskar och redigerar. Enligt webbplatsen körs öppna språkmodeller på hårdvara i Stockholm.
+  status: claimed
+  source_url: https://nyterio.se/processkartlaggning-ai/
+  source_type: own_site
+  verified_at: 2026-10-07
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://nyterio.se
+  source_type: own_site
+  verified_at: 2026-10-07
+  verified_by: agent
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://nyterio.se
+  source_type: own_site
+  verified_at: 2026-10-07
+  verified_by: agent
+
+kommun:
+  value: "1287"
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559596979001
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Trelleborg. Härledd från postorten i den registrerade adressen i momsregistret. Webbplatsen anger Skåne. Sätet enligt Bolagsverket är inte kontrollerat."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559596979001
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Giltigt momsregistreringsnummer enligt VIES 2026-10-07."
+
+evidence:
+  - url: https://nyterio.se/processkartlaggning-ai/
+    kind: produkt
+    title: "Beskrivning av hur tjänsten läser dokument med språkmodeller och föreslår en processtruktur"
+    status: claimed
+    verified_at: 2026-10-07
+    verified_by: agent
+  - url: https://nyterio.se
+    kind: produkt
+    title: "NYTERIO: plattform som bygger ett processbibliotek ur befintliga dokument"
+    status: claimed
+    verified_at: 2026-10-07
+    verified_by: agent
+    note: Länken som angavs i tipset, ärende 17.
+
+record_created_at: 2026-10-07
+record_updated_at: 2026-10-07
