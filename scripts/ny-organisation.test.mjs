@@ -80,7 +80,7 @@ test('ett personnummer i organisationsnumret tas bort ur ärendet och skrivs ald
     assert.equal(r.kod, 0, r.stderr);
     assert.match(r.utdata, /^rensad=true$/m, nummer);
     assert.ok(r.rensad && !r.rensad.includes(nummer), `${nummer} står kvar i ärendetexten`);
-    assert.ok(r.rensad.includes('https://exempelbolaget.se'), 'resten av ärendet ska stå kvar');
+    assert.match(r.rensad, /^https:\/\/exempelbolaget\.se$/m, 'resten av ärendet ska stå kvar');
     const fil = r.las('ny-firma.yaml');
     assert.ok(fil && !fil.includes(nummer.replace(/\D/g, '').slice(-10, -4)), `${nummer} hamnade i filen`);
     assert.doesNotMatch(fil, /org_number/);

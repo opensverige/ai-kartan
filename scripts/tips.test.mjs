@@ -114,7 +114,7 @@ test('ett nummer som ser ut som ett personnummer tas bort ur ärendet', () => {
     assert.equal(r.tips.orgnr, '', `${nummer} skulle inte följa med`);
     assert.ok(r.rensadKropp, `${nummer} skulle ge en rensad ärendetext`);
     assert.ok(!r.rensadKropp.includes(nummer), `${nummer} står kvar i ärendetexten`);
-    assert.ok(r.rensadKropp.includes('https://nyfirma.se'), 'resten av ärendet ska stå kvar');
+    assert.match(r.rensadKropp, /^https:\/\/nyfirma\.se$/m, 'resten av ärendet ska stå kvar');
   }
 });
 
@@ -132,7 +132,7 @@ test('ett personnummer i namnfältet tas också bort', () => {
 
 test('svaret på en dubblett länkar till den befintliga posten', () => {
   const r = bedomTips(arende({ webbplats: 'https://exempelbolaget.se' }), BEFINTLIGA);
-  assert.ok(skrivSvar(r, LANKAR).includes('https://karta.example/organisation/exempelbolaget'));
+  assert.match(skrivSvar(r, LANKAR), /verkar redan finnas på kartan: https:\/\/karta\.example\/organisation\/exempelbolaget$/m);
 });
 
 test('svaret upprepar aldrig det tipsaren skrev', () => {

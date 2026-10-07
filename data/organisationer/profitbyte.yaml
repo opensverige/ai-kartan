@@ -58,12 +58,13 @@ kommun:
   verified_by: manual
   note: Ort enligt infra.opensverige.se (Östersund). Kontrollera mot register.
 active:
-  value: false
-  status: claimed
-  source_url: https://www.profitbyte.se/ai/api/
-  source_type: own_site
-  verified_at: 2026-07-06
-  verified_by: manual
+  value: true
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/556779981101
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Giltigt momsregistreringsnummer enligt VIES 2026-10-07. Det tidigare värdet angav om tjänsten var lanserad, inte om bolaget finns."
 evidence:
   - url: https://www.profitbyte.se
     kind: produkt
@@ -80,4 +81,4 @@ evidence:
 links:
   infra_id: profitbyte
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-04
+record_updated_at: 2026-10-07

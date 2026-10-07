@@ -54,12 +54,13 @@ kommun:
   verified_at: 2026-10-04
   verified_by: manual
 active:
-  value: false
-  status: claimed
-  source_url: https://aixia.se/en/nvidia-gateway/dgx-superpod/
-  source_type: own_site
-  verified_at: 2026-06-25
-  verified_by: manual
+  value: true
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/556878229501
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Giltigt momsregistreringsnummer enligt VIES 2026-10-07. Det tidigare värdet angav om tjänsten var lanserad, inte om bolaget finns."
 evidence:
   - url: https://aixia.se
     kind: produkt
@@ -76,4 +77,4 @@ evidence:
 links:
   infra_id: aixia
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-04
+record_updated_at: 2026-10-07
