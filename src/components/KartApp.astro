@@ -359,7 +359,9 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       if (valdId) p.set('org', valdId);
       if (medlemslage) p.set('vy', 'medlemmar');
       const qs = p.toString();
-      const adress = qs ? `?${qs}` : location.pathname;
+      // Hela sökvägen, inte bara frågedelen: räkneskriptet tolkar adressen mot sajtens rot och
+      // skulle annars ta en ny post i historiken på en undersida för en ny sidvisning.
+      const adress = qs ? `${location.pathname}?${qs}` : location.pathname;
       if (nyPost) history.pushState(null, '', adress);
       else history.replaceState(null, '', adress);
     }

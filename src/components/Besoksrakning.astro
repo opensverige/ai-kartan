@@ -1,0 +1,24 @@
+---
+// Räknar besök med Vercel Web Analytics, utan kakor. Komponenten ritas bara i bygget som
+// Vercel gör för produktion, se Bas.astro. Vad som sparas står på /integritet.
+---
+
+<script>
+  import { raknadAdress, vagrarRakning } from '../lib/besok';
+
+  type Sidvisning = { url: string };
+  type Rakning = (...argument: unknown[]) => void;
+  const fonster = window as unknown as { va?: Rakning; vaq?: unknown[][] };
+  const webblasare = navigator as Navigator & { globalPrivacyControl?: boolean };
+
+  if (!vagrarRakning(webblasare)) {
+    // Kön som Vercels skript läser när det har laddat.
+    const rakna: Rakning = fonster.va ?? ((...argument) => (fonster.vaq = fonster.vaq ?? []).push(argument));
+    fonster.va = rakna;
+    rakna('beforeSend', (sidvisning: Sidvisning) => ({ ...sidvisning, url: raknadAdress(sidvisning.url) }));
+    const skript = document.createElement('script');
+    skript.defer = true;
+    skript.src = '/_vercel/insights/script.js';
+    document.head.append(skript);
+  }
+</script>

@@ -6,13 +6,15 @@ import { url, SAJT } from '../lib/data';
 <Sida
   titel="Personuppgifter och integritet"
   kicker="Integritet"
-  ingress="Kartan handlar om organisationer. Om människor visar den bara antal per region. Sajten har inga konton, inga kakor och ingen besöksstatistik."
-  beskrivning="Hur AI-kartan hanterar personuppgifter: inga kakor, ingen spårning och bara uppgifter om organisationer. Rättelse och borttagning inom 14 dagar."
+  ingress="Kartan handlar om organisationer. Om människor visar den bara antal per region. Sajten har inga konton och inga kakor. Besök räknas utan att vi vet vem du är."
+  beskrivning="Hur AI-kartan hanterar personuppgifter: inga kakor, anonym besöksräkning och bara uppgifter om organisationer. Rättelse och borttagning inom 14 dagar."
   stig="/integritet"
 >
   <h2 id="besok">När du besöker sajten</h2>
   <ul>
-    <li>Sajten är statisk och sätter inga kakor. Ingen besöksstatistik, inga tredjepartsskript för analys.</li>
+    <li>Sajten är statisk och sätter inga kakor. Inga skript för annonser, och ingen spårning mellan sajter.</li>
+    <li>Vi räknar besök med Vercel Web Analytics, för att veta om kartan används. Vercel driver redan sajten, så ingen ny part får veta att du var här. Per sidvisning sparas tidpunkt, sida, adressen du kom ifrån, land, region och ort, webbläsare och operativsystem med version, typ av enhet och räkneskriptets version. Uppgifterna knyts inte till någon IP-adress. En besökare känns igen i högst 24 timmar, med en kod som räknas fram ur anropet och sedan kastas. Så beskriver <a href="https://vercel.com/docs/analytics/privacy-policy" rel="noopener">Vercel</a> det. Sidvisningarna sparas hos Vercel i minst tolv månader, enligt deras <a href="https://vercel.com/docs/analytics/limits-and-pricing" rel="noopener">villkor</a>.</li>
+    <li>Adressen räknas utan frågedel och ankare, så det du söker på och filtrerar ingår inte i sidvisningen. Har du slagit på Do Not Track eller Global Privacy Control i webbläsaren laddas ingen räkning alls.</li>
     <li>Typsnitt serveras från vår egen domän.</li>
     <li>Kartbilden hämtas från <a href="https://openfreemap.org/privacy" rel="noopener">OpenFreeMap</a>. När kartan laddas ser deras servrar din IP-adress, som vid vilken bildhämtning som helst. Vill du undvika det finns samma urval som <a href={url('/organisationer')}>lista utan karta</a>.</li>
     <li>Länkar till GitHub och Discord leder till tjänster med egna villkor.</li>
