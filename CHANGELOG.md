@@ -2,9 +2,13 @@
 
 Kodens och funktionernas historik. Dataändringar loggas separat och automatiskt i `history/changelog.json` och på sajten under Ändringar. Samma rader som här finns maskinläsbart i `history/bygglogg.json`.
 
+## 2026-10-07
+
+- Sajten räknar besök, utan kakor. Räkningen görs med Vercel Web Analytics. Vercel driver redan sajten, så ingen ny part får veta vem som besöker den. Adressen räknas utan frågedel, så söktext och filter följer inte med, och den som har slagit på Do Not Track eller Global Privacy Control räknas inte. Integritetssidan säger vad som sparas. Förut stod det där att sajten inte hade någon besöksstatistik.
+- Myndigheternas och kommunernas ikoner ritas först när kartan är inzoomad till organisationerna. På översikten är en myndighet som är ensam på sin plats en prick som alla andra. Förut stod ikonen ensam bland gruppernas cirklar och drog blicken till sig.
+
 ## 2026-10-06
 
-- Sajten räknar besök, utan kakor. Räkningen görs med Vercel Web Analytics, som redan driver sajten. Söktext och filter skickas aldrig med, och den som har slagit på Do Not Track eller Global Privacy Control räknas inte. Integritetssidan säger vad som sparas. Förut stod det där att sajten inte hade någon besöksstatistik.
 - Medlemsvyn fungerar bättre i telefon och med skärmläsare. Antalen per region står i kortets text även i smal vy, kartans källrad ligger fri från knapparna, kortet ligger vid sidan på en liggande telefon, och fokus följer med när vyn öppnas från sökningen eller stängs med Escape.
 - Sökningen förstår mer. Engelska och vardagliga ord träffar etiketterna (computer vision, investors, konsult), synonymer räknas som samma ord (chatbot och chattbot, LLM och språkmodell), och ett kort ord som RAG träffar bara i början av ett ord. Ger en sökning ingenting prövas den utan utfyllnadsord ("vem bygger drönare" blir "drönare") och sedan i grundform. Den som söker jobb, certifikat, pris eller antal anställda får veta att kartan inte har det, och var det finns. Reglerna ligger i `src/lib/sok.ts` och är prövade mot 138 sökningar: andelen användbara svar gick från 49 till 80 procent.
 - Ny vy: var OpenSveriges medlemmar finns. Knappen med kräftan på kartan visar regionerna med tio mils radie och antalet medlemmar i varje, plus hur många som bygger på annan ort. Underlaget är regionrollerna på föreningens Discord, som antal i `data/gemenskap/regioner.json`. Inga personer hämtas. Ett antal under fem skrivs som "färre än 5", också i filen i repot. Den som söker på kräfta eller opensverige hittar också dit, och vyn går att länka med `?vy=medlemmar`.

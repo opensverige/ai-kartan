@@ -3,6 +3,7 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import { raknadAdress, vagrarRakning } from './besok.ts';
 
 test('adressen räknas utan frågedel, så att söktext och filter stannar i webbläsaren', () => {
@@ -23,4 +24,13 @@ test('den som har bett att inte bli spårad räknas inte', () => {
   assert.equal(vagrarRakning({ doNotTrack: '0', globalPrivacyControl: false }), false);
   assert.equal(vagrarRakning({ doNotTrack: null }), false);
   assert.equal(vagrarRakning({}), false);
+});
+
+test('sajten skickar aldrig hela adressen i Referer-huvudet', () => {
+  // Räkneanropet går till samma domän. Med webbläsarens standardregel bär det då hela sidadressen
+  // i Referer, med söktext och filter. Löftet på integritetssidan hänger på den här raden.
+  const vercel = JSON.parse(fs.readFileSync(new URL('../../vercel.json', import.meta.url), 'utf8'));
+  const huvuden = vercel.headers.find((h) => h.source === '/(.*)').headers;
+  const policy = huvuden.find((h) => h.key === 'Referrer-Policy')?.value;
+  assert.ok(['strict-origin', 'origin', 'no-referrer'].includes(policy), `Referrer-Policy är ${policy}`);
 });

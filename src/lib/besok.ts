@@ -2,7 +2,11 @@
 // sidvisning, och vem som inte ska räknas alls. Skriptet som använder dem ligger i
 // src/components/Besoksrakning.astro, och vad som sparas står på /integritet.
 
-/** Adressen som räknas: utan frågedel och ankare. Söktext och filter ligger där och ska inte lämna webbläsaren. */
+/**
+ * Adressen som räknas: utan frågedel och ankare. Söktext och filter ligger där och ska inte
+ * följa med en sidvisning. Webbläsaren skickar också sidans adress i Referer-huvudet. Det
+ * stoppas av Referrer-Policy: strict-origin i vercel.json, som ett test håller fast.
+ */
 export function raknadAdress(adress: string): string {
   return adress.split(/[?#]/)[0];
 }
