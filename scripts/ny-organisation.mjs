@@ -13,7 +13,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import YAML from 'yaml';
-import { KATALOG_ORG, lasGeo, lasOrganisationer } from './lib/organisationer.mjs';
+import { KATALOG_ORG, idagISverige, lasGeo, lasOrganisationer } from './lib/organisationer.mjs';
 import { arendetext, parsa, ikryssade, normaliseraUrl, personnummerI, utanNummer, arNummer } from './lib/arende.mjs';
 import { hittaDubblett } from './lib/tips.mjs';
 
@@ -22,7 +22,7 @@ const arg = (namn) => {
   const i = argv.indexOf(namn);
   return i >= 0 ? argv[i + 1] : null;
 };
-const IDAG = new Date().toISOString().slice(0, 10);
+const IDAG = idagISverige();
 const SAJT = (process.env.SITE_URL || 'https://karta.opensverige.se').replace(/\/$/, '');
 
 let kropp = arendetext();

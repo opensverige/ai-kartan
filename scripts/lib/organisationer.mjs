@@ -114,6 +114,14 @@ export function senastVerifierad(data) {
   return senast;
 }
 
+/**
+ * Dagens datum i Sverige, som ÅÅÅÅ-MM-DD. Datumen i posterna skrivs av människor i Sverige, och
+ * strax efter midnatt här är det fortfarande i går i UTC.
+ */
+export function idagISverige(nu = new Date()) {
+  return new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Stockholm', year: 'numeric', month: '2-digit', day: '2-digit' }).format(nu);
+}
+
 export function dagarSedan(datum, idag = new Date()) {
   if (!datum) return null;
   const d = new Date(`${datum}T00:00:00Z`);
