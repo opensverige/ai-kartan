@@ -462,16 +462,26 @@ test('ändras regelfiler står det i läget, med och utan organisationer', async
   assert.match(listan(bada.v).body, /ändrar också regelfiler/);
 });
 
-test('en lista som redan stämmer kostar inga filhämtningar', async () => {
+test('en lista som redan stämmer skrivs inte om, och ett grönt läge läser listan en gång till', async () => {
   const g = await avbockad();
+  g.v.kommentera('granskare', '/granskad');
+  await kor(grund(g));
   const fore = g.v.anrop.length;
   await kor(grund(g));
-  const nya = g.v.anrop.slice(fore);
-  assert.equal(nya.filter((a) => a === 'GIT text').length, 0);
-  assert.equal(nya.filter((a) => a.startsWith('PATCH')).length, 0);
-  // Pull requesten, mains spets, kommentarerna, mains spets en gång till och commitens läge.
-  // Inget som växer med antalet filer, och inget skrivs när ingenting har ändrats.
-  assert.deepEqual(nya.filter((a) => !a.startsWith('GIT ')).map((a) => a.split(' ')[0]), ['GET', 'GET', 'GET', 'GET', 'GET']);
+  const nya = g.v.anrop.slice(fore).filter((a) => !a.startsWith('GIT '));
+  assert.deepEqual(skrivningar(g.v).slice(-1), [`POST /repos/${REPO}/statuses/${g.v.forsta}`]);
+  // Pull requesten, mains spets, kommentarerna, rätten att intyga, mains spets igen, listan igen
+  // och commitens läge. Inget skrivs när ingenting har ändrats.
+  assert.deepEqual(nya.map((a) => a.split(' ')[0]), ['GET', 'GET', 'GET', 'GET', 'GET', 'GET', 'GET']);
+  assert.equal(nya.filter((a) => /\/issues\/comments\/\d+$/.test(a)).length, 1);
+});
+
+test('en torrkörning skriver ingenting heller när något hindrar granskningen', async () => {
+  const g = github({ bas: [README, org('exempel')], huvud: [README, org('exempel', { text: yaml('exempel', 'https://ny.example') })] });
+  g.v.main([README, org('exempel', { text: yaml('exempel', 'https://tredje.example') })]);
+  const ut = await kor(grund(g, { torrt: true }));
+  assert.equal(ut.resultat.state, 'failure');
+  assert.deepEqual(skrivningar(g.v), []);
 });
 
 test('en torrkörning skriver ingenting', async () => {
@@ -688,7 +698,7 @@ test('en konflikt mot main gör kontrollen röd tills den är löst', async () =
   g.v.main([README, org('exempel', { text: yaml('exempel', 'https://tredje.example') })]);
   await kor(grund(g));
   assert.equal(sist(g.v).state, 'failure');
-  assert.match(sist(g.v).description, /konflikt/);
+  assert.match(sist(g.v).description, /krockar med main/);
   assert.ok(sist(g.v).description.length <= 140);
   assert.equal(listan(g.v).body, kropp);
 });
@@ -803,4 +813,109 @@ test('git läser trädet som det är, även med ovanliga filnamn', async () => {
   // Det som inte är ett id släpps aldrig fram till git.
   await assert.rejects(f.git.rader('--help'));
   await assert.rejects(f.git.slaIhop(c, 'main'));
+});
+
+test('en borttagning som är avbockad gäller filen som den såg ut, inte en som main har ändrat sedan dess', async () => {
+  // Granskaren intygar att posten ska bort. Sedan uppdateras posten i main, och grenen görs om
+  // ovanpå main. Det som nu tas bort är en annan fil än den som intygades.
+  const g = github({ bas: [README, org('gammal')], huvud: [README], ratt: RATT });
+  await kor(grund(g));
+  bocka(g.v);
+  g.v.kommentera('granskare', '/granskad');
+  await kor(grund(g));
+  assert.equal(sist(g.v).state, 'success');
+  g.v.main([README, org('gammal', { text: yaml('gammal', 'https://uppdaterad.example') })]);
+  g.v.push([README], [g.v.bas]);
+  await kor(grund(g));
+  assert.deepEqual([sist(g.v).state, sist(g.v).sha], ['pending', g.v.huvud]);
+  assert.match(sist(g.v).description, /0 av 1/);
+});
+
+test('ändrar någon i listans text skrivs den om, och ett intyg på den ändrade listan gäller inte', async () => {
+  // En bot med skrivrätt kan redigera flödets kommentar. Den får inte kunna byta ut det granskaren
+  // läser, eller gömma en organisation, och sedan låta en människa intyga det.
+  for (const andra of [
+    (b) => b.replace('`Exempel AB`', '`Ett helt annat bolag`'),
+    (b) => b.replace('### `exempel`', '<!--\n### `exempel`').split('\n').map((r) => (r.startsWith('- [') ? `<!--\n${r}` : r)).join('\n'),
+  ]) {
+    const g = await avbockad();
+    g.v.redigera(listan(g.v), andra);
+    g.v.kommentera('granskare', '/granskad');
+    await kor(grund(g));
+    assert.equal(sist(g.v).state, 'pending');
+    assert.match(listan(g.v).body, /Namn enligt filen: `Exempel AB`/);
+    assert.equal(listan(g.v).body.includes('<!--\n'), false);
+    // Bockarna står kvar: det är texten som har rättats, inte granskningen som har gjorts om.
+    assert.equal(listan(g.v).body.split('\n').filter((r) => r.startsWith('- [x] ')).length, ANTAL_NY);
+  }
+});
+
+test('radslut som en webbläsare har lagt till gör inte listan till en annan lista', async () => {
+  const g = github({ huvud: [README, org('exempel')], ratt: RATT });
+  await kor(grund(g));
+  g.v.redigera(listan(g.v), (b) => bockad(b).split('\n').join('\r\n'));
+  g.v.kommentera('granskare', '/granskad');
+  const fore = skrivningar(g.v).length;
+  await kor(grund(g));
+  assert.equal(sist(g.v).state, 'success');
+  assert.equal(skrivningar(g.v).slice(fore).filter((a) => a.startsWith('PATCH')).length, 0);
+});
+
+test('när listan skrivs om sätts läget först, så att ett gammalt grönt inte står kvar om skrivningen faller', async () => {
+  const g = await avbockad();
+  g.v.kommentera('granskare', '/granskad');
+  await kor(grund(g));
+  assert.equal(sist(g.v).state, 'success');
+  g.v.redigera(listan(g.v), (b) => b.replace('`Exempel AB`', '`Ett helt annat bolag`'));
+  const fore = skrivningar(g.v).length;
+  await kor(grund(g));
+  assert.deepEqual(skrivningar(g.v).slice(fore).map((a) => a.split(' ')[0]), ['POST', 'PATCH']);
+  assert.equal(sist(g.v).state, 'pending');
+});
+
+test('bockas en punkt ur medan körningen arbetar blir läget inte grönt', async () => {
+  let gjort = false;
+  const g = await avbockad({
+    vid: (metod, stig, v) => {
+      // Granskaren ångrar sig efter att körningen har läst listan men innan läget är skrivet.
+      if (!gjort && stig.includes('/collaborators/')) {
+        gjort = true;
+        v.redigera(listan(v), (b) => b.replace('- [x] ', '- [ ] '));
+      }
+      return null;
+    },
+  });
+  g.v.kommentera('granskare', '/granskad');
+  await kor(grund(g));
+  assert.equal(gjort, true);
+  assert.equal(sist(g.v).state, 'pending');
+  assert.match(sist(g.v).description, new RegExp(`${ANTAL_NY - 1} av ${ANTAL_NY}`));
+});
+
+test('ett gammalt /granskad från någon utan skrivrätt gör inte att läget talar om ett intyg', async () => {
+  const g = github({ huvud: [README, org('exempel')], ratt: RATT });
+  g.v.kommentera('utomstaende', '/granskad');
+  await kor(grund(g));
+  bocka(g.v);
+  await kor(grund(g));
+  assert.equal(sist(g.v).state, 'pending');
+  assert.match(sist(g.v).description, /Skriv \/granskad i en kommentar för att intyga/);
+});
+
+test('rör pull requesten inte längre någon organisation sägs det i listan, och läget blir grönt', async () => {
+  const g = github({ huvud: [README, org('exempel')] });
+  await kor(grund(g));
+  g.v.push([{ namn: 'README.md', text: 'bara text' }]);
+  await kor(grund(g));
+  assert.deepEqual([sist(g.v).state, sist(g.v).description], ['success', 'Inga organisationer ändras']);
+  assert.match(listan(g.v).body, /ändrar inte längre någon organisation/);
+  assert.equal(listan(g.v).body.includes('exempel'), false);
+});
+
+test('en gren med fler commits än som går att pröva en och en stoppas', async () => {
+  const g = github({ huvud: [README, org('exempel')] });
+  for (let i = 0; i < 100; i++) g.v.push([{ namn: 'README.md', text: `rad ${i}` }, org('exempel')]);
+  await kor(grund(g));
+  assert.equal(sist(g.v).state, 'failure');
+  assert.match(sist(g.v).description, /för många commits/);
 });

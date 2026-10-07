@@ -28,8 +28,6 @@ export const MAX_BYTE = 200_000;
 export const INTYG = '/granskad';
 /** Står i en kommentar som ber om uppdelning i stället för att visa en lista. */
 const DELA = '<!-- granskning-dela-upp -->';
-/** Höjs när listans utseende ändras, så att öppna pull requests får den nya listan. */
-const RITVERSION = 6;
 
 // Punkterna för en ny organisation är granskningslistan i kriterier.md, ord för ord. Ett test
 // jämför dem. Sista punkten där, att valideringen är grön, prövas av CI och är ingen ruta här.
@@ -70,12 +68,19 @@ export function iOrganisationsmappen(sokvag) {
 
 /**
  * Filer som bestämmer vem som får vara med och hur det prövas: kriterierna, schemat, taxonomin,
- * valideringen med det den läser genom, granskningen själv och flödena. De granskas inte av
+ * kommunerna, valideringen med det den läser genom, paketen den körs med, granskningen själv
+ * och flödena. De granskas inte av
  * den här listan, och listan säger till när de ändras.
  */
 export function arRegelfil(sokvag) {
-  return /^(kriterier\.md$|schema\/|data\/taxonomi\/|scripts\/validera\.mjs$|scripts\/granskning\.mjs$|scripts\/lib\/(granskning[^/]*|organisationer|belagg)\.mjs$|\.github\/workflows\/)/.test(String(sokvag));
+  return /^(kriterier\.md$|package(-lock)?\.json$|\.gitattributes$|data\/geo\/|schema\/|data\/taxonomi\/|scripts\/validera\.mjs$|scripts\/granskning\.mjs$|scripts\/lib\/(granskning[^/]*|organisationer|belagg)\.mjs$|\.github\/workflows\/)/.test(String(sokvag));
 }
+
+/**
+ * De första `max` tecknen, räknat i hela tecken. Ett tecken utanför grundplanet är två enheter i
+ * en sträng, och en kapning mitt i det lämnar ett halvt tecken som inte sparas som det skrevs.
+ */
+const kapa = (text, max) => Array.from(text.toWellFormed()).slice(0, max).join('');
 
 /** En rad text utan tecken som styr Markdown eller HTML, högst `max` tecken. Annat än text blir tomt. */
 function rensa(text, max = 80) {
@@ -96,7 +101,7 @@ function rensa(text, max = 80) {
       .replace(/\bw+\.(?=\S)/gi, (m) => (m.length >= 4 ? '' : m));
     if (t === fore) break;
   }
-  return t.replace(/\s+/g, ' ').trim().slice(0, max);
+  return kapa(t.replace(/\s+/g, ' ').trim(), max);
 }
 
 /**
@@ -130,7 +135,7 @@ function kod(text, max = 80) {
   }
   t = t.replace(/\s+/g, ' ').trim();
   if (!t) return '';
-  return `\`${t.length > max ? `${t.slice(0, max - 1)}…` : t}\``;
+  return `\`${Array.from(t).length > max ? `${kapa(t, max - 1)}…` : t.toWellFormed()}\``;
 }
 
 /** Adressen om den är en vanlig webbadress som går att skriva som länk, annars null. */
@@ -191,23 +196,12 @@ export function forvantade(filer) {
 }
 
 /**
- * Ett avtryck av det listan ska visa. Står i kommentaren, så att körningen ser om listan behöver
- * ritas om utan att hämta varje fil. Det är ingen spärr: vad som räknas avgörs alltid av
- * markörerna, som räknas ut ur kodförrådet och aldrig läses ur kommentaren.
+ * Sant om två listor är samma lista. Radslut och blanktecken sist på en rad får skilja: en
+ * webbläsare kan ha ändrat dem när någon bockade i en ruta.
  */
-export function avtryck(filer, { ogiltiga = [], regelfiler = false } = {}) {
-  const delar = forMangaFiler(filer) ? ['för många', filer.length] : forvantade(filer);
-  return sha256(JSON.stringify([RITVERSION, delar, ogiltiga.map((o) => [o.sokvag, o.skal]), regelfiler])).slice(0, 32);
-}
-
-const avtrycksrad = (filer, lage) => `<!-- g-avtryck:${avtryck(filer, lage)} -->`;
-
-/** Sant om kommentaren inte längre visar det den ska: annat innehåll, eller rader som saknas. */
-export function behoverRitasOm(filer, lage, kropp) {
-  const text = String(kropp ?? '');
-  if (!text.startsWith(MARKOR) || !harRad(text, avtrycksrad(filer, lage))) return true;
-  const finns = rutor(text);
-  return forvantade(filer).some((m) => finns.get(m) === undefined || finns.get(m) === null);
+export function sammaLista(a, b) {
+  const jamn = (text) => String(text ?? '').split('\n').map((rad) => rad.trimEnd()).join('\n').trimEnd();
+  return jamn(a) === jamn(b);
 }
 
 /** Det filen själv säger om ett fälts status. Flödet har inte prövat det. */
@@ -257,9 +251,8 @@ const REGELRAD = '**Pull requesten ändrar också regelfiler**: kriterier, schem
  * eller null). En punkt som var avbockad i `tidigare` står kvar avbockad om filen är oförändrad.
  */
 export function lista(filer, { repo, nummer = null, ogiltiga = [], regelfiler = false, maxByte = MAX_BYTE }, tidigare = '') {
-  const lage = { ogiltiga, regelfiler };
   const huvud = [MARKOR, `## ${KONTEXT}`, ''];
-  const delaUpp = (text) => [...huvud, text, '', DELA, avtrycksrad(filer, lage)].join('\n');
+  const delaUpp = (text) => [...huvud, text, '', DELA].join('\n');
   if (forMangaFiler(filer)) {
     return delaUpp(`Den här pull requesten rör ${filer.length} organisationer. Det är fler än en människa kan granska ordentligt på en gång. Dela upp den i delar om högst ${MAX_ORGANISATIONER}.`);
   }
@@ -295,7 +288,7 @@ export function lista(filer, { repo, nummer = null, ogiltiga = [], regelfiler = 
     }
   }
   if (filer.length) ut.push('', `_Punkterna för en organisation nollställs när dess fil ändras. Ändras eller döljs listan efter att någon har skrivit \`${INTYG}\` behövs ett nytt intyg._`);
-  ut.push('', avtrycksrad(filer, lage));
+  if (!filer.length && !ogiltiga.length) ut.push('Den här pull requesten ändrar inte längre någon organisation.');
   const text = ut.join('\n');
   if (Buffer.byteLength(text) > maxByte) {
     return delaUpp(`Den här pull requesten rör ${filer.length} organisationer, och listan blir för lång för en kommentar. Dela upp den i mindre delar.`);

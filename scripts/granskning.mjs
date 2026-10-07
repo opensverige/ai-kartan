@@ -25,11 +25,12 @@ const paus = (ms) => new Promise((klar) => setTimeout(klar, ms));
 
 /**
  * Ett anrop till GitHubs API. Kastar fel på allt annat än 2xx, så att kontrollen aldrig blir grön
- * av misstag. Läsningar som möter ett tillfälligt fel prövas tre gånger, och är anropsbudgeten
+ * av misstag. Läsningar och läget prövas tre gånger vid ett tillfälligt fel, och är anropsbudgeten
  * slut väntar anropet tills den har fyllts på.
  */
 async function api(metod, stig, kropp) {
-  const forsok = metod === 'GET' ? 3 : 1;
+  // Att sätta samma läge två gånger skadar inget. Andra skrivningar prövas en gång.
+  const forsok = metod === 'GET' || /\/statuses\/[0-9a-f]{40}$/.test(stig) ? 3 : 1;
   let vantat = 0;
   for (let n = 1; ; n++) {
     let svar = null;

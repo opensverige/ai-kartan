@@ -86,10 +86,10 @@ Det här gäller:
 - En bock gäller filen som den såg ut när du bockade. Ändras filen nollställs organisationens punkter, och intyget gäller inte längre.
 - Listan visar det som går in i `main` om pull requesten slås ihop nu. När `main` får en ny commit blir ett grönt läge gult och räknas om av sig självt inom någon minut.
 - Läget blir rött när det inte går att säga säkert vad som går in. Läget säger vilket av tre skäl det är:
-  - Grenen har konflikter mot `main`. Lös dem.
+  - Grenen krockar med `main`. Gör om grenen ovanpå `main` (rebase). En konflikt i en organisation som löses med en sammanslagning ger nästa röda läge i listan här.
   - `main` har ändrat samma organisation som grenen. Ta in `main` i grenen (Update branch, eller `git merge main`). Då är filen i grenen den som går in, punkterna börjar om och ett nytt intyg behövs.
   - Grenens commits ger ett annat resultat en och en än tillsammans. Det spelar roll för Rebase and merge, som för in varje commit för sig. Slå ihop grenens commits till en.
-- Ändras listan efter ditt intyg, till exempel för att någon bockar ur en punkt, behövs ett nytt `/granskad`. Dölj varken listan eller intyget: en dold kommentar räknas som ändrad.
+- Ändras listan efter ditt intyg, till exempel för att någon bockar ur en punkt, behövs ett nytt `/granskad`. Ändrar någon i listans text skrivs den tillbaka som den ska vara, och även då behövs ett nytt intyg. Dölj varken listan eller intyget: en dold kommentar räknas som ändrad.
 - Läget sitter på pull requestens senaste commit. Två pull requests med samma senaste commit delar därför läge och skriver över varandras. Stäng dubbletten och kör om flödet på den riktiga.
 - AI får hjälpa dig att kontrollera att ett belägg visar det som påstås, men listan och intyget är dina. En bot kan kryssa i en ruta, och därför räcker inte rutorna: det är din kommentar som räknas. En agent som arbetar inloggad som du går inte att skilja från dig. Den regeln vilar därför på dig.
 - Listan gäller organisationer. Ändringar av kriterier, schema, validering och flöden granskas inte av den, även när läget är grönt. Listan och läget säger till när sådana filer ändras.
@@ -99,7 +99,7 @@ Det här gäller:
 
 ### Göra granskningen tvingande
 
-Läget heter Granskning mot kriterierna. Det blir tvingande när det läggs till som obligatorisk kontroll för `main` under Settings → Rules, tillsammans med Validera data och bygg. Då går ingen pull request med en organisation att merga innan listan är avbockad och intygad, inte heller för den som äger repot. Raden Granskningslista / Skriv listan och sätt läget är flödets egen körning och ska inte väljas.
+Läget heter Granskning mot kriterierna. Det blir tvingande när det läggs till som obligatorisk kontroll för `main` under Settings → Rules, tillsammans med Validera data och bygg. Då går ingen pull request med en organisation att merga innan listan är avbockad och intygad, inte heller för den som äger repot. Raden Granskningslista / Skriv listan och sätt läget är flödets egen körning och ska inte väljas. Välj GitHub Actions som källa för läget när regeln skapas. Annars kan vem som helst med skrivrätt, också en annan app, sätta läget själv.
 
 Slå också på Require branches to be up to date before merging. Flödet gör gröna lägen gula när `main` ändras och räknar om dem, men det sker några sekunder efter ändringen, och en commit direkt till `main` med `[skip ci]` i meddelandet startar ingen omräkning alls. Med inställningen på måste grenen uppdateras mot `main` före varje merge, och då finns inget sådant glapp. Flödet som skriver historiken gör egna commits till `main` och behöver då stå som undantag i regeln.
 

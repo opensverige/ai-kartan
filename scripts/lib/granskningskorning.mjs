@@ -24,7 +24,7 @@
 
 import { tolkaYaml } from './organisationer.mjs';
 import { GitFel } from './granskningsgit.mjs';
-import { arOrganisationsfil, iOrganisationsmappen, arRegelfil, ren, version, lista, avlas, utfall, behoverRitasOm, arIntyg, MARKOR, KONTEXT, MAPP, MAX_ORGANISATIONER } from './granskning.mjs';
+import { arOrganisationsfil, iOrganisationsmappen, arRegelfil, ren, version, lista, avlas, utfall, sammaLista, arIntyg, MARKOR, KONTEXT, MAPP, MAX_ORGANISATIONER } from './granskning.mjs';
 
 /** Ett svar från GitHub som inte var 2xx. `status` är svarskoden. */
 export class ApiFel extends Error {
@@ -93,7 +93,7 @@ export function jamforTrad(bas, ihop, huvud = ihop) {
     }
   }
   for (const fil of filer) {
-    fil.version = fil.status === 'removed' ? version('removed', '') : version(fil.status, fil.status === 'modified' ? `${fil.basblob}\n${fil.blob}` : fil.blob);
+    fil.version = fil.status === 'removed' ? version('removed', fil.basblob) : version(fil.status, fil.status === 'modified' ? `${fil.basblob}\n${fil.blob}` : fil.blob);
   }
   const efterNamn = (a, b) => a.sokvag.localeCompare(b.sokvag);
   return { filer: filer.sort(efterNamn), ogiltiga: ogiltiga.sort(efterNamn), regelfiler };
@@ -189,13 +189,12 @@ async function hittaIntyg(api, repo, kommentarer, listanAndrad) {
   let foraldrat = false;
   const provade = new Map();
   for (const k of intyg) {
-    if (!(Date.parse(k.created_at) > listanAndrad)) {
-      foraldrat = true;
-      continue;
-    }
+    // Först vem, sedan när. Ett gammalt /granskad från någon som inte får intyga är inget intyg alls.
     const login = k.user.login;
     if (!provade.has(login)) provade.set(login, await farIntyga(api, repo, login));
-    if (provade.get(login)) return { intygadAv: login, intygForaldrat: false };
+    if (!provade.get(login)) continue;
+    if (Date.parse(k.created_at) > listanAndrad) return { intygadAv: login, intygForaldrat: false };
+    foraldrat = true;
   }
   return { intygadAv: '', intygForaldrat: foraldrat };
 }
@@ -247,7 +246,7 @@ export async function kor({ api, git, repo, nummer, torrt = false, korning = nul
       const oforandrad = async () => torrt || (await spets(api, repo, gren)) === bas;
       await git.hamta([bas, sha]);
       const ihop = await git.slaIhop(bas, sha);
-      let hinder = ihop.konflikt ? 'Grenen går inte att slå ihop med main utan konflikter. Lös dem, så räknas listan om.' : await hinderIHistoriken(git, bas, sha, ihop.trad);
+      let hinder = ihop.konflikt ? 'Grenen krockar med main. Gör om den ovanpå main (rebase), så räknas listan om.' : await hinderIHistoriken(git, bas, sha, ihop.trad);
       const { filer, ogiltiga, regelfiler } = hinder ? {} : jamforTrad(await git.rader(bas), await git.rader(ihop.trad), await git.rader(sha));
       // Har main ändrat i samma fil slår git ihop de två ändringarna. Hur den filen blir beror på
       // vem som slår ihop: två sätt att räkna kan båda gå igenom utan konflikt och ändå ge olika
@@ -271,11 +270,14 @@ export async function kor({ api, git, repo, nummer, torrt = false, korning = nul
       const kommentarer = await allaKommentarer(api, repo, nummer);
       const egen = kommentarer.find(arLista);
       let kropp = egen?.body ?? '';
-      // Listan ritas bara om när den ska visa något annat än den gör. Annars skulle den som bockar
-      // bli avbruten, och ett intyg skulle sluta gälla utan att något har ändrats.
-      if ((filer.length > 0 || ogiltiga.length > 0 || egen) && behoverRitasOm(filer, lage, kropp)) {
+      // Listan ritas varje gång och jämförs med den som står där, rad för rad. Den som kan
+      // redigera kommentaren kan då inte byta ut eller gömma det granskaren läser. Listan skrivs
+      // bara om när den skiljer sig: annars skulle den som bockar bli avbruten, och ett intyg
+      // skulle sluta gälla utan att något har ändrats.
+      if (filer.length > 0 || ogiltiga.length > 0 || egen) {
         if (filer.length <= MAX_ORGANISATIONER) for (const fil of filer) await lasFil(git, fil);
-        kropp = lista(filer, { repo, nummer, ...lage }, kropp);
+        const ratt = lista(filer, { repo, nummer, ...lage }, kropp);
+        if (!sammaLista(ratt, kropp)) kropp = ratt;
       }
       const skrivs = kropp !== (egen?.body ?? '');
       const avlast = avlas(filer, kropp, { ogiltiga });
@@ -294,6 +296,9 @@ export async function kor({ api, git, repo, nummer, torrt = false, korning = nul
         continue;
       }
       let lank = egen?.html_url ?? pr.html_url;
+      // Läget skrivs före listan. Faller skrivningen av listan står då inget grönt kvar bredvid
+      // en lista som inte längre stämmer. En lista som skrivs om kan aldrig ge ett intygat grönt.
+      if (skrivs) await skrivLage(api, repo, sha, { state: resultat.state, description: resultat.description, target_url: lank });
       if (skrivs && egen) {
         const nu = await api('GET', `/repos/${repo}/issues/comments/${egen.id}`);
         if (nu.body !== egen.body) {
@@ -303,6 +308,14 @@ export async function kor({ api, git, repo, nummer, torrt = false, korning = nul
         lank = (await api('PATCH', `/repos/${repo}/issues/comments/${egen.id}`, { body: kropp })).html_url ?? lank;
       } else if (skrivs) {
         lank = (await api('POST', `/repos/${repo}/issues/${nummer}/comments`, { body: kropp })).html_url ?? lank;
+      } else if (egen && resultat.state === 'success') {
+        // Grönt bygger på listan som den lästes i början av körningen. Den läses en gång till,
+        // så att en punkt som bockats ur under tiden inte blir grön.
+        const nu = await api('GET', `/repos/${repo}/issues/comments/${egen.id}`);
+        if (nu.body !== egen.body || nu.updated_at !== egen.updated_at) {
+          omIgen('Listan');
+          continue;
+        }
       }
       await skrivLage(api, repo, sha, { state: resultat.state, description: resultat.description, target_url: lank });
       return { resultat, kommentar: kropp, lage: avlast };
