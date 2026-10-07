@@ -1,0 +1,100 @@
+id: accounted
+
+name:
+  value: Accounted
+  status: claimed
+  source_url: https://www.accounted.se
+  source_type: own_site
+  verified_at: 2026-10-07
+  verified_by: agent
+
+legal_name:
+  value: Arcim Technology AB
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559538621901
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Namn enligt momsregistret, hämtat via EU:s tjänst VIES. Användarvillkoren på accounted.se anger Arcim Technology AB med samma organisationsnummer som leverantör av tjänsten."
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559538621901
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Bolagsformen är härledd ur det registrerade namnet. Momsregistret har inget eget fält för bolagsform."
+
+org_number:
+  value: "559538-6219"
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559538621901
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+
+website: https://www.accounted.se
+
+description:
+  value: Utvecklar Accounted, ett bokföringsprogram med öppen källkod för svenska aktiebolag och enskilda firmor. Bokföring, fakturor, lön och deklarationer är åtkomliga för AI-agenter genom en MCP-server och ett REST-API. Ändringar som en agent föreslår godkänns av användaren innan de bokförs.
+  status: claimed
+  source_url: https://www.accounted.se/docs/api/connect-claude
+  source_type: own_docs
+  verified_at: 2026-10-07
+  verified_by: agent
+
+offers:
+  value: [produkt, oppen_kallkod]
+  status: claimed
+  source_url: https://github.com/erp-mafia/accounted
+  source_type: own_docs
+  verified_at: 2026-10-07
+  verified_by: agent
+
+areas:
+  value: [fintech, agenter_automation]
+  status: claimed
+  source_url: https://www.accounted.se
+  source_type: own_site
+  verified_at: 2026-10-07
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559538621901
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Stockholm. Härledd från postorten i den registrerade adressen i momsregistret. Webbplatsen anger att programmet utvecklas i Stockholm. Sätet enligt Bolagsverket är inte kontrollerat."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559538621901
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Giltigt momsregistreringsnummer enligt VIES 2026-10-07."
+
+evidence:
+  - url: https://github.com/erp-mafia/accounted
+    kind: repo
+    title: "Accounted på GitHub: bokföringsprogram med MCP-server för AI-agenter (AGPL-3.0)"
+    status: claimed
+    verified_at: 2026-10-07
+    verified_by: agent
+    note: Kodförrådet ägs av organisationen erp-mafia. Accounteds webbplats länkar dit som sin källkod.
+  - url: https://www.accounted.se/docs/api/connect-claude
+    kind: produkt
+    title: "Dokumentation: MCP-servern som ger AI-agenter tillgång till bokföringen, med godkännande före varje ändring"
+    status: claimed
+    verified_at: 2026-10-07
+    verified_by: agent
+
+links:
+  github: https://github.com/erp-mafia/accounted
+
+record_created_at: 2026-10-07
+record_updated_at: 2026-10-07
