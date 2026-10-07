@@ -279,6 +279,8 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     let platser: PlatsTraff[] = [];
     let kommun = '';
     let valdId = medKarta ? start.get('org') : null;
+    // Länken Visa på kartan slutar på #karta. I telefon lämnas bladet då nedfällt, så att platsen syns.
+    let kartanForst = location.hash === '#karta';
     // Sant när adressen pekade på en organisation som inte finns. Då sägs det överst i listan.
     let saknadOrg = false;
     // Sant när datan inte gick att hämta. Då står felet kvar tills sidan laddas om.
@@ -560,9 +562,9 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         li.innerHTML = infralank('AI-infrastruktur i detalj', 'Pris, datacenter och ägande per leverantör på AI-Infra', infra);
         frag.appendChild(li);
       }
-      // Den som söker jobb får träffar på dem som bygger AI för arbetsmarknaden. Då står det också
-      // att kartan inte har några annonser, och var de finns.
-      if (sorterade.length && tomtSvar(f.q)?.sort === 'jobb') {
+      // Den som söker jobb får träffar på dem som bygger AI för arbetsmarknaden, och den som söker
+      // pris får träff på "Enterprise". Då står det också vad kartan inte har, och var det finns.
+      if (sorterade.length && tomtSvar(f.q)) {
         const li = document.createElement('li');
         li.className = 'lista__tom';
         li.innerHTML = saknasHtml(f.q, 'span') ?? '';
@@ -674,6 +676,8 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         const rad = lista.querySelector<HTMLElement>(`[data-id="${CSS.escape(id)}"]`);
         rad?.classList.remove('post--aktiv');
         rad?.scrollIntoView({ block: 'nearest' });
+        // Korten ovanför ritas först när de kommer i bild och växer då. En gång till, när de har sin höjd.
+        requestAnimationFrame(() => rad?.scrollIntoView({ block: 'nearest' }));
         if (fokus) rad?.querySelector<HTMLElement>('a')?.focus({ preventScroll: true });
       }
       if (karta && kartaKlar) uppdateraVald();
@@ -782,7 +786,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         for (const p of t.platser) html += rad({ typ: 'plats', p }, `<span class="logo logo--liten logo--plats" aria-hidden="true">${ikon('nal', 17)}</span>`, markera(p.namn, q), `${esc(p.under)} · ${p.antal} ${plural(p.antal)}`);
         html += '</div>';
       }
-      if (sokVal.length && tomtSvar(q)?.sort === 'jobb') html = (saknasHtml(q, 'p') ?? '') + html;
+      if (sokVal.length && tomtSvar(q)) html = (saknasHtml(q, 'p') ?? '') + html;
       if (!sokVal.length) {
         html =
           saknasHtml(q, 'p') ??
@@ -1136,6 +1140,11 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         if (smal.matches) sattBlad('titt');
         ritaMedlemmar();
         visaMedlemslager();
+        // Källraden är utfälld tills kartan rörs och täcker då den sydligaste regionens antal.
+        // Den fälls ihop här. Knappen i hörnet visar den igen.
+        const kallrad = app.querySelector('.maplibregl-ctrl-attrib');
+        kallrad?.classList.remove('maplibregl-compact-show');
+        kallrad?.removeAttribute('open');
         void laddaKraftan()
           .catch((fel) => console.warn('Kräftan gick inte att ladda', fel))
           .then(() => medlemslage && bytte && landaBrickor());
@@ -1275,7 +1284,9 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
               'icon-image': 'tom', 'icon-size': medZoom(['*', 1.04, radie], ['*', 1.8, radie]), 'icon-allow-overlap': true, 'icon-padding': 0,
               'symbol-sort-key': minstOverst,
             },
-            paint: { 'text-color': '#fdfbf7' },
+            // Mörk kontur: en ensam organisations prick kan ligga över cirkeln, och dess vita kant
+            // åt annars upp en siffra. Stockholms 136 lästes som 36 på en liten telefon.
+            paint: { 'text-color': '#fdfbf7', 'text-halo-color': BLACK, 'text-halo-width': 1.6 },
           });
         };
         GRUPPNIVAER.forEach(ritaCirklar);
@@ -1504,7 +1515,12 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       if (o) {
         // Datan kommer oftast före kartan. Då visas detaljvyn redan, och i telefon kan besökaren ha
         // fällt ner bladet för att se kartan. Den ritas inte om: kartan flyttas bara dit.
-        if (!vyDetalj || vyDetalj.hidden || vyDetalj.dataset.id !== o.id) return visaDetalj(o, true, false);
+        if (!vyDetalj || vyDetalj.hidden || vyDetalj.dataset.id !== o.id) {
+          visaDetalj(o, true, false);
+          if (kartanForst && smal.matches) sattBlad('titt');
+          kartanForst = false;
+          return;
+        }
         if (karta && kartaKlar) {
           uppdateraVald();
           if (o.lat !== null && o.lng !== null) karta.flyTo({ center: [o.lng, o.lat], zoom: Math.max(karta.getZoom(), ZOOM_POSTER + 0.5) }, AV_KOD);

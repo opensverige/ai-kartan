@@ -248,11 +248,14 @@ function aktiv(href: string): boolean {
     font: 500 16px/1.2 var(--font-sans);
     -webkit-appearance: none;
     appearance: none;
+    /* En ledtext som inte får plats slutar med tre punkter i stället för mitt i en bokstav. */
+    text-overflow: ellipsis;
   }
   .sok__falt::placeholder {
     color: hsl(var(--ink-mute));
     font-weight: 400;
     opacity: 1;
+    text-overflow: ellipsis;
   }
   .sok__kbd {
     flex: none;
@@ -334,6 +337,11 @@ function aktiv(href: string): boolean {
     border: 1px solid hsl(var(--kant));
     border-radius: var(--r-kort);
     box-shadow: var(--skugga-flyt);
+    /* På en liggande telefon är menyn högre än skärmen. Då rullar den, så att sista raden går att nå. */
+    max-height: calc(100vh - var(--huvud-h) - 20px);
+    max-height: calc(100dvh - var(--huvud-h) - 20px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
   .meny__lista a {
     display: block;

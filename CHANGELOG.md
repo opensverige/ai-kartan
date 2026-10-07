@@ -4,6 +4,9 @@ Kodens och funktionernas historik. Dataändringar loggas separat och automatiskt
 
 ## 2026-10-07
 
+- Bättre i telefon. Antalet i en gruppcirkel har en mörk kontur, så att en prick intill inte äter upp en siffra: Stockholms 136 lästes som 36 på en liten skärm. Menyn rullar på en liggande telefon, så att sista raden går att nå. Tabellerna på Metod och Öppen data rullar i sin egen ram i stället för att dra med hela sidan i sidled. Ankare landar under sidhuvudet, inte bakom det. Sökfältets ledtext slutar med tre punkter när den inte ryms.
+- Visa på kartan från en organisations sida visar kartan i telefon, med bladet nedfällt. Förut öppnades samma uppgifter igen över kartan. En delad länk öppnar detaljbladet som förut.
+- Den som söker på pris, kunder, ägare eller certifikat får veta att kartan inte har sådana uppgifter, även när orden råkar ge träffar. Förut gav "pris" bara en träff på ett bolag med Enterprise i namnet.
 - Kartan säger till när den inte går att visa. Saknar webbläsaren WebGL, eller går kartunderlaget inte att nå, står det i kartytan i stället för att den är tom. Listan och sökningen fungerar ändå.
 - En länk till en organisation som inte finns säger det överst i listan, och adressen rättas. En plats i adressen som inte finns ger hela landet i stället för en tom lista med koden som rubrik.
 - I telefon fälls detaljbladet inte upp igen när kartan blir klar. Bakåt och framåt flyttar kartan med platsen. Felmeddelandet när datan inte går att hämta står kvar när man skriver.
