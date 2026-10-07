@@ -111,7 +111,8 @@ export function ren(text, max = 80) {
  * Ett värde ur filen i kodstil, eller tom sträng. I kodstil tolkar GitHub ingenting: varken
  * omnämnanden, ärendenummer, commit-id, emoji eller formler. Värdet kan därför visas som det
  * står, med parenteser och allt. Det enda som tas bort är det som kunde avsluta kodstilen eller
- * se ut som en av listans markörer. Ett värde som kapas slutar med tre punkter.
+ * se ut som en av listans markörer: början och slut på en HTML-kommentar, också slutet "--!>"
+ * som webbläsare godtar. Ett värde som kapas slutar med tre punkter.
  */
 function kod(text, max = 80) {
   let t = typeof text === 'string' ? text : typeof text === 'number' && Number.isFinite(text) ? String(text) : '';
@@ -120,10 +121,14 @@ function kod(text, max = 80) {
     .normalize('NFKC')
     .replace(/[\u0000-\u001f\u007f-\u009f\u2028\u2029]+/g, ' ')
     .replace(/[\u00ad\u061c\u180e\u200b-\u200f\u202a-\u202f\u2060-\u206f\ufeff]/g, '')
-    .replace(/`/g, "'")
-    .replace(/<!--|-->/g, '')
-    .replace(/\s+/g, ' ')
-    .trim();
+    .replace(/`/g, "'");
+  // Det som tas bort kan lämna en ny början eller ett nytt slut på en kommentar efter sig:
+  // "<!-<!---" blir "<!--". Ta därför bort tills inget mer ändras.
+  for (let fore = null; fore !== t; ) {
+    fore = t;
+    t = t.replace(/<!--|--!?>/g, '');
+  }
+  t = t.replace(/\s+/g, ' ').trim();
   if (!t) return '';
   return `\`${t.length > max ? `${t.slice(0, max - 1)}…` : t}\``;
 }
@@ -173,6 +178,12 @@ export function rutor(kropp) {
 
 const forMangaFiler = (filer) => filer.length > MAX_ORGANISATIONER;
 
+/**
+ * Sant om `rad` står på en egen rad i kommentaren. Listans egna rader känns igen så, och aldrig
+ * som en del av en annan rad: där står text ur filerna.
+ */
+const harRad = (kropp, rad) => String(kropp ?? '').split('\n').some((r) => r.trim() === rad);
+
 /** Markörerna som ska finnas i listan, i den ordning de står. */
 export function forvantade(filer) {
   if (forMangaFiler(filer)) return [];
@@ -195,7 +206,7 @@ const avtrycksrad = (filer, lage) => `<!-- g-avtryck:${avtryck(filer, lage)} -->
 /** Sant om kommentaren inte längre visar det den ska: annat innehåll, eller rader som saknas. */
 export function behoverRitasOm(filer, lage, kropp) {
   const text = String(kropp ?? '');
-  if (!text.startsWith(MARKOR) || !text.includes(avtrycksrad(filer, lage))) return true;
+  if (!text.startsWith(MARKOR) || !harRad(text, avtrycksrad(filer, lage))) return true;
   const finns = rutor(text);
   return forvantade(filer).some((m) => finns.get(m) === undefined || finns.get(m) === null);
 }
@@ -299,7 +310,7 @@ export function lista(filer, { repo, nummer = null, ogiltiga = [], regelfiler = 
 
 /** Läser av en kommentar mot de punkter som ska finnas. Punkter som saknas räknas som inte avbockade. */
 export function avlas(filer, kropp, { ogiltiga = [] } = {}) {
-  const delad = String(kropp ?? '').includes(DELA);
+  const delad = harRad(kropp, DELA);
   const forManga = forMangaFiler(filer) || delad;
   const finns = String(kropp ?? '').startsWith(MARKOR) ? rutor(kropp) : new Map();
   const kvar = [];

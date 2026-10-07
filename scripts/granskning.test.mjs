@@ -217,6 +217,31 @@ test('text ur filen kan inte smyga in en avbockad ruta eller en markör', () => 
   assert.equal(kropp.split('\n').filter((r) => r.startsWith('#')).length, 2);
 });
 
+test('ett värde kan inte bygga ihop en markör av bitar som blir kvar efter rensningen', () => {
+  // Tas "<!--" bort ur "<!-<!---" blir "<!--" kvar. Rensningen måste hålla på tills inget finns kvar.
+  const dela = '<!-<!--- granskning-dela-upp ---->>';
+  const filer = [fil('ett', 'A', 'added', post('ett', { name: { value: dela }, description: { value: `Bygger ${dela} och <!-<!--- g-avtryck:abc ---->> samt --!--!>> slut` } }))];
+  const kropp = lista(filer, HAR);
+  const urFilen = kropp.split('\n').filter((r) => r.startsWith('> '));
+  assert.ok(urFilen.length > 3);
+  for (const rad of urFilen) assert.equal(/<!--|-->|--!>/.test(rad), false, rad);
+  assert.equal(avlas(filer, kropp).forManga, false);
+});
+
+test('listans egna rader räknas bara när de står på en egen rad', () => {
+  const filer = [fil('ett', 'A')];
+  const kropp = lista(filer, HAR);
+  const avtrycket = kropp.split('\n').find((r) => r.startsWith('<!-- g-avtryck:'));
+  // Samma text mitt i en rad är inte listans rad, hur den än hamnade där.
+  assert.equal(avlas(filer, kropp.replace('> Namn enligt filen:', '> <!-- granskning-dela-upp --> Namn enligt filen:')).forManga, false);
+  assert.equal(behoverRitasOm(filer, {}, kropp.replace(avtrycket, `> ${avtrycket}`)), true);
+  // GitHub kan lämna tillbaka en kommentar med radslut från Windows. Den är fortfarande samma lista.
+  const crlf = kropp.split('\n').join('\r\n');
+  assert.equal(behoverRitasOm(filer, {}, crlf), false);
+  const manga = Array.from({ length: MAX_ORGANISATIONER + 1 }, (_, i) => fil(`org-${i}`, `A${i}`));
+  assert.equal(avlas([], lista(manga, HAR).split('\n').join('\r\n')).forManga, true);
+});
+
 test('rubriken bär bara id:t, namnet står som uppgift ur filen', () => {
   const kropp = lista([fil('exempel', 'A', 'added', post('exempel', { name: { value: 'Granskad och godkänd', status: 'claimed' } }))], HAR);
   assert.ok(kropp.includes('### `exempel` · ny'));
