@@ -95,6 +95,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
           .enkel-lista { margin: 16px 0; padding-left: 28px; line-height: 1.9; }
           .enkel-lista span { color: hsl(var(--ink-mute)); }
           @media (max-width: 900px) { .app[data-lage='karta'] .panel { transform: none !important; } }
+          @media (max-width: 900px) and (max-height: 520px) { .app[data-lage='karta'] .panel__intro { display: none; } }
         </style>
         <p class="lista__tom lista__tom--ram">
           <strong>Kartan och listan kräver JavaScript.</strong>
@@ -1143,6 +1144,16 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
      * Slår på eller av medlemsvyn. `flyttaKameran` är falskt när besökaren redan är på väg någon
      * annanstans, till exempel till en plats eller en organisation.
      */
+    /**
+     * Källraden är utfälld tills kartan rörs och täcker då den sydligaste regionens antal i
+     * medlemsvyn. Den fälls ihop, och knappen i hörnet visar den igen.
+     */
+    function fallIhopKallrad() {
+      const kallrad = app.querySelector('.maplibregl-ctrl-attrib');
+      kallrad?.classList.remove('maplibregl-compact-show');
+      kallrad?.removeAttribute('open');
+    }
+
     function sattMedlemsvy(pa: boolean, skriv = true, flyttaKameran = true) {
       if (!medlemsdata) return;
       if (!karta || !kartaKlar) {
@@ -1168,11 +1179,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         if (smal.matches) sattBlad('titt');
         ritaMedlemmar();
         visaMedlemslager();
-        // Källraden är utfälld tills kartan rörs och täcker då den sydligaste regionens antal.
-        // Den fälls ihop här. Knappen i hörnet visar den igen.
-        const kallrad = app.querySelector('.maplibregl-ctrl-attrib');
-        kallrad?.classList.remove('maplibregl-compact-show');
-        kallrad?.removeAttribute('open');
+        fallIhopKallrad();
         void laddaKraftan()
           .catch((fel) => console.warn('Kräftan gick inte att ladda', fel))
           .then(() => medlemslage && bytte && landaBrickor());
@@ -1234,7 +1241,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
           // Hela Sverige i bild oavsett skärmstorlek.
           bounds: SVERIGE,
           fitBoundsOptions: { padding: kartMarginal() },
-          minZoom: 2.4,
+          minZoom: 2,
           maxZoom: 14,
           attributionControl: { compact: true },
         });
@@ -1256,15 +1263,19 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         el.insertAdjacentHTML('beforeend', '<p class="karta__fel karta__fel--underlag" role="status"><strong>Kartbilden gick inte att hämta.</strong> Organisationerna visas ändå.</p>');
       };
       karta.on('error', (e) => {
-        const kalla = (e as { sourceId?: string }).sourceId;
+        const { sourceId: kalla, tile } = e as { sourceId?: string; tile?: unknown };
         if (kalla) {
-          brickfel += 1;
+          // Ett fel utan kartbricka gäller källan själv. Då begärs inga kartbrickor alls, och det räcker för beskedet.
+          brickfel += !tile && !EGNA_KALLOR.has(kalla) ? 3 : 1;
           if (kartaKlar) underlagsfel();
           return;
         }
         if (!kartaKlar && felvakt === undefined) felvakt = window.setTimeout(() => !kartaKlar && visaKartfel(), 4000);
       });
       karta.on('sourcedata', (e) => {
+        // Kartbiblioteket fäller ut källraden när baskartans källa har svarat. Öppnas medlemsvyn
+        // från adressen sker det efter att vyn har fällt ihop den.
+        if (medlemslage && e.sourceDataType === 'metadata' && !EGNA_KALLOR.has(e.sourceId)) fallIhopKallrad();
         if (!e.tile || EGNA_KALLOR.has(e.sourceId)) return;
         brickor += 1;
         el.querySelector('.karta__fel--underlag')?.remove();
@@ -1601,9 +1612,11 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         saknadOrg = true;
         renderLista();
         skrivUrl(lasFilter());
-        // I telefon ligger listan i det nedfällda bladet. Beskedet ska synas utan att någon letar.
+        // I telefon ligger listan i det nedfällda bladet. Beskedet ska synas utan att någon letar,
+        // även på en liggande telefon där listans inledning fyller bladet.
         if (smal.matches) sattBlad('oppen');
         uppdateraGrepp();
+        lista.querySelector('.lista__tom')?.scrollIntoView({ block: 'nearest' });
       }
       const f = lasFilter();
       if (kartaKlar && (f.lan || f.kommun)) passaKarta();
@@ -1858,6 +1871,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
           lista.innerHTML =
             '<li class="lista__tom"><strong>Kunde inte läsa datan.</strong><span>Kontrollera uppkopplingen och försök igen.</span>' +
             '<button type="button" class="knapp knapp--liten" data-ladda-om>Försök igen</button></li>';
+          lista.querySelector('.lista__tom')?.scrollIntoView({ block: 'nearest' });
         },
       );
   }
@@ -2632,6 +2646,9 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
   }
   .app .karta__fel--underlag strong {
     display: inline;
+  }
+  body:has(.app[data-vy='medlemmar']) .hoppa[href='#filter'] {
+    display: none;
   }
   /* Utan karta finns inget att zooma i eller byta vy på. */
   .app--utan-karta .kartknappar,
@@ -3443,9 +3460,11 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
 
   /* Liggande telefon: ett blad i botten tar hela höjden. Kortet ligger vid sidan, som i bred vy. */
   @media (max-width: 900px) and (max-height: 520px) {
-    /* I en låg vy tog bannern och den klistrade foten hela detaljbladet, så att namnet inte syntes. */
+    /* I en låg vy tog bannern och den klistrade foten hela detaljbladet, så att namnet inte syntes.
+       Logotypen skjuter upp över den lägre bannern, så knappen flyttas åt sidan om den. */
     .detalj__banner {
       height: 56px;
+      padding-left: 124px;
     }
     .detalj__fot {
       position: static;
