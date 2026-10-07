@@ -1328,7 +1328,9 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         });
 
         // Typer med egen ikon ritas som landmärken: bilden i stället för en prick, med namnet under.
-        // Går bilderna inte att ladda ligger prickarna kvar.
+        // Går bilderna inte att ladda ligger prickarna kvar. Ikonerna ritas först på närmaste nivån.
+        // Längre ut är en myndighet som är ensam på sin plats en prick som alla andra: en ikon bland
+        // gruppernas cirklar drar blicken till sig och ser ut att betyda mer än den gör.
         const ritaLandmarken = async () => {
           const BREDD = 40;
           // Bildens täthet följer skärmen, så att pixelkonsten inte förstoras på telefoner. Källan är 192 px.
@@ -1356,9 +1358,9 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
           const ikon = ['concat', 'typ-', ['get', 't']] as unknown as ExpressionSpecification;
           karta!.addLayer(
             {
-              id: 'landmarken', type: 'symbol', source: 'orgs', filter: ['all', synlig, arLandmarke],
+              id: 'landmarken', type: 'symbol', source: 'orgs', minzoom: ZOOM_POSTER, filter: ['all', synlig, arLandmarke],
               // Ikonen stannar vid 40 px, samma storlek som den valda ikonen och dess ring är ritade för.
-              layout: { 'icon-image': ikon, 'icon-size': ['interpolate', ['linear'], ['zoom'], 4, 0.8, 9, 1], 'icon-allow-overlap': true },
+              layout: { 'icon-image': ikon, 'icon-allow-overlap': true },
             },
             'lan-grupp-namn',
           );
@@ -1366,20 +1368,27 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
           // och då fångar namnet klick och hovring som gäller grannen under.
           karta!.addLayer(
             {
-              id: 'landmarken-namn', type: 'symbol', source: 'orgs', minzoom: 7, filter: ['all', synlig, arLandmarke],
+              id: 'landmarken-namn', type: 'symbol', source: 'orgs', minzoom: ZOOM_POSTER, filter: ['all', synlig, arLandmarke],
               layout: { 'text-field': ['get', 'n'], 'text-font': ['Noto Sans Bold'], 'text-size': 12, 'text-anchor': 'top', 'text-offset': [0, 1.85], 'text-max-width': 9 },
               paint: { 'text-color': BLACK, 'text-halo-color': '#fdfbf7', 'text-halo-width': 1.8 },
             },
             'lan-grupp-namn',
           );
-          karta!.setFilter('punkter', ['all', synlig, ['!', arLandmarke]]);
-          karta!.setFilter('namn', ['all', synlig, ['!', arLandmarke]]);
-          // Den valda organisationen: större ring bakom, och ikonen i stället för pricken.
-          karta!.setPaintProperty('vald-ring', 'circle-radius', ['case', arLandmarke, 24, 15]);
-          karta!.setFilter('vald-punkt', ['all', synlig, ['!', arLandmarke]]);
-          karta!.setLayoutProperty('ensam-yta', 'icon-size', ['case', arLandmarke, 38, 18]);
-          karta!.addLayer({ id: 'vald-ikon', type: 'symbol', source: 'vald', filter: ['all', synlig, arLandmarke], layout: { 'icon-image': ikon, 'icon-allow-overlap': true } }, 'vald-namn');
-          karta!.setLayoutProperty('vald-namn', 'text-offset', ['case', arLandmarke, ['literal', [0, -2.3]], ['literal', [0, -1.6]]]);
+          // Pricken och dess namn gäller alla typer längre ut, och bara typer utan ikon närmast.
+          const somPrick = ['all', synlig, ['any', ['<', ['zoom'], ZOOM_POSTER], ['!', arLandmarke]]] as unknown as ExpressionSpecification;
+          karta!.setFilter('punkter', somPrick);
+          karta!.setFilter('namn', somPrick);
+          // Den valda organisationen på närmaste nivån: större ring bakom, och ikonen i stället för pricken.
+          karta!.setPaintProperty('vald-ring', 'circle-radius', ['step', ['zoom'], 15, ZOOM_POSTER, ['case', arLandmarke, 24, 15]]);
+          karta!.setFilter('vald-punkt', somPrick);
+          karta!.addLayer(
+            { id: 'vald-ikon', type: 'symbol', source: 'vald', minzoom: ZOOM_POSTER, filter: ['all', synlig, arLandmarke], layout: { 'icon-image': ikon, 'icon-allow-overlap': true } },
+            'vald-namn',
+          );
+          karta!.setLayoutProperty('vald-namn', 'text-offset', [
+            'step', ['zoom'], ['literal', [0, -1.6]],
+            ZOOM_POSTER, ['case', arLandmarke, ['literal', [0, -2.3]], ['literal', [0, -1.6]]],
+          ]);
           // Landmärkena kan bli klara efter att medlemsvyn har öppnats. Då ska de också vara gömda.
           visaMedlemslager();
         };
