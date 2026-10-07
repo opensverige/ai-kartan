@@ -1,0 +1,116 @@
+id: codescene
+
+name:
+  value: CodeScene
+  status: claimed
+  source_url: https://codescene.com
+  source_type: own_site
+  verified_at: 2026-10-07
+  verified_by: agent
+
+legal_name:
+  value: Codescene AB
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559028327001
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Namn enligt momsregistret, hämtat via EU:s tjänst VIES. Integritetspolicyn och villkoren på codescene.com anger CodeScene AB med samma organisationsnummer. Webbplatsen skriver namnet med versalt S."
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559028327001
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Bolagsformen är härledd ur det registrerade namnet. Momsregistret har inget eget fält för bolagsform."
+
+org_number:
+  value: "559028-3270"
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559028327001
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+
+website: https://codescene.com
+
+description:
+  value: Utvecklar CodeScene, ett verktyg för analys av kodkvalitet och teknisk skuld. Tillägget ACE refaktorerar kod med språkmodeller från andra leverantörer och kontrollerar förslagen. En MCP-server ger AI-kodassistenter tillgång till kodanalysen.
+  status: claimed
+  source_url: https://codescene.com/product/integrations/ide-extensions/ai-refactoring
+  source_type: own_site
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "ACE och språkmodellerna beskrivs på källsidan. MCP-servern beskrivs på codescene.com/product/code-health-mcp och i kodförrådet under belägg."
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://codescene.com/product/integrations/ide-extensions/ai-refactoring
+  source_type: own_site
+  verified_at: 2026-10-07
+  verified_by: agent
+
+areas:
+  value: [agenter_automation]
+  status: claimed
+  source_url: https://codescene.com/product/code-health-mcp
+  source_type: own_site
+  verified_at: 2026-10-07
+  verified_by: agent
+
+kommun:
+  value: "1280"
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559028327001
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Malmö. Härledd från postorten i den registrerade adressen i momsregistret. Integritetspolicyn på codescene.com anger huvudkontor i Malmö och villkoren anger en adress i Malmö. Sätet enligt Bolagsverket är inte kontrollerat."
+
+founded:
+  value: 2015
+  status: claimed
+  source_url: https://codescene.com/company
+  source_type: own_site
+  verified_at: 2026-10-07
+  verified_by: agent
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559028327001
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Giltigt momsregistreringsnummer enligt VIES 2026-10-07."
+
+evidence:
+  - url: https://codescene.com/product/integrations/ide-extensions/ai-refactoring
+    kind: produkt
+    title: "CodeScene ACE: tillägg för utvecklingsmiljöer som refaktorerar kod med språkmodeller och kontrollerar förslagen"
+    status: claimed
+    verified_at: 2026-10-07
+    verified_by: agent
+    note: "Produktsidan anger att språkmodellerna kommer från OpenAI, Anthropic och Google och att förslagen valideras i ett eget steg."
+  - url: https://github.com/codescene-oss/codescene-mcp-server
+    kind: repo
+    title: "MCP-server i Rust som ger AI-kodassistenter tillgång till kodanalysen Code Health"
+    status: claimed
+    verified_at: 2026-10-07
+    verified_by: agent
+    note: "Licensfilen anger CodeScene AB som upphovsrättsinnehavare. Enligt den innehåller servern öppna delar under Apache 2.0 och slutna delar som omfattas av bolagets villkor."
+  - url: https://codescene.com/hubfs/whitepapers/Refactoring-vs-Refuctoring-Advancing-the-state-of-AI-automated-code-improvements.pdf
+    kind: publikation
+    title: "Rapport 2024: jämförelse av språkmodellers refaktorering av kod och en metod för att kontrollera resultaten"
+    status: claimed
+    verified_at: 2026-10-07
+    verified_by: agent
+
+links:
+  github: https://github.com/codescene-oss
+
+record_created_at: 2026-10-07
+record_updated_at: 2026-10-07
