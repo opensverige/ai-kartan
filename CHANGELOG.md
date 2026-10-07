@@ -4,6 +4,12 @@ Kodens och funktionernas historik. Dataändringar loggas separat och automatiskt
 
 ## 2026-10-07
 
+- Kartan säger till när den inte går att visa. Saknar webbläsaren WebGL, eller går kartunderlaget inte att nå, står det i kartytan i stället för att den är tom. Listan och sökningen fungerar ändå.
+- En länk till en organisation som inte finns säger det överst i listan, och adressen rättas. En plats i adressen som inte finns ger hela landet i stället för en tom lista med koden som rubrik.
+- I telefon fälls detaljbladet inte upp igen när kartan blir klar. Bakåt och framåt flyttar kartan med platsen. Felmeddelandet när datan inte går att hämta står kvar när man skriver.
+- Kartdatans adress bär en version ur innehållet. Förut kunde en återkommande besökare få en ny sida med en timme gammal lista efter en publicering.
+- Texter som böjdes fel är rättade: "1 av 329 organisationer", "1 myndighet" i stället för "1 myndigheter" på kommunsidorna, "1 kommun" på länssidorna och rätt antal statusar på metodsidan. Sökrutans fot säger att den räknar bland alla organisationer när ett filter är valt, och listsidan visar vilken kommun som är vald.
+- Sitemappen listar adresserna utan avslutande snedstreck, som de står i canonical. Förut svarade varje adress i den med en vidarepekning. Atom-flödet säger när en dags lista är kapad.
 - Sökningen tål alla ord. Ordet "constructors" och några till slog ut kartan med felet "Kunde inte läsa datan". Nu ger de inga träffar, som de ska, och ett fel i sökningen kan inte längre tömma listan. Organisationer hittas på sitt id, så att "scb", "foi" och "smhi" ger rätt myndighet, och typernas pluralord ("myndigheter", "kommuner", "lärosäten") ger samma organisationer som filtret.
 - Kolumnen Källa på organisationens sida bryter inte längre "Egen webbplats" mitt i ordet.
 - Importen från AI-Infra sätter inte längre fältet Aktiv. Det byggde på om tjänsten var lanserad, och tre bolag visades därför som nedlagda. Valideringen varnar när en post är markerad som nedlagd utan belägg mot register.

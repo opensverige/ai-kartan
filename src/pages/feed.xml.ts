@@ -3,6 +3,9 @@ import { hamtaData, absolutUrl, SAJT } from '../lib/data';
 
 const esc = (s: unknown) => String(s ?? '').replace(/[<>&"']/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&#39;' })[c]!);
 
+/** Så många rader visas per dag. Resten nås genom länken till dagen. */
+const MAX_RADER = 200;
+
 export const GET: APIRoute = () => {
   const d = hamtaData();
   const perDag = new Map<string, typeof d.andringar.rader>();
@@ -16,15 +19,17 @@ export const GET: APIRoute = () => {
     .map((dag) => {
       const rader = perDag.get(dag)!;
       const lista = rader
-        .slice(0, 200)
+        .slice(0, MAX_RADER)
         .map((r) => `<li><a href="${esc(absolutUrl(`/organisation/${r.id}`))}">${esc(r.namn)}</a>: ${esc(r.falt)} ${esc(r.andring)}${r.nytt !== null && r.nytt !== undefined && r.falt !== 'hela posten' ? ` → ${esc(typeof r.nytt === 'object' ? JSON.stringify(r.nytt) : r.nytt)}` : ''}</li>`)
         .join('');
+      // Kapas listan sägs det, så att ingen tror att flödet visar allt.
+      const resten = rader.length > MAX_RADER ? `<p>Och ${rader.length - MAX_RADER} till. <a href="${esc(absolutUrl(`/andringar#${dag}`))}">Se alla ändringar den dagen.</a></p>` : '';
       return `<entry>
   <title>${esc(`Ändringar ${dag}: ${rader.length} ${rader.length === 1 ? 'uppgift' : 'uppgifter'}`)}</title>
   <id>${esc(absolutUrl(`/andringar#${dag}`))}</id>
   <link href="${esc(absolutUrl(`/andringar#${dag}`))}"/>
   <updated>${dag}T12:00:00Z</updated>
-  <content type="html">${esc(`<ul>${lista}</ul>`)}</content>
+  <content type="html">${esc(`<ul>${lista}</ul>${resten}`)}</content>
 </entry>`;
     })
     .join('\n');

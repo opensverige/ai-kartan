@@ -31,7 +31,13 @@ const { titel, beskrivning, stig, kicker, ingress, noindex, bred = false, jsonLd
 <script>
   // Öppnar det fällbara avsnitt som adressen pekar på, till exempel /bidra#varfor.
   function oppnaMal() {
-    const mal = location.hash ? document.getElementById(decodeURIComponent(location.hash.slice(1))) : null;
+    let id = '';
+    try {
+      id = decodeURIComponent(location.hash.slice(1));
+    } catch {
+      // Ett trasigt ankare, till exempel "#%", pekar inte på något. Sidan ska fungera ändå.
+    }
+    const mal = id ? document.getElementById(id) : null;
     const avsnitt = mal?.closest('details');
     if (!avsnitt) return;
     avsnitt.open = true;

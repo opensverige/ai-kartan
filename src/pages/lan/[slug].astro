@@ -3,6 +3,7 @@ import Bas from '../../layouts/Bas.astro';
 import OrgKort from '../../components/OrgKort.astro';
 import { hamtaData, url, absolutUrl } from '../../lib/data';
 import { brodsmulor } from '../../lib/meta';
+import { antal } from '../../lib/text';
 import type { Plats } from '../../lib/data';
 
 export function getStaticPaths() {
@@ -16,7 +17,7 @@ const d = hamtaData();
 const n = plats.organisationer.length;
 const kommuner = d.platser.kommuner.filter((k) => k.lan_kod === plats.kod);
 const titel = `AI i ${plats.namn}`;
-const beskrivning = `${n} ${n === 1 ? 'organisation' : 'organisationer'} som bygger AI i ${plats.namn}, fördelade på ${kommuner.length} kommuner. Med källa och datum på varje uppgift.`;
+const beskrivning = `${antal(n, 'organisation', 'organisationer')} som bygger AI i ${plats.namn}${kommuner.length > 1 ? `, fördelade på ${kommuner.length} kommuner` : ''}. Med källa och datum på varje uppgift.`;
 const samling = {
   '@context': 'https://schema.org',
   '@type': 'CollectionPage',
@@ -39,7 +40,7 @@ const jsonLd = [
     <nav class="meta" aria-label="Du är här"><a href={url('/plats')}>Platser</a> › <span>{plats.namn}</span></nav>
     <p class="kicker mt-2">Län</p>
     <h1>AI i {plats.namn}</h1>
-    <p class="ingress">{n} {n === 1 ? 'organisation' : 'organisationer'} i {kommuner.length} {kommuner.length === 1 ? 'kommun' : 'kommuner'}.</p>
+    <p class="ingress">{antal(n, 'organisation', 'organisationer')} i {antal(kommuner.length, 'kommun', 'kommuner')}.</p>
     <p class="rad">
       <a class="knapp knapp--liten" href={url(`/?lan=${plats.kod}`)}>Visa på kartan</a>
       <a class="knapp knapp--ghost knapp--liten" href={url(`/organisationer?lan=${plats.kod}`)}>Filtrera listan</a>

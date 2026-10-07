@@ -2,6 +2,7 @@
 import Sida from '../layouts/Sida.astro';
 import StatusMarke from '../components/StatusMarke.astro';
 import { hamtaData, url, formateraDatum, SAJT } from '../lib/data';
+import { talord } from '../lib/text';
 
 const d = hamtaData();
 const s = d.statistik;
@@ -17,7 +18,7 @@ const s = d.statistik;
   <p class="meta">dataset {d.byggd} · {s.antal} organisationer · senast verifierad {formateraDatum(s.senast_verifierad)} · {s.antal_over_180_dagar} poster över 180 dagar utan omkontroll</p>
 
   <h2 id="status">Statusdisciplin</h2>
-  <p>Varje fält, inte varje post, har en av fyra statusar. Statusen säger var uppgiften kommer ifrån, inte hur bra organisationen är.</p>
+  <p>Varje fält, inte varje post, har en av {talord(d.taxonomi.status.length)} statusar. Statusen säger var uppgiften kommer ifrån, inte hur bra organisationen är.</p>
   <table class="tabell">
     <thead><tr><th>Status</th><th>Betyder</th></tr></thead>
     <tbody>
