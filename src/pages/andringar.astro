@@ -2,7 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import Sida from '../layouts/Sida.astro';
-import { hamtaData, url, formateraDatum } from '../lib/data';
+import { hamtaData, url, formateraDatum, ANDRINGAR_PA_SIDAN } from '../lib/data';
 import { ROT } from '../../scripts/lib/organisationer.mjs';
 
 const d = hamtaData();
@@ -15,7 +15,7 @@ for (const r of d.andringar.rader) {
   perDag.get(r.datum)!.push(r);
 }
 const dagar = [...perDag.keys()].sort().reverse();
-const MAX_RADER = 600;
+const MAX_RADER = ANDRINGAR_PA_SIDAN;
 let visade = 0;
 const visa = (v: unknown) => (v === null || v === undefined ? '–' : typeof v === 'object' ? JSON.stringify(v) : String(v));
 ---
