@@ -1,8 +1,20 @@
 {
-  "generated_at": "2026-10-06T20:46:42Z",
-  "antal": 353,
-  "senaste_andring": "2026-10-06",
+  "generated_at": "2026-10-07T13:00:08Z",
+  "antal": 354,
+  "senaste_andring": "2026-10-07",
   "rader": [
+    {
+      "datum": "2026-10-07",
+      "commit": "b838feb670",
+      "id": "accounted",
+      "namn": "Accounted",
+      "falt": "hela posten",
+      "andring": "tillagd",
+      "gammalt": null,
+      "nytt": null,
+      "status": null,
+      "kalla": "https://www.accounted.se"
+    },
     {
       "datum": "2026-10-06",
       "commit": "afec073eed",
