@@ -2,6 +2,11 @@
 
 Kodens och funktionernas historik. Dataändringar loggas separat och automatiskt i `history/changelog.json` och på sajten under Ändringar. Samma rader som här finns maskinläsbart i `history/bygglogg.json`.
 
+## 2026-10-08
+
+- Granskningen mot kriterierna tål fler sätt att slå ihop. Grenens commits spelas upp en och en, som Rebase and merge gör, och ger de ett annat resultat än en vanlig sammanslagning blir läget rött. När main ändras blir gröna lägen gula tills de är omräknade, också när en pull request med `[skip ci]` i rubriken slås ihop. Varje körning räknar om allt, så en körning som tränger undan en annan gör samma arbete.
+- Valideringen räknar dagens datum i svensk tid. Förut stoppades en post som daterats strax efter midnatt.
+
 ## 2026-10-07
 
 - Organisationerna ritas på kartan så fort kartans stil finns, i stället för när alla kartbrickor har kommit. På ett svagt mobilnät kom prickarna förut tiotals sekunder efter listan. Baskartan skriver namn på svenska där de finns: Norge och Danmark i stället för Norway och Denmark, och inga kyrilliska namn.

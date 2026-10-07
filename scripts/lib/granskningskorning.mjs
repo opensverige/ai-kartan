@@ -36,8 +36,8 @@ const VANLIG_FIL = new Set(['100644', '100755']);
 const MAX_FILSTORLEK = 200_000;
 const BOT = 'github-actions[bot]';
 const ID = /^[0-9a-f]{40}$/;
-/** Fler sammanslagningar än så här i en gren går inte att pröva en och en. */
-const MAX_SAMMANSLAGNINGAR = 20;
+/** Fler commits än så här i en gren spelas inte upp en och en. */
+const MAX_COMMITS = 100;
 
 /**
  * Hur länge ett anrop ska vänta innan det prövas igen, i millisekunder, eller null om felet inte
@@ -107,19 +107,29 @@ async function spets(api, repo, gren) {
 /**
  * Det som hindrar en granskning, som en rad att visa i läget, eller null.
  *
- * En sammanslagning i grenens egen historik får inte ha ändrat organisationer för hand. Listan
- * visar slutresultatet, men den som slår ihop med Rebase and merge får med grenens vanliga
- * commits och inte dess sammanslagningar. Det en sammanslagning har tagit bort eller skrivit om
- * skulle då gå in i main utan att ha stått i listan.
+ * Listan visar vad en sammanslagning ger: det är vad Create a merge commit och Squash and merge
+ * för in i main. Rebase and merge gör något annat. Den spelar upp grenens vanliga commits en och
+ * en ovanpå main och hoppar över dess sammanslagningar. Två commits som tar ut varandra när de
+ * slås ihop tillsammans behöver inte göra det en och en: har main redan samma ändring som den
+ * första gör den ingenting, och den andra går in ensam. Det en sammanslagning i grenen har ändrat
+ * för hand följer inte heller med.
+ *
+ * Därför spelas commiterna upp här på samma sätt, och resultatet i mappen med organisationer
+ * jämförs med sammanslagningens. Skiljer de sig åt går listan inte att lita på för alla sätt att
+ * slå ihop, och läget blir rött.
  */
-async function hinderIHistoriken(git, bas, sha) {
-  const alla = await git.sammanslagningar(bas, sha, MAX_SAMMANSLAGNINGAR + 1);
-  if (alla.length > MAX_SAMMANSLAGNINGAR) return 'Grenens historik har för många sammanslagningar för att granskas. Gör om grenen med färre.';
-  for (const s of alla) {
-    const utanHand = s.foraldrar.length === 2 ? await git.slaIhop(s.foraldrar[0], s.foraldrar[1]) : null;
-    if (!utanHand || (await git.mapp(utanHand.trad, MAPP)) !== (await git.mapp(s.sha, MAPP))) {
-      return 'En sammanslagning i grenens historik ändrar organisationer för hand. Gör om grenen utan den.';
-    }
+async function hinderIHistoriken(git, bas, sha, ihop) {
+  const commits = await git.commits(bas, sha, MAX_COMMITS + 1);
+  if (commits.length > MAX_COMMITS) return 'Grenen har för många commits för att prövas en och en. Slå ihop dem till färre.';
+  let trad = bas;
+  for (const c of commits) {
+    // En commit utan förälder börjar en egen historik. Den går inte att spela upp som en ändring.
+    if (!c.foralder) return 'Grenen innehåller en historik utan gemensam början med main. Gör om grenen från main.';
+    // En konflikt här lämnar konfliktmarkeringar i trädet. Sitter de i en organisation syns det i jämförelsen nedan.
+    trad = (await git.spelaUpp(trad, c.sha, c.foralder)).trad;
+  }
+  if ((await git.mapp(trad, MAPP)) !== (await git.mapp(ihop, MAPP))) {
+    return 'Grenens commits ger ett annat resultat en och en än tillsammans. Slå ihop dem till en commit, så räknas listan om.';
   }
   return null;
 }
@@ -150,7 +160,7 @@ async function allaKommentarer(api, repo, nummer) {
 const arLista = (k) => k.user?.type === 'Bot' && k.user?.login === BOT && String(k.body).startsWith(MARKOR);
 
 /** Bara en människa som får skriva i repot får intyga. Går det inte att få svar kastas felet vidare. */
-export async function farIntyga(api, repo, login) {
+async function farIntyga(api, repo, login) {
   if (!/^[A-Za-z0-9-]{1,39}$/.test(String(login))) return false;
   let ratt;
   try {
@@ -186,18 +196,6 @@ async function hittaIntyg(api, repo, kommentarer, listanAndrad) {
     if (provade.get(login)) return { intygadAv: login, intygForaldrat: false };
   }
   return { intygadAv: '', intygForaldrat: foraldrat };
-}
-
-/**
- * Sant om händelsen inte kan ha ändrat något, så att körningen kan avstå. Det gäller en ny
- * kommentar från någon som ändå inte får intyga. Vem som helst kan skriva sådana, och varje
- * körning kostar anrop. Allt som redigerar eller tar bort något körs alltid: det kan ha ändrat läget.
- */
-export async function arOvidkommande({ api, repo, handelse, atgard, kommentar }) {
-  if (handelse !== 'issue_comment' || atgard !== 'created') return false;
-  const av = kommentar?.user;
-  if (av?.type === 'Bot') return av.login !== BOT;
-  return !(await farIntyga(api, repo, av?.login));
 }
 
 /**
@@ -247,7 +245,7 @@ export async function kor({ api, git, repo, nummer, torrt = false, korning = nul
       const oforandrad = async () => torrt || (await spets(api, repo, gren)) === bas;
       await git.hamta([bas, sha]);
       const ihop = await git.slaIhop(bas, sha);
-      const hinder = ihop.konflikt ? 'Grenen går inte att slå ihop med main utan konflikter. Lös dem, så räknas listan om.' : await hinderIHistoriken(git, bas, sha);
+      const hinder = ihop.konflikt ? 'Grenen går inte att slå ihop med main utan konflikter. Lös dem, så räknas listan om.' : await hinderIHistoriken(git, bas, sha, ihop.trad);
       if (hinder) {
         logg(`Går inte att granska: ${hinder}`);
         const resultat = { state: 'failure', description: hinder };
