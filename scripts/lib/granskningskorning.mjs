@@ -14,7 +14,8 @@
 //   - Vilka punkter som är avbockade står i flödets egen kommentar.
 //   - Att en människa har gått igenom listan intygas i en egen kommentar, skriven av någon med
 //     skrivrätt, aldrig redigerad och nyare än listans senaste ändring. En bot kan kryssa i en
-//     ruta, men den kan inte skriva en kommentar i en människas namn.
+//     ruta, men den kan inte skriva en kommentar i en människas namn utan att GitHub märker ut
+//     kommentaren som skriven genom en app, och sådana räknas inte.
 //
 // Går något fel blir läget "error", aldrig grönt, och listan rörs inte.
 
@@ -96,7 +97,7 @@ async function trad(api, repo, sha) {
 
 /** Hämtar filens text, samma version som markören gäller, och tolkar den som bygget gör. */
 async function lasFil(api, repo, fil) {
-  if (fil.status === 'removed') return;
+  if (fil.status === 'removed' || fil.data !== undefined || fil.fel) return;
   if (!ID.test(String(fil.blob))) throw new Error(`Filen ${fil.sokvag} saknar version hos GitHub.`);
   const blob = await api('GET', `/repos/${repo}/git/blobs/${fil.blob}`);
   const text = Buffer.from(String(blob.content ?? ''), blob.encoding === 'base64' ? 'base64' : 'utf8').toString('utf8');
@@ -121,7 +122,7 @@ async function allaKommentarer(api, repo, nummer) {
 const arLista = (k) => k.user?.type === 'Bot' && k.user?.login === BOT && String(k.body).startsWith(MARKOR);
 
 /** Bara en människa som får skriva i repot får intyga. Går det inte att få svar kastas felet vidare. */
-async function farIntyga(api, repo, login) {
+export async function farIntyga(api, repo, login) {
   if (!/^[A-Za-z0-9-]{1,39}$/.test(String(login))) return false;
   let ratt;
   try {
@@ -142,7 +143,8 @@ async function farIntyga(api, repo, login) {
  */
 async function hittaIntyg(api, repo, kommentarer, listanAndrad) {
   const intyg = kommentarer
-    .filter((k) => k.user?.type === 'User' && arIntyg(k.body) && k.created_at && k.created_at === k.updated_at)
+    // En kommentar som en app har skrivit åt en människa bär appens namn här. Den räknas inte.
+    .filter((k) => k.user?.type === 'User' && !k.performed_via_github_app && arIntyg(k.body) && k.created_at && k.created_at === k.updated_at)
     .sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at));
   let foraldrat = false;
   const provade = new Map();
@@ -156,6 +158,29 @@ async function hittaIntyg(api, repo, kommentarer, listanAndrad) {
     if (provade.get(login)) return { intygadAv: login, intygForaldrat: false };
   }
   return { intygadAv: '', intygForaldrat: foraldrat };
+}
+
+/**
+ * Sant om händelsen inte kan ha ändrat något, så att körningen kan avstå. Det gäller en ny
+ * kommentar från någon som ändå inte får intyga. Vem som helst kan skriva sådana, och varje
+ * körning kostar anrop. Allt som redigerar eller tar bort något körs alltid: det kan ha ändrat läget.
+ */
+export async function arOvidkommande({ api, repo, handelse, atgard, kommentar }) {
+  if (handelse !== 'issue_comment' || atgard !== 'created') return false;
+  const av = kommentar?.user;
+  if (av?.type === 'Bot') return av.login !== BOT;
+  return !(await farIntyga(api, repo, av?.login));
+}
+
+/**
+ * Sätter läget på en commit, om det inte redan står där. GitHub tar emot högst tusen lägen per
+ * commit och namn, och en körning som inget ändrar ska inte förbruka dem.
+ */
+async function skrivLage(api, repo, sha, lage) {
+  const tidigare = await api('GET', `/repos/${repo}/commits/${sha}/statuses?per_page=100`);
+  const senast = Array.isArray(tidigare) ? tidigare.find((s) => s.context === KONTEXT) : null;
+  if (senast && senast.state === lage.state && senast.description === lage.description && senast.target_url === lage.target_url) return;
+  await api('POST', `/repos/${repo}/statuses/${sha}`, { ...lage, context: KONTEXT });
 }
 
 /**
@@ -187,45 +212,48 @@ export async function kor({ api, repo, nummer, torrt = false, korning = null, lo
     const { filer, ogiltiga, regelfiler } = jamforTrad(bas, huvud);
     const lage = { ogiltiga, regelfiler };
 
-    const kommentarer = await allaKommentarer(api, repo, nummer);
-    const egen = kommentarer.find(arLista);
-    let kropp = egen?.body ?? '';
-    // Listan ritas bara om när den ska visa något annat än den gör. Annars skulle den som bockar
-    // bli avbruten, och ett intyg skulle sluta gälla utan att något har ändrats.
-    if ((filer.length > 0 || ogiltiga.length > 0 || egen) && behoverRitasOm(filer, lage, kropp)) {
-      if (filer.length <= MAX_ORGANISATIONER) for (const fil of filer) await lasFil(api, repo, fil);
-      kropp = lista(filer, { repo, nummer, ...lage }, kropp);
-    }
-    const skrivs = kropp !== (egen?.body ?? '');
-    const avlast = avlas(filer, kropp, { ogiltiga });
+    // Listan kan ändras medan körningen arbetar: någon bockar i eller ur en punkt. Den läses
+    // därför om precis före skrivningen, och har den ändrats börjar räkningen om.
+    for (let forsok = 1; ; forsok++) {
+      const kommentarer = await allaKommentarer(api, repo, nummer);
+      const egen = kommentarer.find(arLista);
+      let kropp = egen?.body ?? '';
+      // Listan ritas bara om när den ska visa något annat än den gör. Annars skulle den som bockar
+      // bli avbruten, och ett intyg skulle sluta gälla utan att något har ändrats.
+      if ((filer.length > 0 || ogiltiga.length > 0 || egen) && behoverRitasOm(filer, lage, kropp)) {
+        if (filer.length <= MAX_ORGANISATIONER) for (const fil of filer) await lasFil(api, repo, fil);
+        kropp = lista(filer, { repo, nummer, ...lage }, kropp);
+      }
+      const skrivs = kropp !== (egen?.body ?? '');
+      const avlast = avlas(filer, kropp, { ogiltiga });
 
-    // Ett intyg behövs först när allt är avbockat. Skrivs listan om nu gäller inget äldre intyg.
-    let intyg = { intygadAv: '', intygForaldrat: false };
-    if (avlast.totalt > 0 && avlast.klara === avlast.totalt && !avlast.forManga && !ogiltiga.length) {
-      intyg = await hittaIntyg(api, repo, kommentarer, skrivs || !egen ? Infinity : Date.parse(egen.updated_at));
-    }
-    const resultat = utfall(avlast, { ...intyg, regelfiler });
-    logg(`${filer.length} organisationsfiler · ${avlast.klara} av ${avlast.totalt} punkter avbockade · ${resultat.state}: ${resultat.description}`);
-    if (torrt) return { resultat, kommentar: kropp, lage: avlast };
+      // Ett intyg behövs först när allt är avbockat. Skrivs listan om nu gäller inget äldre intyg.
+      let intyg = { intygadAv: '', intygForaldrat: false };
+      if (avlast.totalt > 0 && avlast.klara === avlast.totalt && !avlast.forManga && !ogiltiga.length) {
+        intyg = await hittaIntyg(api, repo, kommentarer, skrivs || !egen ? Infinity : Date.parse(egen.updated_at));
+      }
+      const resultat = utfall(avlast, { ...intyg, regelfiler });
+      logg(`${filer.length} organisationsfiler · ${avlast.klara} av ${avlast.totalt} punkter avbockade · ${resultat.state}: ${resultat.description}`);
+      if (torrt) return { resultat, kommentar: kropp, lage: avlast };
 
-    let lank = egen?.html_url ?? pr.html_url;
-    if (skrivs) {
-      const sparad = egen
-        ? await api('PATCH', `/repos/${repo}/issues/comments/${egen.id}`, { body: kropp })
-        : await api('POST', `/repos/${repo}/issues/${nummer}/comments`, { body: kropp });
-      lank = sparad.html_url ?? lank;
+      let lank = egen?.html_url ?? pr.html_url;
+      if (skrivs && egen) {
+        const nu = await api('GET', `/repos/${repo}/issues/comments/${egen.id}`);
+        if (nu.body !== egen.body) {
+          if (forsok < 3) continue;
+          throw new Error('Listan ändrades gång på gång medan den skulle skrivas om.');
+        }
+        lank = (await api('PATCH', `/repos/${repo}/issues/comments/${egen.id}`, { body: kropp })).html_url ?? lank;
+      } else if (skrivs) {
+        lank = (await api('POST', `/repos/${repo}/issues/${nummer}/comments`, { body: kropp })).html_url ?? lank;
+      }
+      await skrivLage(api, repo, sha, { state: resultat.state, description: resultat.description, target_url: lank });
+      return { resultat, kommentar: kropp, lage: avlast };
     }
-    await api('POST', `/repos/${repo}/statuses/${sha}`, { state: resultat.state, context: KONTEXT, description: resultat.description, target_url: lank });
-    return { resultat, kommentar: kropp, lage: avlast };
   } catch (fel) {
     // Utan ett läge ser pull requesten ut att sakna kontrollen. Säg hellre att den inte gick att köra.
     if (!torrt) {
-      await api('POST', `/repos/${repo}/statuses/${sha}`, {
-        state: 'error',
-        context: KONTEXT,
-        description: 'Kontrollen gick inte att köra. Kör om flödet.',
-        target_url: korning ?? pr.html_url,
-      }).catch(() => {});
+      await skrivLage(api, repo, sha, { state: 'error', description: 'Kontrollen gick inte att köra. Kör om flödet.', target_url: korning ?? pr.html_url }).catch(() => {});
     }
     throw fel;
   }

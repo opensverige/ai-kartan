@@ -55,7 +55,7 @@ test('en ny organisation får en ruta per punkt i granskningslistan', () => {
   assert.ok(kropp.includes(`[Filen i pull requesten](https://github.com/${REPO}/pull/7/files#diff-${ankare})`));
   assert.doesNotMatch(kropp, /\/blob\/[0-9a-f]{40}\//);
   // Listan säger hur den blir grön.
-  assert.ok(kropp.includes(`skriv sedan \`${INTYG}\` i en ny kommentar`));
+  assert.ok(kropp.includes(`skriv sedan \`${INTYG}\` ensamt på första raden i en ny kommentar`));
 });
 
 test('en ändrad organisation och en borttagen får kortare listor', () => {
@@ -113,8 +113,11 @@ test('avbockat räcker inte: kontrollen blir grön först när en människa har 
 });
 
 test('bara ordet för sig är ett intyg', () => {
-  for (const ja of ['/granskad', '  /granskad', '/Granskad', '/granskad\n\nAllt stämmer.', '/granskad.', '/granskad, tack']) assert.equal(arIntyg(ja), true, ja);
-  for (const nej of ['granskad', 'Jag skriver /granskad sen', '/granskade', '/granskad-inte', '/granskad/x', '', null, '> /granskad']) assert.equal(arIntyg(nej), false, String(nej));
+  // Ordet ska stå ensamt på kommentarens första rad. Resten av kommentaren är fri.
+  for (const ja of ['/granskad', '  /granskad', '\n/granskad', '/Granskad', '/granskad\n\nAllt stämmer.', '/granskad.', '/granskad!  ', '/granskad\r\nMed Windows-radbrytning']) assert.equal(arIntyg(ja), true, JSON.stringify(ja));
+  // "/granskad inte än" är inget intyg, och inte heller ordet mitt i en mening.
+  for (const nej of ['granskad', 'Jag skriver /granskad sen', '/granskad inte än', '/granskad, tack', '/granskade', '/granskad-inte', '/granskad/x', '', null, '> /granskad', 'Hej\n/granskad'])
+    assert.equal(arIntyg(nej), false, JSON.stringify(nej));
 });
 
 test('en ändrad fil nollställer sina punkter, de andra står kvar', () => {
@@ -183,11 +186,14 @@ test('text ur filen kan inte smyga in en avbockad ruta eller en markör', () => 
   const kropp = lista(filer, HAR);
   assert.equal(avlas(filer, kropp).klara, 0);
   assert.equal(kropp.split('\n').filter((r) => /^- \[[xX]\]/.test(r)).length, 0);
-  // Texten får stå kvar som text, men aldrig som länk.
-  assert.doesNotMatch(kropp, /\(javascript:|<javascript:/);
+  // Texten får stå kvar som text i kodstil, där ingenting tolkas, men aldrig utanför den.
+  const utanKod = kropp.replace(/`[^`\n]*`/g, '');
+  assert.doesNotMatch(utanKod, /\(javascript:|<javascript:/);
   // De enda länkarna med egen text är de som koden själv skriver, till repot.
-  assert.doesNotMatch(kropp, /\]\((?!https:\/\/github\.com\/opensverige\/ai-kartan\/)/);
-  assert.doesNotMatch(kropp, /@alla/);
+  assert.doesNotMatch(utanKod, /\]\((?!https:\/\/github\.com\/opensverige\/ai-kartan\/)/);
+  assert.doesNotMatch(utanKod, /@alla/);
+  // Kodstilen går inte att bryta sig ur: varje rad har ett jämnt antal bakåtfnuttar.
+  for (const rad of kropp.split('\n')) assert.equal((rad.match(/`/g) ?? []).length % 2, 0, rad);
   // Varje markör står en gång, på sin egen rad.
   for (const [nyckel] of PUNKTER.ny) assert.equal(kropp.split(`<!-- g:elak:${v}:${nyckel} -->`).length - 1, 1, nyckel);
   // Text ur filen bildar aldrig en egen rubrik.
@@ -197,15 +203,15 @@ test('text ur filen kan inte smyga in en avbockad ruta eller en markör', () => 
 test('rubriken bär bara id:t, namnet står som uppgift ur filen', () => {
   const kropp = lista([fil('exempel', 'A', 'added', post('exempel', { name: { value: 'Granskad och godkänd', status: 'claimed' } }))], HAR);
   assert.ok(kropp.includes('### `exempel` · ny'));
-  assert.ok(kropp.includes('> Namn enligt filen: Granskad och godkänd'));
+  assert.ok(kropp.includes('> Namn enligt filen: `Granskad och godkänd`'));
 });
 
 test('underlaget säger vad filen anger och visar källan, beskrivningen och värdnamnet', () => {
   const kropp = lista([fil('exempel', 'A')], HAR);
-  assert.match(kropp, /Organisationsnummer: filen anger confirmed/);
+  assert.match(kropp, /Organisationsnummer: filen anger `confirmed`/);
   assert.match(kropp, /företagsregister/);
   assert.ok(kropp.includes('`register.example` <https://register.example/556000>'));
-  assert.ok(kropp.includes('> Beskrivning enligt filen: Bygger en tjänst som sorterar ärenden med en språkmodell.'));
+  assert.ok(kropp.includes('> Beskrivning enligt filen: `Bygger en tjänst som sorterar ärenden med en språkmodell.`'));
   assert.ok(kropp.includes('`exempel.se` <https://exempel.se>'));
   // Värdnamnet visas som det är, även med www, så att det går att jämföra med adressen.
   assert.ok(lista([fil('exempel', 'A', 'added', post('exempel', { website: 'https://www.exempel.se/' }))], HAR).includes('`www.exempel.se` <https://www.exempel.se/>'));
@@ -311,12 +317,47 @@ test('utfallet säger vem som intygade och ryms i en statusrad', () => {
   assert.doesNotMatch(utfall(avlas(filer, bocka(lista(filer, HAR))), { intygadAv: '<b>@elak</b>' }).description, /[<>@]/);
 });
 
-test('ett och-tecken i text ur filen kan inte bli ett omnämnande eller en länk', () => {
+test('ett och-tecken i löpande text kan inte bli ett omnämnande eller en länk', () => {
   // GitHub tolkar &commat; som @ och &num; som #. Skrivs och-tecknet som &amp; händer inte det.
   assert.equal(ren('&commat;alla'), '&amp;commat;alla');
   assert.equal(ren('&num;1 och H&M'), '&amp;num;1 och H&amp;M');
-  const kropp = lista([fil('elak', 'E', 'added', post('elak', { name: { value: 'Hej &commat;octocat', status: 'claimed' }, description: { value: 'Se &num;1 och mailto:a&commat;ond.example', status: 'claimed' } }))], HAR);
-  assert.doesNotMatch(kropp, /&(?!amp;)/, 'ett och-tecken står oskyddat i listan');
+});
+
+test('värden ur filen visas som de är, i kodstil där ingenting tolkas', () => {
+  // I kodstil blir ingenting en länk, ett omnämnande, en emoji eller en formel: varken @namn,
+  // GH-21, ett commit-id, :x: eller $x$. Då kan värdet också visas oförvanskat, med parenteser och allt.
+  const elak = post('elak', {
+    name: { value: 'Sinch AB (publ) @octocat GH-21 :x: $x$ &commat;alla', status: 'claimed' },
+    legal_name: { value: 'Exempel & Co AB', status: 'confirmed', source_type: 'company_register' },
+    description: { value: 'Se #1, 0123456789abcdef0123456789abcdef01234567 och `kod` här.', status: 'claimed' },
+    evidence: [{ url: 'https://exempel.se/a', kind: 'produkt', title: 'Titel med *stjärnor* och [länk](https://ond.example)' }],
+  });
+  const kropp = lista([fil('elak', 'E', 'added', elak)], HAR);
+  assert.ok(kropp.includes('> Namn enligt filen: `Sinch AB (publ) @octocat GH-21 :x: $x$ &commat;alla`'));
+  assert.ok(kropp.includes('> Registrerat namn enligt filen: `Exempel & Co AB`'));
+  // En bakåtfnutt i värdet kan inte avsluta kodstilen i förtid.
+  assert.ok(kropp.includes("> Beskrivning enligt filen: `Se #1, 0123456789abcdef0123456789abcdef01234567 och 'kod' här.`"));
+  assert.ok(kropp.includes("`Titel med *stjärnor* och [länk](https://ond.example)`"));
+  // Utanför kodstil och utanför de länkar koden själv skriver står ingenting ur filen.
+  const utanKod = kropp.split('\n').filter((r) => r.startsWith('> ')).map((r) => r.replace(/`[^`]*`/g, '').replace(/<https?:[^>]+>/g, '')).join('\n');
+  assert.doesNotMatch(utanKod, /octocat|GH-21|:x:|\$x\$|ond\.example|stjärnor|0123456789abcdef/);
+});
+
+test('underlaget säger att det är ett utdrag, och hur mycket som inte visas', () => {
+  const manga = post('manga', {
+    evidence: Array.from({ length: 14 }, (_, i) => ({ url: `https://exempel.se/${i}`, kind: 'produkt', title: `Belägg ${i}`, note: i < 3 ? 'En anteckning.' : undefined })),
+    name: { value: 'N'.repeat(200), status: 'claimed', note: 'Anteckning om namnet.' },
+  });
+  const kropp = lista([fil('manga', 'M', 'added', manga)], HAR);
+  assert.match(kropp, /Belägg \(14\)/);
+  assert.equal(kropp.split('\n').filter((r) => r.startsWith('> - ')).length, 12);
+  assert.match(kropp, /och 2 belägg till/);
+  // Ett namn som kapas slutar med tre punkter, så att det syns att det fortsätter.
+  assert.match(kropp, /> Namn enligt filen: `N+…`/);
+  // Anteckningarna i filen visas inte i listan. Det sägs, med antal, så att ingen tror sig ha läst allt.
+  assert.match(kropp, /4 anteckningar/);
+  assert.match(kropp, /utdrag/i);
+  assert.match(kropp, /Läs hela filen/);
 });
 
 test('rensad text är en rad utan tecken som styr Markdown', () => {

@@ -7,7 +7,8 @@
 //   GH_TOKEN=… GITHUB_REPOSITORY=ägare/repo PR_NUMMER=12 node scripts/granskning.mjs
 //   … node scripts/granskning.mjs --torrt     skriver ingenting, visar bara vad som skulle hända
 
-import { kor, vantetid, ApiFel } from './lib/granskningskorning.mjs';
+import fs from 'node:fs';
+import { kor, vantetid, arOvidkommande, ApiFel } from './lib/granskningskorning.mjs';
 
 const torrt = process.argv.includes('--torrt');
 const token = process.env.GH_TOKEN ?? '';
@@ -59,6 +60,13 @@ async function api(metod, stig, kropp) {
 const korning = process.env.GITHUB_RUN_ID ? `${process.env.GITHUB_SERVER_URL ?? 'https://github.com'}/${repo}/actions/runs/${process.env.GITHUB_RUN_ID}` : null;
 
 try {
+  // En ny kommentar från någon som inte får intyga kan inte ha ändrat något. Då behövs ingen körning.
+  const fil = process.env.GITHUB_EVENT_PATH;
+  const handelse = fil && fs.existsSync(fil) ? JSON.parse(fs.readFileSync(fil, 'utf8')) : null;
+  if (!torrt && handelse && (await arOvidkommande({ api, repo, handelse: process.env.GITHUB_EVENT_NAME, atgard: handelse.action, kommentar: handelse.comment }))) {
+    console.log('Kommentaren kommer från någon som inte får intyga. Ingenting att göra.');
+    process.exit(0);
+  }
   const ut = await kor({ api, repo, nummer, torrt, korning });
   if (torrt && !ut.hoppad) console.log(`\n--- kommentaren ---\n${ut.kommentar || '(ingen kommentar)'}`);
 } catch (fel) {

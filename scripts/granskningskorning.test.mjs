@@ -5,7 +5,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { kor, jamforTrad, vantetid, ApiFel } from './lib/granskningskorning.mjs';
+import { kor, jamforTrad, vantetid, arOvidkommande, ApiFel } from './lib/granskningskorning.mjs';
 import { MARKOR, KONTEXT, PUNKTER } from './lib/granskning.mjs';
 
 const REPO = 'opensverige/ai-kartan';
@@ -44,9 +44,9 @@ function github({ bas = [README], huvud = [README], basgren = 'main', oppen = tr
       v.huvud = sha;
     },
     /** Någon skriver en kommentar. */
-    kommentera(login, body, { type = 'User' } = {}) {
+    kommentera(login, body, { type = 'User', viaApp = null } = {}) {
       const nar = v.nu();
-      const k = { id: v.nastaId++, body, user: { login, type }, created_at: nar, updated_at: nar, html_url: 'https://github.com/x/pull/7#issuecomment-x' };
+      const k = { id: v.nastaId++, body, user: { login, type }, created_at: nar, updated_at: nar, html_url: 'https://github.com/x/pull/7#issuecomment-x', performed_via_github_app: viaApp };
       v.kommentarer.push(k);
       return k;
     },
@@ -73,7 +73,14 @@ function github({ bas = [README], huvud = [README], basgren = 'main', oppen = tr
       if (!a) throw new ApiFel(metod, stig, 404);
       return { encoding: 'base64', size: Buffer.byteLength(a.text ?? ''), content: Buffer.from(a.text ?? '').toString('base64') };
     }
-    if (metod === 'GET' && /\/issues\/\d+\/comments$/.test(rent)) return v.kommentarer.slice((sida - 1) * 100, sida * 100);
+    if (metod === 'GET' && /\/issues\/\d+\/comments$/.test(rent)) return v.kommentarer.slice((sida - 1) * 100, sida * 100).map((k) => ({ ...k }));
+    if (metod === 'GET' && (m = rent.match(/\/issues\/comments\/(\d+)$/))) {
+      const k = v.kommentarer.find((x) => x.id === Number(m[1]));
+      if (!k) throw new ApiFel(metod, stig, 404);
+      return { ...k };
+    }
+    // Lägen för en commit, nyast först, som hos GitHub.
+    if (metod === 'GET' && (m = rent.match(/\/commits\/([0-9a-f]{40})\/statuses$/))) return v.statusar.filter((s) => s.sha === m[1]).reverse().slice((sida - 1) * 100, sida * 100);
     if (metod === 'GET' && (m = rent.match(/\/collaborators\/([^/]+)\/permission$/))) {
       if (!ratt[m[1]]) throw new ApiFel(metod, stig, 404);
       return { permission: ratt[m[1]], role_name: ratt[m[1]], user: { login: m[1], type: 'User' } };
@@ -95,6 +102,7 @@ function github({ bas = [README], huvud = [README], basgren = 'main', oppen = tr
 
 const grund = (g, extra = {}) => ({ api: g.api, repo: REPO, nummer: 7, logg: () => {}, ...extra });
 const listan = (v) => v.kommentarer.find((k) => k.user?.login === BOT.login && String(k.body).startsWith(MARKOR));
+const lagen = (v) => v.anrop.filter((a) => a.startsWith('POST') && a.includes('/statuses/')).length;
 const sist = (v) => v.statusar.at(-1);
 const skrivningar = (v) => v.anrop.filter((a) => !a.startsWith('GET '));
 const bockad = (kropp, villkor = () => true) => kropp.split('\n').map((rad) => (rad.startsWith('- [ ] ') && villkor(rad) ? rad.replace('- [ ] ', '- [x] ') : rad)).join('\n');
@@ -132,6 +140,9 @@ test('när en människa med skrivrätt har intygat blir läget grönt', async ()
   assert.match(sist(g.v).description, /intygade av granskare/);
   // Listan skrivs inte om när den redan stämmer. Annars skulle intyget sluta gälla.
   assert.deepEqual(skrivningar(g.v).slice(fore), [`POST /repos/${REPO}/statuses/${C1}`]);
+  // Ett läge som redan står skrivs inte en gång till. GitHub tar bara emot tusen lägen per commit.
+  for (let n = 0; n < 5; n++) await kor(grund(g));
+  assert.equal(skrivningar(g.v).slice(fore).length, 1);
 });
 
 test('en bot som kryssar i rutorna får inte kontrollen grön', async () => {
@@ -299,7 +310,7 @@ test('granskningen tolkar filen som bygget gör', async () => {
   const text = `id: alias\nname:\n  value: Aliasbolaget\nd: &d 2026-10-07\n${Array.from({ length: 70 }, (_, i) => `f${i}: *d`).join('\n')}\n`;
   const g = github({ huvud: [README, org('alias', { text })] });
   await kor(grund(g));
-  assert.match(listan(g.v).body, /Namn enligt filen: Aliasbolaget/);
+  assert.match(listan(g.v).body, /Namn enligt filen: `Aliasbolaget`/);
 });
 
 test('ett namnbyte listar både den nya posten och det gamla id:t', async () => {
@@ -411,8 +422,9 @@ test('en lista som redan stämmer kostar inga filhämtningar', async () => {
   const nya = g.v.anrop.slice(fore);
   assert.equal(nya.filter((a) => a.includes('/git/blobs/')).length, 0);
   assert.equal(nya.filter((a) => a.startsWith('PATCH')).length, 0);
-  // Pull requesten, jämförelsen, två träd, kommentarerna och läget. Inget som växer med antalet filer.
-  assert.equal(nya.length, 6);
+  // Pull requesten, jämförelsen, två träd, kommentarerna och commitens läge. Inget som växer med
+  // antalet filer, och inget skrivs när ingenting har ändrats.
+  assert.deepEqual(nya.map((a) => a.split(' ')[0]), ['GET', 'GET', 'GET', 'GET', 'GET', 'GET']);
 });
 
 test('en torrkörning skriver ingenting', async () => {
@@ -450,4 +462,58 @@ test('när anropsbudgeten är slut väntar körningen, om det går över inom ri
   assert.equal(vantetid(500, {}, nu), null);
   // Svarets huvuden kan komma som ett Headers-objekt.
   assert.equal(vantetid(429, new Headers({ 'retry-after': '5' }), nu), 5000);
+});
+
+test('en app som skriver i en människas namn intygar inte', async () => {
+  // En AI-agent kan vara kopplad till en människas konto och skriva kommentarer i hennes namn.
+  // GitHub märker ut sådana kommentarer, och de räknas inte.
+  const g = await avbockad();
+  g.v.kommentera('granskare', '/granskad', { viaApp: { slug: 'hjalpsam-agent', name: 'Hjälpsam agent' } });
+  await kor(grund(g));
+  assert.equal(sist(g.v).state, 'pending');
+  g.v.kommentera('granskare', '/granskad');
+  await kor(grund(g));
+  assert.equal(sist(g.v).state, 'success');
+});
+
+test('"/granskad inte än" intygar ingenting', async () => {
+  const g = await avbockad();
+  g.v.kommentera('granskare', '/granskad inte än, väntar på svar om belägget');
+  await kor(grund(g));
+  assert.equal(sist(g.v).state, 'pending');
+});
+
+test('det någon bockar ur medan körningen arbetar skrivs inte över', async () => {
+  // Körningen läser listan, räknar, och skriver om den. Bockar granskaren ur en punkt däremellan
+  // får den inte komma tillbaka ikryssad.
+  const g = await avbockad();
+  g.v.push(C2, [README, org('exempel'), { namn: 'kriterier.md', text: 'nya kriterier' }]);
+  let gjort = false;
+  const vid = (metod, stig, v) => {
+    // Precis före skrivningen läser körningen kommentaren en gång till. Då har granskaren hunnit bocka ur.
+    if (!gjort && metod === 'GET' && /\/issues\/comments\/\d+$/.test(stig)) {
+      gjort = true;
+      v.redigera(listan(v), (b) => b.replace('- [x] ', '- [ ] '));
+    }
+    return null;
+  };
+  await kor(grund({ api: (m, s, k) => (vid(m, s.split('?')[0], g.v), g.api(m, s, k)), v: g.v }));
+  assert.equal(gjort, true);
+  assert.equal(listan(g.v).body.split('\n').filter((r) => r.startsWith('- [x] ')).length, ANTAL_NY - 1);
+  assert.match(sist(g.v).description, new RegExp(`${ANTAL_NY - 1} av ${ANTAL_NY}`));
+});
+
+test('en ny kommentar från någon utan skrivrätt behöver ingen körning', async () => {
+  const g = github({ ratt: { granskare: 'write', lasare: 'read' } });
+  const ny = (login, type = 'User') => ({ handelse: 'issue_comment', atgard: 'created', kommentar: { user: { login, type } } });
+  assert.equal(await arOvidkommande({ api: g.api, repo: REPO, ...ny('lasare') }), true);
+  assert.equal(await arOvidkommande({ api: g.api, repo: REPO, ...ny('okand') }), true);
+  assert.equal(await arOvidkommande({ api: g.api, repo: REPO, ...ny('hjalpsam[bot]', 'Bot') }), true);
+  // Den som får intyga, flödets egen kommentar, och allt som ändrar eller tar bort något, ska alltid köras.
+  assert.equal(await arOvidkommande({ api: g.api, repo: REPO, ...ny('granskare') }), false);
+  assert.equal(await arOvidkommande({ api: g.api, repo: REPO, ...ny(BOT.login, 'Bot') }), false);
+  assert.equal(await arOvidkommande({ api: g.api, repo: REPO, handelse: 'issue_comment', atgard: 'edited', kommentar: { user: { login: 'lasare', type: 'User' } } }), false);
+  assert.equal(await arOvidkommande({ api: g.api, repo: REPO, handelse: 'issue_comment', atgard: 'deleted', kommentar: { user: { login: 'lasare', type: 'User' } } }), false);
+  assert.equal(await arOvidkommande({ api: g.api, repo: REPO, handelse: 'pull_request_target', atgard: 'synchronize' }), false);
+  assert.equal(await arOvidkommande({ api: g.api, repo: REPO, handelse: 'workflow_dispatch' }), false);
 });

@@ -27,7 +27,7 @@ export const INTYG = '/granskad';
 /** Står i en kommentar som ber om uppdelning i stället för att visa en lista. */
 const DELA = '<!-- granskning-dela-upp -->';
 /** Höjs när listans utseende ändras, så att öppna pull requests får den nya listan. */
-const RITVERSION = 3;
+const RITVERSION = 4;
 
 // Punkterna för en ny organisation är granskningslistan i kriterier.md, ord för ord. Ett test
 // jämför dem. Sista punkten där, att valideringen är grön, prövas av CI och är ingen ruta här.
@@ -50,7 +50,7 @@ export const PUNKTER = { ny: NY, andrad: ANDRAD, borttagen: BORTTAGEN };
 /** Svenska ord för källtyper och sorters belägg, som i data/taxonomi. Okända värden visas rensade. */
 const KALLTYP = { company_register: 'företagsregister', regulator: 'myndighet', third_party: 'tredje part', academic: 'akademisk publikation', infra_dataset: 'AI-Infra', own_site: 'egen webbplats', own_docs: 'egen dokumentation' };
 const BELAGG = { produkt: 'produkt eller tjänst', repo: 'kodförråd', modell: 'publicerad modell', dataset: 'publicerat dataset', demo: 'demo', publikation: 'publikation', case: 'dokumenterat case', resurs: 'resurs eller infrastruktur', program: 'program eller utlysning', portfolj: 'portfölj' };
-const ord = (tabell, varde) => (typeof varde === 'string' && Object.hasOwn(tabell, varde) ? tabell[varde] : ren(varde, 30));
+const ord = (tabell, varde) => (typeof varde === 'string' && Object.hasOwn(tabell, varde) ? tabell[varde] : kod(varde, 30));
 
 const idUr = (sokvag) => String(sokvag).replace(/^data\/organisationer\//, '').replace(/\.ya?ml$/, '');
 const idFor = (fil) => idUr(fil.sokvag);
@@ -114,6 +114,27 @@ function rensa(text, max = 80) {
  */
 export function ren(text, max = 80) {
   return rensa(text, max).replace(/&/g, '&amp;');
+}
+
+/**
+ * Ett värde ur filen i kodstil, eller tom sträng. I kodstil tolkar GitHub ingenting: varken
+ * omnämnanden, ärendenummer, commit-id, emoji eller formler. Värdet kan därför visas som det
+ * står, med parenteser och allt. Det enda som tas bort är det som kunde avsluta kodstilen eller
+ * se ut som en av listans markörer. Ett värde som kapas slutar med tre punkter.
+ */
+function kod(text, max = 80) {
+  let t = typeof text === 'string' ? text : typeof text === 'number' && Number.isFinite(text) ? String(text) : '';
+  t = t
+    .slice(0, 4000)
+    .normalize('NFKC')
+    .replace(/[\u0000-\u001f\u007f-\u009f\u2028\u2029]+/g, ' ')
+    .replace(/[\u00ad\u061c\u180e\u200b-\u200f\u202a-\u202f\u2060-\u206f\ufeff]/g, '')
+    .replace(/`/g, "'")
+    .replace(/<!--|-->/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  if (!t) return '';
+  return `\`${t.length > max ? `${t.slice(0, max - 1)}…` : t}\``;
 }
 
 /** Adressen om den är en vanlig webbadress som går att skriva som länk, annars null. */
@@ -189,26 +210,40 @@ export function behoverRitasOm(filer, lage, kropp) {
 
 /** Det filen själv säger om ett fälts status. Flödet har inte prövat det. */
 function angiven(falt) {
-  const status = ren(falt?.status, 20);
+  const status = kod(falt?.status, 20);
   if (!status) return 'filen anger ingen status';
   const kalltyp = ord(KALLTYP, falt?.source_type);
   return `filen anger ${status}${kalltyp ? `, källtyp ${kalltyp}` : ''}${falt?.source_url ? `. Källa: ${lank(falt.source_url)}` : ''}`;
 }
 
+/** Hur många anteckningar (note) filen har. De visas inte i listan, men publiceras. */
+function antalAnteckningar(data, djup = 0) {
+  if (!data || typeof data !== 'object' || djup > 6) return 0;
+  return Object.entries(data).reduce((n, [nyckel, varde]) => n + (nyckel === 'note' && typeof varde === 'string' && varde.trim() ? 1 : antalAnteckningar(varde, djup + 1)), 0);
+}
+
+const VISADE_BELAGG = 12;
+
 function underlag(fil) {
   const data = fil.data;
   if (fil.fel || !data || typeof data !== 'object' || Array.isArray(data)) return ['> Filen gick inte att läsa. Valideringen stoppar den tills den är rättad.'];
-  const rader = [
-    `> Namn enligt filen: ${ren(data.name?.value) || 'saknas'}`,
-    `> Typ enligt filen: ${ren(data.type?.value, 30) || 'saknas'}`,
+  const rader = [`> Namn enligt filen: ${kod(data.name?.value) || 'saknas'}`];
+  if (kod(data.legal_name?.value)) rader.push(`> Registrerat namn enligt filen: ${kod(data.legal_name.value, 120)}`);
+  rader.push(
+    `> Typ enligt filen: ${kod(data.type?.value, 30) || 'saknas'}`,
     `> Organisationsnummer: ${data.org_number && typeof data.org_number === 'object' ? angiven(data.org_number) : 'saknas'}`,
-    `> Beskrivning enligt filen: ${ren(data.description?.value, 400) || 'saknas'}`,
+    `> Beskrivning enligt filen: ${kod(data.description?.value, 500) || 'saknas'}`,
     `> Webbplats: ${lank(data.website)}`,
-  ];
+  );
   if (data.type?.value === 'enskild_firma') rader.push('> **Enskild firma.** En sådan post får bara skapas av personen själv, och tas tills vidare inte emot alls.');
   const alla = Array.isArray(data.evidence) ? data.evidence : [];
   rader.push(alla.length ? `> Belägg (${alla.length}):` : '> Belägg: inga');
-  for (const b of alla.slice(0, 8)) rader.push(`> - ${ord(BELAGG, b?.kind) || 'okänd sort'}: ${lank(b?.url)} ${ren(b?.title, 70)}`.trimEnd());
+  for (const b of alla.slice(0, VISADE_BELAGG)) rader.push(`> - ${ord(BELAGG, b?.kind) || 'okänd sort'}: ${lank(b?.url)} ${kod(b?.title, 90)}`.trimEnd());
+  if (alla.length > VISADE_BELAGG) rader.push(`>\n> och ${alla.length - VISADE_BELAGG} belägg till`);
+  // Listan visar inte allt som publiceras. Det ska stå, så att ingen intygar något den inte har läst.
+  const anteckningar = antalAnteckningar(data);
+  const dolt = anteckningar ? ` Filen har ${anteckningar} ${anteckningar === 1 ? 'anteckning' : 'anteckningar'} och fler fält som inte visas här.` : ' Filen har fler fält än de som visas här.';
+  rader.push(`>\n> _Det här är ett utdrag.${dolt} Läs hela filen i pull requesten innan du intygar._`);
   return rader;
 }
 
@@ -239,7 +274,7 @@ export function lista(filer, { repo, nummer = null, ogiltiga = [], regelfiler = 
     ut.push(
       `Den här pull requesten rör ${filer.length} ${filer.length === 1 ? 'organisation' : 'organisationer'}. [Kriterierna](https://github.com/${repo}/blob/main/kriterier.md) gäller, inga andra. Ett avslag skrivs som en kommentar med hänvisning till kriteriet.`,
       '',
-      `**Så blir kontrollen grön:** öppna källorna, bocka av varje punkt, och skriv sedan \`${INTYG}\` i en ny kommentar. Bara en människa med skrivrätt i repot kan intyga. AI får hjälpa till att kontrollera att ett belägg visar det som påstås, men bockar aldrig av listan och intygar aldrig. Att \`npm run validera\` är grön prövas av en egen kontroll.`,
+      `**Så blir kontrollen grön:** öppna källorna, bocka av varje punkt, och skriv sedan \`${INTYG}\` ensamt på första raden i en ny kommentar. Bara en människa med skrivrätt i repot kan intyga. AI får hjälpa till att kontrollera att ett belägg visar det som påstås, men bockar aldrig av listan och intygar aldrig. Att \`npm run validera\` är grön prövas av en egen kontroll.`,
     );
     if (regelfiler) ut.push('', REGELRAD);
   }
@@ -286,9 +321,12 @@ export function avlas(filer, kropp, { ogiltiga = [] } = {}) {
   return { totalt, klara: totalt - kvar.length, kvar, manipulerad: saknas > 0, forManga, ogiltiga };
 }
 
-/** Sant om kommentaren är ett intyg: den börjar med ordet, och inget annat ord börjar likadant. */
+/**
+ * Sant om kommentaren är ett intyg: ordet står ensamt på kommentarens första rad. Resten av
+ * kommentaren är fri. "/granskad inte än" är alltså inget intyg.
+ */
 export function arIntyg(text) {
-  return new RegExp(`^\\s*${INTYG}(?![\\w/-])`, 'i').test(String(text ?? ''));
+  return new RegExp(`^\\s*${INTYG}[.!]?[ \\t]*(\\r?\\n|$)`, 'i').test(String(text ?? ''));
 }
 
 /**

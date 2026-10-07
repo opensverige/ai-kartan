@@ -77,11 +77,12 @@ Så granskar du:
 
 1. Öppna källorna och pröva varje punkt.
 2. Bocka av punkterna genom att klicka i rutorna.
-3. Skriv `/granskad` i en ny kommentar. Det är ditt intyg, och först då blir läget grönt.
+3. Skriv `/granskad` ensamt på första raden i en ny kommentar. Det är ditt intyg, och först då blir läget grönt. Under raden får du skriva vad du vill.
 
 Det här gäller:
 
-- Bara en människa med skrivrätt i repot kan intyga. Kommentaren ska vara ny: en kommentar som har redigerats räknas inte.
+- Bara en människa med skrivrätt i repot kan intyga. Kommentaren ska vara ny och skriven av dig själv: en kommentar som har redigerats, som har dolts eller som en app har skrivit i ditt namn räknas inte.
+- Listan under varje organisation är ett utdrag ur filen. Anteckningar och en del fält visas inte där. Läs hela filen i pull requesten innan du intygar.
 - En bock gäller filen som den såg ut när du bockade. Ändras filen nollställs organisationens punkter, och intyget gäller inte längre.
 - Ändras listan efter ditt intyg, till exempel för att någon bockar ur en punkt, behövs ett nytt `/granskad`.
 - AI får hjälpa dig att kontrollera att ett belägg visar det som påstås, men listan och intyget är dina. En bot kan kryssa i en ruta, och därför räcker inte rutorna: det är din kommentar som räknas. En agent som arbetar inloggad som du går inte att skilja från dig. Den regeln vilar därför på dig.
