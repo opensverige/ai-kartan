@@ -9,6 +9,11 @@ updates:
       beroenden:
         patterns: ["*"]
     labels: ["beroenden"]
+    ignore:
+      # @astrojs/check kräver TypeScript 5. Med TypeScript 7 går beroendena inte att installera.
+      # Ta bort raden när Astros kontroll stöder den nya versionen.
+      - dependency-name: typescript
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: github-actions
     directory: /
     schedule:
