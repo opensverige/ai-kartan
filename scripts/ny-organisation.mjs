@@ -14,7 +14,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import YAML from 'yaml';
 import { KATALOG_ORG, lasGeo, lasOrganisationer } from './lib/organisationer.mjs';
-import { parsa, ikryssade, normaliseraUrl, personnummerI, utanNummer, arNummer } from './lib/arende.mjs';
+import { arendetext, parsa, ikryssade, normaliseraUrl, personnummerI, utanNummer, arNummer } from './lib/arende.mjs';
 import { hittaDubblett } from './lib/tips.mjs';
 
 const argv = process.argv.slice(2);
@@ -25,10 +25,10 @@ const arg = (namn) => {
 const IDAG = new Date().toISOString().slice(0, 10);
 const SAJT = (process.env.SITE_URL || 'https://karta.opensverige.se').replace(/\/$/, '');
 
-let kropp = process.env.ISSUE_BODY ?? '';
+let kropp = arendetext();
 if (arg('--fil')) kropp = fs.readFileSync(arg('--fil'), 'utf8');
 if (!kropp.trim()) {
-  console.error('Ingen ärendetext. Sätt ISSUE_BODY eller använd --fil.');
+  console.error('Ingen ärendetext. Använd --fil, eller sätt ISSUE_BODY.');
   process.exit(1);
 }
 
@@ -54,7 +54,16 @@ function avbryt(svar) {
   const rensad = utanNummer(kropp, bort);
   if (rensad && arg('--rensad')) fs.writeFileSync(arg('--rensad'), rensad, 'utf8');
   tillFlodet([`rensad=${Boolean(rensad)}`]);
-  if (rensad) kropp = rensad;
+  // Efter en rensning skapas ingen post. Ett personnummer som organisationsnummer betyder enskild
+  // firma, och ett namn med ett nummer i ska skrivas om av den som skickade in det.
+  if (rensad) {
+    const tillGranskaren = 'Till den som granskar: radera även den tidigare versionen ur ärendets redigeringshistorik.';
+    avbryt(
+      personnummerI(f['Namn']).length
+        ? `Namnet innehöll ett nummer som såg ut som ett personnummer. Det har tagits bort ur ärendet. Redigera ärendet och skriv namnet utan nummer.\n\n${tillGranskaren}`
+        : `Ett nummer som såg ut som ett personnummer har tagits bort ur ärendet. För en enskild firma är organisationsnumret ett personnummer och ska aldrig skrivas här. Enskilda firmor tar vi inte emot än. Gäller det ett bolag: redigera ärendet och skriv bolagets organisationsnummer, eller lämna fältet tomt.\n\n${tillGranskaren}`,
+    );
+  }
 }
 
 function slug(s) {
@@ -73,8 +82,8 @@ const f = parsa(kropp);
 const namn = (f['Namn'] || '').trim();
 const webbplats = normaliseraUrl(f['Webbplats']);
 const typ = (f['Organisationstyp'] || '').trim();
-// Tio siffror utan bindestreck skrivs om till den form schemat vill ha. Det som togs bort ovan är inget nummer.
-const orgnr = (f['Organisationsnummer'] || '').trim().replace(/^(\d{6})(\d{4})$/, '$1-$2').replace(/^.*\[borttaget\].*$/, '');
+// Tio siffror utan bindestreck skrivs om till den form schemat vill ha.
+const orgnr = (f['Organisationsnummer'] || '').trim().replace(/^(\d{6})(\d{4})$/, '$1-$2');
 const kommunNamn = (f['Kommun där organisationen har sitt säte'] || '').trim();
 const beskrivning = (f['Vad bygger ni med AI?'] || '').replace(/\s+/g, ' ').trim();
 const erbjuder = ikryssade(f['Vad erbjuder ni?']);

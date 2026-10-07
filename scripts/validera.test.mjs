@@ -79,5 +79,9 @@ test('en personprofil på LinkedIn stoppas', () => {
   const person = med('https://www.linkedin.com/in/anna-exempel-1a2b3c');
   assert.notEqual(person.kod, 0);
   assert.match(person.text, /personprofil/);
-  for (const ok of ['https://www.linkedin.com/company/exempel', 'https://se.linkedin.com/company/exempel/', 'https://linkedin.com/school/exempel']) assert.equal(med(ok).kod, 0, ok);
+  for (const ok of ['https://www.linkedin.com/company/exempel', 'https://se.linkedin.com/company/exempel/', 'https://linkedin.com/school/exempel', 'http://www.linkedin.com/company/exempel', 'https://www.LinkedIn.com/company/exempel', 'https://m.linkedin.com/company/exempel', 'https://www.linkedin.com/showcase/exempel/about/'])
+    assert.equal(med(ok).kod, 0, ok);
+  // En adress som ser ut som en organisationssida men leder till en person, eller till en annan värd.
+  for (const ej of ['https://www.linkedin.com/company/../in/anna-exempel', 'https://linkedin.com.ond.example/company/x', 'https://ondlinkedin.com/company/x', 'https://lnkd.in/abc'])
+    assert.notEqual(med(ej).kod, 0, ej);
 });

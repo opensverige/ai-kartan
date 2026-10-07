@@ -207,3 +207,53 @@ test('svaret på en dubblett hänvisar till en knapp som finns på organisatione
   const sida = fs.readFileSync(path.join(import.meta.dirname, '..', 'src', 'pages', 'organisation', '[id].astro'), 'utf8');
   assert.match(sida, />Rätta via GitHub</);
 });
+
+test('en webbplats som bara skiljer sig på språk eller land är samma webbplats', () => {
+  // Posten har sin svenska ingång som webbplats. Ett tips med huvudadressen gäller samma organisation.
+  const finns = [
+    { id: 'klarna', namn: 'Klarna', webbplats: 'https://www.klarna.com/se/' },
+    { id: 'ai-sweden', namn: 'AI Sweden', webbplats: 'https://www.ai.se/sv' },
+  ];
+  assert.equal(bedomTips(arende({ namn: 'Klarna Bank', webbplats: 'https://www.klarna.com', belagg: 'https://www.klarna.com/ai' }), finns).dubblett?.id, 'klarna');
+  assert.equal(bedomTips(arende({ namn: 'Det nationella centret', webbplats: 'https://ai.se/en', belagg: 'https://ai.se/x' }), finns).dubblett?.id, 'ai-sweden');
+});
+
+test('personnummer tas bort hur de än är skrivna', () => {
+  // Som momsnummer, med tankstreck från en telefon, med mellanslag, punkt eller snedstreck, och med sekelsiffror.
+  for (const nummer of ['SE850101123401', '850101 - 1234', '850101–1234', '850101  1234', '850101.1234', '850101/1234', '168501011234', '19850101 1234']) {
+    const r = bedomTips(arende({ namn: 'Ny Firma', webbplats: 'https://nyfirma.se', orgnr: nummer }), BEFINTLIGA);
+    assert.ok(r.rensadKropp, `${nummer} skulle ge en rensad ärendetext`);
+    assert.doesNotMatch(r.rensadKropp.replace(/\D/g, ''), /8501011234/, `${nummer} står kvar i ärendetexten`);
+    assert.equal(r.tips.orgnr, '', nummer);
+    assert.match(r.rensadKropp, /^https:\/\/nyfirma\.se$/m, 'resten av ärendet ska stå kvar');
+  }
+});
+
+test('organisationsnummer för juridiska personer rörs aldrig, hur de än är skrivna', () => {
+  for (const nummer of ['556677-8899', '5566778899', '202100-2932', '802002-4280', '969600-1234', 'SE556677889901', '556677 8899', '16556677-8899']) {
+    const r = bedomTips(arende({ namn: 'Nytt Bolag', webbplats: 'https://nyttbolag.se', orgnr: nummer }), BEFINTLIGA);
+    assert.equal(r.rensadKropp, null, `${nummer} togs bort av misstag`);
+    assert.equal(r.tips.orgnr, nummer);
+  }
+});
+
+test('skriptet läser ärendet ur händelsefilen, så att texten aldrig hamnar i körningens logg', () => {
+  // GitHub skriver ut stegets env i den publika loggen. Ärendetexten får därför inte skickas den vägen.
+  const katalog = fs.mkdtempSync(path.join(os.tmpdir(), 'ai-kartan-tips-'));
+  try {
+    const handelse = path.join(katalog, 'event.json');
+    fs.writeFileSync(handelse, JSON.stringify({ issue: { body: arende({ namn: 'Ny Firma', webbplats: 'https://nyfirma.se', orgnr: '850101-1234' }) } }));
+    const miljo = { ...process.env, GITHUB_EVENT_PATH: handelse, GITHUB_OUTPUT: path.join(katalog, 'ut.txt') };
+    delete miljo.ISSUE_BODY;
+    fs.writeFileSync(miljo.GITHUB_OUTPUT, '');
+    execFileSync(process.execPath, [SKRIPT, '--svar', path.join(katalog, 'svar.md'), '--rensad', path.join(katalog, 'kropp.md')], { env: miljo });
+    assert.match(fs.readFileSync(miljo.GITHUB_OUTPUT, 'utf8'), /rensad=true/);
+    assert.doesNotMatch(fs.readFileSync(path.join(katalog, 'kropp.md'), 'utf8'), /850101/);
+  } finally {
+    fs.rmSync(katalog, { recursive: true, force: true });
+  }
+  for (const flode of ['tips.yml', 'ny-organisation.yml']) {
+    const text = fs.readFileSync(path.join(import.meta.dirname, '..', '.github', 'workflows', flode), 'utf8');
+    assert.doesNotMatch(text, /:\s*\$\{\{\s*github\.event\.issue\.body\s*\}\}/, `${flode} skickar ärendetexten genom env`);
+  }
+});

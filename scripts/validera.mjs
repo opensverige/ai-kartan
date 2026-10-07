@@ -39,7 +39,15 @@ const FORBJUDNA_NYCKLAR =
 const EPOST = /[\w.+-]+@[\w-]+\.[\w.-]+/;
 // Dagen är 01–31, eller 61–91 i ett samordningsnummer. Juridiska personer har 20 eller mer där månaden står.
 const PERSONNUMMER = /(?<!\d)(?:19|20)?\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01]|6[1-9]|[78]\d|9[01])[-+ ]?\d{4}(?!\d)/;
-const LINKEDIN_ORGANISATION = /^https:\/\/([a-z]{2,3}\.)?linkedin\.com\/(company|school|showcase)\//;
+/** Sant för en organisations sida på LinkedIn. Adressen läses som webbläsaren läser den, så att "company/../in/namn" inte slinker igenom. */
+function arLinkedinOrganisation(adress) {
+  try {
+    const u = new URL(adress);
+    return /^https?:$/.test(u.protocol) && /(^|\.)linkedin\.com$/.test(u.hostname) && /^\/(company|school|showcase)\/[^/]/.test(u.pathname);
+  } catch {
+    return false;
+  }
+}
 const MARKNADSORD = /\b(ledande|världsledande|bäst[a]?|nummer ett|revolutionerande|unik[ta]?|banbrytande|marknadsledande)\b/i;
 const KALLTYP_FAR_BEKRAFTA = new Set(tax.kalltyper.filter((k) => k.may_confirm).map((k) => k.id));
 
@@ -135,7 +143,7 @@ function kontrolleraPost(post) {
     if (data.self_submitted !== true) e('enskild_firma: posten får bara skapas av personen själv. Sätt self_submitted: true.');
     if (data.coordinates) e('enskild_firma: exakta koordinater är inte tillåtna. Ta bort coordinates.');
   }
-  if (typeof data.links?.linkedin === 'string' && !LINKEDIN_ORGANISATION.test(data.links.linkedin)) {
+  if (typeof data.links?.linkedin === 'string' && !arLinkedinOrganisation(data.links.linkedin)) {
     e('links.linkedin: ska vara organisationens sida (https://www.linkedin.com/company/…), aldrig en personprofil.');
   }
   for (const traff of allaNycklarOchStrangar(data)) {

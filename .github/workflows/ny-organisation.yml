@@ -38,21 +38,20 @@ jobs:
 
       - name: Bygg YAML ur ärendet
         id: bygg
+        # Ärendets text läses ur händelsefilen, inte genom env: det som står i env skrivs ut i
+        # körningens logg, och där ska ett personnummer aldrig hamna.
         env:
-          ISSUE_BODY: ${{ github.event.issue.body }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
         run: node scripts/ny-organisation.mjs --fran-arende --rensad kropp.md --fel fel.md
 
       # Först av allt: ett personnummer ska inte stå kvar medan resten av jobbet går.
-      # Steget körs även när formuläret inte gick att läsa.
+      # Skriptet avbryter efter en rensning, och svaret om varför skrivs av steget Kommentera fel.
       - name: Ta bort personnummer ur ärendet
         if: ${{ !cancelled() && steps.bygg.outputs.rensad == 'true' }}
         env:
           GH_TOKEN: ${{ github.token }}
           NUMMER: ${{ github.event.issue.number }}
-        run: |
-          gh issue edit "$NUMMER" --body-file kropp.md
-          gh issue comment "$NUMMER" --body "Ett nummer som såg ut som ett personnummer har tagits bort ur ärendet. För en enskild firma är organisationsnumret ett personnummer och ska aldrig skrivas här. Till den som granskar: radera även den tidigare versionen ur ärendets redigeringshistorik."
+        run: gh issue edit "$NUMMER" --body-file kropp.md
 
       - name: Validera den nya filen
         id: validera

@@ -73,27 +73,32 @@ test('namnet som går vidare till commit och rubrik saknar hakparenteser', () =>
 
 const BEFINTLIG = (id, namn, webbplats) => `id: ${id}\nname:\n  value: ${namn}\nwebsite: ${webbplats}\n`;
 
-test('ett personnummer i organisationsnumret tas bort ur ärendet och skrivs aldrig i filen', () => {
-  // Sista numret är ett samordningsnummer: födelsedagen plus 60.
-  for (const nummer of ['850101-1234', '8501011234', '19850101-1234', '850161-1234']) {
+test('ett personnummer i organisationsnumret tas bort ur ärendet, och ingen post skapas', () => {
+  // Ett personnummer som organisationsnummer betyder enskild firma, och sådana tas inte emot än.
+  // Sista numren är ett samordningsnummer, ett momsnummer och ett med tankstreck från en telefon.
+  for (const nummer of ['850101-1234', '8501011234', '19850101-1234', '850161-1234', 'SE850101123401', '850101–1234', '850101 - 1234']) {
     const r = kor('Ny Firma', {}, { Organisationsnummer: nummer });
-    assert.equal(r.kod, 0, r.stderr);
+    assert.notEqual(r.kod, 0, nummer);
     assert.match(r.utdata, /^rensad=true$/m, nummer);
-    assert.ok(r.rensad && !r.rensad.includes(nummer), `${nummer} står kvar i ärendetexten`);
+    assert.ok(r.rensad, `${nummer} gav ingen rensad ärendetext`);
+    assert.doesNotMatch(r.rensad.replace(/\D/g, ''), /85016?11234|8501011234/, `${nummer} står kvar i ärendetexten`);
     assert.match(r.rensad, /^https:\/\/exempelbolaget\.se$/m, 'resten av ärendet ska stå kvar');
-    const fil = r.las('ny-firma.yaml');
-    assert.ok(fil && !fil.includes(nummer.replace(/\D/g, '').slice(-10, -4)), `${nummer} hamnade i filen`);
-    assert.doesNotMatch(fil, /org_number/);
+    assert.deepEqual(r.filer, [], `${nummer} gav ändå en fil`);
+    assert.match(r.fel, /enskild firma/i);
+    assert.match(r.fel, /tagits bort ur ärendet/);
+    assert.doesNotMatch(r.fel, /\d{4}/, 'svaret får inte upprepa numret');
   }
 });
 
-test('ett personnummer i namnet hamnar varken i filen, i id:t eller i ärendet', () => {
+test('ett personnummer i namnet tas bort ur ärendet, och ingen post skapas', () => {
+  // Förut blev det en post som hette "[borttaget]".
   const r = kor('Firma 850101-1234', {}, {});
+  assert.notEqual(r.kod, 0);
   assert.match(r.utdata, /^rensad=true$/m);
   assert.ok(!r.rensad.includes('850101'));
   assert.doesNotMatch(r.utdata, /850101/);
-  assert.deepEqual(r.filer, ['firma-borttaget.yaml']);
-  assert.doesNotMatch(r.las('firma-borttaget.yaml'), /850101/);
+  assert.deepEqual(r.filer, []);
+  assert.match(r.fel, /namnet/i);
 });
 
 test('ett vanligt organisationsnummer följer med och får sitt bindestreck', () => {

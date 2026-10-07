@@ -33,8 +33,9 @@ jobs:
 
       - name: Läs tipset
         id: tips
+        # Ärendets text läses ur händelsefilen, inte genom env: det som står i env skrivs ut i
+        # körningens logg, och där ska ett personnummer aldrig hamna.
         env:
-          ISSUE_BODY: ${{ github.event.issue.body }}
           ISSUE_ACTION: ${{ github.event.action }}
         run: node scripts/tips.mjs --svar svar.md --rensad kropp.md
 

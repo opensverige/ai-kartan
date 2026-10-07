@@ -17,7 +17,8 @@ function lank(varde) {
 function adress(u) {
   try {
     const { hostname, pathname } = new URL(u);
-    return { vard: hostname.toLowerCase().replace(/^www\./, ''), stig: pathname.replace(/\/+$/, '').toLowerCase() };
+    // En sökväg som bara är språk eller land, som /se eller /sv, är hela webbplatsen.
+    return { vard: hostname.toLowerCase().replace(/^www\./, ''), stig: pathname.replace(/\/+$/, '').toLowerCase().replace(/^\/(sv|se|en|sv-se|en-se)$/, '') };
   } catch {
     return null;
   }
