@@ -1,0 +1,108 @@
+id: hack23
+
+name:
+  value: Hack23
+  status: claimed
+  source_url: https://hack23.com
+  source_type: own_site
+  verified_at: 2026-10-07
+  verified_by: agent
+
+legal_name:
+  value: Hack23 AB
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559534780701
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Namn enligt momsregistret, hämtat via EU:s tjänst VIES. Sidfoten på hack23.com anger Hack23 AB med samma organisationsnummer."
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559534780701
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Bolagsformen är härledd ur det registrerade namnet. Momsregistret har inget eget fält för bolagsform."
+
+org_number:
+  value: "559534-7807"
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559534780701
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+
+website: https://hack23.com
+
+description:
+  value: Utvecklar European Parliament MCP Server, en MCP-server med öppen källkod som ger AI-assistenter tillgång till Europaparlamentets öppna data. Driver även Riksdagsmonitor, där agentflöden med AI skriver nyheter och analyser om riksdagen.
+  status: claimed
+  source_url: https://hack23.com
+  source_type: own_site
+  verified_at: 2026-10-07
+  verified_by: agent
+
+offers:
+  value: [produkt, oppen_kallkod]
+  status: claimed
+  source_url: https://github.com/Hack23/European-Parliament-MCP-Server
+  source_type: own_docs
+  verified_at: 2026-10-07
+  verified_by: agent
+
+areas:
+  value: [agenter_automation, media_kreativt]
+  status: claimed
+  source_url: https://hack23.com
+  source_type: own_site
+  verified_at: 2026-10-07
+  verified_by: agent
+
+kommun:
+  value: "1480"
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559534780701
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Göteborg. Härledd från postorten i den registrerade adressen i momsregistret. Webbplatsen hack23.com anger Göteborg som ort. Sätet enligt Bolagsverket är inte kontrollerat."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559534780701
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Giltigt momsregistreringsnummer enligt VIES 2026-10-07."
+
+evidence:
+  - url: https://github.com/Hack23/European-Parliament-MCP-Server
+    kind: repo
+    title: "European Parliament MCP Server: MCP-server som ger AI-assistenter tillgång till Europaparlamentets öppna data"
+    status: claimed
+    verified_at: 2026-10-07
+    verified_by: agent
+    note: "Apache-2.0 enligt kodförrådets licensuppgift. Paketet är publicerat på npm som european-parliament-mcp-server."
+  - url: https://github.com/Hack23/riksdagsmonitor
+    kind: repo
+    title: "Riksdagsmonitor på GitHub: agentflöden och promptmoduler som genererar nyhetsartiklar om riksdagen"
+    status: claimed
+    verified_at: 2026-10-07
+    verified_by: agent
+    note: "Apache-2.0. Enligt README skrivs artiklarna av språkmodeller från en annan leverantör, styrda av flödena i kodförrådet."
+  - url: https://riksdagsmonitor.com/news/index.html
+    kind: produkt
+    title: "Riksdagsmonitors nyhetssida med AI-genererade artiklar om riksdag och regering"
+    status: claimed
+    verified_at: 2026-10-07
+    verified_by: agent
+    note: "Sidfoten anger att webbplatsen är byggd av Hack23 AB. Den senaste artikeln i listan var daterad 2026-06-13 när sidan öppnades 2026-10-07."
+
+links:
+  github: https://github.com/Hack23
+
+record_created_at: 2026-10-07
+record_updated_at: 2026-10-07

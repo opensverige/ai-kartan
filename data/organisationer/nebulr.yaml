@@ -1,0 +1,105 @@
+id: nebulr
+
+name:
+  value: Nebulr
+  status: claimed
+  source_url: https://thebridge.dev
+  source_type: own_site
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Sidfoten på thebridge.dev anger Nebulr. Bolaget ger ut tjänsten The Bridge, som tidigare hette Nblocks, och har en egen bolagssida på nebulr.group."
+
+legal_name:
+  value: Nebulr AB
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559277616401
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Namn enligt momsregistret, hämtat via EU:s tjänst VIES. Integritetspolicyn på thebridge.dev är utfärdad av Nebulr AB i Stockholm och anger inget organisationsnummer."
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559277616401
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Bolagsformen är härledd ur det registrerade namnet. Momsregistret har inget eget fält för bolagsform."
+
+org_number:
+  value: "559277-6164"
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559277616401
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Numret står inte på bolagets egna sidor. Det hittades genom webbsökning på bolagsnamnet och stämdes av mot momsregistret, som svarar med namnet Nebulr AB och postorten Stockholm."
+
+website: https://thebridge.dev
+
+description:
+  value: Utvecklar The Bridge, en tjänst som utvecklare kopplar till sin app för inloggning, användare och roller, betalning med abonnemang och funktionsflaggor. En MCP-server låter AI-assistenter läsa och ändra inställningarna, till exempel inloggningsmetoder, planer och funktionsflaggor.
+  status: claimed
+  source_url: https://thebridge.dev/docs/ai-assistants/mcp/
+  source_type: own_docs
+  verified_at: 2026-10-07
+  verified_by: agent
+
+offers:
+  value: [produkt, oppen_kallkod]
+  status: claimed
+  source_url: https://github.com/thebridgedev/bridge-cli
+  source_type: own_docs
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Tjänsten The Bridge beskrivs på thebridge.dev. Kodförrådet bridge-cli har MIT-licens enligt GitHubs licensuppgift."
+
+areas:
+  value: [agenter_automation]
+  status: claimed
+  source_url: https://thebridge.dev/docs/ai-assistants/mcp/
+  source_type: own_docs
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Gäller MCP-servern och kommandoradsverktyget för AI-agenter. Själva tjänsten är inloggning, betalning och funktionsflaggor, som saknar eget område i taxonomin."
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559277616401
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Stockholm. Härledd från postorten i den registrerade adressen i momsregistret. Integritetspolicyn på thebridge.dev anger också Stockholm. Sätet enligt Bolagsverket är inte kontrollerat."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559277616401
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Giltigt momsregistreringsnummer enligt VIES 2026-10-07."
+
+evidence:
+  - url: https://thebridge.dev/docs/ai-assistants/mcp/
+    kind: produkt
+    title: "Dokumentation: MCP-server som låter AI-assistenter läsa och ändra inställningar i The Bridge"
+    status: claimed
+    verified_at: 2026-10-07
+    verified_by: agent
+    note: "Servern drivs av bolaget på api.thebridge.dev och är listad i det officiella MCP-registret. Kodförrådet bridge-mcp innehåller bara listningsfiler, ingen serverkod."
+  - url: https://github.com/thebridgedev/bridge-cli
+    kind: repo
+    title: "bridge-cli på GitHub: kommandoradsverktyg för AI-kodagenter och utvecklare, med promptfiler för integration (MIT)"
+    status: claimed
+    verified_at: 2026-10-07
+    verified_by: agent
+    note: "Verktyget anropar The Bridges API och svarar med JSON. Katalogen prompts innehåller instruktioner till kodagenter, som hämtas med kommandot bridge guide."
+
+links:
+  github: https://github.com/thebridgedev
+
+record_created_at: 2026-10-07
+record_updated_at: 2026-10-07
