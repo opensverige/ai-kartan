@@ -1,0 +1,109 @@
+id: sinch
+
+name:
+  value: Sinch
+  status: claimed
+  source_url: https://sinch.com
+  source_type: own_site
+  verified_at: 2026-10-07
+  verified_by: agent
+
+legal_name:
+  value: Sinch AB (publ)
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/556882890801
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Namn enligt momsregistret, hämtat via EU:s tjänst VIES. Enligt integritetspolicyn på sinch.com avser Sinch bolaget Sinch AB (publ) eller något av dess dotterbolag. Produktsidorna anger inte vilket bolag i koncernen som utvecklat produkterna."
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/556882890801
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Bolagsformen är härledd ur det registrerade namnet. Momsregistret har inget eget fält för bolagsform."
+
+org_number:
+  value: "556882-8908"
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/556882890801
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Numret står i bolagets kallelse till årsstämma 2026 på group.sinch.com och är kontrollerat mot momsregistret via VIES."
+
+website: https://sinch.com
+
+description:
+  value: Utvecklar API:er och plattformar för meddelanden, röst, e-post och verifiering. Har byggt en MCP-server som ger AI-agenter tillgång till API:erna, Voice Relay som kopplar textbaserade AI-agenter till telefonsamtal och Smart Conversations med sentimentdetektering och tal-till-text för meddelanden.
+  status: claimed
+  source_url: https://sinch.com/ai/
+  source_type: own_site
+  verified_at: 2026-10-07
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://sinch.com/ai/
+  source_type: own_site
+  verified_at: 2026-10-07
+  verified_by: agent
+
+areas:
+  value: [agenter_automation, sprakteknik]
+  status: claimed
+  source_url: https://sinch.com/ai/
+  source_type: own_site
+  verified_at: 2026-10-07
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/556882890801
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Stockholm. Härledd från postorten i den registrerade adressen i momsregistret. Sätet enligt Bolagsverket är inte kontrollerat."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/556882890801
+  source_type: company_register
+  verified_at: 2026-10-07
+  verified_by: agent
+  note: "Giltigt momsregistreringsnummer enligt VIES 2026-10-07."
+
+evidence:
+  - url: https://developers.sinch.com/docs/voice-2.0/api-reference/x-voice-relay
+    kind: produkt
+    title: "Voice Relay: tal-till-text och talsyntes mellan ett pågående telefonsamtal och kundens AI-agent"
+    status: claimed
+    verified_at: 2026-10-07
+    verified_by: agent
+    note: "Dokumentationen ligger under Voice API v2, som utvecklarsajten märker som preview."
+  - url: https://github.com/sinch/sinch-mcp-server
+    kind: repo
+    title: "MCP-server som gör Sinchs API:er för meddelanden, röst, e-post och verifiering till verktyg för AI-agenter"
+    status: claimed
+    verified_at: 2026-10-07
+    verified_by: agent
+    note: "Kodförrådet är märkt Developer Preview. README beskriver verktyg som anropar Sinchs egna API:er för meddelanden, e-post, verifiering, röst och nummer."
+  - url: https://sinch.com/products/chatlayer/
+    kind: produkt
+    title: "Chatlayer: plattform för att bygga chattbottar och röstbottar med språkförståelse (NLP)"
+    status: claimed
+    verified_at: 2026-10-07
+    verified_by: agent
+    note: "Enligt Sinchs pressmeddelande 2020-03-19 på group.sinch.com avtalade Sinch AB (publ) om att förvärva Chatlayer BV, grundat i Antwerpen, som utvecklat plattformen."
+
+links:
+  github: https://github.com/sinch
+
+record_created_at: 2026-10-07
+record_updated_at: 2026-10-07
