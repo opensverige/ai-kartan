@@ -10,9 +10,9 @@ Inget annat läses in.
     python scripts/brand/bygg-logotyp.py --typsnitt MAPP     # var TTF-filerna till OG-bilderna ligger
     python scripts/brand/bygg-logotyp.py --ut MAPP           # skriv någon annanstans än public/
 
-Skrivs till public/: logo.png, icon.png, favicon.ico, favicon-96x96.png, apple-touch-icon.png,
-web-app-manifest-192x192.png, web-app-manifest-512x512.png, site.webmanifest, og-image.jpg och
-og-image-en.jpg.
+Skrivs till public/: logo.png, icon.png, site.webmanifest, og-image.jpg och og-image-en.jpg.
+Favikonen och hemskärmsikonerna ritas för sig, pixel för pixel, av scripts/favikon.mjs: handen
+går inte att läsa i sexton pixlar.
 
 Krav: Python 3.10+ och Pillow. Typsnitten (Bricolage Grotesque och JetBrains Mono, båda OFL)
 hämtas vid behov till en tillfällig mapp utanför repot och checkas aldrig in.
@@ -136,32 +136,6 @@ def ikon(utsnitt, storlek, marginal=0, bakgrund=None):
     return skarpa(ut) if bakgrund and storlek < 100 else ut
 
 
-def maskbar_ikon(motiv, storlek, bakgrund):
-    """Ikon som tål att maskas till cirkel eller rundad kvadrat. Handen och nålen hålls inom den säkra
-    cirkeln. Armen går ut till nederkanten och får skäras av masken, precis som den gör i källbilden."""
-    hel = hela_motivet(motiv)
-    viktigt_hojd = round(HAND_ANDEL * hel.width)
-    radie = SAKER_RADIE * storlek
-    for bredd in range(storlek, storlek // 3, -2):
-        skala = bredd / hel.width
-        hojd = round(hel.height * skala)
-        ox, oy = (storlek - bredd) // 2, storlek - hojd
-        # Kontrollera på en nedskalad täckningskarta: varje täckt pixel i den viktiga delen ska ligga i cirkeln.
-        karta = hel.getchannel("A").resize((bredd, hojd), Image.BOX)
-        px = karta.load()
-        ryms = all(
-            math.dist((ox + x + 0.5, oy + y + 0.5), (storlek / 2, storlek / 2)) <= radie
-            for y in range(min(hojd, round(viktigt_hojd * skala)))
-            for x in range(bredd)
-            if px[x, y] >= ALFA_GRANS
-        )
-        if ryms:
-            ut = duk(storlek, bakgrund)
-            ut.alpha_composite(krymp(hel, (bredd, hojd)), (ox, oy))
-            return ut
-    raise SystemExit("Motivet ryms inte i den säkra cirkeln ens vid en tredjedels storlek.")
-
-
 # ---------------------------------------------------------------- filer
 
 def skriv_png(bild, namn, ut):
@@ -172,26 +146,13 @@ def skriv_png(bild, namn, ut):
     return sokvag
 
 
-def skriv_ico(utsnitt, ut):
-    ramar = {storlek: ikon(utsnitt, storlek, marginal, KRITVIT) for storlek, marginal in ((16, 0), (32, 1), (48, 2))}
-    sokvag = ut / "favicon.ico"
-    ramar[48].save(
-        sokvag, format="ICO", sizes=[(16, 16), (32, 32), (48, 48)],
-        append_images=[ramar[16], ramar[32]], bitmap_format="bmp",
-    )
-    return sokvag
-
-
 def skriv_manifest(ut):
-    ikoner = []
-    for storlek in (192, 512):
-        for syfte in ("any", "maskable"):
-            ikoner.append({
-                "src": f"web-app-manifest-{storlek}x{storlek}.png",
-                "sizes": f"{storlek}x{storlek}",
-                "type": "image/png",
-                "purpose": syfte,
-            })
+    # Bilderna ritas av scripts/favikon.mjs. Den maskerbara har motivet i mitten, med luft runt om.
+    ikoner = [
+        {"src": "web-app-manifest-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+        {"src": "web-app-manifest-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+        {"src": "web-app-manifest-maskable-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"},
+    ]
     manifest = {
         "name": "OpenSverige AI-kartan",
         "short_name": "AI-kartan",
@@ -216,15 +177,6 @@ def skriv_ikoner(motiv, ut):
     # Genomskinliga: logo.png för allmänt bruk, icon.png för sidhuvudet (visas i ungefär 34 px).
     filer.append(skriv_png(ikon(utsnitt, 512), "logo.png", ut))
     filer.append(skriv_png(ikon(utsnitt, 128), "icon.png", ut))
-    # Ogenomskinliga på kritvit botten, med lite luft runt motivet.
-    filer.append(skriv_png(ikon(utsnitt, 96, 6, KRITVIT), "favicon-96x96.png", ut))
-    filer.append(skriv_png(ikon(utsnitt, 180, 14, KRITVIT), "apple-touch-icon.png", ut))
-    # PWA-ikonerna används både omaskade och maskade. 192 px krymps från 512-versionen, så att de får
-    # samma proportioner.
-    stor = maskbar_ikon(motiv, 512, KRITVIT)
-    filer.append(skriv_png(stor, "web-app-manifest-512x512.png", ut))
-    filer.append(skriv_png(skarpa(stor.resize((192, 192), Image.BOX)), "web-app-manifest-192x192.png", ut))
-    filer.append(skriv_ico(utsnitt, ut))
     return filer
 
 
