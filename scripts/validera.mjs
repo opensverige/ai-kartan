@@ -19,6 +19,7 @@ import {
   lasTaxonomi,
   faktaIPost,
   senastVerifierad,
+  idagISverige,
 } from './lib/organisationer.mjs';
 import { provaBelaggstyp, utanEgetBelagg } from './lib/belagg.mjs';
 
@@ -33,7 +34,7 @@ const ajv = new Ajv({ allErrors: true, strict: false });
 addFormats(ajv);
 const validera = ajv.compile(schema);
 
-const IDAG = new Date().toISOString().slice(0, 10);
+const IDAG = idagISverige();
 const FORBJUDNA_NYCKLAR =
   /^(kontakt|kontaktperson|contact|e-?post|email|e_mail|mail|telefon|phone|tel|mobil|vd|ceo|cto|cfo|grundare|founder|founders|styrelse|board|anstallda|anställda|employees|headcount|team|personal|personnummer|agare|ägare|owner|owners|ledning|management)$/i;
 const EPOST = /[\w.+-]+@[\w-]+\.[\w.-]+/;

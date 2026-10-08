@@ -47,7 +47,7 @@ export function oppna(katalog, { kalla = null, token = '' } = {}) {
         if (!e) return klar({ kod: 0, ut });
         if (typeof e.code === 'number' && godtagna.includes(e.code)) return klar({ kod: e.code, ut });
         // Felutskriften kan innehålla filnamn ur pull requesten. Den hamnar i körningens logg, aldrig i en kommentar.
-        fel(new GitFel(arg[0], e.code ?? e.signal ?? 'okänt', String(felut ?? '').trim().split('\n')[0].slice(0, 200)));
+        fel(new GitFel(arg.find((a) => /^[a-z][a-z-]+$/.test(a)) ?? 'okänt kommando', e.code ?? e.signal ?? 'okänt', String(felut ?? '').trim().split('\n')[0].slice(0, 200)));
       });
     });
   }
@@ -61,8 +61,8 @@ export function oppna(katalog, { kalla = null, token = '' } = {}) {
         const inloggning = token ? { GIT_CONFIG_COUNT: '1', GIT_CONFIG_KEY_0: `http.${new URL(kalla).origin}/.extraheader`, GIT_CONFIG_VALUE_0: `AUTHORIZATION: basic ${Buffer.from(`x-access-token:${token}`).toString('base64')}` } : {};
         await git(['-c', 'protocol.allow=never', '-c', 'protocol.https.allow=always', 'fetch', '--quiet', '--no-tags', '--no-recurse-submodules', '--no-write-fetch-head', kalla, ...ids], { extra: inloggning });
       }
-      // Misslyckas om någon av dem saknas eller inte är en commit.
-      await git(['rev-list', '--no-walk', ...ids]);
+      // Misslyckas om någon av dem saknas eller är något annat än en commit, till exempel ett träd.
+      for (const i of ids) await git(['rev-parse', '--verify', '--quiet', '--end-of-options', `${i}^{commit}`]);
     },
 
     /**
@@ -93,15 +93,29 @@ export function oppna(katalog, { kalla = null, token = '' } = {}) {
       return (await git(['cat-file', 'blob', id(blob)])).ut.toString('utf8');
     },
 
-    /** Sammanslagningarna som finns i `huvud` men inte i `bas`, med sina föräldrar. Högst `max` stycken. */
-    async sammanslagningar(bas, huvud, max) {
-      const { ut } = await git(['rev-list', '--merges', '--parents', `--max-count=${Number(max)}`, `${id(bas)}..${id(huvud)}`]);
+    /**
+     * De vanliga commiterna som finns i `huvud` men inte i `bas`, äldst först, var och en med sin
+     * förälder. Sammanslagningar är inte med: det är så Rebase and merge väljer vad som spelas upp.
+     * Högst `max` stycken, de nyaste.
+     */
+    async commits(bas, huvud, max) {
+      const { ut } = await git(['rev-list', '--reverse', '--topo-order', '--no-merges', '--parents', `--max-count=${Number(max)}`, `${id(bas)}..${id(huvud)}`]);
       return ut
         .toString('utf8')
         .split('\n')
         .filter(Boolean)
         .map((rad) => rad.split(' '))
-        .map(([sha, ...foraldrar]) => ({ sha, foraldrar }));
+        .map(([sha, foralder = null]) => ({ sha: id(sha), foralder: foralder && id(foralder) }));
+    },
+
+    /**
+     * Lägger en commits ändring ovanpå ett träd, som när en commit spelas upp på en annan gren.
+     * `pa` är trädet eller commiten att bygga på, `foralder` commitens förälder. Svaret är det
+     * nya trädet. Vid en konflikt innehåller det konfliktmarkeringar, som i `slaIhop`.
+     */
+    async spelaUpp(pa, commit, foralder) {
+      const { kod, ut } = await git(['merge-tree', '--write-tree', '--no-messages', `--merge-base=${id(foralder)}`, id(pa), id(commit)], { godtagna: [1] });
+      return { trad: id(ut.toString('utf8').split('\n')[0].trim()), konflikt: kod !== 0 };
     },
 
     /** Id:t för en mapp i ett träd eller en commit, eller null om där inte finns någon mapp. */

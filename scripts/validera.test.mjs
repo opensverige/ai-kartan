@@ -9,6 +9,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import YAML from 'yaml';
+import { idagISverige } from './lib/organisationer.mjs';
 
 const SKRIPT = path.join(import.meta.dirname, 'validera.mjs');
 const REPO = path.join(import.meta.dirname, '..');
@@ -84,4 +85,13 @@ test('en personprofil på LinkedIn stoppas', () => {
   // En adress som ser ut som en organisationssida men leder till en person, eller till en annan värd.
   for (const ej of ['https://www.linkedin.com/company/../in/anna-exempel', 'https://linkedin.com.ond.example/company/x', 'https://ondlinkedin.com/company/x', 'https://lnkd.in/abc'])
     assert.notEqual(med(ej).kod, 0, ej);
+});
+
+test('dagens datum är det svenska, inte det i UTC', () => {
+  // Den som skriver in dagens datum strax efter midnatt i Sverige ska inte få höra att det ligger i framtiden.
+  assert.equal(idagISverige(new Date('2026-10-07T22:30:00Z')), '2026-10-08');
+  assert.equal(idagISverige(new Date('2026-10-07T21:59:00Z')), '2026-10-07');
+  // Vintertid: en timme före UTC.
+  assert.equal(idagISverige(new Date('2026-01-01T22:59:00Z')), '2026-01-01');
+  assert.equal(idagISverige(new Date('2026-01-01T23:00:00Z')), '2026-01-02');
 });

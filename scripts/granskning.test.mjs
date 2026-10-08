@@ -5,7 +5,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { createHash } from 'node:crypto';
-import { arOrganisationsfil, arRegelfil, ren, sakerLank, version, rutor, lista, avlas, utfall, forvantade, avtryck, behoverRitasOm, arIntyg, MARKOR, MAX_ORGANISATIONER, MAX_BYTE, PUNKTER, INTYG } from './lib/granskning.mjs';
+import { arOrganisationsfil, arRegelfil, ren, sakerLank, version, rutor, lista, avlas, utfall, forvantade, sammaLista, arIntyg, MARKOR, MAX_ORGANISATIONER, MAX_BYTE, PUNKTER, INTYG } from './lib/granskning.mjs';
 
 const REPO = 'opensverige/ai-kartan';
 const HAR = { repo: REPO, nummer: 7 };
@@ -25,6 +25,17 @@ const fil = (id, innehall, status = 'added', data = post(id)) => ({ sokvag: `dat
 const borttagen = (id) => ({ sokvag: `data/organisationer/${id}.yaml`, status: 'removed', version: version('removed', ''), data: null, fel: null });
 const bocka = (kropp, villkor = () => true) => kropp.split('\n').map((rad) => (rad.startsWith('- [ ] ') && villkor(rad) ? rad.replace('- [ ] ', '- [x] ') : rad)).join('\n');
 const tomma = (kropp) => kropp.split('\n').filter((r) => r.startsWith('- [ ] '));
+
+test('filer som styr vad valideringen och bygget gör räknas som regelfiler', () => {
+  for (const f of ['kriterier.md', 'package.json', 'package-lock.json', '.gitattributes', 'data/geo/kommuner.json', 'schema/organisation.schema.json', 'scripts/validera.mjs', 'scripts/lib/granskningsgit.mjs', '.github/workflows/validera.yml']) assert.equal(arRegelfil(f), true, f);
+  for (const f of ['README.md', 'src/pages/om.astro', 'data/organisationer/exempel.yaml', 'docs/package.json']) assert.equal(arRegelfil(f), false, f);
+});
+
+test('ett värde som kapas mitt i ett tecken lämnar inget halvt tecken efter sig', () => {
+  // Ett halvt tecken sparas inte som det skrevs hos GitHub, och då skulle listan aldrig stämma med sig själv.
+  const filer = [fil('ett', 'A', 'added', post('ett', { name: { value: `${'a'.repeat(78)}\u{1F600}\u{1F600}\u{1F600}` } }))];
+  assert.equal(lista(filer, HAR).isWellFormed(), true);
+});
 
 test('bara filer i data/organisationer räknas som organisationer', () => {
   assert.equal(arOrganisationsfil('data/organisationer/berget-ai.yaml'), true);
@@ -78,15 +89,6 @@ test('ett byte av id syns som en borttagen och en ny, och punkten för borttagni
   assert.equal(avlas(filer, kropp).totalt, 7);
   assert.match(kropp, /`gammalt-namn` · tas bort/);
   assert.match(kropp, /samma organisation kvar under ett nytt id/);
-});
-
-test('har main också ändrat i filen sägs det, och listan ritas om när det ändras', () => {
-  const egen = [fil('ett', 'A', 'modified')];
-  const blandad = [{ ...egen[0], blandad: true }];
-  assert.equal(lista(egen, HAR).includes('Main har också ändrat'), false);
-  assert.match(lista(blandad, HAR), /Main har också ändrat i den här filen/);
-  assert.equal(behoverRitasOm(blandad, {}, lista(egen, HAR)), true);
-  assert.equal(behoverRitasOm(blandad, {}, lista(blandad, HAR)), false);
 });
 
 test('är mappen själv utbytt säger läget det, inte att en fil ligger fel', () => {
@@ -172,23 +174,25 @@ test('en fil utan version går inte att lista', () => {
   assert.throws(() => lista([{ ...fil('ett', 'A'), version: 'abc1234' }], HAR), /version/);
 });
 
-test('listan säger själv om den behöver ritas om', () => {
+test('en lista är samma lista bara när varje rad stämmer', () => {
   const filer = [fil('ett', 'A'), fil('tva', 'B')];
   const kropp = lista(filer, HAR);
-  assert.equal(behoverRitasOm(filer, {}, kropp), false);
-  // Avbockade rutor är ingen anledning att rita om. Då skulle den som bockar bli avbruten.
-  assert.equal(behoverRitasOm(filer, {}, bocka(kropp)), false);
-  // Nytt innehåll, en ny fil, en otillåten fil eller ändrade regelfiler är det.
-  assert.equal(behoverRitasOm([fil('ett', 'A'), fil('tva', 'B2')], {}, kropp), true);
-  assert.equal(behoverRitasOm([...filer, fil('tre', 'C')], {}, kropp), true);
-  assert.equal(behoverRitasOm(filer, { ogiltiga: [{ sokvag: 'data/organisationer/X.yaml', skal: 'namn' }] }, kropp), true);
-  assert.equal(behoverRitasOm(filer, { regelfiler: true }, kropp), true);
-  // En rad som någon har tagit bort eller klistrat in två gånger gör också det.
-  assert.equal(behoverRitasOm(filer, {}, kropp.split('\n').filter((r) => !r.includes(':k2 ')).join('\n')), true);
-  assert.equal(behoverRitasOm(filer, {}, `${kropp}\n${kropp.split('\n').find((r) => r.includes(':k1 '))}`), true);
-  assert.equal(behoverRitasOm(filer, {}, ''), true);
+  // Körningen ritar listan med de bockar som redan står där, och jämför. Avbockade rutor är
+  // alltså ingen skillnad: då skulle den som bockar bli avbruten.
+  assert.equal(sammaLista(lista(filer, HAR, bocka(kropp)), bocka(kropp)), true);
+  // Radslut från Windows och blanktecken sist på en rad är det inte heller.
+  assert.equal(sammaLista(kropp, kropp.split('\n').join(' \r\n')), true);
+  // Allt annat är det: nytt innehåll, en ny fil, en otillåten fil, ändrade regelfiler,
+  // en rad som har tagits bort eller lagts till, och text som någon har ändrat.
+  assert.equal(sammaLista(lista([fil('ett', 'A'), fil('tva', 'B2')], HAR, kropp), kropp), false);
+  assert.equal(sammaLista(lista([...filer, fil('tre', 'C')], HAR, kropp), kropp), false);
+  assert.equal(sammaLista(lista(filer, { ...HAR, ogiltiga: [{ sokvag: 'data/organisationer/X.yaml', skal: 'namn' }] }, kropp), kropp), false);
+  assert.equal(sammaLista(lista(filer, { ...HAR, regelfiler: true }, kropp), kropp), false);
+  assert.equal(sammaLista(kropp, kropp.split('\n').filter((r) => !r.includes(':k2 ')).join('\n')), false);
+  assert.equal(sammaLista(kropp, `${kropp}\n<!--`), false);
+  assert.equal(sammaLista(kropp, kropp.replace('Exempelbolaget', 'Ett annat bolag')), false);
+  assert.equal(sammaLista(kropp, ''), false);
   assert.equal(forvantade(filer).length, 12);
-  assert.notEqual(avtryck(filer), avtryck(filer, { regelfiler: true }));
 });
 
 test('text ur filen kan inte smyga in en avbockad ruta eller en markör', () => {
@@ -215,6 +219,27 @@ test('text ur filen kan inte smyga in en avbockad ruta eller en markör', () => 
   for (const [nyckel] of PUNKTER.ny) assert.equal(kropp.split(`<!-- g:elak:${v}:${nyckel} -->`).length - 1, 1, nyckel);
   // Text ur filen bildar aldrig en egen rubrik.
   assert.equal(kropp.split('\n').filter((r) => r.startsWith('#')).length, 2);
+});
+
+test('ett värde kan inte bygga ihop en markör av bitar som blir kvar efter rensningen', () => {
+  // Tas "<!--" bort ur "<!-<!---" blir "<!--" kvar. Rensningen måste hålla på tills inget finns kvar.
+  const dela = '<!-<!--- granskning-dela-upp ---->>';
+  const filer = [fil('ett', 'A', 'added', post('ett', { name: { value: dela }, description: { value: `Bygger ${dela} och <!-<!--- g:ett:abc:k1 ---->> samt --!--!>> slut` } }))];
+  const kropp = lista(filer, HAR);
+  const urFilen = kropp.split('\n').filter((r) => r.startsWith('> '));
+  assert.ok(urFilen.length > 3);
+  for (const rad of urFilen) assert.equal(/<!--|-->|--!>/.test(rad), false, rad);
+  assert.equal(avlas(filer, kropp).forManga, false);
+});
+
+test('listans egna rader räknas bara när de står på en egen rad', () => {
+  const filer = [fil('ett', 'A')];
+  const kropp = lista(filer, HAR);
+  // Samma text mitt i en rad är inte listans rad, hur den än hamnade där.
+  assert.equal(avlas(filer, kropp.replace('> Namn enligt filen:', '> <!-- granskning-dela-upp --> Namn enligt filen:')).forManga, false);
+  // GitHub kan lämna tillbaka en kommentar med radslut från Windows. Den är fortfarande samma lista.
+  const manga = Array.from({ length: MAX_ORGANISATIONER + 1 }, (_, i) => fil(`org-${i}`, `A${i}`));
+  assert.equal(avlas([], lista(manga, HAR).split('\n').join('\r\n')).forManga, true);
 });
 
 test('rubriken bär bara id:t, namnet står som uppgift ur filen', () => {

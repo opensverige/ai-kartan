@@ -12,6 +12,8 @@
 //     skulle bli om pull requesten slogs ihop nu. Sammanslagningen räknas ut med git självt, se
 //     scripts/lib/granskningsgit.mjs. Listan visar alltså det som faktiskt går in, också när main
 //     har flyttat sig sedan grenen skapades. Läget sätts på den commit som slogs ihop i uträkningen.
+//     Går det inte att säga säkert vad som går in blir läget rött: vid en konflikt, när grenens
+//     commits ger något annat en och en än tillsammans, och när main har ändrat samma organisation.
 //   - Vilka punkter som är avbockade står i flödets egen kommentar.
 //   - Att en människa har gått igenom listan intygas i en egen kommentar, skriven av någon med
 //     skrivrätt, aldrig redigerad och nyare än listans senaste ändring. En bot kan kryssa i en
@@ -22,7 +24,7 @@
 
 import { tolkaYaml } from './organisationer.mjs';
 import { GitFel } from './granskningsgit.mjs';
-import { arOrganisationsfil, iOrganisationsmappen, arRegelfil, version, lista, avlas, utfall, behoverRitasOm, arIntyg, MARKOR, KONTEXT, MAPP, MAX_ORGANISATIONER } from './granskning.mjs';
+import { arOrganisationsfil, iOrganisationsmappen, arRegelfil, ren, version, lista, avlas, utfall, sammaLista, arIntyg, MARKOR, KONTEXT, MAPP, MAX_ORGANISATIONER } from './granskning.mjs';
 
 /** Ett svar från GitHub som inte var 2xx. `status` är svarskoden. */
 export class ApiFel extends Error {
@@ -36,8 +38,8 @@ const VANLIG_FIL = new Set(['100644', '100755']);
 const MAX_FILSTORLEK = 200_000;
 const BOT = 'github-actions[bot]';
 const ID = /^[0-9a-f]{40}$/;
-/** Fler sammanslagningar än så här i en gren går inte att pröva en och en. */
-const MAX_SAMMANSLAGNINGAR = 20;
+/** Fler commits än så här i en gren spelas inte upp en och en. */
+const MAX_COMMITS = 100;
 
 /**
  * Hur länge ett anrop ska vänta innan det prövas igen, i millisekunder, eller null om felet inte
@@ -80,7 +82,7 @@ export function jamforTrad(bas, ihop, huvud = ihop) {
     } else if (!arOrganisationsfil(sokvag)) ogiltiga.push({ sokvag, skal: 'filnamnet är inte ett id med gemener, siffror och bindestreck följt av .yaml' });
     else if (h.type !== 'blob' || !VANLIG_FIL.has(h.mode)) ogiltiga.push({ sokvag, skal: 'är inte en vanlig fil, till exempel en symbolisk länk' });
     else if (!(h.size <= MAX_FILSTORLEK)) ogiltiga.push({ sokvag, skal: 'filen är för stor för att vara en organisation' });
-    // Skiljer sig filen från grenens egen har main ändrat i den också, och git har slagit ihop de två.
+    // Skiljer sig filen från grenens egen har main ändrat i den också, och git har slagit ihop de två. Se `kor`.
     else filer.push({ sokvag, status: g ? 'modified' : 'added', blob: h.sha, basblob: g?.type === 'blob' ? g.sha : null, blandad: !samma(h, egen.get(sokvag)) });
   }
   // Mappen själv, eller mappen den ligger i, kan vara utbytt mot en länk, en fil eller ett annat
@@ -91,7 +93,7 @@ export function jamforTrad(bas, ihop, huvud = ihop) {
     }
   }
   for (const fil of filer) {
-    fil.version = fil.status === 'removed' ? version('removed', '') : version(fil.status, fil.status === 'modified' ? `${fil.basblob}\n${fil.blob}` : fil.blob);
+    fil.version = fil.status === 'removed' ? version('removed', fil.basblob) : version(fil.status, fil.status === 'modified' ? `${fil.basblob}\n${fil.blob}` : fil.blob);
   }
   const efterNamn = (a, b) => a.sokvag.localeCompare(b.sokvag);
   return { filer: filer.sort(efterNamn), ogiltiga: ogiltiga.sort(efterNamn), regelfiler };
@@ -107,19 +109,29 @@ async function spets(api, repo, gren) {
 /**
  * Det som hindrar en granskning, som en rad att visa i läget, eller null.
  *
- * En sammanslagning i grenens egen historik får inte ha ändrat organisationer för hand. Listan
- * visar slutresultatet, men den som slår ihop med Rebase and merge får med grenens vanliga
- * commits och inte dess sammanslagningar. Det en sammanslagning har tagit bort eller skrivit om
- * skulle då gå in i main utan att ha stått i listan.
+ * Listan visar vad en sammanslagning ger: det är vad Create a merge commit och Squash and merge
+ * för in i main. Rebase and merge gör något annat. Den spelar upp grenens vanliga commits en och
+ * en ovanpå main och hoppar över dess sammanslagningar. Två commits som tar ut varandra när de
+ * slås ihop tillsammans behöver inte göra det en och en: har main redan samma ändring som den
+ * första gör den ingenting, och den andra går in ensam. Det en sammanslagning i grenen har ändrat
+ * för hand följer inte heller med.
+ *
+ * Därför spelas commiterna upp här på samma sätt, och resultatet i mappen med organisationer
+ * jämförs med sammanslagningens. Skiljer de sig åt går listan inte att lita på för alla sätt att
+ * slå ihop, och läget blir rött.
  */
-async function hinderIHistoriken(git, bas, sha) {
-  const alla = await git.sammanslagningar(bas, sha, MAX_SAMMANSLAGNINGAR + 1);
-  if (alla.length > MAX_SAMMANSLAGNINGAR) return 'Grenens historik har för många sammanslagningar för att granskas. Gör om grenen med färre.';
-  for (const s of alla) {
-    const utanHand = s.foraldrar.length === 2 ? await git.slaIhop(s.foraldrar[0], s.foraldrar[1]) : null;
-    if (!utanHand || (await git.mapp(utanHand.trad, MAPP)) !== (await git.mapp(s.sha, MAPP))) {
-      return 'En sammanslagning i grenens historik ändrar organisationer för hand. Gör om grenen utan den.';
-    }
+async function hinderIHistoriken(git, bas, sha, ihop) {
+  const commits = await git.commits(bas, sha, MAX_COMMITS + 1);
+  if (commits.length > MAX_COMMITS) return 'Grenen har för många commits för att prövas en och en. Slå ihop dem till färre.';
+  let trad = bas;
+  for (const c of commits) {
+    // En commit utan förälder börjar en egen historik. Den går inte att spela upp som en ändring.
+    if (!c.foralder) return 'Grenen innehåller en historik utan gemensam början med main. Gör om grenen från main.';
+    // En konflikt här lämnar konfliktmarkeringar i trädet. Sitter de i en organisation syns det i jämförelsen nedan.
+    trad = (await git.spelaUpp(trad, c.sha, c.foralder)).trad;
+  }
+  if ((await git.mapp(trad, MAPP)) !== (await git.mapp(ihop, MAPP))) {
+    return 'Grenens commits ger ett annat resultat en och en än tillsammans. Slå ihop dem till en commit, så räknas listan om.';
   }
   return null;
 }
@@ -150,7 +162,7 @@ async function allaKommentarer(api, repo, nummer) {
 const arLista = (k) => k.user?.type === 'Bot' && k.user?.login === BOT && String(k.body).startsWith(MARKOR);
 
 /** Bara en människa som får skriva i repot får intyga. Går det inte att få svar kastas felet vidare. */
-export async function farIntyga(api, repo, login) {
+async function farIntyga(api, repo, login) {
   if (!/^[A-Za-z0-9-]{1,39}$/.test(String(login))) return false;
   let ratt;
   try {
@@ -177,27 +189,14 @@ async function hittaIntyg(api, repo, kommentarer, listanAndrad) {
   let foraldrat = false;
   const provade = new Map();
   for (const k of intyg) {
-    if (!(Date.parse(k.created_at) > listanAndrad)) {
-      foraldrat = true;
-      continue;
-    }
+    // Först vem, sedan när. Ett gammalt /granskad från någon som inte får intyga är inget intyg alls.
     const login = k.user.login;
     if (!provade.has(login)) provade.set(login, await farIntyga(api, repo, login));
-    if (provade.get(login)) return { intygadAv: login, intygForaldrat: false };
+    if (!provade.get(login)) continue;
+    if (Date.parse(k.created_at) > listanAndrad) return { intygadAv: login, intygForaldrat: false };
+    foraldrat = true;
   }
   return { intygadAv: '', intygForaldrat: foraldrat };
-}
-
-/**
- * Sant om händelsen inte kan ha ändrat något, så att körningen kan avstå. Det gäller en ny
- * kommentar från någon som ändå inte får intyga. Vem som helst kan skriva sådana, och varje
- * körning kostar anrop. Allt som redigerar eller tar bort något körs alltid: det kan ha ändrat läget.
- */
-export async function arOvidkommande({ api, repo, handelse, atgard, kommentar }) {
-  if (handelse !== 'issue_comment' || atgard !== 'created') return false;
-  const av = kommentar?.user;
-  if (av?.type === 'Bot') return av.login !== BOT;
-  return !(await farIntyga(api, repo, av?.login));
 }
 
 /**
@@ -247,7 +246,14 @@ export async function kor({ api, git, repo, nummer, torrt = false, korning = nul
       const oforandrad = async () => torrt || (await spets(api, repo, gren)) === bas;
       await git.hamta([bas, sha]);
       const ihop = await git.slaIhop(bas, sha);
-      const hinder = ihop.konflikt ? 'Grenen går inte att slå ihop med main utan konflikter. Lös dem, så räknas listan om.' : await hinderIHistoriken(git, bas, sha);
+      let hinder = ihop.konflikt ? 'Grenen krockar med main. Gör om den ovanpå main (rebase), så räknas listan om.' : await hinderIHistoriken(git, bas, sha, ihop.trad);
+      const { filer, ogiltiga, regelfiler } = hinder ? {} : jamforTrad(await git.rader(bas), await git.rader(ihop.trad), await git.rader(sha));
+      // Har main ändrat i samma fil slår git ihop de två ändringarna. Hur den filen blir beror på
+      // vem som slår ihop: två sätt att räkna kan båda gå igenom utan konflikt och ändå ge olika
+      // text. Den får därför inte granskas här. När grenen har tagit in main är filen i grenen
+      // den som går in, och det är den som pull requesten visar.
+      const blandad = filer?.find((f) => f.blandad);
+      if (blandad) hinder = `Main har också ändrat ${ren(blandad.sokvag.split('/').pop(), 40)}. Ta in main i grenen, så räknas listan om.`;
       if (hinder) {
         logg(`Går inte att granska: ${hinder}`);
         const resultat = { state: 'failure', description: hinder };
@@ -259,17 +265,19 @@ export async function kor({ api, git, repo, nummer, torrt = false, korning = nul
         await skrivLage(api, repo, sha, { ...resultat, target_url: pr.html_url });
         return { resultat, kommentar: '', lage: null };
       }
-      const { filer, ogiltiga, regelfiler } = jamforTrad(await git.rader(bas), await git.rader(ihop.trad), await git.rader(sha));
       const lage = { ogiltiga, regelfiler };
 
       const kommentarer = await allaKommentarer(api, repo, nummer);
       const egen = kommentarer.find(arLista);
       let kropp = egen?.body ?? '';
-      // Listan ritas bara om när den ska visa något annat än den gör. Annars skulle den som bockar
-      // bli avbruten, och ett intyg skulle sluta gälla utan att något har ändrats.
-      if ((filer.length > 0 || ogiltiga.length > 0 || egen) && behoverRitasOm(filer, lage, kropp)) {
+      // Listan ritas varje gång och jämförs med den som står där, rad för rad. Den som kan
+      // redigera kommentaren kan då inte byta ut eller gömma det granskaren läser. Listan skrivs
+      // bara om när den skiljer sig: annars skulle den som bockar bli avbruten, och ett intyg
+      // skulle sluta gälla utan att något har ändrats.
+      if (filer.length > 0 || ogiltiga.length > 0 || egen) {
         if (filer.length <= MAX_ORGANISATIONER) for (const fil of filer) await lasFil(git, fil);
-        kropp = lista(filer, { repo, nummer, ...lage }, kropp);
+        const ratt = lista(filer, { repo, nummer, ...lage }, kropp);
+        if (!sammaLista(ratt, kropp)) kropp = ratt;
       }
       const skrivs = kropp !== (egen?.body ?? '');
       const avlast = avlas(filer, kropp, { ogiltiga });
@@ -288,6 +296,9 @@ export async function kor({ api, git, repo, nummer, torrt = false, korning = nul
         continue;
       }
       let lank = egen?.html_url ?? pr.html_url;
+      // Läget skrivs före listan. Faller skrivningen av listan står då inget grönt kvar bredvid
+      // en lista som inte längre stämmer. En lista som skrivs om kan aldrig ge ett intygat grönt.
+      if (skrivs) await skrivLage(api, repo, sha, { state: resultat.state, description: resultat.description, target_url: lank });
       if (skrivs && egen) {
         const nu = await api('GET', `/repos/${repo}/issues/comments/${egen.id}`);
         if (nu.body !== egen.body) {
@@ -297,6 +308,14 @@ export async function kor({ api, git, repo, nummer, torrt = false, korning = nul
         lank = (await api('PATCH', `/repos/${repo}/issues/comments/${egen.id}`, { body: kropp })).html_url ?? lank;
       } else if (skrivs) {
         lank = (await api('POST', `/repos/${repo}/issues/${nummer}/comments`, { body: kropp })).html_url ?? lank;
+      } else if (egen && resultat.state === 'success') {
+        // Grönt bygger på listan som den lästes i början av körningen. Den läses en gång till,
+        // så att en punkt som bockats ur under tiden inte blir grön.
+        const nu = await api('GET', `/repos/${repo}/issues/comments/${egen.id}`);
+        if (nu.body !== egen.body || nu.updated_at !== egen.updated_at) {
+          omIgen('Listan');
+          continue;
+        }
       }
       await skrivLage(api, repo, sha, { state: resultat.state, description: resultat.description, target_url: lank });
       return { resultat, kommentar: kropp, lage: avlast };
