@@ -56,6 +56,8 @@ const raknaBesok = process.env.VERCEL_ENV === 'production';
     <meta property="og:image:alt" content="Pixelhand som håller en röd kartnål. Alla som bygger AI i Sverige." />
     <meta property="og:locale" content="sv_SE" />
     <meta name="twitter:card" content="summary_large_image" />
+    {/* Ritas av scripts/favikon.mjs. SVG-filen är skarp i alla storlekar, de andra är för äldre läsare. */}
+    <link rel="icon" href={url('/favicon.svg')} type="image/svg+xml" />
     <link rel="icon" href={url('/favicon.ico')} sizes="32x32" />
     <link rel="icon" href={url('/favicon-96x96.png')} type="image/png" sizes="96x96" />
     <link rel="apple-touch-icon" href={url('/apple-touch-icon.png')} />
