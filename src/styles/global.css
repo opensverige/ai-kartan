@@ -244,17 +244,6 @@ hr {
   padding: 7px 12px;
   font-size: 13.5px;
 }
-.knapp--discord {
-  background: hsl(var(--moss) / 0.08);
-  border-color: hsl(var(--moss) / 0.35);
-  color: hsl(var(--moss));
-}
-.knapp--discord:hover {
-  background: hsl(var(--moss) / 0.14);
-  border-color: hsl(var(--moss));
-  color: hsl(var(--moss));
-}
-
 /* Taggar och statusmärken */
 .tagg {
   display: inline-block;

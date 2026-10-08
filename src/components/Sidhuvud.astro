@@ -3,7 +3,7 @@
 // Sökfältet är ett vanligt GET-formulär mot kartan. På kartsidan och i listan tar
 // KartApp över det och visar träffar direkt medan man skriver.
 import { SAJT, url } from '../lib/data';
-import { ikon } from '../lib/ikoner';
+import { ikon, logga } from '../lib/ikoner';
 import type { IkonNamn } from '../lib/ikoner';
 
 const stig = Astro.url.pathname.replace(import.meta.env.BASE_URL.replace(/\/$/, ''), '') || '/';
@@ -87,7 +87,16 @@ function aktiv(href: string): boolean {
             <a href={SAJT.infra} rel="noopener">AI-Infra</a>
           </li>
           <li>
-            <a href={SAJT.discord} rel="noopener">Discord</a>
+            <a class="meny__kanal" href={SAJT.repo} rel="noopener">
+              <Fragment set:html={logga('github', 18)} />
+              GitHub
+            </a>
+          </li>
+          <li>
+            <a class="meny__kanal" href={SAJT.discord} rel="noopener">
+              <Fragment set:html={logga('discord', 18)} />
+              Discord
+            </a>
           </li>
         </ul>
       </details>
@@ -362,6 +371,11 @@ function aktiv(href: string): boolean {
   }
   .meny__vy {
     display: none;
+  }
+  .meny__lista a.meny__kanal {
+    display: flex;
+    align-items: center;
+    gap: 10px;
   }
   .meny__skilje {
     margin-top: 4px;
