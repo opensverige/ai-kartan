@@ -1,5 +1,6 @@
 ---
 import { SAJT, url } from '../lib/data';
+import { logga } from '../lib/ikoner';
 const ar = new Date().getFullYear();
 ---
 
@@ -38,10 +39,24 @@ const ar = new Date().getFullYear();
         <ul>
           <li><a href={SAJT.opensverige} rel="noopener">opensverige.se</a></li>
           <li><a href={SAJT.infra} rel="noopener">AI-Infra: leverantörsöversikten</a></li>
-          <li><a href={SAJT.repo} rel="noopener">Koden och datan på GitHub</a></li>
         </ul>
-        <a class="knapp knapp--discord knapp--liten" href={SAJT.discord} rel="noopener">Diskutera i Discord</a>
       </div>
+    </div>
+    <div class="sidfot__kanaler">
+      <a class="kanal" href={SAJT.repo} rel="noopener">
+        <Fragment set:html={logga('github', 22)} />
+        <span>
+          <strong>GitHub</strong>
+          <span class="kanal__under">Koden och datan: opensverige/ai-kartan</span>
+        </span>
+      </a>
+      <a class="kanal" href={SAJT.discord} rel="noopener">
+        <Fragment set:html={logga('discord', 22)} />
+        <span>
+          <strong>Discord</strong>
+          <span class="kanal__under">Fråga, tipsa och diskutera med oss</span>
+        </span>
+      </a>
     </div>
     <div class="sidfot__botten">
       <p>
@@ -83,6 +98,41 @@ const ar = new Date().getFullYear();
   .sidfot a:hover {
     color: hsl(var(--moss));
   }
+  .sidfot__kanaler {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 20px;
+  }
+  .kanal {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 52px;
+    padding: 8px 18px 8px 14px;
+    border: 1px solid hsl(var(--rule));
+    border-radius: 12px;
+    background: hsl(var(--bg));
+    color: hsl(var(--ink));
+    text-decoration: none;
+    line-height: 1.25;
+  }
+  .sidfot .kanal,
+  .sidfot .kanal:hover {
+    color: hsl(var(--ink));
+  }
+  .kanal:hover {
+    border-color: hsl(var(--ink-soft));
+  }
+  .kanal strong {
+    display: block;
+    font-size: 15px;
+  }
+  .kanal__under {
+    display: block;
+    font-size: 12.5px;
+    color: hsl(var(--ink-soft));
+  }
   .sidfot__botten {
     margin-top: 28px;
     padding-top: 20px;
@@ -100,6 +150,9 @@ const ar = new Date().getFullYear();
   @media (max-width: 480px) {
     .sidfot__kolumner {
       grid-template-columns: 1fr;
+    }
+    .kanal {
+      flex: 1 1 100%;
     }
   }
 </style>
