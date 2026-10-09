@@ -21,6 +21,7 @@ const s = d.statistik;
 const kartdata = medVersion(url('/api/karta.json'), new TextEncoder().encode(JSON.stringify(d.organisationer.map(tillKartpost))));
 const etiketter = {
   typer: Object.fromEntries(d.taxonomi.typer.map((t) => [t.id, t.label])),
+  typerPlural: Object.fromEntries(d.taxonomi.typer.map((t) => [t.id, t.plural ?? t.label])),
   erbjuder: Object.fromEntries(d.taxonomi.erbjuder.map((t) => [t.id, t.label])),
   omraden: Object.fromEntries(d.taxonomi.omraden.map((t) => [t.id, t.label])),
   lan: Object.fromEntries(d.lan.map((l) => [l.kod, l.namn])),
@@ -214,6 +215,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
   import { grupperaPerPlats, platsEfterUtzoomning, platsmitt, zoomgranser, ZOOM_KOMMUN, ZOOM_POSTER, type Platsgrupp } from '../lib/platsgrupper';
   import { arPaskagg, cirkel, type Medlemsvy } from '../lib/medlemmar';
   import { normalisera, tolka, traffar, tomtSvar, finnsI, type Tolkning } from '../lib/sok';
+  import { urvalsrubrik } from '../lib/urvalsrubrik';
 
   type Post = {
     id: string; n: string; t: string; o: string[]; a: string[]; k: string | null; kn: string | null;
@@ -260,6 +262,9 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     const grepp = app.querySelector<HTMLButtonElement>('#grepp');
     const greppText = app.querySelector<HTMLElement>('#grepptext');
     const rubrik = app.querySelector<HTMLElement>('#rubrik');
+    // Listsidans rubrik ligger utanför appen, i src/pages/organisationer.astro.
+    const listrubrik = document.querySelector<HTMLElement>('#listrubrik');
+    const titelslut = document.title.slice(document.title.indexOf(' | '));
     const antalTal = app.querySelector<HTMLElement>('#antal-tal');
     const antalNot = app.querySelector<HTMLElement>('#antal-not');
     const ingress = app.querySelector<HTMLElement>('#ingress');
@@ -452,12 +457,23 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       return null;
     }
 
+    // Listsidans rubrik och flikens titel säger vad som är valt: "Organisationer i Östergötlands län".
+    function uppdateraListrubrik(f: Filter) {
+      if (!listrubrik) return;
+      const text = urvalsrubrik(
+        { ...f, plats: platsNamn(f) },
+        { omrade: (id) => etiketter.omraden[id] ?? id, typer: (id) => etiketter.typerPlural[id] ?? id },
+      );
+      listrubrik.textContent = text;
+      document.title = `${text}${titelslut}`;
+    }
+
     function uppdateraHuvud(f: Filter) {
       const n = urval.length;
       const utanPlats = urval.filter((o) => o.lat === null).length;
       const plats = platsNamn(f);
-      // I listläget finns ingen rubrik som bär platsen. Då står den här, så att en vald kommun syns.
-      antalEl.textContent = `${n} ${plural(n)}${!rubrik && plats ? ` i ${plats}` : ''}`;
+      antalEl.textContent = `${n} ${plural(n)}`;
+      uppdateraListrubrik(f);
       visaUrval.textContent = `Visa ${n} ${plural(n)}`;
 
       if (rubrik) rubrik.textContent = plats ?? stdRubrik;
@@ -1822,6 +1838,9 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     /* ---------- Start ---------- */
 
     lasUrl(start);
+    // Rubriken sätts innan datan har kommit, så att en länk till ett län inte först heter Alla
+    // organisationer. En kommuns namn står bara i datan, och får vänta på den.
+    if (!kommun) uppdateraListrubrik(lasFilter());
     kopplaSok();
     sattBlad('titt');
     if (medKarta) startaKarta().catch(visaKartfel);

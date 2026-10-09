@@ -4,6 +4,7 @@ Kodens och funktionernas historik. Dataändringar loggas separat och automatiskt
 
 ## 2026-10-09
 
+- Listans rubrik följer filtret. Med ett län valt heter den "Organisationer i Östergötlands län" i stället för "Alla organisationer", och ett enda valt område eller en enda vald typ sägs också: "Datorseende i Sverige", "Myndigheter i Stockholm". Flikens titel följer med. Regeln ligger i `src/lib/urvalsrubrik.ts`.
 - En plats och ett område får en egen sida där minst fem organisationer finns: Datorseende i Göteborg, AI inom hälsa och life science i Skåne län. Sidan säger hur många de är, vilka de är och hur stor del av platsen de utgör. Ett län får ingen sida när alla i området har säte i samma kommun, eftersom kommunens sida då säger samma sak. Reglerna ligger i `src/lib/platsamne.ts`, och alla sidorna står på Platser.
 - Kommunernas och länens sidor svarar på frågor: vilka områden som är vanligast, vilka lärosäten, myndigheter och kommuner som bygger AI där, vad organisationerna erbjuder och hur uppgifterna är kontrollerade. En fråga ställs bara när datan räcker till ett svar. Svaren räknas ur datan vid varje bygge och står också som strukturerad data. Titeln i sökträffen är nu "AI-bolag och organisationer i Göteborg".
 
