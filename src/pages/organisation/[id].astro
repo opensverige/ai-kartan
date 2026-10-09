@@ -5,6 +5,7 @@ import TypTagg from '../../components/TypTagg.astro';
 import { hamtaData, allaFakta, visaVarde, kalltypEtikett, formateraDatum, typikoner, url, absolutUrl, SAJT } from '../../lib/data';
 import type { Org } from '../../lib/data';
 import { brodsmulor, metabeskrivning } from '../../lib/meta';
+import { ikon } from '../../lib/ikoner';
 
 export function getStaticPaths() {
   const d = hamtaData();
@@ -82,6 +83,9 @@ const citat = `OpenSverige AI-kartan, ”${org.name.value}”, hämtad ${idag}, 
         {org.links?.github && <a class="knapp knapp--ghost knapp--liten" href={org.links.github} rel="noopener">GitHub</a>}
         {org.links?.huggingface && <a class="knapp knapp--ghost knapp--liten" href={org.links.huggingface} rel="noopener">Hugging Face</a>}
         {org.links?.linkedin && <a class="knapp knapp--ghost knapp--liten" href={org.links.linkedin} rel="noopener">LinkedIn</a>}
+        <button type="button" class="knapp knapp--ghost knapp--liten ej-utskrift" data-dela={org.id} data-dela-namn={org.name.value} aria-haspopup="dialog">
+          <Fragment set:html={ikon('dela', 15)} /> Dela
+        </button>
       </p>
       {nedlagd && <div class="notis notis--rust"><strong>Markerad som nedlagd eller avregistrerad.</strong> Posten ligger kvar tills den tas bort, så att historiken behålls.</div>}
       {gammal && <div class="notis"><strong>Inte omkontrollerad på över 180 dagar.</strong> Uppgifterna kan vara inaktuella. <a href={rattelseUrl} rel="noopener">Hjälp till att kontrollera.</a></div>}

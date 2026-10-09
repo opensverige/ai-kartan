@@ -1,0 +1,571 @@
+---
+// Delningsbladet. Ligger en gång på varje sida (Bas.astro) och öppnas av vilket element som helst
+// med data-dela="<id>" och data-dela-namn="<namn>". I telefon är det ett blad i botten, annars en ruta.
+// Adressen /organisation/<id>#vi-ar-med öppnar bladet i vi-form: den länken skickas till organisationen.
+// Texterna och kanalernas adresser står i src/lib/dela.ts.
+import { ikon, logga } from '../lib/ikoner';
+import { absolutUrl } from '../lib/data';
+
+const kanaler = [
+  ['linkedin', 'LinkedIn', logga('linkedin', 18)],
+  ['x', 'X', logga('x', 16)],
+  ['bluesky', 'Bluesky', logga('bluesky', 18)],
+  ['facebook', 'Facebook', logga('facebook', 18)],
+  ['epost', 'E-post', ikon('brev', 18)],
+] as const;
+---
+
+{/* Länken som delas är alltid den publika permalänken, även från en förhandsvisning. */}
+<dialog class="dela" id="dela-blad" data-orgbas={absolutUrl('/organisation/')}>
+  <div class="dela__ruta">
+    <div class="dela__grepp">
+      <span class="dela__handtag" aria-hidden="true"></span>
+      <header class="dela__topp">
+        <div class="dela__titel">
+          <p class="kicker" id="dela-kicker">Dela</p>
+          <h2 class="dela__rubrik" id="dela-rubrik"></h2>
+        </div>
+        <button type="button" class="dela__stang" data-dela-stang aria-label="Stäng">
+          <Fragment set:html={ikon('kryss', 20)} />
+        </button>
+      </header>
+    </div>
+
+    <div class="dela__falt">
+      <label class="visuellt-dold" for="dela-text">Text att dela</label>
+      <textarea class="dela__text" id="dela-text" rows="3" spellcheck="true"></textarea>
+      <div class="dela__faltfot">
+        <label class="dela__vi">
+          <input type="checkbox" role="switch" class="visuellt-dold" id="dela-vi" />
+          <span class="dela__vaxel" aria-hidden="true"></span>
+          Det här är vi
+        </label>
+        <button type="button" class="dela__textknapp" id="dela-kopiera-text">Kopiera text</button>
+      </div>
+    </div>
+
+    <ul class="dela__kanaler" id="dela-kanaler">
+      {kanaler.map(([id, namn, bild]) => (
+        <li>
+          <a class="dela__kanal" data-kanal={id} href="#" target="_blank" rel="noopener">
+            <Fragment set:html={bild} />
+            <span>{namn}</span>
+          </a>
+        </li>
+      ))}
+      <li hidden>
+        <button type="button" class="dela__kanal" data-kanal="mer">
+          <Fragment set:html={ikon('mer', 18)} />
+          <span>Fler</span>
+        </button>
+      </li>
+    </ul>
+
+    <div class="dela__lank">
+      <input class="dela__url" id="dela-url" type="text" readonly aria-label="Länk till sidan" />
+      <button type="button" class="dela__kopiera" id="dela-kopiera" autofocus>
+        <span class="dela__kopiera-av"><Fragment set:html={ikon('kopiera', 17)} /> Kopiera länk</span>
+        <span class="dela__kopiera-pa" aria-hidden="true"><Fragment set:html={ikon('klar', 17)} /> Kopierad</span>
+      </button>
+    </div>
+    <p class="visuellt-dold" id="dela-status" role="status" aria-live="polite"></p>
+  </div>
+</dialog>
+
+<script>
+  import { ANKARE_VI, delatext, inlagg, kanaladress, type Kanal } from '../lib/dela';
+
+  const blad = document.getElementById('dela-blad') as HTMLDialogElement | null;
+  if (blad) {
+    const hitta = <T extends HTMLElement>(id: string) => blad.querySelector<T>(`#${id}`)!;
+    const kicker = hitta('dela-kicker');
+    const rubrik = hitta('dela-rubrik');
+    const text = hitta<HTMLTextAreaElement>('dela-text');
+    const vi = hitta<HTMLInputElement>('dela-vi');
+    const adress = hitta<HTMLInputElement>('dela-url');
+    const kopiera = hitta<HTMLButtonElement>('dela-kopiera');
+    const kopieraText = hitta<HTMLButtonElement>('dela-kopiera-text');
+    const status = hitta('dela-status');
+    const kanaler = hitta('dela-kanaler');
+    const mer = blad.querySelector<HTMLButtonElement>('[data-kanal="mer"]')!;
+    const orgbas = blad.dataset.orgbas!;
+    let namn = '';
+
+    // Systemets eget delningsblad når apparna vi inte räknar upp. Saknas det fyller e-posten raden.
+    const medSystemblad = typeof navigator.share === 'function';
+    mer.parentElement!.hidden = !medSystemblad;
+    kanaler.classList.toggle('dela__kanaler--fem', !medSystemblad);
+
+    const delning = () => ({ namn, text: text.value.trim(), url: adress.value });
+
+    function lankar() {
+      const d = delning();
+      blad!.querySelectorAll<HTMLAnchorElement>('a[data-kanal]').forEach((a) => (a.href = kanaladress(a.dataset.kanal as Kanal, d)));
+    }
+
+    function sattForm(iViForm: boolean) {
+      vi.checked = iViForm;
+      text.value = delatext(namn, iViForm);
+      kicker.textContent = iViForm ? 'Ni finns på kartan' : 'Dela';
+      lankar();
+    }
+
+    function oppna(id: string, orgnamn: string, iViForm = false) {
+      namn = orgnamn;
+      rubrik.textContent = orgnamn;
+      blad!.setAttribute('aria-label', `Dela ${orgnamn}`);
+      adress.value = `${orgbas}${encodeURIComponent(id)}`;
+      sattForm(iViForm);
+      blad!.style.transform = '';
+      if (!blad!.open) blad!.showModal();
+    }
+
+    // Apparnas inbyggda webbläsare, där delade länkar ofta öppnas, stänger ibland av urklipps-API:t.
+    // Då prövas det äldre sättet: markera texten i ett fält och be webbläsaren kopiera den.
+    function kopieraUrFalt(varde: string): boolean {
+      const falt = document.createElement('textarea');
+      falt.value = varde;
+      falt.setAttribute('readonly', '');
+      falt.style.cssText = 'position:fixed;top:0;left:0;opacity:0';
+      blad!.append(falt);
+      falt.select();
+      let gick = false;
+      try {
+        gick = document.execCommand('copy');
+      } catch {
+        gick = false;
+      }
+      falt.remove();
+      return gick;
+    }
+
+    async function tillUrklipp(varde: string, besked: string, knapp: HTMLElement): Promise<boolean> {
+      let gick = false;
+      try {
+        await navigator.clipboard.writeText(varde);
+        gick = true;
+      } catch {
+        gick = kopieraUrFalt(varde);
+        knapp.focus();
+      }
+      if (gick) {
+        status.textContent = besked;
+        return true;
+      }
+      // Går ingetdera markeras länken, så att den går att kopiera för hand.
+      adress.focus();
+      adress.select();
+      status.textContent = 'Kunde inte kopiera. Länken är markerad.';
+      return false;
+    }
+    const blinka = (knapp: HTMLElement) => {
+      knapp.classList.add('kopierad');
+      setTimeout(() => knapp.classList.remove('kopierad'), 1800);
+    };
+
+    document.addEventListener('click', (e) => {
+      const knapp = (e.target as Element).closest<HTMLElement>('[data-dela]');
+      if (knapp?.dataset.dela) oppna(knapp.dataset.dela, knapp.dataset.delaNamn || '');
+    });
+
+    text.addEventListener('input', lankar);
+    vi.addEventListener('change', () => sattForm(vi.checked));
+    adress.addEventListener('focus', () => adress.select());
+    kopiera.addEventListener('click', async () => (await tillUrklipp(adress.value, 'Länken är kopierad.', kopiera)) && blinka(kopiera));
+    kopieraText.addEventListener('click', async () => {
+      if (!(await tillUrklipp(inlagg(delning()), 'Texten och länken är kopierade.', kopieraText))) return;
+      kopieraText.textContent = 'Kopierad';
+      setTimeout(() => (kopieraText.textContent = 'Kopiera text'), 1800);
+    });
+    // Avbryter besökaren systemets blad är det inget fel.
+    mer.addEventListener('click', () => void navigator.share({ title: namn, ...delning() }).catch(() => {}));
+
+    blad.addEventListener('click', (e) => {
+      // Ett tryck utanför rutan träffar själva dialogen, som fyller ut till skuggan.
+      if (e.target === blad || (e.target as Element).closest('[data-dela-stang]')) blad.close();
+    });
+    blad.addEventListener('close', () => {
+      // Ankaret tas bort, så att bladet inte öppnas igen när sidan laddas om.
+      if (location.hash === `#${ANKARE_VI}`) history.replaceState(null, '', location.pathname + location.search);
+    });
+
+    // Telefon: bladet går att dra ner i toppen, som systemets egna blad.
+    const topp = blad.querySelector<HTMLElement>('.dela__grepp')!;
+    const smal = matchMedia('(max-width: 640px)');
+    let start: number | null = null;
+    const dragen = (e: PointerEvent) => (start === null ? 0 : Math.max(0, e.clientY - start));
+    topp.addEventListener('pointerdown', (e) => {
+      if (!smal.matches || (e.target as Element).closest('button')) return;
+      start = e.clientY;
+      topp.setPointerCapture(e.pointerId);
+      blad.classList.add('dela--dras');
+    });
+    topp.addEventListener('pointermove', (e) => {
+      if (start !== null) blad.style.transform = `translateY(${dragen(e)}px)`;
+    });
+    const slapp = (e: PointerEvent) => {
+      if (start === null) return;
+      const langd = dragen(e);
+      start = null;
+      blad.classList.remove('dela--dras');
+      blad.style.transform = '';
+      if (langd > 90) blad.close();
+    };
+    topp.addEventListener('pointerup', slapp);
+    topp.addEventListener('pointercancel', slapp);
+
+    // Länken till organisationen själv: sidan öppnas med bladet framme, i vi-form.
+    const fromAnkare = () => {
+      if (location.hash !== `#${ANKARE_VI}`) return;
+      const knapp = document.querySelector<HTMLElement>('main [data-dela]');
+      if (knapp?.dataset.dela) oppna(knapp.dataset.dela, knapp.dataset.delaNamn || '', true);
+    };
+    fromAnkare();
+    addEventListener('hashchange', fromAnkare);
+  }
+</script>
+
+<style is:global>
+  .dela {
+    width: min(440px, calc(100vw - 32px));
+    max-width: none;
+    max-height: calc(100dvh - 32px);
+    margin: auto;
+    padding: 0;
+    border: 0;
+    border-radius: 24px;
+    background: hsl(var(--yta));
+    color: hsl(var(--ink));
+    box-shadow:
+      0 1px 2px hsl(var(--ink) / 0.08),
+      0 32px 80px -24px hsl(var(--ink) / 0.45);
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+    transition:
+      opacity 160ms ease,
+      transform var(--t-blad),
+      overlay 320ms allow-discrete,
+      display 320ms allow-discrete;
+  }
+  .dela[open] {
+    opacity: 1;
+    transform: none;
+  }
+  .dela::backdrop {
+    background: hsl(var(--ink) / 0);
+    transition:
+      background 240ms ease,
+      overlay 320ms allow-discrete,
+      display 320ms allow-discrete;
+  }
+  .dela[open]::backdrop {
+    background: hsl(var(--ink) / 0.38);
+  }
+  @starting-style {
+    .dela[open] {
+      opacity: 0;
+      transform: translateY(10px) scale(0.98);
+    }
+    .dela[open]::backdrop {
+      background: hsl(var(--ink) / 0);
+    }
+  }
+  /* Sidan bakom står still medan bladet är öppet. */
+  html:has(.dela[open]) {
+    overflow: hidden;
+  }
+
+  .dela__ruta {
+    display: grid;
+    gap: 14px;
+    padding: 20px 22px 22px;
+  }
+  .dela__grepp {
+    display: grid;
+    gap: 10px;
+  }
+  .dela__handtag {
+    display: none;
+  }
+  .dela__topp {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .dela__titel {
+    min-width: 0;
+  }
+  .dela .kicker {
+    margin: 0;
+  }
+  .dela__rubrik {
+    margin: 4px 0 0;
+    font-size: 24px;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    overflow-wrap: anywhere;
+  }
+  .dela__stang {
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    width: 36px;
+    height: 36px;
+    margin: -4px -6px 0 0;
+    padding: 0;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: hsl(var(--ink-mute));
+    cursor: pointer;
+    transition:
+      background var(--t-fast),
+      color var(--t-fast);
+  }
+  .dela__stang:hover {
+    background: hsl(var(--yta-chip));
+    color: hsl(var(--ink));
+  }
+
+  /* Texten och dess två val hör ihop och ligger i samma ruta. */
+  .dela__falt {
+    border: 1px solid hsl(var(--kant));
+    border-radius: 16px;
+    background: hsl(var(--yta-kort));
+    transition: border-color var(--t-fast);
+  }
+  .dela__falt:focus-within {
+    border-color: hsl(var(--ink-mute));
+  }
+  .dela__text {
+    display: block;
+    width: 100%;
+    padding: 14px 16px 10px;
+    border: 0;
+    border-radius: 16px 16px 0 0;
+    background: transparent;
+    color: hsl(var(--ink));
+    /* 16 px: mindre text får Safari i telefon att zooma in när fältet får fokus. */
+    font: 400 16px/1.45 var(--font-sans);
+    resize: none;
+    field-sizing: content;
+    min-height: calc(2 * 1.45em + 24px);
+    max-height: 9.5em;
+  }
+  .dela__text:focus-visible {
+    outline: 0;
+  }
+  .dela__faltfot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 4px 8px 4px 16px;
+    border-top: 1px solid hsl(var(--kant));
+  }
+  .dela__vi {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 40px;
+    font-size: 14.5px;
+    color: hsl(var(--ink-soft));
+    cursor: pointer;
+    user-select: none;
+  }
+  .dela__vaxel {
+    position: relative;
+    flex: none;
+    width: 34px;
+    height: 20px;
+    border-radius: 999px;
+    background: hsl(var(--rule));
+    transition: background var(--t-fast);
+  }
+  .dela__vaxel::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 2px hsl(var(--ink) / 0.3);
+    transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .dela__vi input:checked + .dela__vaxel {
+    background: hsl(var(--moss));
+  }
+  .dela__vi input:checked + .dela__vaxel::after {
+    transform: translateX(14px);
+  }
+  .dela__vi input:focus-visible + .dela__vaxel {
+    outline: 2px solid hsl(var(--moss));
+    outline-offset: 2px;
+  }
+  .dela__textknapp {
+    min-height: 40px;
+    padding: 0 10px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: hsl(var(--ink-mute));
+    font: 500 14px/1 var(--font-sans);
+    cursor: pointer;
+    transition:
+      background var(--t-fast),
+      color var(--t-fast);
+  }
+  .dela__textknapp:hover {
+    background: hsl(var(--yta-chip));
+    color: hsl(var(--ink));
+  }
+
+  .dela__kanaler {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .dela__kanaler--fem li:nth-child(5) {
+    grid-column: span 2;
+  }
+  .dela__kanal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    width: 100%;
+    height: 48px;
+    padding: 0 10px;
+    border: 1px solid hsl(var(--kant));
+    border-radius: var(--r-ruta);
+    background: hsl(var(--yta-kort));
+    color: hsl(var(--ink));
+    font: 500 14.5px/1 var(--font-sans);
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      background var(--t-fast),
+      border-color var(--t-fast),
+      transform var(--t-fast);
+  }
+  .dela__kanal:hover {
+    border-color: hsl(var(--ink));
+    background: hsl(var(--yta-chip));
+    color: hsl(var(--ink));
+  }
+  .dela__kanal:active {
+    transform: scale(0.97);
+  }
+  .dela__kanal svg {
+    flex: none;
+  }
+
+  .dela__lank {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 6px 6px 16px;
+    border: 1px solid hsl(var(--kant));
+    border-radius: 16px;
+    background: hsl(var(--yta-kort));
+  }
+  .dela__url {
+    flex: 1;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: hsl(var(--ink-mute));
+    font: 400 13px/1 var(--font-mono);
+    text-overflow: ellipsis;
+  }
+  .dela__url:focus-visible {
+    outline: 0;
+    color: hsl(var(--ink));
+  }
+  .dela__kopiera {
+    display: inline-grid;
+    flex: none;
+    height: 40px;
+    padding: 0 16px;
+    border: 0;
+    border-radius: 11px;
+    background: hsl(var(--ink));
+    color: hsl(var(--yta));
+    font: 600 14.5px/1 var(--font-sans);
+    cursor: pointer;
+    transition: background var(--t-fast);
+  }
+  .dela__kopiera:hover {
+    background: hsl(var(--ink-soft));
+  }
+  .dela__kopiera.kopierad {
+    background: hsl(var(--moss));
+  }
+  /* Båda beskeden ligger i samma cell, så att knappen inte byter bredd när texten byts. */
+  .dela__kopiera > span {
+    grid-area: 1 / 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition:
+      opacity var(--t-fast),
+      transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .dela__kopiera-pa,
+  .dela__kopiera.kopierad .dela__kopiera-av {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  .dela__kopiera.kopierad .dela__kopiera-pa {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Telefon: ett blad i botten, inom tummens räckvidd. */
+  @media (max-width: 640px) {
+    .dela {
+      width: 100%;
+      max-height: calc(100dvh - 24px);
+      margin: auto 0 0;
+      border-radius: 24px 24px 0 0;
+      opacity: 1;
+      transform: translateY(100%);
+    }
+    @starting-style {
+      .dela[open] {
+        opacity: 1;
+        transform: translateY(100%);
+      }
+    }
+    .dela--dras {
+      transition: none;
+    }
+    .dela__ruta {
+      padding: 10px 18px calc(18px + env(safe-area-inset-bottom));
+    }
+    .dela__handtag {
+      display: block;
+      justify-self: center;
+      width: 40px;
+      height: 4px;
+      border-radius: 999px;
+      background: hsl(var(--rule));
+    }
+    .dela__grepp {
+      touch-action: none;
+    }
+    .dela__kanal {
+      gap: 7px;
+      padding: 0 6px;
+      font-size: 14px;
+    }
+  }
+</style>

@@ -3,6 +3,7 @@ import '../styles/global.css';
 import Sidhuvud from '../components/Sidhuvud.astro';
 import Sidfot from '../components/Sidfot.astro';
 import Besoksrakning from '../components/Besoksrakning.astro';
+import Dela from '../components/Dela.astro';
 import fs from 'node:fs';
 import path from 'node:path';
 import { SAJT, absolutUrl, url } from '../lib/data';
@@ -78,6 +79,7 @@ const raknaBesok = process.env.VERCEL_ENV === 'production';
       <slot />
     </main>
     {!app && <Sidfot />}
+    <Dela />
   </body>
 </html>
 
