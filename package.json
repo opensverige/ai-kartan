@@ -22,7 +22,8 @@
     "farskhet": "node scripts/farskhet.mjs",
     "lankkoll": "node scripts/lankkoll.mjs",
     "importera:infra": "node scripts/importera-infra.mjs",
-    "ny": "node scripts/ny-organisation.mjs"
+    "ny": "node scripts/ny-organisation.mjs",
+    "delalank": "node scripts/delalank.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",

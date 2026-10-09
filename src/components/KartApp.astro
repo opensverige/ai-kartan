@@ -650,7 +650,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         (o.pt === 'kommun' ? '<p class="meta detalj__not">Positionen visas på kommunnivå, aldrig som gatuadress.</p>' : '') +
         `</div>` +
         `<div class="detalj__fot">${webb}` +
-        `<button type="button" class="rundknapp rundknapp--kant" data-kopiera aria-label="Kopiera länk till organisationen" title="Kopiera länk">${ikon('lank', 20)}</button>` +
+        `<button type="button" class="rundknapp rundknapp--kant" data-dela="${esc(o.id)}" data-dela-namn="${esc(o.n)}" aria-haspopup="dialog" aria-label="Dela ${esc(o.n)}" title="Dela">${ikon('dela', 20)}</button>` +
         `<a class="detalj__cta" href="${orgbas}${encodeURIComponent(o.id)}">Källor och belägg ${ikon('hoger', 18)}</a></div>` +
         `</article>`
       );
@@ -1660,8 +1660,6 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
 
       if (mal.closest('[data-tillbaka]')) return detaljIHistorik ? history.back() : stangDetalj();
       if (mal.closest('[data-ladda-om]')) return location.reload();
-      const kopiera = mal.closest<HTMLElement>('[data-kopiera]');
-      if (kopiera) return void kopieraLank(kopiera);
 
       // Kort i listan öppnar detaljvyn på kartsidan. Med ctrl, cmd eller mittenklick
       // gäller länken som vanligt, och i listläget går den alltid till organisationssidan.

@@ -1,0 +1,56 @@
+# När en ny organisation har gått in i main skrivs en kommentar på pull requesten som förde in den:
+# länken till sidan, länken som öppnar delningsbladet i vi-form, och ett färdigt meddelande att
+# skicka till organisationen. Enskilda firmor hoppas över, se scripts/delalank.mjs.
+#
+# Flödet kör bara kod ur main och läser inget ur pull requesten. Kommentaren skrivs med
+# GITHUB_TOKEN och startar därför inga andra flöden, inte heller granskningslistan.
+name: Delalänk för nya organisationer
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'data/organisationer/**'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  delalank:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci --ignore-scripts
+
+      - name: Skriv kommentaren
+        env:
+          FORE: ${{ github.event.before }}
+          EFTER: ${{ github.sha }}
+        run: node scripts/delalank.mjs --nya "$FORE" "$EFTER" > kommentar.md
+
+      - name: Kommentera pull requesten
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+        run: |
+          if [ ! -s kommentar.md ]; then
+            echo "Inga nya organisationer."
+            exit 0
+          fi
+          pr="$(gh api "repos/$REPO/commits/$SHA/pulls" --jq '.[0].number // empty')"
+          if [ -z "$pr" ]; then
+            # En commit direkt i main har ingen pull request. Då står länkarna i körningens logg.
+            cat kommentar.md
+            exit 0
+          fi
+          gh pr comment "$pr" --repo "$REPO" --body-file kommentar.md
