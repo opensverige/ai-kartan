@@ -6,6 +6,8 @@ import path from 'node:path';
 import { ROT, lasOrganisationer, lasTaxonomi, lasGeo, harled } from '../../scripts/lib/organisationer.mjs';
 import { platserPaLand } from '../../scripts/lib/landplatser.mjs';
 import { hittaTypikoner } from './typikoner';
+import { amnesslug, platsamnen, raknade, type Fragedata, type Platsamne } from './platsamne';
+import { typrad } from './text';
 
 export type Status = 'confirmed' | 'claimed' | 'planned' | 'unknown' | 'not_applicable';
 export type Typ = 'bolag' | 'enskild_firma' | 'myndighet' | 'kommun_region' | 'larosate' | 'community' | 'finansiar' | 'infrastruktur';
@@ -348,6 +350,49 @@ export function url(stig: string): string {
 export function absolutUrl(stig: string): string {
   const site = (import.meta.env.SITE || 'https://karta.opensverige.se').replace(/\/$/, '');
   return `${site}${url(stig)}`;
+}
+
+export type Amne = Platsamne<Plats, Org>;
+let amnen: { kommuner: Amne[]; lan: Amne[] } | null = null;
+
+/** Platser och områden som får en sida tillsammans. Reglerna står i src/lib/platsamne.ts. */
+export function hamtaPlatsamnen(): { kommuner: Amne[]; lan: Amne[] } {
+  if (amnen) return amnen;
+  const d = hamtaData();
+  amnen = { kommuner: platsamnen<Org, Plats>(d.platser.kommuner), lan: platsamnen<Org, Plats>(d.platser.lan) };
+  return amnen;
+}
+
+/** Sökvägen till sidan för en plats och ett område. */
+export function amnesstig(amne: Amne): string {
+  return `/${amne.plats.typ === 'kommun' ? 'plats' : 'lan'}/${amne.plats.slug}/${amnesslug(amne.omrade)}`;
+}
+
+const OFFENTLIGA = ['larosate', 'myndighet', 'kommun_region'] as const;
+
+/** Underlaget till frågorna på en plats sida, räknat ur platsens organisationer. */
+export function platsfragedata(plats: Plats): Fragedata {
+  const d = hamtaData();
+  const org = plats.organisationer;
+  const etikett = (karta: Map<string, Etikett>) => (id: string) => karta.get(id)?.label ?? id;
+  const medEtikett = (rader: [string, number][], karta: Map<string, Etikett>) => rader.map(([id, n]) => [etikett(karta)(id), n] as [string, number]);
+  const perTyp = raknade(org.map((o) => o.type.value), etikett(d.etikett.typer));
+  const senast = org.map((o) => o.h.senast_verifierad).filter(Boolean).sort().at(-1);
+  return {
+    typ: plats.typ,
+    namn: plats.namn,
+    n: org.length,
+    typrad: typrad(perTyp, (id) => d.etikett.typer.get(id)),
+    omraden: medEtikett(raknade(org.flatMap((o) => o.areas.value), etikett(d.etikett.omraden)), d.etikett.omraden),
+    erbjuder: medEtikett(raknade(org.flatMap((o) => o.offers.value), etikett(d.etikett.erbjuder)), d.etikett.erbjuder),
+    offentliga: OFFENTLIGA.map((slag) => ({
+      slag,
+      plural: d.etikett.typer.get(slag)?.plural ?? slag,
+      namn: org.filter((o) => o.type.value === slag).map((o) => o.name.value),
+    })).filter((o) => o.namn.length),
+    bekraftade: org.filter((o) => o.h.antal_bekraftade > 0).length,
+    senast: senast ? formateraDatum(senast) : null,
+  };
 }
 
 /** Så många rader visar sidan Ändringar. Äldre dagar finns bara i JSON, och dit ska flödet då länka. */
