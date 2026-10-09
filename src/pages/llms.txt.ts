@@ -1,9 +1,11 @@
 import type { APIRoute } from 'astro';
-import { hamtaData, absolutUrl, SAJT } from '../lib/data';
+import { hamtaData, hamtaPlatsamnen, amnesstig, absolutUrl, SAJT } from '../lib/data';
 
 export const GET: APIRoute = () => {
   const d = hamtaData();
   const s = d.statistik;
+  // Ett exempel ur datan, så att raden aldrig pekar på en sida som inte finns.
+  const amne = hamtaPlatsamnen().kommuner.at(0);
   const text = `# OpenSverige AI-kartan (Tech Embassy – Sveriges öppna AI-karta)
 
 > Öppen, oberoende karta över organisationer som bygger AI i Sverige: bolag, myndigheter, kommuner och regioner, lärosäten, communities, finansiärer och infrastruktur. Varje uppgift har källa, datum och verifieringsstatus (confirmed/bekräftad, claimed/egen uppgift, planned/planerad, unknown/okänd). Ingen rankning, inga betalplatser. Data CC BY 4.0, kod AGPL-3.0. Byggd ideellt inom OpenSverige med samma metod som infra.opensverige.se. Oberoende och inte statlig.
@@ -29,7 +31,8 @@ Citera alltid status och datum tillsammans med värdet: "egen uppgift" är inte 
 - Karta med filter: ${absolutUrl('/')}
 - Alla organisationer: ${absolutUrl('/organisationer')}
 - Platser (kommuner och län): ${absolutUrl('/plats')}
-- Metod och status: ${absolutUrl('/metod')}
+- En kommun eller ett län: ${absolutUrl('/plats/<kommun>')} och ${absolutUrl('/lan/<län>')}. Sidan svarar på vilka som bygger AI där, vilka områden som är vanligast och hur uppgifterna är kontrollerade.
+${amne ? `- En plats och ett område tillsammans, där minst fem organisationer finns: ${absolutUrl(amnesstig(amne))} (exempel, alla står på ${absolutUrl('/plats')}#omraden)\n` : ''}- Metod och status: ${absolutUrl('/metod')}
 - Kriterier för att vara med: ${absolutUrl('/kriterier')}
 - Bidra: ${absolutUrl('/bidra')}
 - Ändringshistorik: ${absolutUrl('/andringar')}

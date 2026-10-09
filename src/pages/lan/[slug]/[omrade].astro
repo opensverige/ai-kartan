@@ -1,0 +1,16 @@
+---
+// Ett län och ett område tillsammans, till exempel /lan/skane-lan/halsa.
+import Platsamnessida from '../../../components/Platsamnessida.astro';
+import { hamtaPlatsamnen } from '../../../lib/data';
+import type { Amne } from '../../../lib/data';
+import { amnesslug } from '../../../lib/platsamne';
+
+export function getStaticPaths() {
+  return hamtaPlatsamnen().lan.map((amne) => ({ params: { slug: amne.plats.slug, omrade: amnesslug(amne.omrade) }, props: { amne } }));
+}
+interface Props {
+  amne: Amne;
+}
+---
+
+<Platsamnessida amne={Astro.props.amne} />

@@ -1,9 +1,11 @@
 ---
 import Bas from '../../layouts/Bas.astro';
 import OrgKort from '../../components/OrgKort.astro';
-import { hamtaData, url, absolutUrl } from '../../lib/data';
+import Platsfragor from '../../components/Platsfragor.astro';
+import { hamtaData, hamtaPlatsamnen, amnesstig, platsfragedata, url, absolutUrl } from '../../lib/data';
 import { brodsmulor } from '../../lib/meta';
-import { antal, typrad } from '../../lib/text';
+import { antal } from '../../lib/text';
+import { MAX_NAMN, faqSchema, platsfragor } from '../../lib/platsamne';
 import type { Plats } from '../../lib/data';
 
 export function getStaticPaths() {
@@ -15,16 +17,28 @@ interface Props {
 const { plats } = Astro.props;
 const d = hamtaData();
 const n = plats.organisationer.length;
-const perTyp = Object.entries(
-  plats.organisationer.reduce<Record<string, number>>((acc, o) => ((acc[o.type.value] = (acc[o.type.value] ?? 0) + 1), acc), {}),
-).sort((a, b) => b[1] - a[1]);
-const titel = `AI i ${plats.namn}`;
+const rubrik = `AI i ${plats.namn}`;
+// Titeln följer hur folk söker. Finns inga bolag på platsen lovar den inga.
+const titel = plats.organisationer.some((o) => o.type.value === 'bolag') ? `AI-bolag och organisationer i ${plats.namn}` : `Organisationer som bygger AI i ${plats.namn}`;
+const underlag = platsfragedata(plats);
+// Första frågan besvaras av ingressen. De andra står under den, var och en med sin rubrik.
+const [vilka, ...fragor] = platsfragor(underlag);
+const lankar = {
+  omraden: hamtaPlatsamnen()
+    .kommuner.filter((a) => a.plats === plats)
+    .sort((a, b) => b.organisationer.length - a.organisationer.length)
+    .map((a) => ({ text: `${d.etikett.omraden.get(a.omrade)?.label ?? a.omrade} · ${a.organisationer.length}`, href: url(amnesstig(a)) })),
+  offentliga: underlag.offentliga
+    .filter((o) => o.namn.length > MAX_NAMN)
+    .map((o) => ({ text: `Alla ${o.plural.toLowerCase()} i ${plats.namn}`, href: url(`/organisationer?typ=${o.slag}&kommun=${plats.kod}`) })),
+  kontroll: [{ text: 'Metod och status', href: url('/metod') }],
+};
 // Kommunens namn står utan ordet kommun: det böjs olika för olika kommuner (Stockholms, Falu, Umeå).
 const beskrivning = `${antal(n, 'organisation', 'organisationer')} som bygger AI med säte i ${plats.namn}, ${plats.lan_namn}. Med källa och datum på varje uppgift.`;
 const samling = {
   '@context': 'https://schema.org',
   '@type': 'CollectionPage',
-  name: titel,
+  name: rubrik,
   description: beskrivning,
   url: absolutUrl(`/plats/${plats.slug}`),
   about: { '@type': 'City', name: plats.namn, containedInPlace: { '@type': 'AdministrativeArea', name: plats.lan_namn } },
@@ -36,6 +50,7 @@ const samling = {
 };
 const jsonLd = [
   samling,
+  faqSchema([vilka, ...fragor]),
   brodsmulor([
     ['Platser', absolutUrl('/plats')],
     ...(plats.lan_slug ? ([[plats.lan_namn, absolutUrl(`/lan/${plats.lan_slug}`)]] as [string, string][]) : []),
@@ -50,16 +65,15 @@ const jsonLd = [
       <a href={url('/plats')}>Platser</a> › {plats.lan_slug && <a href={url(`/lan/${plats.lan_slug}`)}>{plats.lan_namn}</a>} › <span>{plats.namn}</span>
     </nav>
     <p class="kicker mt-2">Kommun · {plats.lan_namn}</p>
-    <h1>AI i {plats.namn}</h1>
-    <p class="ingress">
-      {antal(n, 'organisation', 'organisationer')} med säte i {plats.namn} bygger AI: {typrad(perTyp, (id) => d.etikett.typer.get(id))}.
-      Kartan visar kommunen, aldrig en gatuadress.
-    </p>
+    <h1>{rubrik}</h1>
+    <p class="ingress">{vilka.svar} Kartan visar kommunen, aldrig en gatuadress.</p>
     <p class="rad">
       <a class="knapp knapp--liten" href={url(`/?kommun=${plats.kod}`)}>Visa på kartan</a>
       <a class="knapp knapp--ghost knapp--liten" href={url(`/organisationer?lan=${plats.lan_kod}`)}>Hela {plats.lan_namn}</a>
     </p>
-    <div class="rutnat mt-3">
+    <Platsfragor fragor={fragor} lankar={lankar} />
+    <h2 id="organisationer">Organisationer</h2>
+    <div class="rutnat">
       {plats.organisationer.map((o) => <OrgKort org={o} visaPlats={false} />)}
     </div>
     <p class="meta mt-3">Saknas någon? <a href={url('/bidra')}>Lägg till en organisation.</a> Alla data: <a href={url('/data')}>CC BY 4.0</a>.</p>
