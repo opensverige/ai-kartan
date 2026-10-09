@@ -1,0 +1,127 @@
+---
+// Sidan för en plats och ett område tillsammans: "Datorseende i Göteborg". Används av
+// src/pages/plats/[slug]/[omrade].astro och src/pages/lan/[slug]/[omrade].astro.
+// Vilka som får en sida, och hur meningarna lyder, står i src/lib/platsamne.ts.
+import Bas from '../layouts/Bas.astro';
+import OrgKort from './OrgKort.astro';
+import { hamtaData, hamtaPlatsamnen, amnesstig, url, absolutUrl, formateraDatum } from '../lib/data';
+import type { Amne } from '../lib/data';
+import { brodsmulor } from '../lib/meta';
+import { antal, typrad } from '../lib/text';
+import { amnesrubrik, amnesverb, namnmening, platsled, raknade } from '../lib/platsamne';
+
+interface Props {
+  amne: Amne;
+}
+const { amne } = Astro.props;
+const { plats, omrade, organisationer } = amne;
+const d = hamtaData();
+const arKommun = plats.typ === 'kommun';
+const etikett = d.etikett.omraden.get(omrade)?.label ?? omrade;
+const n = organisationer.length;
+const amnesnamn = amnesrubrik(omrade, etikett);
+const titel = `${amnesnamn} i ${plats.namn}`;
+const stig = amnesstig(amne);
+const platsstig = `/${arKommun ? 'plats' : 'lan'}/${plats.slug}`;
+const filter = `${arKommun ? 'kommun' : 'lan'}=${plats.kod}&omrade=${omrade}`;
+
+const perTyp = raknade(organisationer.map((o) => o.type.value), (id) => d.etikett.typer.get(id)?.label ?? id);
+const mening = `${antal(n, 'organisation', 'organisationer')} ${platsled(plats.typ, plats.namn)} ${amnesverb(omrade, etikett)}`;
+const ingress = `${mening}: ${typrad(perTyp, (id) => d.etikett.typer.get(id))}. Det är ${n} av ${plats.organisationer.length} organisationer i ${arKommun ? 'kommunen' : 'länet'}.`;
+const namn = namnmening(organisationer.map((o) => o.name.value));
+const beskrivning = `${mening}. Med källa och datum på varje uppgift.`;
+const senast = organisationer.map((o) => o.h.senast_verifierad).filter(Boolean).sort().at(-1);
+
+const alla = [...hamtaPlatsamnen().kommuner, ...hamtaPlatsamnen().lan];
+const storstForst = (a: Amne, b: Amne) => b.organisationer.length - a.organisationer.length;
+const sammaPlats = alla.filter((a) => a.plats === plats && a.omrade !== omrade).sort(storstForst);
+const andraPlatser = alla.filter((a) => a.omrade === omrade && a.plats !== plats).sort(storstForst);
+const omradesnamn = (a: Amne) => d.etikett.omraden.get(a.omrade)?.label ?? a.omrade;
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: titel,
+    description: beskrivning,
+    url: absolutUrl(stig),
+    about: arKommun
+      ? { '@type': 'City', name: plats.namn, containedInPlace: { '@type': 'AdministrativeArea', name: plats.lan_namn } }
+      : { '@type': 'AdministrativeArea', name: plats.namn, containedInPlace: { '@type': 'Country', name: 'Sverige' } },
+    keywords: [etikett, 'AI', plats.namn],
+    dateModified: senast ?? undefined,
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: n,
+      itemListElement: organisationer.map((o, i) => ({ '@type': 'ListItem', position: i + 1, url: absolutUrl(`/organisation/${o.id}`), name: o.name.value })),
+    },
+  },
+  brodsmulor([
+    ['Platser', absolutUrl('/plats')],
+    ...(arKommun && plats.lan_slug ? ([[plats.lan_namn!, absolutUrl(`/lan/${plats.lan_slug}`)]] as [string, string][]) : []),
+    [plats.namn, absolutUrl(platsstig)],
+    [etikett, absolutUrl(stig)],
+  ]),
+];
+---
+
+<Bas titel={titel} beskrivning={beskrivning} stig={stig} jsonLd={jsonLd}>
+  <section class="ram sektion">
+    <nav class="meta" aria-label="Du är här">
+      <a href={url('/plats')}>Platser</a> ›
+      {arKommun && plats.lan_slug && <Fragment><a href={url(`/lan/${plats.lan_slug}`)}>{plats.lan_namn}</a> ›</Fragment>}
+      <a href={url(platsstig)}>{plats.namn}</a> › <span>{etikett}</span>
+    </nav>
+    <p class="kicker mt-2">{arKommun ? `Kommun · ${plats.lan_namn}` : 'Län'} · Område</p>
+    <h1>{titel}</h1>
+    <p class="ingress">{ingress}</p>
+    {namn && <p class="ingress">{namn}</p>}
+    <p class="rad">
+      <a class="knapp knapp--liten" href={url(`/?${filter}`)}>Visa på kartan</a>
+      <a class="knapp knapp--ghost knapp--liten" href={url(platsstig)}>Alla i {plats.namn}</a>
+      <a class="knapp knapp--ghost knapp--liten" href={url(`/organisationer?omrade=${omrade}`)}>{etikett} i hela Sverige</a>
+    </p>
+    <p class="meta">
+      Senast kontrollerad {formateraDatum(senast)}. Området är organisationens egen uppgift om inget annat står på dess sida.
+      <a href={url('/metod')}>Så kontrolleras uppgifterna.</a>
+    </p>
+
+    <h2 id="organisationer">Organisationer</h2>
+    <div class="rutnat">
+      {organisationer.map((o) => <OrgKort org={o} visaPlats={!arKommun} />)}
+    </div>
+
+    {sammaPlats.length > 0 && (
+      <Fragment>
+        <h2 id="omraden">Fler områden i {plats.namn}</h2>
+        <ul class="rad lankrad">
+          {sammaPlats.map((a) => (
+            <li><a class="tagg" href={url(amnesstig(a))}>{omradesnamn(a)} · {a.organisationer.length}</a></li>
+          ))}
+        </ul>
+      </Fragment>
+    )}
+    {andraPlatser.length > 0 && (
+      <Fragment>
+        <h2 id="platser">{etikett} på andra platser</h2>
+        <ul class="rad lankrad">
+          {andraPlatser.map((a) => (
+            <li><a class="tagg" href={url(amnesstig(a))}>{a.plats.namn} · {a.organisationer.length}</a></li>
+          ))}
+        </ul>
+      </Fragment>
+    )}
+    <p class="meta mt-3">Saknas någon? <a href={url('/bidra')}>Lägg till en organisation.</a> Alla data: <a href={url('/data')}>CC BY 4.0</a>.</p>
+  </section>
+</Bas>
+
+<style>
+  .ingress {
+    font-size: 18px;
+    max-width: 62ch;
+  }
+  .lankrad {
+    padding: 0;
+    list-style: none;
+  }
+</style>

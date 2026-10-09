@@ -1,8 +1,12 @@
 ---
 import Sida from '../../layouts/Sida.astro';
-import { hamtaData, url } from '../../lib/data';
+import { hamtaData, hamtaPlatsamnen, amnesstig, url } from '../../lib/data';
+import { MINST_PER_SIDA, amnesrubrik } from '../../lib/platsamne';
+import { talord } from '../../lib/text';
 
 const d = hamtaData();
+const amnen = [...hamtaPlatsamnen().kommuner, ...hamtaPlatsamnen().lan].sort((a, b) => b.organisationer.length - a.organisationer.length);
+const omradesetikett = (id: string) => d.etikett.omraden.get(id)?.label ?? id;
 ---
 
 <Sida
@@ -32,6 +36,17 @@ const d = hamtaData();
       <p class="meta">{d.statistik.utan_plats} organisationer saknar känt säte och visas bara i <a href={url('/organisationer')}>listan</a>.</p>
     )}
   </section>
+  {amnen.length > 0 && (
+    <section>
+      <h2 id="omraden">Plats och område</h2>
+      <p class="lasbredd">Där minst {talord(MINST_PER_SIDA)} organisationer på en plats arbetar inom samma område finns en egen sida.</p>
+      <ul class="platslista">
+        {amnen.map((a) => (
+          <li><a href={url(amnesstig(a))}>{amnesrubrik(a.omrade, omradesetikett(a.omrade))} i {a.plats.namn}</a> <span class="meta">{a.organisationer.length}</span></li>
+        ))}
+      </ul>
+    </section>
+  )}
 </Sida>
 
 <style>
