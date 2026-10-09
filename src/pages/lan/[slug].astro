@@ -1,7 +1,9 @@
 ---
 import Bas from '../../layouts/Bas.astro';
 import OrgKort from '../../components/OrgKort.astro';
-import { hamtaData, url, absolutUrl } from '../../lib/data';
+import Platsfragor from '../../components/Platsfragor.astro';
+import { hamtaData, hamtaPlatsamnen, amnesstig, platsfragedata, url, absolutUrl } from '../../lib/data';
+import { MAX_NAMN, faqSchema, platsfragor } from '../../lib/platsamne';
 import { brodsmulor } from '../../lib/meta';
 import { antal } from '../../lib/text';
 import type { Plats } from '../../lib/data';
@@ -16,18 +18,34 @@ const { plats } = Astro.props;
 const d = hamtaData();
 const n = plats.organisationer.length;
 const kommuner = d.platser.kommuner.filter((k) => k.lan_kod === plats.kod);
-const titel = `AI i ${plats.namn}`;
+const rubrik = `AI i ${plats.namn}`;
+// Titeln följer hur folk söker. Finns inga bolag i länet lovar den inga.
+const titel = plats.organisationer.some((o) => o.type.value === 'bolag') ? `AI-bolag och organisationer i ${plats.namn}` : `Organisationer som bygger AI i ${plats.namn}`;
+const underlag = platsfragedata(plats);
+// Första frågan besvaras av ingressen. De andra står under den, var och en med sin rubrik.
+const [vilka, ...fragor] = platsfragor(underlag);
+const lankar = {
+  omraden: hamtaPlatsamnen()
+    .lan.filter((a) => a.plats === plats)
+    .sort((a, b) => b.organisationer.length - a.organisationer.length)
+    .map((a) => ({ text: `${d.etikett.omraden.get(a.omrade)?.label ?? a.omrade} · ${a.organisationer.length}`, href: url(amnesstig(a)) })),
+  offentliga: underlag.offentliga
+    .filter((o) => o.namn.length > MAX_NAMN)
+    .map((o) => ({ text: `Alla ${o.plural.toLowerCase()} i ${plats.namn}`, href: url(`/organisationer?typ=${o.slag}&lan=${plats.kod}`) })),
+  kontroll: [{ text: 'Metod och status', href: url('/metod') }],
+};
 const beskrivning = `${antal(n, 'organisation', 'organisationer')} som bygger AI i ${plats.namn}${kommuner.length > 1 ? `, fördelade på ${kommuner.length} kommuner` : ''}. Med källa och datum på varje uppgift.`;
 const samling = {
   '@context': 'https://schema.org',
   '@type': 'CollectionPage',
-  name: titel,
+  name: rubrik,
   description: beskrivning,
   url: absolutUrl(`/lan/${plats.slug}`),
   about: { '@type': 'AdministrativeArea', name: plats.namn, containedInPlace: { '@type': 'Country', name: 'Sverige' } },
 };
 const jsonLd = [
   samling,
+  faqSchema([vilka, ...fragor]),
   brodsmulor([
     ['Platser', absolutUrl('/plats')],
     [plats.namn, absolutUrl(`/lan/${plats.slug}`)],
@@ -39,12 +57,13 @@ const jsonLd = [
   <section class="ram sektion">
     <nav class="meta" aria-label="Du är här"><a href={url('/plats')}>Platser</a> › <span>{plats.namn}</span></nav>
     <p class="kicker mt-2">Län</p>
-    <h1>AI i {plats.namn}</h1>
-    <p class="ingress">{antal(n, 'organisation', 'organisationer')} i {antal(kommuner.length, 'kommun', 'kommuner')}.</p>
+    <h1>{rubrik}</h1>
+    <p class="ingress">{vilka.svar} De finns i {antal(kommuner.length, 'kommun', 'kommuner')}.</p>
     <p class="rad">
       <a class="knapp knapp--liten" href={url(`/?lan=${plats.kod}`)}>Visa på kartan</a>
       <a class="knapp knapp--ghost knapp--liten" href={url(`/organisationer?lan=${plats.kod}`)}>Filtrera listan</a>
     </p>
+    <Platsfragor fragor={fragor} lankar={lankar} />
     <h2 id="kommuner">Kommuner</h2>
     <ul class="rad kommunlista">
       {kommuner.map((k) => (
@@ -61,6 +80,7 @@ const jsonLd = [
 <style>
   .ingress {
     font-size: 18px;
+    max-width: 62ch;
   }
   .kommunlista {
     list-style: none;

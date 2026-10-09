@@ -1,0 +1,56 @@
+---
+// Frågorna en platssida svarar på, med svaret direkt under varje fråga. Texterna kommer ur
+// src/lib/platsamne.ts och är desamma som i sidans strukturerade data.
+import type { Fraga } from '../lib/platsamne';
+
+interface Props {
+  fragor: Fraga[];
+  /** Länkar som hör till en fråga, till exempel sidorna för platsens största områden. */
+  lankar?: Partial<Record<Fraga['nyckel'], { text: string; href: string }[]>>;
+}
+const { fragor, lankar = {} } = Astro.props;
+---
+
+<div class="fragor">
+  {fragor.map((f) => (
+    <section class="fraga">
+      <h2>{f.fraga}</h2>
+      <p>{f.svar}</p>
+      {lankar[f.nyckel]?.length ? (
+        <ul class="rad fraga__lankar">
+          {lankar[f.nyckel]!.map((l) => (
+            <li><a class="tagg" href={l.href}>{l.text}</a></li>
+          ))}
+        </ul>
+      ) : null}
+    </section>
+  ))}
+</div>
+
+<style>
+  .fragor {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+    gap: 8px 40px;
+    margin-top: 36px;
+  }
+  .fraga {
+    padding-top: 16px;
+    border-top: 1px solid hsl(var(--rule-soft));
+  }
+  /* En fråga är en rubrik för den som letar ett svar, men ska inte väga som sidans avsnitt. */
+  .fraga h2 {
+    margin: 0 0 6px;
+    font-size: 18px;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+  .fraga p {
+    max-width: 60ch;
+  }
+  .fraga__lankar {
+    margin: 0 0 16px;
+    padding: 0;
+    list-style: none;
+  }
+</style>
