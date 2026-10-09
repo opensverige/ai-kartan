@@ -2,6 +2,12 @@
 
 Kodens och funktionernas historik. Dataändringar loggas separat och automatiskt i `history/changelog.json` och på sajten under Ändringar. Samma rader som här finns maskinläsbart i `history/bygglogg.json`.
 
+## 2026-10-09
+
+- Dela en organisation. Knappen i detaljvyn på kartan och på organisationens sida öppnar ett blad med ett förslag till text, LinkedIn, X, Bluesky, Facebook och e-post, och länken att kopiera. I telefon ligger bladet i botten och går att dra ner, och där finns också systemets eget delningsblad. Texten går att ändra innan den delas. Knappen ersätter den som bara kopierade länken i detaljvyn. Reglerna ligger i `src/lib/dela.ts`.
+- Länken `/organisation/<id>#vi-ar-med` öppnar sidan med bladet framme och texten i vi-form: "Vi finns nu på Tech Embassy". Den är till för organisationen själv. När en ny organisation har gått in i main skriver flödet Delalänk för nya organisationer länken och ett färdigt meddelande som en kommentar på pull requesten. Lokalt: `npm run delalank -- <id>`. Enskilda firmor hoppas över.
+- `robots.txt` säger uttryckligen ja till sökmotorer och AI-robotar, vid namn, och bär raden Content-Signal med ja till sök, svar och träning. Samma hållning som på AI-Infra. Förut stod bara en allmän rad, som några robotar läser som ett nej.
+
 ## 2026-10-08
 
 - Ny favikon: sajtens röda kartnål, nedstucken i gult, ritad pixel för pixel på ett rutnät om sexton gånger sexton. Den gamla var hela handen förminskad och gick inte att läsa i en flik. Ikonen finns som SVG, som ICO och för hemskärmen, och skrivs av `scripts/favikon.mjs`.
