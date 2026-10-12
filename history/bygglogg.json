@@ -1,4 +1,5 @@
 [
+  { "datum": "2026-10-13", "text": "Kartsidan och listan räknar om kartan används, inte bara öppnas. Söktext, filterval och vilken organisation som öppnas följer aldrig med." },
   { "datum": "2026-10-12", "text": "Veckopulsen: kartans panel och sidan Ändringar visar hur många organisationer som lagts till de senaste sju dagarna, dag för dag." },
   { "datum": "2026-10-09", "text": "En plats och ett område får en egen sida där minst fem organisationer finns, till exempel Datorseende i Göteborg." },
   { "datum": "2026-10-09", "text": "Kommunernas och länens sidor svarar på frågor: vilka områden som är vanligast och vilka lärosäten och myndigheter som bygger AI där." },

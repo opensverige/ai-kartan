@@ -2,6 +2,10 @@
 
 Kodens och funktionernas historik. Dataändringar loggas separat och automatiskt i `history/changelog.json` och på sajten under Ändringar. Samma rader som här finns maskinläsbart i `history/bygglogg.json`.
 
+## 2026-10-13
+
+- Kartsidan och listan räknar händelser, inte bara sidvisningar. Kartan är en enda adress, så den som öppnade tio organisationer såg ut att ha vänt i dörren. Nu räknas att kartan har ritats, med tiden i fyra steg eller att sidan låg i en flik som inte syntes, den första handlingen, öppnad organisation, klick på länk ut och klick på Lägg till. Varje händelse bär ett enda värde ur en fast lista, och koden stoppar allt annat: söktext, filterval och organisationens namn kan inte följa med. Reglerna ligger i `src/lib/handelser.ts`, och Personuppgifter säger vad som räknas.
+
 ## 2026-10-12
 
 - Veckopulsen visar vad som hänt på kartan de senaste sju dagarna. I kartans panel står en rad under antalet, "+20 nya senaste 7 dagarna", med en stapel per dag. Överst på Ändringar står veckan utförligt: nya organisationer, uppdaterade uppgifter och borttagna, en stapel per veckodag och de senast tillagda vid namn. I telefon står veckans tal i bladets handtag. En vecka utan nya säger vem som lades till senast. Talen räknas ur ändringshistoriken vid bygget och räknas om i webbläsaren när dagen har bytts, så att veckan stämmer även när sajten inte har byggts på ett tag. Raden gäller hela kartan och döljs när ett urval eller en plats är vald. Reglerna ligger i `src/lib/vecka.ts`.

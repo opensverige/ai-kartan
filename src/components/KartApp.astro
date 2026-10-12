@@ -218,6 +218,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
   import { arPaskagg, cirkel, type Medlemsvy } from '../lib/medlemmar';
   import { normalisera, tolka, traffar, tomtSvar, finnsI, type Tolkning } from '../lib/sok';
   import { urvalsrubrik } from '../lib/urvalsrubrik';
+  import { skapaHandelser, tillVercel, type Handling } from '../lib/handelser';
 
   type Post = {
     id: string; n: string; t: string; o: string[]; a: string[]; k: string | null; kn: string | null;
@@ -322,6 +323,16 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     // En organisation i adressen går före: den som går till en organisation lämnar vyn.
     let medlemslage = medKarta && !!medlemsdata && !valdId && start.get('vy') === 'medlemmar';
 
+    // Händelserna räknas bara där räkneskriptet finns: på den publika sajten, hos den som inte har
+    // bett att slippa. Vad som får följa med står i src/lib/handelser.ts.
+    const handelser = skapaHandelser(tillVercel(window as unknown as { va?: (...argument: unknown[]) => void }));
+    let vantarPaRitad = false;
+    // En flik som inte syns ritar inga bildrutor. Tiden till ritad karta säger då inget om väntan.
+    let varDold = document.visibilityState === 'hidden';
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') varDold = true;
+    });
+
     const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
     const plural = (n: number) => (n === 1 ? 'organisation' : 'organisationer');
 
@@ -343,6 +354,42 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       const bild = typikoner[o.t];
       if (bild) return `<span class="logo logo--ikon ${klass}" aria-hidden="true"><img src="${esc(bild)}" alt="" loading="lazy" decoding="async"></span>`;
       return `<span class="logo ${klass}" style="--f:${FARG[o.t] || FARG.bolag}" aria-hidden="true">${esc(initialer(o.n))}</span>`;
+    }
+
+    /* ---------- Händelser ---------- */
+
+    /** Besökaren har gjort något. Bara den första handlingen räknas. */
+    function handling(typ: Handling) {
+      handelser.handling(typ);
+    }
+
+    /**
+     * Kartan räknas som ritad när kartbiblioteket har tagit emot organisationerna och ritat en bild
+     * med dem, inte när datan lämnades dit. På en långsam telefon skiljer det sekunder, och det är
+     * den tiden besökaren väntar.
+     */
+    function vantaPaRitad() {
+      const k = karta;
+      if (!k || vantarPaRitad) return;
+      vantarPaRitad = true;
+      const klar = () => {
+        k.off('render', titta);
+        k.off('idle', klar);
+        handelser.kartaRitad(performance.now(), varDold);
+      };
+      const titta = () => {
+        if (!['orgs', 'lan-grupper', 'kommun-grupper'].every((kalla) => k.getSource(kalla) && k.isSourceLoaded(kalla))) return;
+        // Datan är mottagen, men bilden med den kan komma en bildruta senare. I medlemsvyn och i ett
+        // urval utan platser finns inget att vänta på.
+        const lager = ['lan-grupp', 'kommun-grupp', 'punkter', 'landmarken'].filter((id) => k.getLayer(id));
+        const attRita = !medlemslage && urval.some((o) => o.lat !== null);
+        if (attRita && !k.queryRenderedFeatures({ layers: lager }).length) return;
+        klar();
+      };
+      k.on('render', titta);
+      // Står besökaren där inga organisationer finns syns ingen av dem. Då räcker det att kartan är stilla.
+      k.on('idle', klar);
+      k.triggerRepaint();
     }
 
     /* ---------- Filter ---------- */
@@ -896,8 +943,9 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         return;
       }
       if (v.typ === 'org') {
-        if (medKarta) visaDetalj(v.o);
-        else location.href = `${orgbas}${encodeURIComponent(v.o.id)}`;
+        if (!medKarta) return void (location.href = `${orgbas}${encodeURIComponent(v.o.id)}`);
+        handelser.orgOppnad('sok');
+        visaDetalj(v.o);
         return;
       }
       if (sokFalt) sokFalt.value = '';
@@ -914,6 +962,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       sokFalt.setAttribute('aria-expanded', 'false');
       sokFalt.form?.addEventListener('submit', (e) => e.preventDefault());
       sokFalt.addEventListener('input', () => {
+        handling('sok');
         stangDetalj(false);
         filtrera();
         oppnaSok();
@@ -1279,6 +1328,11 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         return;
       }
       (window as unknown as { aiKartan?: unknown }).aiKartan = { karta };
+      // Besökarens egna rörelser: dra, nypa, rulla och trycka. Kartans egna flygningar har ingen ursprungshändelse.
+      karta.on('movestart', (e) => {
+        if ((e as { originalEvent?: Event }).originalEvent) handling('karta');
+      });
+      karta.on('click', () => handling('karta'));
       // Ett fel om en enskild kartbricka eller symbolbild är inte att kartan uteblev: stilen kommer
       // strax ändå. Beskedet visas därför först om stilen inte finns efter en stund.
       let felvakt: number | undefined;
@@ -1503,7 +1557,9 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
           if (nyssGrupp()) return;
           const id = e.features?.[0]?.properties?.id;
           const o = id ? alla.find((x) => x.id === String(id)) : undefined;
-          if (o) visaDetalj(o, false);
+          if (!o) return;
+          handelser.orgOppnad('karta');
+          visaDetalj(o, false);
         });
         karta!.on('click', (e) => {
           // Tryck på tom karta fäller ner bottenbladet i smal vy.
@@ -1600,10 +1656,23 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         if (medlemslage) sattMedlemsvy(true, false);
       });
 
-      app.querySelector('#zooma-in')?.addEventListener('click', () => karta?.zoomIn());
-      app.querySelector('#zooma-ut')?.addEventListener('click', () => karta?.zoomOut());
-      app.querySelector('#visa-allt')?.addEventListener('click', () => (medlemslage ? passaMedlemmar() : passaKarta()));
-      medlemsknapp?.addEventListener('click', () => sattMedlemsvy(!medlemslage));
+      app.querySelector('#zooma-in')?.addEventListener('click', () => {
+        handling('karta');
+        karta?.zoomIn();
+      });
+      app.querySelector('#zooma-ut')?.addEventListener('click', () => {
+        handling('karta');
+        karta?.zoomOut();
+      });
+      app.querySelector('#visa-allt')?.addEventListener('click', () => {
+        handling('karta');
+        if (medlemslage) passaMedlemmar();
+        else passaKarta();
+      });
+      medlemsknapp?.addEventListener('click', () => {
+        handling('medlemmar');
+        sattMedlemsvy(!medlemslage);
+      });
       // Kortet byter storlek när skärmen vrids eller fönstret ändras. Då passas kartan in på nytt.
       if (medlemskort && 'ResizeObserver' in window) new ResizeObserver(() => medlemslage && passaMedlemmar()).observe(medlemskort);
       app.querySelector('#stang-medlemmar')?.addEventListener('click', () => {
@@ -1614,6 +1683,8 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
 
     /** Första vyn när både data och karta finns: vald organisation, vald plats eller hela landet. */
     function forstaVy() {
+      // Både kartan och organisationerna finns. Nu återstår bara att kartan ritar dem.
+      if (kartaKlar && alla.length) vantaPaRitad();
       // Medlemsvyn har sin egen kamera och ska inte flyttas när organisationernas data kommer.
       if (medlemslage) return;
       if (kartaKlar) forstaVyVisad = true;
@@ -1653,6 +1724,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     /* ---------- Händelser ---------- */
 
     form.addEventListener('change', (e) => {
+      handling('filter');
       const namn = (e.target as HTMLInputElement).name;
       if (namn === 'lan') return sattPlats((e.target as HTMLInputElement).value);
       stangDetalj(false);
@@ -1676,7 +1748,10 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       if (ruta && kommun && ruta.value && ruta.value === lanFore) sattPlats(ruta.value);
       lanFore = null;
     });
-    sortEl.addEventListener('change', renderLista);
+    sortEl.addEventListener('change', () => {
+      handling('lista');
+      renderLista();
+    });
 
     app.addEventListener('click', (e) => {
       const mal = e.target as HTMLElement;
@@ -1697,8 +1772,22 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         const o = alla.find((x) => x.id === kort.closest<HTMLElement>('.post')?.dataset.id);
         if (o) {
           e.preventDefault();
+          handling('lista');
+          handelser.orgOppnad('lista');
           visaDetalj(o);
         }
+      }
+    });
+
+    // Länkar ut ur panelen och till Lägg till. Bara slaget räknas, aldrig vart länken går.
+    document.addEventListener('click', (e) => {
+      const lank = (e.target as HTMLElement).closest<HTMLAnchorElement>('a[href]');
+      if (!lank) return;
+      const mal = new URL(lank.href, location.href);
+      if (mal.origin === location.origin && mal.pathname === new URL(bidra, location.href).pathname) {
+        handelser.laggTill(lank.closest('.panel__intro') ? 'panel' : lank.closest('.sidhuvud') && !lank.closest('.sok') ? 'sidhuvud' : 'lista');
+      } else if (/^https?:$/.test(mal.protocol) && mal.origin !== location.origin && panel.contains(lank)) {
+        handelser.utlank(lank.closest('.detalj__fot') ? 'webbplats' : lank.classList.contains('infralank') ? 'ai-infra' : 'annan');
       }
     });
 
@@ -1746,6 +1835,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       const knapp = pill.querySelector<HTMLButtonElement>('.fknapp')!;
       knapp.addEventListener('click', () => {
         if (smal.matches) return;
+        handling('filter');
         stangPiller(pill);
         knapp.setAttribute('aria-expanded', String(pill.classList.toggle('fpill--oppen')));
       });
@@ -1760,7 +1850,10 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       oppnaFilter.setAttribute('aria-expanded', String(oppet));
       (oppet ? stangFilter : oppnaFilter).focus({ preventScroll: true });
     };
-    oppnaFilter.addEventListener('click', () => sattFilterblad(true));
+    oppnaFilter.addEventListener('click', () => {
+      handling('filter');
+      sattFilterblad(true);
+    });
     stangFilter.addEventListener('click', () => sattFilterblad(false));
     filterSkugga.addEventListener('click', () => sattFilterblad(false));
     visaUrval.addEventListener('click', () => {
@@ -1790,7 +1883,9 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       const dy = greppY === null ? 0 : e.clientY - greppY;
       greppY = null;
       svepte = Math.abs(dy) > 24;
-      if (svepte) sattBlad(dy < 0 ? 'oppen' : 'titt');
+      if (!svepte) return;
+      handling('blad');
+      sattBlad(dy < 0 ? 'oppen' : 'titt');
     });
     // I filterbladet är facettknapparna bara rubriker och ska inte gå att tabba till.
     const sattRubriker = () => form.querySelectorAll<HTMLButtonElement>('.fpill > .fknapp').forEach((k) => (k.tabIndex = smal.matches ? -1 : 0));
@@ -1799,6 +1894,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
 
     grepp?.addEventListener('click', () => {
       if (svepte) return void (svepte = false);
+      handling('blad');
       sattBlad(panel.dataset.blad === 'oppen' ? 'titt' : 'oppen');
     });
 
