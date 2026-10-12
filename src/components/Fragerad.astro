@@ -1,0 +1,160 @@
+---
+// Frågeraden: färdiga urval som piller, med antalet i varje. Raden står i bottenbladets nedfällda
+// läge i telefon och i panelens inledning. Ett piller är en vanlig länk till kartan med urvalet
+// i adressen. På kartsidan tar KartApp över trycket och byter urval utan att sidan laddas om.
+// Vilka frågor som ställs och hur de räknas står i src/lib/fragor.ts.
+import { hamtaData, tillKartpost, url } from '../lib/data';
+import { FRAGEMALLAR, fragor } from '../lib/fragor';
+
+interface Props {
+  /** Var raden står. I bladets nedfällda läge rullar den i sidled, i panelen bryter den rad. */
+  plats: 'titt' | 'panel';
+}
+const { plats } = Astro.props;
+const d = hamtaData();
+const rad = fragor(FRAGEMALLAR, d.organisationer.map(tillKartpost), {
+  omrade: (id) => d.etikett.omraden.get(id)?.label ?? id,
+  typer: (id) => d.etikett.typer.get(id)?.plural ?? d.etikett.typer.get(id)?.label ?? id,
+  erbjuder: (id) => d.etikett.erbjuder.get(id)?.label ?? id,
+});
+---
+
+{rad.length > 0 && (
+  <nav class:list={['fragor', `fragor--${plats}`]} aria-label="Prova ett urval">
+    <span class="fragor__ledord kicker" aria-hidden="true">Prova</span>
+    <ul class="fragor__rad">
+      {rad.map((f) => (
+        <li>
+          <a class="fraga" href={`${url('/')}?${f.sok}`} data-fraga={f.sok} data-text={f.text}>
+            {f.text}
+            <span class="fraga__antal">{f.antal}<span class="visuellt-dold"> organisationer</span></span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+)}
+
+<style>
+  .fragor {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
+  .fragor__ledord {
+    flex: none;
+  }
+  .fragor__rad {
+    display: flex;
+    gap: 8px;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .fragor__rad li {
+    flex: none;
+  }
+  .fraga {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    height: 36px;
+    padding: 0 10px 0 14px;
+    border: 1px solid hsl(var(--kant));
+    border-radius: var(--r-pill);
+    background: hsl(var(--yta-kort));
+    color: hsl(var(--ink));
+    font: 500 14.5px/1 var(--font-sans);
+    text-decoration: none;
+    white-space: nowrap;
+    transition:
+      background var(--t-fast),
+      border-color var(--t-fast),
+      color var(--t-fast);
+  }
+  /* Pillret är 36 px högt. Tryckytan är 44, som resten av bladet. */
+  .fraga::after {
+    content: '';
+    position: absolute;
+    inset: -4px 0;
+  }
+  .fraga:hover {
+    border-color: hsl(var(--ink) / 0.3);
+    background: hsl(var(--yta-chip));
+    color: hsl(var(--ink));
+  }
+  .fraga__antal {
+    display: grid;
+    place-items: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: var(--r-pill);
+    background: hsl(var(--yta-chip));
+    color: hsl(var(--ink-mute));
+    font: 600 12px/1 var(--font-sans);
+  }
+  .fraga[aria-current='true'] {
+    border-color: hsl(var(--ink));
+    background: hsl(var(--ink));
+    color: hsl(var(--yta));
+  }
+  .fraga[aria-current='true'] .fraga__antal {
+    background: hsl(var(--yta) / 0.22);
+    color: hsl(var(--yta));
+  }
+
+  /* I panelen på bred skärm: under ingressen, med ledordet över pillren så att de får hela bredden. */
+  .fragor--panel {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .fragor--panel .fragor__rad {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  /* Panelen är som smalast 340 px. Något tätare piller ryms två i bredd även där. */
+  @media (min-width: 901px) {
+    .fragor--panel .fraga {
+      height: 34px;
+      padding: 0 8px 0 12px;
+      font-size: 14px;
+    }
+  }
+
+  /* I bladets nedfällda läge: en rad som rullar i sidled. Ett avskuret piller i kanten säger att det finns fler. */
+  .fragor--titt {
+    padding-left: 16px;
+  }
+  .fragor--titt .fragor__rad {
+    overflow-x: auto;
+    padding: 4px 16px 4px 0;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+  .fragor__rad::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* I telefon är höjden dyr också i det uppfällda bladet. Raden rullar där med, ut till bladets kant. */
+  @media (max-width: 900px) {
+    .fragor--panel {
+      flex-direction: row;
+      align-items: center;
+      gap: 10px;
+      margin-right: -22px;
+    }
+    .fragor--panel .fragor__rad {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      padding: 4px 22px 4px 0;
+      overscroll-behavior-x: contain;
+      scrollbar-width: none;
+    }
+  }
+</style>
