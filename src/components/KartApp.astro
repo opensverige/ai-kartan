@@ -4,11 +4,14 @@
 // Sökfältet ligger i sidhuvudet (Sidhuvud.astro) och kopplas in härifrån.
 import 'maplibre-gl/dist/maplibre-gl.css';
 import Filterrad from './Filterrad.astro';
+import Fragerad from './Fragerad.astro';
 import Veckopuls from './Veckopuls.astro';
 import { hamtaData, tillKartpost, typikoner, url, formateraDatum, SAJT } from '../lib/data';
 import { medVersion } from '../lib/meta';
 import { ikon } from '../lib/ikoner';
 import { medlemsvy, type Medlemsdata } from '../lib/medlemmar';
+import { tittext } from '../lib/titt';
+import { veckounderlag, veckan, dagensDatum } from '../lib/vecka';
 import medlemsdata from '../../data/gemenskap/regioner.json';
 
 interface Props {
@@ -32,19 +35,39 @@ const allaEfterNamn = d.organisationer.slice().sort((a, b) => a.name.value.local
 // Var föreningens medlemmar finns, som antal per region. Ritas på kartan först när besökaren ber om det.
 const medlemmar = lage === 'karta' ? medlemsvy(medlemsdata as Medlemsdata, d.kommuner) : null;
 const kraftan = url('/ikoner/opensverige.png');
+// Bottenbladets nedfällda läge i telefon ritas färdigt i bygget. Det är det enda som står på
+// skärmen medan kartbiblioteket laddar, och ska då redan säga vad sidan är.
+const idag = dagensDatum();
+const antalKommuner = d.platser.kommuner.length;
+const titt = tittext({
+  oppet: false,
+  vald: null,
+  urval: null,
+  antal: s.antal,
+  totalt: s.antal,
+  kommuner: antalKommuner,
+  nya: veckan(veckounderlag(d.andringar.rader, idag), idag).nya,
+  namn: [],
+});
 // Stapelns bredd räknas ur ikonens storlek. Ett dolt antal ger samma stapel som noll.
 const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 100);
 ---
 
-<div class="app" data-lage={lage} data-api={kartdata} data-orgbas={url('/organisation/')} data-bidra={url('/bidra')} data-csv={url('/api/data.csv')} data-infra={SAJT.infra} data-infralogo={url('/ai-infra.png')} data-worker={url('/vendor/maplibre/maplibre-gl-worker.mjs')} data-kartbas={url('/')} data-kraftan={kraftan} data-metod={url('/metod')}>
+<div class="app" data-lage={lage} data-api={kartdata} data-orgbas={url('/organisation/')} data-bidra={url('/bidra')} data-csv={url('/api/data.csv')} data-infra={SAJT.infra} data-infralogo={url('/ai-infra.png')} data-worker={url('/vendor/maplibre/maplibre-gl-worker.mjs')} data-kartbas={url('/')} data-kraftan={kraftan} data-metod={url('/metod')} data-kommuner={antalKommuner}>
   {lage === 'lista' && <Filterrad />}
 
   <section class="panel" id="panel" data-blad="titt" aria-label="Organisationer">
     {lage === 'karta' && (
-      <button type="button" class="panel__grepp" id="grepp" aria-expanded="false" aria-controls="vy-lista">
-        <span class="panel__handtag" aria-hidden="true"></span>
-        <span class="panel__grepptext" id="grepptext">Visa listan</span>
-      </button>
+      <div class="titt">
+        <button type="button" class="panel__grepp" id="grepp" aria-expanded="false" aria-controls="vy-lista">
+          <span class="panel__handtag" aria-hidden="true"></span>
+          <span class="panel__grepptext" id="grepptext">{titt.rubrik}</span>
+          <span class="panel__greppnot" id="greppnot">{titt.not}</span>
+          <span class="visuellt-dold" id="greppvad">Visa listan</span>
+        </button>
+        {/* Utanför listvyn, som är avstängd i det nedfällda läget. Annars går frågorna inte att trycka på. */}
+        <Fragerad plats="titt" />
+      </div>
     )}
 
     <div class="panel__vy" id="vy-lista">
@@ -68,6 +91,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
             Drivs ideellt av föreningen OpenSverige, inget företag. Inget rankas och ingen kan köpa en plats.
             <a href={url('/bidra')}>Lägg till dig själv.</a>
           </p>
+          <Fragerad plats="panel" />
         </header>
       )}
 
@@ -95,6 +119,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
             fäller upp bladet i telefon, där beskedet annars ligger utanför skärmen utan att gå att nå. */}
         <style is:inline>
           .post--skelett { display: none; }
+          .fragor { display: none !important; }
           .enkel-lista { margin: 16px 0; padding-left: 28px; line-height: 1.9; }
           .enkel-lista span { color: hsl(var(--ink-mute)); }
           @media (max-width: 900px) { .app[data-lage='karta'] .panel { transform: none !important; } }
@@ -211,14 +236,17 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
 
 <script>
   // MapLibre är stort och laddas först när en karta faktiskt ska ritas, inte i listläget.
-  import type { Map as MapLibreMap, Popup, GeoJSONSource, ExpressionSpecification, MapLayerMouseEvent, PaddingOptions } from 'maplibre-gl';
+  import type { Map as MapLibreMap, Popup, Marker, GeoJSONSource, ExpressionSpecification, MapLayerMouseEvent, PaddingOptions } from 'maplibre-gl';
   import { ikon, type IkonNamn } from '../lib/ikoner';
   import { urvalSomCsv } from '../lib/csv';
   import { grupperaPerPlats, platsEfterUtzoomning, platsmitt, zoomgranser, ZOOM_KOMMUN, ZOOM_POSTER, type Platsgrupp } from '../lib/platsgrupper';
   import { arPaskagg, cirkel, type Medlemsvy } from '../lib/medlemmar';
   import { normalisera, tolka, traffar, tomtSvar, finnsI, type Tolkning } from '../lib/sok';
-  import { urvalsrubrik } from '../lib/urvalsrubrik';
+  import { urvalsrubrik, RUBRIK_ALLA } from '../lib/urvalsrubrik';
+  import { arVald } from '../lib/fragor';
+  import { tittext } from '../lib/titt';
   import { skapaHandelser, tillVercel, type Handling } from '../lib/handelser';
+  import { AVSTAND, knuffordning, etikettrutor, korsar, ryms, type Ruta } from '../lib/knuff';
 
   type Post = {
     id: string; n: string; t: string; o: string[]; a: string[]; k: string | null; kn: string | null;
@@ -264,6 +292,12 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     const vyDetalj = app.querySelector<HTMLElement>('#vy-detalj');
     const grepp = app.querySelector<HTMLButtonElement>('#grepp');
     const greppText = app.querySelector<HTMLElement>('#grepptext');
+    const greppNot = app.querySelector<HTMLElement>('#greppnot');
+    const greppVad = app.querySelector<HTMLElement>('#greppvad');
+    // Texten som bygget skrev i greppet. Den gäller tills datan har kommit.
+    const stdGrepp = { rubrik: greppText?.textContent ?? '', not: greppNot?.textContent ?? '' };
+    const fragelankar = [...app.querySelectorAll<HTMLAnchorElement>('a.fraga')];
+    const antalKommuner = Number(app.dataset.kommuner ?? 0);
     const rubrik = app.querySelector<HTMLElement>('#rubrik');
     // Listsidans rubrik ligger utanför appen, i src/pages/organisationer.astro.
     const listrubrik = document.querySelector<HTMLElement>('#listrubrik');
@@ -276,6 +310,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     const sokFalt = document.querySelector<HTMLInputElement>('#sok');
     const sokLada = document.querySelector<HTMLElement>('#sokresultat');
     const smal = window.matchMedia('(max-width: 900px)');
+    const pekskarm = window.matchMedia('(hover: none)');
     const medlemsknapp = app.querySelector<HTMLButtonElement>('#visa-medlemmar');
     const medlemskort = app.querySelector<HTMLElement>('#medlemskort');
     const medlemsdata = JSON.parse(document.getElementById('medlemsdata')?.textContent || 'null') as Medlemsvy | null;
@@ -323,15 +358,22 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     // En organisation i adressen går före: den som går till en organisation lämnar vyn.
     let medlemslage = medKarta && !!medlemsdata && !valdId && start.get('vy') === 'medlemmar';
 
+    // Listans första namn, i den ordning den senast ritades. De står i bladets nedfällda läge.
+    let forstaNamn: string[] = [];
     // Händelserna räknas bara där räkneskriptet finns: på den publika sajten, hos den som inte har
     // bett att slippa. Vad som får följa med står i src/lib/handelser.ts.
     const handelser = skapaHandelser(tillVercel(window as unknown as { va?: (...argument: unknown[]) => void }));
+    // Knuffen: ringen på kartan som säger att siffrorna går att trycka på.
+    let knuff: Marker | null = null;
+    let knuffvakt: number | undefined;
     let vantarPaRitad = false;
     // En flik som inte syns ritar inga bildrutor. Tiden till ritad karta säger då inget om väntan.
     let varDold = document.visibilityState === 'hidden';
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'hidden') varDold = true;
     });
+    // Sätts när kartbiblioteket har laddat. Före det finns ingen nål att sätta.
+    let nyNal: ((el: HTMLElement, plats: [number, number]) => Marker) | null = null;
 
     const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
     const plural = (n: number) => (n === 1 ? 'organisation' : 'organisationer');
@@ -356,17 +398,18 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       return `<span class="logo ${klass}" style="--f:${FARG[o.t] || FARG.bolag}" aria-hidden="true">${esc(initialer(o.n))}</span>`;
     }
 
-    /* ---------- Händelser ---------- */
+    /* ---------- Händelser och knuffen ---------- */
 
-    /** Besökaren har gjort något. Bara den första handlingen räknas. */
+    /** Besökaren har gjort något. Den första handlingen räknas, och knuffen på kartan har gjort sitt. */
     function handling(typ: Handling) {
+      taBortKnuff();
       handelser.handling(typ);
     }
 
     /**
      * Kartan räknas som ritad när kartbiblioteket har tagit emot organisationerna och ritat en bild
      * med dem, inte när datan lämnades dit. På en långsam telefon skiljer det sekunder, och det är
-     * den tiden besökaren väntar.
+     * den tiden besökaren väntar. Då börjar också knuffen räkna ner.
      */
     function vantaPaRitad() {
       const k = karta;
@@ -376,6 +419,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         k.off('render', titta);
         k.off('idle', klar);
         handelser.kartaRitad(performance.now(), varDold);
+        planeraKnuff();
       };
       const titta = () => {
         if (!['orgs', 'lan-grupper', 'kommun-grupper'].every((kalla) => k.getSource(kalla) && k.isSourceLoaded(kalla))) return;
@@ -390,6 +434,93 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       // Står besökaren där inga organisationer finns syns ingen av dem. Då räcker det att kartan är stilla.
       k.on('idle', klar);
       k.triggerRepaint();
+    }
+
+    /**
+     * Knuffen är en ring kring en grupp och orden Tryck på en siffra. Den visas en gång per
+     * sidladdning, en stund efter att kartan har ritats, och bara när hela kartan visas och
+     * besökaren inte har gjort något än. Gruppen slumpas, så att inget län pekas ut. Inget sparas
+     * på enheten om att den har visats. Reglerna står i src/lib/knuff.ts.
+     */
+    function planeraKnuff() {
+      if (knuffvakt !== undefined || knuff || handelser.harHandlat()) return;
+      knuffvakt = window.setTimeout(visaKnuff, 1400);
+    }
+
+    function visaKnuff() {
+      knuffvakt = undefined;
+      const f = lasFilter();
+      const orort = !valdId && !medlemslage && !f.q && !f.lan && !f.kommun && urval.length === alla.length && panel.dataset.blad !== 'oppen';
+      if (!nyNal || !karta || !orort || handelser.harHandlat()) return;
+      const k = karta;
+      const kartyta = k.getContainer();
+      const yta = kartyta.getBoundingClientRect();
+
+      const el = document.createElement('div');
+      el.className = 'knuff';
+      el.setAttribute('aria-hidden', 'true');
+      el.innerHTML = '<span class="knuff__ring"></span><span class="knuff__text"></span>';
+      const text = el.querySelector<HTMLElement>('.knuff__text');
+      if (!text) return;
+      // Orden mäts innan de får en plats. De långa prövas först, och de korta där de långa inte ryms.
+      el.style.visibility = 'hidden';
+      kartyta.append(el);
+      const verb = pekskarm.matches ? 'Tryck' : 'Klicka';
+      const texter = [`${verb} på en siffra`, `${verb} här`].map((ord) => {
+        text.textContent = ord;
+        return { ord, bredd: text.offsetWidth, hojd: text.offsetHeight };
+      });
+      el.remove();
+      el.style.visibility = '';
+
+      // Orden får stå på kartan, men inte på det som ligger över den: bladet, knapparna, filtren och källraden.
+      const ruta = (r: DOMRect): Ruta => ({ v: r.left - yta.left, t: r.top - yta.top, h: r.right - yta.left, b: r.bottom - yta.top });
+      const fri: Ruta = { v: 8, t: 8, h: yta.width - 8, b: yta.height - 8 };
+      const ovanpa = ['.kartknappar', smal.matches ? '#oppna-filter' : '.filterrad', '.karta__not', '.maplibregl-ctrl-bottom-right', ...(smal.matches ? ['#panel'] : [])];
+      const hinder = ovanpa
+        .map((v) => app.querySelector<HTMLElement>(v)?.getBoundingClientRect())
+        .filter((r): r is DOMRect => !!r && r.width > 0 && r.height > 0)
+        .map(ruta);
+      // Inte heller på en annan grupp eller en ensam organisation, och helst inte på ett namn: ord
+      // som står över grannlänets namn ser ut att höra dit. Namnen får täckas först när inget annat går.
+      const finns = (lager: string[]) => lager.filter((id) => k.getLayer(id));
+      const prickar = finns(['lan-grupp', 'kommun-grupp', 'punkter', 'landmarken']);
+      const namn = finns(['lan-grupp-namn', 'kommun-grupp-namn', 'namn', 'landmarken-namn']);
+      const ledig = (r: Ruta, lager: string[]) =>
+        ryms(r, fri) && !hinder.some((h) => korsar(r, h)) && !k.queryRenderedFeatures([[r.v, r.t], [r.h, r.b]], { layers: lager }).length;
+
+      for (const g of knuffordning(grupperaPerPlats(urval, 'lan', mitt.lan).grupper)) {
+        const punkt = k.project([g.lng, g.lat]);
+        // Gruppen ska synas, och inte ligga under bladet eller en knapp.
+        const ritad = k.getLayer('lan-grupp') ? k.queryRenderedFeatures(punkt, { layers: ['lan-grupp'] })[0] : undefined;
+        const mitten: Ruta = { v: punkt.x - 1, t: punkt.y - 1, h: punkt.x + 1, b: punkt.y + 1 };
+        if (!ritad || !ryms(mitten, fri) || hinder.some((h) => korsar(mitten, h))) continue;
+        // Ringen ligger tätt kring gruppen som den är ritad just nu. Grupperna krymper när hela landet är i bild.
+        const ritadRadie = ritad.layer.type === 'circle' ? ritad.layer.paint?.['circle-radius'] : undefined;
+        const radie = (typeof ritadRadie === 'number' ? ritadRadie : 28) + 10;
+        for (const lager of [[...prickar, ...namn], prickar]) {
+          for (const t of texter) {
+            const plats = etikettrutor(punkt.x, punkt.y, radie, t.bredd, t.hojd).find(([, r]) => ledig(r, lager));
+            if (!plats) continue;
+            text.textContent = t.ord;
+            el.classList.add(`knuff--${plats[0]}`);
+            el.style.setProperty('--knuff-r', `${radie}px`);
+            el.style.setProperty('--knuff-d', `${radie * AVSTAND}px`);
+            knuff = nyNal(el, [g.lng, g.lat]);
+            return;
+          }
+        }
+      }
+    }
+
+    function taBortKnuff() {
+      window.clearTimeout(knuffvakt);
+      knuffvakt = undefined;
+      if (!knuff) return;
+      const nal = knuff;
+      knuff = null;
+      nal.getElement().classList.add('knuff--bort');
+      window.setTimeout(() => nal.remove(), 240);
     }
 
     /* ---------- Filter ---------- */
@@ -599,6 +730,21 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       if (!utzoomning) passaKarta();
     }
 
+    /**
+     * Ett tryck på en fråga byter hela urvalet till frågans, också sökningen. Ett tryck till på
+     * samma fråga tar bort urvalet. Bakåt i webbläsaren går till det som var valt innan.
+     */
+    function valjFraga(sok: string) {
+      if (arVald(sok, lasFilter())) return rensa('alla');
+      lamnaMedlemsvy();
+      lasUrl(new URLSearchParams(sok));
+      rattaPlats();
+      stangDetalj(false);
+      filtrera(false);
+      skrivUrl(lasFilter(), true);
+      if (karta && kartaKlar) passaKarta();
+    }
+
     function rensa(vad: string) {
       if (vad === 'alla') {
         for (const namn of ['erbjuder', 'typ', 'omrade']) sattVal(namn, []);
@@ -647,6 +793,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       if (datafel) return;
       const frag = document.createDocumentFragment();
       const sorterade = sorterat();
+      forstaNamn = sorterade.slice(0, 3).map((o) => o.n);
       const f = lasFilter();
       // Den som letar infrastruktur får veta att leverantörerna jämförs i detalj på systersajten.
       if (sorterade.length && (f.typ.includes('infrastruktur') || f.erbjuder.includes('infrastruktur'))) {
@@ -789,17 +936,47 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       uppdateraGrepp();
     }
 
-    function uppdateraGrepp() {
-      if (!greppText) return;
-      if (panel.dataset.blad === 'oppen') greppText.textContent = 'Visa kartan';
-      else if (valdId) greppText.textContent = alla.find((o) => o.id === valdId)?.n ?? 'Visa listan';
-      else greppText.textContent = alla.length ? `${urval.length} ${plural(urval.length)} · ${veckansNya() ?? 'visa listan'}` : 'Visa listan';
+    /** Urvalets rubrik i det nedfällda bladet. Null när hela kartan visas. */
+    function tittrubrik(f: Filter): string | null {
+      // Urvalet är just en av frågorna: då heter det som pillret besökaren tryckte på.
+      const fraga = fragelankar.find((l) => arVald(l.dataset.fraga ?? '', f))?.dataset.text;
+      if (fraga) return fraga;
+      const plats = platsNamn(f);
+      // Bara en plats är vald: namnet räcker, som i panelens rubrik.
+      if (plats && !f.q && !(f.erbjuder.length + f.typ.length + f.omrade.length)) return plats;
+      const text = urvalsrubrik({ ...f, plats }, { omrade: (id) => etiketter.omraden[id] ?? id, typer: (id) => etiketter.typerPlural[id] ?? id });
+      return text === RUBRIK_ALLA ? null : text;
     }
 
-    // "19 nya i veckan", när hela kartan visas och något har lagts till. Talet räknas i Veckopuls.astro.
-    function veckansNya(): string | null {
-      const nya = Number(puls?.dataset.nya ?? 0);
-      return nya > 0 && urval.length === alla.length ? `${nya} ${nya === 1 ? 'ny' : 'nya'} i veckan` : null;
+    // Greppet i telefon: en rubrik och en rad under, som svarar på varje tryck. Reglerna står i src/lib/titt.ts.
+    function uppdateraGrepp() {
+      if (!greppText) return;
+      const oppet = panel.dataset.blad === 'oppen';
+      const f = lasFilter();
+      const vald = valdId ? alla.find((o) => o.id === valdId) : undefined;
+      // Innan datan har kommit finns inget att räkna på. Då gäller texten som bygget skrev.
+      const text =
+        !alla.length && !oppet
+          ? stdGrepp
+          : tittext({
+              oppet,
+              vald: vald ? { namn: vald.n, under: [etiketter.typer[vald.t] || vald.t, vald.kn].filter(Boolean).join(' · ') } : null,
+              urval: tittrubrik(f),
+              antal: urval.length,
+              totalt: alla.length,
+              kommuner: antalKommuner,
+              // Veckans nya räknas i Veckopuls.astro, och räknas om där när dagen har bytts.
+              nya: Number(puls?.dataset.nya ?? 0),
+              namn: forstaNamn,
+            });
+      greppText.textContent = text.rubrik;
+      if (greppNot) greppNot.textContent = text.not;
+      // Det som inte syns men läses upp: vad ett tryck på greppet gör.
+      if (greppVad) greppVad.textContent = oppet ? '' : vald ? 'Visa organisationen' : 'Visa listan';
+      for (const lank of fragelankar) {
+        if (arVald(lank.dataset.fraga ?? '', f)) lank.setAttribute('aria-current', 'true');
+        else lank.removeAttribute('aria-current');
+      }
     }
     document.addEventListener('veckopuls', uppdateraGrepp);
 
@@ -1010,8 +1187,14 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
 
     // På en liggande telefon är kartytan låg. Då tar marginalerna annars så mycket att södra Sverige
     // hamnar under bladet.
+    // Bladets nedfällda höjd står i CSS, som --titt-h. Kartan lämnar den ytan fri, plus källraden och lite luft.
+    const tittHojd = (): number => parseFloat(getComputedStyle(app).getPropertyValue('--titt-h')) || 62;
     const kartMarginal = (): Required<PaddingOptions> =>
-      smal.matches ? (window.innerHeight < 520 ? { top: 16, bottom: 72, left: 24, right: 24 } : { top: 84, bottom: 96, left: 24, right: 24 }) : { top: 96, bottom: 48, left: 48, right: 72 };
+      smal.matches
+        ? window.innerHeight < 520
+          ? { top: 16, bottom: 72, left: 24, right: 24 }
+          : { top: 84, bottom: tittHojd() + 34, left: 24, right: 24 }
+        : { top: 96, bottom: 48, left: 48, right: 72 };
 
     /** `el` och `ek` säger om organisationen är ensam i sitt län respektive sin kommun och då ritas som sig själv. */
     function tillGeoJson(poster: Post[], ensamILan?: Set<string>, ensamIKommun?: Set<string>): GeoJSON.FeatureCollection {
@@ -1039,6 +1222,8 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     }
 
     function uppdateraKarta() {
+      // Urvalet har ändrats. Ringen sitter då inte längre kring rätt grupp.
+      taBortKnuff();
       const lan = grupperaPerPlats(urval, 'lan', mitt.lan);
       const kommuner = grupperaPerPlats(urval, 'kommun', mitt.kommun);
       ensamma = { lan: lan.ensamma, kommun: kommuner.ensamma };
@@ -1308,7 +1493,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
           return [typ, bild];
         }),
       );
-      const { Map: Karta, Popup: Tips, setWorkerUrl } = await import('maplibre-gl');
+      const { Map: Karta, Popup: Tips, Marker: Nal, setWorkerUrl } = await import('maplibre-gl');
       // Workern serveras från sajten; se scripts/kopiera-maplibre-worker.mjs.
       if (app.dataset.worker) setWorkerUrl(new URL(app.dataset.worker, location.href).href);
       try {
@@ -1328,6 +1513,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         return;
       }
       (window as unknown as { aiKartan?: unknown }).aiKartan = { karta };
+      nyNal = (el, plats) => new Nal({ element: el }).setLngLat(plats).addTo(karta!);
       // Besökarens egna rörelser: dra, nypa, rulla och trycka. Kartans egna flygningar har ingen ursprungshändelse.
       karta.on('movestart', (e) => {
         if ((e as { originalEvent?: Event }).originalEvent) handling('karta');
@@ -1751,10 +1937,20 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     sortEl.addEventListener('change', () => {
       handling('lista');
       renderLista();
+      uppdateraGrepp();
     });
 
     app.addEventListener('click', (e) => {
       const mal = e.target as HTMLElement;
+      // En fråga byter urval utan att sidan laddas om. Med ctrl, cmd eller skift gäller länken som vanligt.
+      const fraga = mal.closest<HTMLAnchorElement>('a.fraga');
+      if (fraga) {
+        const klick = e as MouseEvent;
+        if (klick.metaKey || klick.ctrlKey || klick.shiftKey) return;
+        e.preventDefault();
+        handling('fraga');
+        return valjFraga(fraga.dataset.fraga ?? '');
+      }
       const rensaKnapp = mal.closest<HTMLElement>('[data-rensa]');
       if (rensaKnapp) return rensa(rensaKnapp.dataset.rensa!);
 
@@ -2129,7 +2325,8 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
   .app[data-lage='karta'] .panel {
     border-right: 1px solid hsl(var(--kant));
   }
-  .panel__grepp {
+  /* Bladets nedfällda läge finns bara i smal vy. På bred skärm står allt i panelen. */
+  .titt {
     display: none;
   }
   .app[data-lage='karta'] .panel__vy {
@@ -2892,6 +3089,86 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
   .app[data-vy='medlemmar'] .karta__not {
     display: none;
   }
+  /* ---------- Knuffen: ringen kring den största gruppen ---------- */
+  /* Kartbiblioteket flyttar nålen med transform och sätter dess opacitet. Därför ligger allt
+     som syns och rör sig på barnen, och nålen själv är en punkt utan yta. Tryck går rakt igenom. */
+  .knuff {
+    width: 0;
+    height: 0;
+    pointer-events: none;
+  }
+  .knuff__ring,
+  .knuff__text {
+    position: absolute;
+    transition: opacity 220ms ease;
+  }
+  .knuff__ring {
+    top: calc(var(--knuff-r, 38px) * -1);
+    left: calc(var(--knuff-r, 38px) * -1);
+    width: calc(var(--knuff-r, 38px) * 2);
+    height: calc(var(--knuff-r, 38px) * 2);
+    border: 2px solid hsl(var(--ink) / 0.5);
+    border-radius: 50%;
+  }
+  .knuff__ring::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border: 2px solid hsl(var(--ink));
+    border-radius: 50%;
+    opacity: 0;
+  }
+  /* Orden står snett utanför ringen. Avståndet och vilket av de fyra hörnen sätts i visaKnuff. */
+  .knuff__text {
+    top: var(--knuff-d, 27px);
+    left: var(--knuff-d, 27px);
+    padding: 7px 11px;
+    border-radius: var(--r-pill);
+    background: hsl(var(--ink));
+    color: hsl(var(--yta));
+    font: 600 13px/1 var(--font-sans);
+    white-space: nowrap;
+    box-shadow: var(--skugga-flyt);
+  }
+  .knuff--uh .knuff__text,
+  .knuff--uv .knuff__text {
+    top: auto;
+    bottom: var(--knuff-d, 27px);
+  }
+  .knuff--nv .knuff__text,
+  .knuff--uv .knuff__text {
+    right: var(--knuff-d, 27px);
+    left: auto;
+  }
+  .knuff--bort .knuff__ring,
+  .knuff--bort .knuff__text {
+    opacity: 0;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .knuff__ring,
+    .knuff__text {
+      animation: knuff-in 360ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    /* Tre pulser, sedan står ringen still. En ring som aldrig slutar blinka stör mer än den hjälper. */
+    .knuff__ring::after {
+      animation: knuff-puls 1900ms cubic-bezier(0.16, 1, 0.3, 1) 300ms 3;
+    }
+  }
+  @keyframes knuff-in {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes knuff-puls {
+    from {
+      transform: scale(0.82);
+      opacity: 0.75;
+    }
+    to {
+      transform: scale(1.7);
+      opacity: 0;
+    }
+  }
   @media (prefers-reduced-motion: no-preference) {
     .kartknapp--vi:hover img,
     .medlemskort:not([hidden]) .medlemskort__bild {
@@ -3271,6 +3548,9 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     .app[data-lage='karta'] {
       display: block;
       position: relative;
+      /* Så mycket av bladet syns i det nedfällda läget: handtag, rubrik, två rader text och frågorna.
+         Kartans marginal, knapparna och källraden räknar med samma tal. */
+      --titt-h: 148px;
     }
     .app[data-lage='karta'] .kartyta {
       position: absolute;
@@ -3286,29 +3566,70 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       border-right: 0;
       border-radius: 22px 22px 0 0;
       box-shadow: 0 -12px 40px -14px hsl(var(--ink) / 0.35);
-      transform: translateY(calc(100% - 62px - env(safe-area-inset-bottom)));
+      transform: translateY(calc(100% - var(--titt-h) - env(safe-area-inset-bottom)));
       transition: transform var(--t-blad);
     }
     .app[data-lage='karta'] .panel[data-blad='oppen'] {
       transform: none;
     }
-    .panel__grepp {
-      display: grid;
-      justify-items: center;
-      gap: 9px;
+    /* Höjden är fast, så att just så mycket av bladet sticker upp som kartan har lämnat plats för.
+       Texten kläms till en rad och två rader, annars skulle höjden bero på hur orden bryts. */
+    .titt {
+      display: flex;
       flex: none;
-      width: 100%;
-      height: 62px;
-      padding: 9px 16px 0;
-      border: 0;
+      flex-direction: column;
+      height: calc(var(--titt-h) + env(safe-area-inset-bottom));
+      padding-bottom: calc(10px + env(safe-area-inset-bottom));
+      overflow: hidden;
       border-bottom: 1px solid hsl(var(--kant));
       border-radius: 22px 22px 0 0;
       background: hsl(var(--yta));
-      color: hsl(var(--ink));
-      font: 600 15px/1.2 var(--font-sans);
-      cursor: pointer;
+    }
+    .panel__grepp {
+      display: grid;
+      flex: 1;
       align-content: start;
+      justify-items: start;
+      min-height: 0;
+      width: 100%;
+      padding: 9px 16px 0;
+      border: 0;
+      border-radius: 22px 22px 0 0;
+      background: none;
+      color: hsl(var(--ink));
+      font: 600 17px/1.25 var(--font-sans);
+      letter-spacing: -0.01em;
+      text-align: left;
+      cursor: pointer;
       touch-action: none;
+    }
+    .panel__greppnot {
+      display: -webkit-box;
+      overflow: hidden;
+      margin-top: 3px;
+      color: hsl(var(--ink-mute));
+      font: 400 13.5px/1.4 var(--font-sans);
+      letter-spacing: 0;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+    }
+    .fragor--titt {
+      flex: none;
+      margin-top: 8px;
+    }
+    /* Uppfällt är greppet bara vägen tillbaka till kartan. Frågorna står då i bladets inledning. */
+    .panel[data-blad='oppen'] .titt {
+      height: 62px;
+      padding-bottom: 0;
+    }
+    .panel[data-blad='oppen'] .panel__grepp {
+      justify-items: center;
+      font: 600 15px/1.2 var(--font-sans);
+      letter-spacing: 0;
+    }
+    .panel[data-blad='oppen'] .panel__greppnot,
+    .panel[data-blad='oppen'] .fragor--titt {
+      display: none;
     }
     /* Tryckytor på minst 44 px, och 16 px text i fält så att iOS inte zoomar in. */
     .ikonknapp {
@@ -3332,8 +3653,10 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       max-height: 46vh;
     }
     .panel__handtag {
+      justify-self: center;
       width: 40px;
       height: 4px;
+      margin-bottom: 10px;
       border-radius: 2px;
       background: hsl(var(--ink) / 0.22);
     }
@@ -3353,11 +3676,11 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     }
     .kartknappar {
       right: 12px;
-      bottom: 116px;
+      bottom: calc(var(--titt-h) + 54px);
     }
     .maplibregl-ctrl-bottom-right,
     .maplibregl-ctrl-bottom-left {
-      bottom: 62px;
+      bottom: var(--titt-h);
     }
 
     /* Filterraden: bara Filter och Bekräftat syns. Facetterna ligger i ett blad. */
@@ -3585,6 +3908,22 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
 
   /* Liggande telefon: ett blad i botten tar hela höjden. Kortet ligger vid sidan, som i bred vy. */
   @media (max-width: 900px) and (max-height: 520px) {
+    /* På en liggande telefon ryms bara handtaget och rubriken. Frågorna står i bladets inledning. */
+    .app[data-lage='karta'] {
+      --titt-h: 62px;
+    }
+    .titt {
+      padding-bottom: 0;
+    }
+    .panel__grepp {
+      justify-items: center;
+      font: 600 15px/1.2 var(--font-sans);
+      letter-spacing: 0;
+    }
+    .panel__greppnot,
+    .app[data-lage='karta'] .fragor--titt {
+      display: none;
+    }
     /* I en låg vy tog bannern och den klistrade foten hela detaljbladet, så att namnet inte syntes.
        Logotypen skjuter upp över den lägre bannern, så knappen flyttas åt sidan om den. */
     .detalj__banner {
