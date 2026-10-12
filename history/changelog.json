@@ -1,8 +1,20 @@
 {
-  "generated_at": "2026-10-12T10:24:45Z",
-  "antal": 366,
-  "senaste_andring": "2026-10-10",
+  "generated_at": "2026-10-12T10:30:00Z",
+  "antal": 367,
+  "senaste_andring": "2026-10-12",
   "rader": [
+    {
+      "datum": "2026-10-12",
+      "commit": "34758b3912",
+      "id": "livepictureai",
+      "namn": "LivePictureAI",
+      "falt": "hela posten",
+      "andring": "tillagd",
+      "gammalt": null,
+      "nytt": null,
+      "status": null,
+      "kalla": "https://livepicture.ai"
+    },
     {
       "datum": "2026-10-10",
       "commit": "eae782e9e0",
