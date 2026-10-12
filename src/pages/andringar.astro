@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import Sida from '../layouts/Sida.astro';
+import Veckopuls from '../components/Veckopuls.astro';
 import { hamtaData, url, formateraDatum, ANDRINGAR_PA_SIDAN } from '../lib/data';
 import { ROT } from '../../scripts/lib/organisationer.mjs';
 
@@ -32,6 +33,8 @@ const visa = (v: unknown) => (v === null || v === undefined ? '–' : typeof v =
     {d.andringar.rader.length} rader · senaste ändring {formateraDatum(d.andringar.senaste_andring)} ·
     <a href={url('/api/andringar.json')}>JSON</a> · <a href={url('/feed.xml')}>Atom-flöde</a>
   </p>
+
+  <Veckopuls form="block" />
 
   {bygglogg.length > 0 && (
     <section>

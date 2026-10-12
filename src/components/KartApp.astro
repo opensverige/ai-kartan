@@ -4,6 +4,7 @@
 // Sökfältet ligger i sidhuvudet (Sidhuvud.astro) och kopplas in härifrån.
 import 'maplibre-gl/dist/maplibre-gl.css';
 import Filterrad from './Filterrad.astro';
+import Veckopuls from './Veckopuls.astro';
 import { hamtaData, tillKartpost, typikoner, url, formateraDatum, SAJT } from '../lib/data';
 import { medVersion } from '../lib/meta';
 import { ikon } from '../lib/ikoner';
@@ -62,6 +63,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
           <p class="kicker panel__kicker">Tech Embassy · oberoende, inte statlig</p>
           <h1 class="panel__rubrik" id="rubrik">Alla som bygger AI i Sverige</h1>
           <p class="panel__antal"><strong id="antal-tal">{s.antal}</strong> <span id="antal-not">organisationer</span></p>
+          <Veckopuls form="rad" />
           <p class="panel__text" id="ingress">
             Drivs ideellt av föreningen OpenSverige, inget företag. Inget rankas och ingen kan köpa en plats.
             <a href={url('/bidra')}>Lägg till dig själv.</a>
@@ -268,6 +270,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     const antalTal = app.querySelector<HTMLElement>('#antal-tal');
     const antalNot = app.querySelector<HTMLElement>('#antal-not');
     const ingress = app.querySelector<HTMLElement>('#ingress');
+    const puls = app.querySelector<HTMLElement>('[data-veckopuls]');
     const brod = app.querySelector<HTMLElement>('#brod');
     const sokFalt = document.querySelector<HTMLInputElement>('#sok');
     const sokLada = document.querySelector<HTMLElement>('#sokresultat');
@@ -480,6 +483,8 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       if (antalTal) antalTal.textContent = n === alla.length ? String(n) : `${n} av ${alla.length}`;
       // Ordet böjs efter talet närmast: "1 av 328 organisationer".
       if (antalNot) antalNot.textContent = plural(n === alla.length ? n : alla.length) + (medKarta && utanPlats ? ` · ${utanPlats} utan plats på kartan` : '');
+      // Veckans nya gäller hela kartan, inte ett urval eller en plats.
+      if (puls) puls.hidden = n !== alla.length;
       if (ingress) {
         if (plats) ingress.textContent = `Organisationer som bygger AI i ${plats}. Varje uppgift har källa, datum och status.`;
         else ingress.innerHTML = stdIngress;
@@ -741,8 +746,15 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       if (!greppText) return;
       if (panel.dataset.blad === 'oppen') greppText.textContent = 'Visa kartan';
       else if (valdId) greppText.textContent = alla.find((o) => o.id === valdId)?.n ?? 'Visa listan';
-      else greppText.textContent = alla.length ? `${urval.length} ${plural(urval.length)} · visa listan` : 'Visa listan';
+      else greppText.textContent = alla.length ? `${urval.length} ${plural(urval.length)} · ${veckansNya() ?? 'visa listan'}` : 'Visa listan';
     }
+
+    // "19 nya i veckan", när hela kartan visas och något har lagts till. Talet räknas i Veckopuls.astro.
+    function veckansNya(): string | null {
+      const nya = Number(puls?.dataset.nya ?? 0);
+      return nya > 0 && urval.length === alla.length ? `${nya} ${nya === 1 ? 'ny' : 'nya'} i veckan` : null;
+    }
+    document.addEventListener('veckopuls', uppdateraGrepp);
 
     /* ---------- Sök ---------- */
 

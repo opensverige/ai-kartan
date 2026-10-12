@@ -1,0 +1,386 @@
+---
+// Veckopulsen: vad som hänt på kartan de senaste sju dagarna. Raden står i kartans panel och
+// blocket överst på /andringar. Talen räknas ur ändringshistoriken vid bygget, och räknas om i
+// webbläsaren när dagen har bytts: sajten byggs bara när något ändras, och "senaste 7 dagarna"
+// ska stämma även en vecka då inget har byggts. Reglerna står i src/lib/vecka.ts.
+import { hamtaData, url } from '../lib/data';
+import { ikon } from '../lib/ikoner';
+import { veckounderlag, veckan, veckoord, dagensDatum, datumspann, kortDatum, veckodag, stapelhojd } from '../lib/vecka';
+
+interface Props {
+  form: 'rad' | 'block';
+}
+const { form } = Astro.props;
+// Så många av veckans nya som visas vid namn i blocket. Resten finns i tabellen under.
+const ANTAL_NAMN = 6;
+
+const d = hamtaData();
+const idag = dagensDatum();
+const underlag = veckounderlag(d.andringar.rader, idag, ANTAL_NAMN);
+const v = veckan(underlag, idag);
+const ord = veckoord(v);
+const storst = Math.max(...v.dagar.map((dag) => dag.nya));
+const namn = underlag.senaste.map((n) => {
+  const org = d.perId.get(n.id);
+  const typ = org ? d.etikett.typer.get(org.type.value)?.label ?? org.type.value : null;
+  return { ...n, finns: Boolean(org), not: [typ, org?.h.kommun_namn, kortDatum(n.datum)].filter(Boolean).join(' · ') };
+});
+const rot = { 'data-veckopuls': true, 'data-byggd': idag, 'data-nya': v.nya, 'data-underlag': JSON.stringify(underlag) };
+---
+
+{form === 'rad' && v.senast && (
+  <a class:list={['veckopuls', 'veckopuls--rad', { 'veckopuls--tom': v.nya === 0 }]} href={url('/andringar#vecka')} {...rot}>
+    <span class="veckopuls__text" data-vp-om="nya" hidden={v.nya === 0}>
+      <strong>+<span data-vp="nya">{v.nya}</span> <span data-vp="kort">{ord.kort}</span></strong> senaste 7 dagarna
+    </span>
+    <span class="veckopuls__text" data-vp-om="tomt" hidden={v.nya > 0}>
+      Senast tillagd: {v.senast.namn}, {kortDatum(v.senast.datum)}
+    </span>
+    <span class="veckopuls__slut">
+      <span class="veckopuls__staplar" data-vp-om="nya" hidden={v.nya === 0} aria-hidden="true">
+        {v.dagar.map((dag) => <i class:list={{ veckopuls__nolla: dag.nya === 0 }} data-vp-stapel style={`--h: ${stapelhojd(dag.nya, storst)}%`} />)}
+      </span>
+      <Fragment set:html={ikon('hoger', 16)} />
+    </span>
+  </a>
+)}
+
+{form === 'block' && v.senast && (
+  <section class:list={['veckopuls', 'veckopuls--block', { 'veckopuls--tom': v.nya === 0 }]} id="vecka" aria-labelledby="vecka-rubrik" {...rot}>
+    <header class="veckopuls__huvud">
+      <h2 id="vecka-rubrik">Senaste 7 dagarna</h2>
+      <p class="meta" data-vp="spann">{datumspann(v.fran, v.till)}</p>
+    </header>
+
+    <div class="veckopuls__spalter">
+    <div>
+    <dl class="veckopuls__tal">
+      <div>
+        <dt data-vp="ord-nya">{ord.nya}</dt>
+        <dd data-vp="nya">{v.nya}</dd>
+      </div>
+      <div>
+        <dt data-vp="ord-uppdaterade">{ord.uppdaterade}</dt>
+        <dd data-vp="uppdaterade">{v.uppdaterade}</dd>
+      </div>
+      <div>
+        <dt data-vp="ord-borttagna">{ord.borttagna}</dt>
+        <dd data-vp="borttagna">{v.borttagna}</dd>
+      </div>
+    </dl>
+
+    <ol class="veckopuls__dagar" aria-label="Nya organisationer per dag">
+      {v.dagar.map((dag, i) => (
+        <li data-vp-dag>
+          <span class="veckopuls__antal" data-vp-antal>{dag.nya}</span>
+          <span class:list={['veckopuls__stapel', { veckopuls__nolla: dag.nya === 0 }]} data-vp-stapel style={`--h: ${stapelhojd(dag.nya, storst)}%`} />
+          <span class="veckopuls__dag" data-vp-dagnamn>{i === v.dagar.length - 1 ? 'i dag' : veckodag(dag.datum)}</span>
+        </li>
+      ))}
+    </ol>
+    </div>
+
+    <div>
+    <ul class="veckopuls__namn">
+      {namn.map((n) => (
+        <li data-datum={n.datum} hidden={n.datum < v.fran}>
+          {n.finns ? <a href={url(`/organisation/${n.id}`)}>{n.namn}</a> : <span>{n.namn}</span>}
+          <span class="meta">{n.not}</span>
+        </li>
+      ))}
+    </ul>
+    <p class="veckopuls__fot" data-vp-om="fler" hidden={v.nya <= v.namn.length}>
+      <a href="#data">Visa alla <span data-vp="nya">{v.nya}</span> i historiken</a>
+    </p>
+    <p class="veckopuls__fot" data-vp-om="tomt" hidden={v.nya > 0}>
+      Inga nya organisationer den här veckan. Senast tillagd:
+      {namn[0].finns ? <a href={url(`/organisation/${namn[0].id}`)}>{namn[0].namn}</a> : namn[0].namn}, {kortDatum(namn[0].datum)}.
+    </p>
+    </div>
+    </div>
+  </section>
+)}
+
+<script>
+  import { veckan, veckoord, dagensDatum, datumspann, veckodag, stapelhojd, type Veckounderlag } from '../lib/vecka';
+
+  const idag = dagensDatum();
+  for (const rot of document.querySelectorAll<HTMLElement>('[data-veckopuls]')) {
+    // Byggd i dag: det som står på sidan stämmer redan.
+    if (rot.dataset.byggd === idag) continue;
+    let underlag: Veckounderlag;
+    try {
+      underlag = JSON.parse(rot.dataset.underlag ?? '');
+    } catch {
+      continue;
+    }
+    const v = veckan(underlag, idag);
+    const ord = veckoord(v);
+    const storst = Math.max(...v.dagar.map((dag) => dag.nya));
+    const satt = (nyckel: string, text: string) => rot.querySelectorAll(`[data-vp="${nyckel}"]`).forEach((el) => (el.textContent = text));
+    const visa = (nyckel: string, synlig: boolean) => rot.querySelectorAll<HTMLElement>(`[data-vp-om="${nyckel}"]`).forEach((el) => (el.hidden = !synlig));
+
+    satt('nya', String(v.nya));
+    satt('uppdaterade', String(v.uppdaterade));
+    satt('borttagna', String(v.borttagna));
+    satt('kort', ord.kort);
+    satt('ord-nya', ord.nya);
+    satt('ord-uppdaterade', ord.uppdaterade);
+    satt('ord-borttagna', ord.borttagna);
+    satt('spann', datumspann(v.fran, v.till));
+    visa('nya', v.nya > 0);
+    visa('tomt', v.nya === 0);
+    visa('fler', v.nya > v.namn.length);
+
+    // Raden har bara staplar, blocket har staplar med tal och veckodag. Båda står i veckans ordning.
+    rot.querySelectorAll<HTMLElement>('[data-vp-stapel]').forEach((el, i) => {
+      const nya = v.dagar[i]?.nya ?? 0;
+      el.style.setProperty('--h', `${stapelhojd(nya, storst)}%`);
+      el.classList.toggle('veckopuls__nolla', nya === 0);
+    });
+    rot.querySelectorAll<HTMLElement>('[data-vp-dag]').forEach((el, i) => {
+      const dag = v.dagar[i];
+      if (!dag) return;
+      const antal = el.querySelector('[data-vp-antal]');
+      const dagnamn = el.querySelector('[data-vp-dagnamn]');
+      if (antal) antal.textContent = String(dag.nya);
+      if (dagnamn) dagnamn.textContent = i === v.dagar.length - 1 ? 'i dag' : veckodag(dag.datum);
+    });
+    rot.querySelectorAll<HTMLElement>('[data-datum]').forEach((el) => (el.hidden = (el.dataset.datum ?? '') < v.fran));
+
+    rot.classList.toggle('veckopuls--tom', v.nya === 0);
+    rot.dataset.nya = String(v.nya);
+    rot.dataset.byggd = idag;
+  }
+  // Kartans panel skriver veckans tal i bladets handtag på telefon och vill veta när det har räknats om.
+  document.dispatchEvent(new CustomEvent('veckopuls'));
+</script>
+
+<style>
+  .veckopuls [hidden],
+  .veckopuls[hidden] {
+    display: none;
+  }
+
+  /* Raden i kartans panel */
+  .veckopuls--rad {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 40px;
+    margin-top: 12px;
+    padding: 6px 10px 6px 14px;
+    border: 1px solid hsl(var(--moss) / 0.28);
+    border-radius: var(--r-pill);
+    background: hsl(var(--moss) / 0.07);
+    color: hsl(var(--moss-deep));
+    font-size: 14.5px;
+    line-height: 1.3;
+    text-decoration: none;
+    transition:
+      background var(--t-fast),
+      border-color var(--t-fast);
+  }
+  .veckopuls--rad:hover {
+    border-color: hsl(var(--moss) / 0.55);
+    background: hsl(var(--moss) / 0.11);
+    color: hsl(var(--moss-deep));
+  }
+  .veckopuls--rad strong {
+    font-weight: 700;
+  }
+  .veckopuls--rad.veckopuls--tom {
+    border-color: hsl(var(--kant));
+    background: hsl(var(--yta-kort));
+    color: hsl(var(--ink-mute));
+  }
+  .veckopuls__slut {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 8px;
+  }
+  .veckopuls__staplar {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 20px;
+  }
+  .veckopuls__staplar i {
+    display: block;
+    width: 5px;
+    /* Staplarna är bara 20 px höga. En dag med en enda ny ska ändå synas som mer än ett streck. */
+    height: max(5px, var(--h));
+    border-radius: 2px;
+    background: hsl(var(--moss));
+  }
+  /* En tom dag är ett streck i grundlinjen, så att veckan alltid har sju platser. */
+  .veckopuls__staplar .veckopuls__nolla {
+    height: 2px;
+    background: hsl(var(--moss) / 0.3);
+  }
+
+  /* Blocket överst på /andringar */
+  .veckopuls--block {
+    margin: 4px 0 40px;
+    padding: 22px 24px 18px;
+    border: 1px solid hsl(var(--kant));
+    border-radius: var(--r-kort);
+    background: hsl(var(--yta-kort));
+  }
+  .veckopuls__huvud {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 4px 16px;
+    margin-bottom: 18px;
+  }
+  .veckopuls__huvud h2 {
+    margin: 0;
+  }
+  .veckopuls__huvud .meta {
+    margin: 0;
+  }
+  /* På bred skärm står veckan till vänster och de nya vid namn till höger. */
+  @media (min-width: 900px) {
+    .veckopuls__spalter {
+      display: grid;
+      grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+      gap: 0 48px;
+      align-items: start;
+    }
+    .veckopuls__spalter .veckopuls__dagar {
+      margin-bottom: 4px;
+    }
+    .veckopuls__spalter .veckopuls__namn li:first-child {
+      border-top-color: hsl(var(--kant));
+    }
+  }
+  .veckopuls__tal {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+    margin: 0 0 26px;
+    border-top: 1px solid hsl(var(--kant));
+    border-bottom: 1px solid hsl(var(--kant));
+  }
+  .veckopuls__tal div {
+    display: flex;
+    flex-direction: column-reverse;
+    /* Talen står på samma rad även när en av texterna under bryts på två. */
+    justify-content: flex-end;
+    gap: 2px;
+    padding: 14px 16px 14px 0;
+  }
+  .veckopuls__tal div + div {
+    padding-left: 16px;
+    border-left: 1px solid hsl(var(--kant));
+  }
+  .veckopuls__tal dt {
+    font-size: 14px;
+    line-height: 1.3;
+    color: hsl(var(--ink-mute));
+  }
+  .veckopuls__tal dd {
+    margin: 0;
+    font-size: clamp(30px, 5vw, 40px);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.035em;
+    font-variant-numeric: tabular-nums;
+    color: hsl(var(--ink));
+  }
+  .veckopuls__tal div:first-child dd {
+    color: hsl(var(--moss));
+  }
+  .veckopuls__dagar {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 8px;
+    margin: 0 0 22px;
+    padding: 0;
+    list-style: none;
+  }
+  .veckopuls__dagar li {
+    display: grid;
+    grid-template-rows: auto 64px auto;
+    justify-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: hsl(var(--ink-mute));
+  }
+  .veckopuls__antal {
+    font-variant-numeric: tabular-nums;
+  }
+  .veckopuls__stapel {
+    align-self: end;
+    width: min(100%, 52px);
+    height: max(2px, var(--h));
+    border-radius: 4px 4px 1px 1px;
+    background: hsl(var(--moss));
+  }
+  .veckopuls__stapel.veckopuls__nolla {
+    border-radius: 1px;
+    background: hsl(var(--kant));
+  }
+  .veckopuls__dagar li:last-child .veckopuls__dag {
+    color: hsl(var(--ink));
+  }
+  /* En vecka utan nya har inga staplar att ge plats åt, och nollan är ingen nyhet att färga. */
+  .veckopuls--tom .veckopuls__dagar li {
+    grid-template-rows: auto 10px auto;
+  }
+  .veckopuls--tom .veckopuls__tal div:first-child dd {
+    color: hsl(var(--ink));
+  }
+  .veckopuls__namn {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .veckopuls__namn li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 2px 16px;
+    padding: 10px 0;
+    border-top: 1px solid hsl(var(--rule-soft));
+  }
+  .veckopuls__namn a {
+    color: hsl(var(--ink));
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .veckopuls__namn a:hover {
+    color: hsl(var(--moss));
+    text-decoration: underline;
+  }
+  .veckopuls__fot {
+    margin: 0;
+    padding-top: 12px;
+    border-top: 1px solid hsl(var(--rule-soft));
+    font-size: 14.5px;
+    color: hsl(var(--ink-mute));
+  }
+  @media (max-width: 520px) {
+    .veckopuls--block {
+      padding: 18px 16px 14px;
+    }
+    .veckopuls__tal div {
+      padding-right: 10px;
+    }
+    .veckopuls__tal div + div {
+      padding-left: 10px;
+    }
+    .veckopuls__tal dt {
+      font-size: 12.5px;
+    }
+    .veckopuls__dagar {
+      gap: 4px;
+    }
+  }
+</style>
