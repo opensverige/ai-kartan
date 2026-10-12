@@ -1,0 +1,88 @@
+id: adm8
+
+name:
+  value: adm8
+  status: claimed
+  source_url: https://adm8.ai
+  source_type: own_site
+  verified_at: 2026-10-10
+  verified_by: agent
+
+legal_name:
+  value: adm8 AB
+  status: claimed
+  source_url: https://adm8.ai/terms
+  source_type: own_site
+  verified_at: 2026-10-10
+  verified_by: agent
+  note: "Namn enligt webbplatsens villkor. Inte kontrollerat mot register."
+
+type:
+  value: bolag
+  status: claimed
+  source_url: https://adm8.ai/terms
+  source_type: own_site
+  verified_at: 2026-10-10
+  verified_by: agent
+  note: "Bolagsformen är härledd ur namnet adm8 AB i webbplatsens villkor. Inte kontrollerad mot register."
+
+org_number:
+  value: null
+  status: unknown
+  verified_at: 2026-10-10
+  verified_by: agent
+  note: "Webbplatsen anger inget organisationsnummer. Sökning på adm8 hos allabolag.se och hitta.se 2026-10-10 gav ingen träff på bolaget."
+
+website: https://adm8.ai
+
+description:
+  value: Utvecklar adm8, en webbtjänst som genererar bilder, videoklipp och annonsvarianter med AI utifrån textbeskrivningar, referensbilder och varumärkesmaterial.
+  status: claimed
+  source_url: https://adm8.ai
+  source_type: own_site
+  verified_at: 2026-10-10
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://adm8.ai
+  source_type: own_site
+  verified_at: 2026-10-10
+  verified_by: agent
+
+areas:
+  value: [media_kreativt]
+  status: claimed
+  source_url: https://adm8.ai
+  source_type: own_site
+  verified_at: 2026-10-10
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: claimed
+  source_url: https://adm8.ai/privacy
+  source_type: own_site
+  verified_at: 2026-10-10
+  verified_by: agent
+  note: "Stockholm. Integritetspolicyn anger att bolaget är registrerat i Stockholm. Tipset angav Karlstad, som inte står på webbplatsen. Sätet är inte kontrollerat mot register."
+
+evidence:
+  - url: https://adm8.ai
+    kind: produkt
+    title: "adm8: webbtjänst som genererar bilder, video och annonsvarianter utifrån text, referensbilder och varumärkesmaterial"
+    status: claimed
+    verified_at: 2026-10-10
+    verified_by: agent
+    note: Tjänsten ligger bakom inloggning. Belägget är den publika beskrivningen av den.
+  - url: https://adm8.ai/marketing-studio
+    kind: produkt
+    title: "Marketing Studio: videoannonser genererade ur produktbilder och en textbeskrivning"
+    status: claimed
+    verified_at: 2026-10-10
+    verified_by: agent
+    note: Exemplet på sidan är märkt med videomodellen Seedance 2.
+
+record_created_at: 2026-10-10
+record_updated_at: 2026-10-10
