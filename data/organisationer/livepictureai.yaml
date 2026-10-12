@@ -1,0 +1,110 @@
+id: livepictureai
+
+name:
+  value: LivePictureAI
+  status: claimed
+  source_url: https://livepicture.ai
+  source_type: own_site
+  verified_at: 2026-10-12
+  verified_by: agent
+
+legal_name:
+  value: LivePictureAI AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5595293753
+  source_type: third_party
+  verified_at: 2026-10-12
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5595293753
+  source_type: third_party
+  verified_at: 2026-10-12
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: aktiebolag."
+
+org_number:
+  value: "559529-3753"
+  status: confirmed
+  source_url: https://www.allabolag.se/5595293753
+  source_type: third_party
+  verified_at: 2026-10-12
+  verified_by: agent
+  note: "Samma nummer som i tipset och i webbplatsens sidfot."
+
+website: https://livepicture.ai
+
+description:
+  value: Utvecklar LivePictureAI, programvara som i realtid jämnar ut starkt solljus och djupa skuggor i direktsänd utomhusidrott med en egen tränad modell. Enligt webbplatsen prövas tekniken med utvalda partner inför kommersiell lansering.
+  status: claimed
+  source_url: https://livepicture.ai
+  source_type: own_site
+  verified_at: 2026-10-12
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://livepicture.ai
+  source_type: own_site
+  verified_at: 2026-10-12
+  verified_by: agent
+
+areas:
+  value: [datorseende, media_kreativt]
+  status: claimed
+  source_url: https://livepicture.ai
+  source_type: own_site
+  verified_at: 2026-10-12
+  verified_by: agent
+
+kommun:
+  value: "1471"
+  status: confirmed
+  source_url: https://www.allabolag.se/5595293753
+  source_type: third_party
+  verified_at: 2026-10-12
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Götene."
+
+founded:
+  value: 2025
+  status: confirmed
+  source_url: https://www.allabolag.se/5595293753
+  source_type: third_party
+  verified_at: 2026-10-12
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2025-04-30."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5595293753
+  source_type: third_party
+  verified_at: 2026-10-12
+  verified_by: agent
+  note: "Status enligt allabolag.se 2026-10-12: aktiv."
+
+evidence:
+  - url: https://livepicture.ai
+    kind: produkt
+    title: "LivePictureAI: realtidsbearbetning som jämnar ut solljus och skugga i direktsänd utomhusidrott"
+    status: claimed
+    verified_at: 2026-10-12
+    verified_by: agent
+    note: Sidan anger en egen modell tränad på eget dataset. Produkten säljs inte än, den prövas enligt sidan med utvalda partner.
+  - url: https://livepicture.ai/demo
+    kind: demo
+    title: "Före och efter: originalbild jämförd med bild bearbetad av LivePictureAI"
+    status: claimed
+    verified_at: 2026-10-12
+    verified_by: agent
+    note: Jämförelse med reglage och en film. Modellen går inte att köra själv på sidan.
+
+links:
+  linkedin: https://www.linkedin.com/company/livepictureai
+
+record_created_at: 2026-10-12
+record_updated_at: 2026-10-12
