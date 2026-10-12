@@ -1,8 +1,20 @@
 {
-  "generated_at": "2026-10-08T10:11:48Z",
-  "antal": 365,
-  "senaste_andring": "2026-10-08",
+  "generated_at": "2026-10-12T10:24:45Z",
+  "antal": 366,
+  "senaste_andring": "2026-10-10",
   "rader": [
+    {
+      "datum": "2026-10-10",
+      "commit": "eae782e9e0",
+      "id": "adm8",
+      "namn": "adm8",
+      "falt": "hela posten",
+      "andring": "tillagd",
+      "gammalt": null,
+      "nytt": null,
+      "status": null,
+      "kalla": "https://adm8.ai"
+    },
     {
       "datum": "2026-10-08",
       "commit": "70fdd9c68d",
