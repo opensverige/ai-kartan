@@ -251,7 +251,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
 
   type Post = {
     id: string; n: string; t: string; o: string[]; a: string[]; k: string | null; kn: string | null;
-    l: string | null; ln: string | null; lat: number | null; lng: number | null; pt: string | null; pk?: string | null;
+    l: string | null; ln: string | null; lat: number | null; lng: number | null; pt: string | null;
     d: string; s: string | null; c: number; f: number; w: string; i: string | null;
   };
   /** Post med förberedd söktext: nn är namnet, ns allt som går att söka på. */
@@ -321,12 +321,6 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       larosate: '#926516', community: '#a35c29', finansiar: '#955023', infrastruktur: '#52667a',
     };
     const BLACK = '#1c1a17';
-    /** Vad detaljvyn säger om en exakt position, efter varifrån adressen kommer. */
-    const PLATSKALLA: Record<string, string> = {
-      webb: 'Adress enligt organisationens webbplats.',
-      register: 'Registrerad adress enligt Bolagsverket och SCB.',
-      eget: 'Adress enligt organisationens eget besked.',
-    };
     const MOSS = '#2d492d';
     const SVERIGE: [[number, number], [number, number]] = [[10.6, 55.1], [24.4, 69.2]];
     const FACETTER: FacettNamn[] = ['erbjuder', 'typ', 'omrade', 'lan'];
@@ -845,14 +839,10 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
 
     function detaljHtml(o: Rad): string {
       const lista = (varden: string[], karta: Record<string, string>) => varden.map((x) => karta[x] || x).join(', ') || '–';
-      // Under platsen står om adressen är känd. Markören framför är samma som på kartan: fylld med
-      // adress, kontur utan. Saknas adressen leder länken till den vanliga vägen för rättelser.
-      const platsnot =
-        o.pt === 'exakt'
-          ? `<dd class="rutor__not rutor__not--fylld">${PLATSKALLA[o.pk ?? 'webb'] ?? PLATSKALLA.webb}</dd>`
-          : o.pt === 'kommun'
-            ? `<dd class="rutor__not">Exakt adress saknas. <a href="${orgbas}${encodeURIComponent(o.id)}#ratta">Lägg till adress</a></dd>`
-            : '';
+      // Rutan säger bara något extra när adressen saknas. Markören framför är kartans kontur, och
+      // länken leder till den vanliga vägen för rättelser. Varifrån en känd adress kommer står på
+      // organisationens sida, bland källorna.
+      const platsnot = o.pt === 'kommun' ? `<dd class="rutor__not">Exakt adress saknas. <a href="${orgbas}${encodeURIComponent(o.id)}#ratta">Lägg till adress</a></dd>` : '';
       const rutor: [IkonNamn, string, string, string?][] = [
         ['tagg', 'Typ', etiketter.typer[o.t] || o.t],
         ['nal', 'Plats', o.kn ? `${o.kn}${o.ln ? `, ${o.ln}` : ''}` : 'Saknar plats', platsnot],
@@ -2922,7 +2912,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     line-height: 1.35;
     color: hsl(var(--ink));
   }
-  /* Raden under platsen. Markören är kartans egen: kontur utan adress, fylld med. */
+  /* Raden under platsen när adressen saknas. Markören är kartans egen kontur. */
   .rutor .rutor__not {
     position: relative;
     padding-left: 17px;
@@ -2940,9 +2930,6 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     height: 9px;
     border: 2px solid var(--f);
     border-radius: 50%;
-  }
-  .rutor .rutor__not--fylld::before {
-    background: var(--f);
   }
   .app .detalj__ratta {
     margin-top: 16px;
