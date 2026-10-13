@@ -66,7 +66,7 @@ const jsonLd = [
     </nav>
     <p class="kicker mt-2">Kommun · {plats.lan_namn}</p>
     <h1>{rubrik}</h1>
-    <p class="ingress">{vilka.svar} Kartan visar kommunen, aldrig en gatuadress.</p>
+    <p class="ingress">{vilka.svar} På kartan står de med känd adress på sin plats. Övriga visas på kommunnivå.</p>
     <p class="rad">
       <a class="knapp knapp--liten" href={url(`/?kommun=${plats.kod}`)}>Visa på kartan</a>
       <a class="knapp knapp--ghost knapp--liten" href={url(`/organisationer?lan=${plats.lan_kod}`)}>Hela {plats.lan_namn}</a>

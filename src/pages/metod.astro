@@ -61,13 +61,16 @@ const s = d.statistik;
     <li><strong>Registerberikning</strong> mot Bolagsverket och SCB:s företagsregister är <StatusMarke status="planned" kort />: veckovis status per organisationsnummer, så att en avregistrerad organisation märks inom en vecka.</li>
   </ul>
 
-  <h2 id="plats">Plats: kommunnivå, aldrig gatuadress</h2>
-  <p>Kartan visar vilken kommun en organisation hör till, inte var i kommunen den finns. Organisationerna i en kommun radas upp i ett rutnät runt kommunens mittpunkt, på land. Vilken ruta en organisation får säger ingenting om adressen. Kartan är ingen adressbok. Två skäl:</p>
+  <h2 id="plats">Plats: exakt adress där den finns, annars kommun</h2>
+  <p>En organisation ritas på sin adress när vi har en. I första hand är det besöksadressen som organisationen anger på sin webbplats, i andra hand den registrerade postadressen hos Bolagsverket eller SCB. En sådan prick är fylld, och i detaljvyn står varifrån adressen kommer. Bara koordinaten sparas, aldrig gatuadressen som text.</p>
+  <p>Finns ingen användbar adress ritas organisationen på kommunnivå, som en kontur. Konturerna radas upp i ett rutnät runt kommunens mittpunkt, i en tonad yta. Vilken ruta en organisation får där säger ingenting om adressen. Den som vill stå på rätt adress begär rättelse på organisationens sida, med en länk till sidan där adressen står.</p>
   <ul>
-    <li>En enskild firmas registrerade adress är ofta en bostad, alltså en personuppgift. Enskilda firmor får aldrig exakt position.</li>
-    <li>Sätet enligt register säger var organisationen är registrerad, inte nödvändigtvis var folk arbetar. Kommunnivå är det vi kan belägga.</li>
+    <li>Webbplatsens besöksadress går före registrets. En registrerad adress säger var organisationen är registrerad, inte nödvändigtvis var folk arbetar.</li>
+    <li>En adress som registret anger med c/o eller lägenhetsnummer används inte. Den är ofta en bostad.</li>
+    <li>En enskild firmas adress är en personuppgift. Enskilda firmor får aldrig exakt position.</li>
+    <li>Ligger adressen i en annan kommun än sätet ritas organisationen på kommunnivå, i sätets kommun.</li>
   </ul>
-  <p>En organisation som själv publicerar en kontorsadress kan få exakta koordinater, med adressidan som källa. Länet härleds ur kommunkoden.</p>
+  <p>Koordinaten räknas fram ur adressen med OpenStreetMaps Nominatim (© OpenStreetMaps bidragsgivare, ODbL). Länet härleds ur kommunkoden.</p>
 
   <h2 id="historik">Ändringshistoriken är vallgraven</h2>
   <p>Git-repot är sanningen. Varje ändring är en commit med datum, avsändare och diff. Nya poster och rättelser går via pull request. Den första datamängden lades direkt på huvudgrenen, och den automatiska historikfilen skrivs dit av en bot. Ur historiken byggs <a href={url('/andringar')}>ändringsloggen</a>: varje ändrat fält med gammalt och nytt värde. Den är append-only och går inte att kopiera i efterhand genom att skrapa om kartan i dag.</p>
