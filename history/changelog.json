@@ -1,8 +1,428 @@
 {
-  "generated_at": "2026-10-13T16:01:29Z",
-  "antal": 482,
+  "generated_at": "2026-10-13T16:06:25Z",
+  "antal": 510,
   "senaste_andring": "2026-10-13",
   "rader": [
+    {
+      "datum": "2026-10-13",
+      "commit": "85c12e6660",
+      "id": "chair-chalmers",
+      "namn": "Chalmers AI Research Centre (CHAIR)",
+      "falt": "coordinates",
+      "andring": "borttagen",
+      "gammalt": {
+        "lat": 57.69203,
+        "lng": 11.97511
+      },
+      "nytt": null,
+      "status": null,
+      "kalla": null
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "0a915c9729",
+      "id": "vetenskapsradet",
+      "namn": "Vetenskapsrådet",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.34204,
+        "lng": 18.06224
+      },
+      "status": "claimed",
+      "kalla": "https://www.vr.se/om-vetenskapsradet/kontakt.html"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "0a915c9729",
+      "id": "stiftelsen-for-strategisk-forskning-ssf",
+      "namn": "Stiftelsen för strategisk forskning (SSF)",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.33308,
+        "lng": 18.05438
+      },
+      "status": "claimed",
+      "kalla": "https://strategiska.se/kontakt/"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "0a915c9729",
+      "id": "stc-miun",
+      "namn": "STC – Sensible Things that Communicate, Mittuniversitetet",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 62.3945,
+        "lng": 17.28398
+      },
+      "status": "claimed",
+      "kalla": "https://www.miun.se/kontakt"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "0a915c9729",
+      "id": "sib-solutions",
+      "namn": "SiB Solutions",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 55.71154,
+        "lng": 13.21614
+      },
+      "status": "claimed",
+      "kalla": "https://sibsolutions.com/contact"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "0a915c9729",
+      "id": "sgu",
+      "namn": "Sveriges geologiska undersökning",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.85438,
+        "lng": 17.64895
+      },
+      "status": "claimed",
+      "kalla": "https://www.sgu.se/om-sgu/kontakta-oss/"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "0a915c9729",
+      "id": "riksbankens-jubileumsfond",
+      "namn": "Riksbankens Jubileumsfond",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.33242,
+        "lng": 18.07201
+      },
+      "status": "claimed",
+      "kalla": "https://www.rj.se/Var-organisation/Kontakt/"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "0a915c9729",
+      "id": "riksbanken",
+      "namn": "Sveriges Riksbank",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.33165,
+        "lng": 18.06583
+      },
+      "status": "claimed",
+      "kalla": "https://www.riksbank.se/sv/betalningar--kontanter/riksbankens-uppdrag-inom-betalningar/kontanthanteringskontor/"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "0a915c9729",
+      "id": "rebase-energy",
+      "namn": "rebase.energy",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.34148,
+        "lng": 18.06442
+      },
+      "status": "claimed",
+      "kalla": "https://www.rebase.energy/privacy-policy"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "0a915c9729",
+      "id": "raysearch-laboratories",
+      "namn": "RaySearch Laboratories",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.34915,
+        "lng": 18.03465
+      },
+      "status": "claimed",
+      "kalla": "https://www.raysearchlabs.com"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "0a915c9729",
+      "id": "proptechos",
+      "namn": "ProptechOS",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.33415,
+        "lng": 18.07707
+      },
+      "status": "claimed",
+      "kalla": "https://proptechos.com/legal/privacy-notice-full/"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "0a915c9729",
+      "id": "prevas",
+      "namn": "Prevas",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.61521,
+        "lng": 16.55755
+      },
+      "status": "claimed",
+      "kalla": "https://www.prevas.se/kontor.html"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "0a915c9729",
+      "id": "pdc",
+      "namn": "PDC Center for High Performance Computing",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.34982,
+        "lng": 18.07078
+      },
+      "status": "claimed",
+      "kalla": "https://www.kth.se/en/om/kontakt"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "0a915c9729",
+      "id": "nebulr",
+      "namn": "Nebulr",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.34753,
+        "lng": 18.0319
+      },
+      "status": "claimed",
+      "kalla": "https://thebridge.dev/legal/privacy"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "0a915c9729",
+      "id": "mavenoid",
+      "namn": "Mavenoid",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.33415,
+        "lng": 18.07707
+      },
+      "status": "claimed",
+      "kalla": "https://www.mavenoid.com/en/legal/cookie-policy"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "0a915c9729",
+      "id": "lnu-ai-society",
+      "namn": "LNU AI Society",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 56.85473,
+        "lng": 14.83111
+      },
+      "status": "claimed",
+      "kalla": "https://lnuais.com"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "0a915c9729",
+      "id": "industrifonden",
+      "namn": "Industrifonden",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.3328,
+        "lng": 18.05702
+      },
+      "status": "claimed",
+      "kalla": "https://industrifonden.com"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "0a915c9729",
+      "id": "helsingborgs-stad",
+      "namn": "Helsingborgs stad",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 56.04742,
+        "lng": 12.69591
+      },
+      "status": "claimed",
+      "kalla": "https://helsingborg.se/om-webbplatsen/tillganglighet/"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "0a915c9729",
+      "id": "goteborgs-stad",
+      "namn": "Göteborgs Stad",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 57.70718,
+        "lng": 11.96514
+      },
+      "status": "claimed",
+      "kalla": "https://goteborg.se/wps/portal/start/goteborg-vaxer/alla-nyheter-om-hur-staden-utvecklas"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "0a915c9729",
+      "id": "forsakringskassan",
+      "namn": "Försäkringskassan",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.29863,
+        "lng": 17.99472
+      },
+      "status": "claimed",
+      "kalla": "https://www.forsakringskassan.se/om-forsakringskassan/jobba-hos-oss/lediga-jobb"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "0a915c9729",
+      "id": "fiive",
+      "namn": "Fiive",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 57.70073,
+        "lng": 11.94921
+      },
+      "status": "claimed",
+      "kalla": "https://www.fiive.se/contact"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "0a915c9729",
+      "id": "dyno-robotics",
+      "namn": "Dyno Robotics",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 58.41942,
+        "lng": 15.60574
+      },
+      "status": "claimed",
+      "kalla": "https://dynorobotics.se/contact/"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "0a915c9729",
+      "id": "dsv-su",
+      "namn": "Institutionen för data- och systemvetenskap (DSV), Stockholms universitet",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.40715,
+        "lng": 17.94583
+      },
+      "status": "claimed",
+      "kalla": "https://www.su.se/english/divisions/department-of-computer-and-systems-sciences/about-the-department"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "0a915c9729",
+      "id": "depict",
+      "namn": "Depict",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.28419,
+        "lng": 18.04696
+      },
+      "status": "claimed",
+      "kalla": "https://depict.ai/legal/terms"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "0a915c9729",
+      "id": "daily-wins",
+      "namn": "Daily Wins",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 57.70196,
+        "lng": 11.95368
+      },
+      "status": "claimed",
+      "kalla": "https://dailywins.se/integritetspolicy"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "0a915c9729",
+      "id": "chair-chalmers",
+      "namn": "Chalmers AI Research Centre (CHAIR)",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 57.69203,
+        "lng": 11.97511
+      },
+      "status": "claimed",
+      "kalla": "https://www.chalmers.se/en/about-chalmers/organisation-and-governance/foundation/"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "0a915c9729",
+      "id": "berget-ai",
+      "namn": "Berget AI",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.31865,
+        "lng": 18.07252
+      },
+      "status": "claimed",
+      "kalla": "https://github.com/opensverige/ai-kartan/issues/42#issuecomment-6141615052"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "0a915c9729",
+      "id": "ai-for-research-uu",
+      "namn": "AI for Research, Uppsala universitet",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.85164,
+        "lng": 17.63253
+      },
+      "status": "claimed",
+      "kalla": "https://www.uu.se/en/contact-and-organisation/registrar"
+    },
     {
       "datum": "2026-10-13",
       "commit": "4907192401",
