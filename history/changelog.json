@@ -1,8 +1,1718 @@
 {
-  "generated_at": "2026-10-13T08:30:38Z",
-  "antal": 368,
+  "generated_at": "2026-10-13T16:01:29Z",
+  "antal": 482,
   "senaste_andring": "2026-10-13",
   "rader": [
+    {
+      "datum": "2026-10-13",
+      "commit": "4907192401",
+      "id": "zenseact",
+      "namn": "Zenseact",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 57.70856,
+        "lng": 11.94031
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "4907192401",
+      "id": "winningtemp",
+      "namn": "Winningtemp",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 57.70603,
+        "lng": 11.96931
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "4907192401",
+      "id": "vividon",
+      "namn": "Vividon",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.34212,
+        "lng": 18.08996
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "4907192401",
+      "id": "visage-technologies",
+      "namn": "Visage Technologies",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 58.39287,
+        "lng": 15.56066
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "4907192401",
+      "id": "truecaller",
+      "namn": "Truecaller",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.33264,
+        "lng": 18.06121
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "4907192401",
+      "id": "trialbee",
+      "namn": "Trialbee",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 55.60162,
+        "lng": 13.00047
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "4907192401",
+      "id": "tandem-health",
+      "namn": "Tandem Health",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.33613,
+        "lng": 18.06884
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "4907192401",
+      "id": "steep",
+      "namn": "Steep",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.33596,
+        "lng": 18.05387
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "4907192401",
+      "id": "staik",
+      "namn": "Staik",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.30491,
+        "lng": 18.51223
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "4907192401",
+      "id": "staer",
+      "namn": "Staer",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 55.61202,
+        "lng": 12.99133
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "4907192401",
+      "id": "spotscale",
+      "namn": "Spotscale",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 58.41076,
+        "lng": 15.62329
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "4907192401",
+      "id": "spotify",
+      "namn": "Spotify",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.33091,
+        "lng": 18.06816
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "4907192401",
+      "id": "softrobot",
+      "namn": "Softrobot",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.86091,
+        "lng": 17.62872
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "4907192401",
+      "id": "smart-eye",
+      "namn": "Smart Eye",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 57.70073,
+        "lng": 11.94921
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "4907192401",
+      "id": "sleep-cycle",
+      "namn": "Sleep Cycle",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 57.70575,
+        "lng": 11.99439
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "4907192401",
+      "id": "sectra",
+      "namn": "Sectra",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 58.39352,
+        "lng": 15.55711
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "4907192401",
+      "id": "safespring",
+      "namn": "Safespring",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.36587,
+        "lng": 18.01157
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "4907192401",
+      "id": "retenua",
+      "namn": "Retenua",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.23694,
+        "lng": 15.13162
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "4907192401",
+      "id": "quartr",
+      "namn": "Quartr",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.33796,
+        "lng": 18.06156
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "4907192401",
+      "id": "prediktera",
+      "namn": "Prediktera",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 63.81744,
+        "lng": 20.31641
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "4907192401",
+      "id": "pit",
+      "namn": "Pit",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.33798,
+        "lng": 18.06301
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "4907192401",
+      "id": "oxide-ai",
+      "namn": "Oxide AI",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 55.60618,
+        "lng": 12.9955
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "4907192401",
+      "id": "northzone",
+      "namn": "Northzone",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.33604,
+        "lng": 18.06579
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "4907192401",
+      "id": "normain",
+      "namn": "Normain",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.33798,
+        "lng": 18.06301
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "4907192401",
+      "id": "museum-of-artificial-intelligence",
+      "namn": "Museum of Artificial Intelligence",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.31203,
+        "lng": 18.074
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/scb/scb_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "4907192401",
+      "id": "motorica",
+      "namn": "Motorica",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.31203,
+        "lng": 18.074
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "4907192401",
+      "id": "lovable",
+      "namn": "Lovable",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.3317,
+        "lng": 18.06803
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "4907192401",
+      "id": "kth-ventures",
+      "namn": "KTH Ventures",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.34948,
+        "lng": 18.07124
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "5d29b4e02f",
+      "id": "kognic",
+      "namn": "Kognic",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 57.7064,
+        "lng": 11.94102
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "5d29b4e02f",
+      "id": "klarna",
+      "namn": "Klarna",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.33744,
+        "lng": 18.06213
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "5d29b4e02f",
+      "id": "j12-ventures",
+      "namn": "J12 Ventures",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.33724,
+        "lng": 18.07214
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "5d29b4e02f",
+      "id": "interspectral",
+      "namn": "Interspectral",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 58.58952,
+        "lng": 16.18155
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "5d29b4e02f",
+      "id": "inceptron",
+      "namn": "Inceptron",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 55.71215,
+        "lng": 13.2155
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "5d29b4e02f",
+      "id": "hopsworks",
+      "namn": "Hopsworks",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.31357,
+        "lng": 18.0761
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "5d29b4e02f",
+      "id": "hedda",
+      "namn": "Hedda",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.33899,
+        "lng": 18.06975
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "5d29b4e02f",
+      "id": "furhat-robotics",
+      "namn": "Furhat Robotics",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.34028,
+        "lng": 18.03836
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "5d29b4e02f",
+      "id": "fair-ai-data",
+      "namn": "Fair AI Data",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 58.58564,
+        "lng": 16.15674
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "5d29b4e02f",
+      "id": "embark-studios",
+      "namn": "Embark Studios",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.33233,
+        "lng": 18.07206
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "5d29b4e02f",
+      "id": "ductus",
+      "namn": "Ductus",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 64.75133,
+        "lng": 20.95434
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "5d29b4e02f",
+      "id": "digital-venue",
+      "namn": "Digital Venue",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.27795,
+        "lng": 18.088
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "5d29b4e02f",
+      "id": "dema",
+      "namn": "Dema",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.33382,
+        "lng": 18.07458
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "5d29b4e02f",
+      "id": "deep-forestry",
+      "namn": "Deep Forestry",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.85671,
+        "lng": 17.66254
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "5d29b4e02f",
+      "id": "conversy",
+      "namn": "Conversy",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.33866,
+        "lng": 18.06722
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "5d29b4e02f",
+      "id": "conapto",
+      "namn": "Conapto",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.34087,
+        "lng": 18.11193
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "5d29b4e02f",
+      "id": "codon-consulting",
+      "namn": "Codon Consulting",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.3202,
+        "lng": 18.06363
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "5d29b4e02f",
+      "id": "codemill",
+      "namn": "Codemill",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 63.82335,
+        "lng": 20.27326
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "5d29b4e02f",
+      "id": "cind",
+      "namn": "CIND",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 57.77699,
+        "lng": 14.16076
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "5d29b4e02f",
+      "id": "cellavision",
+      "namn": "CellaVision",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 55.71655,
+        "lng": 13.22735
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "5d29b4e02f",
+      "id": "careifai",
+      "namn": "Careifai",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 65.61771,
+        "lng": 22.12895
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "5d29b4e02f",
+      "id": "callista-enterprise",
+      "namn": "Callista Enterprise",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 57.70486,
+        "lng": 11.99212
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "5d29b4e02f",
+      "id": "bounded",
+      "namn": "Bounded",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 55.60374,
+        "lng": 13.00311
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "5d29b4e02f",
+      "id": "axis-communications",
+      "namn": "Axis Communications",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 55.72365,
+        "lng": 13.22301
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "5d29b4e02f",
+      "id": "avy",
+      "namn": "Avy",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.33675,
+        "lng": 18.05425
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "5d29b4e02f",
+      "id": "arboair",
+      "namn": "Arboair",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 58.39402,
+        "lng": 15.56155
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "5d29b4e02f",
+      "id": "airforestry",
+      "namn": "AirForestry",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.85113,
+        "lng": 17.67239
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "5d29b4e02f",
+      "id": "agricam",
+      "namn": "Agricam",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 58.39491,
+        "lng": 15.56069
+      },
+      "status": "confirmed",
+      "kalla": "https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "e84040cf93",
+      "id": "xensam",
+      "namn": "Xensam",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.35788,
+        "lng": 17.97724
+      },
+      "status": "claimed",
+      "kalla": "https://xensam.com/contact-us/"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "e84040cf93",
+      "id": "vidhance",
+      "namn": "Vidhance",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.85731,
+        "lng": 17.64144
+      },
+      "status": "claimed",
+      "kalla": "https://vidhance.com/contact-2/"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "e84040cf93",
+      "id": "validio",
+      "namn": "Validio",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.33437,
+        "lng": 18.09373
+      },
+      "status": "claimed",
+      "kalla": "https://validio.io/about"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "e84040cf93",
+      "id": "unibap",
+      "namn": "Unibap",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.857,
+        "lng": 17.63863
+      },
+      "status": "claimed",
+      "kalla": "https://unibap.com/contact-us/"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "e84040cf93",
+      "id": "sting",
+      "namn": "Sting",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.34358,
+        "lng": 18.06977
+      },
+      "status": "claimed",
+      "kalla": "https://www.sting.co/about/contact"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "e84040cf93",
+      "id": "sprakbanken-text",
+      "namn": "Språkbanken Text, Göteborgs universitet",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 57.69445,
+        "lng": 11.98519
+      },
+      "status": "claimed",
+      "kalla": "https://spraakbanken.gu.se/kontakt"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "e84040cf93",
+      "id": "softwerk",
+      "namn": "Softwerk",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 56.87713,
+        "lng": 14.78028
+      },
+      "status": "claimed",
+      "kalla": "https://softwerk.se/en/contact"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "e84040cf93",
+      "id": "softhouse",
+      "namn": "Softhouse",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 55.61131,
+        "lng": 13.00196
+      },
+      "status": "claimed",
+      "kalla": "https://www.softhouse.se/vara-kontor/"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "e84040cf93",
+      "id": "sinch",
+      "namn": "Sinch",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.33614,
+        "lng": 18.01175
+      },
+      "status": "claimed",
+      "kalla": "https://sinch.com/contact-us/"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "e84040cf93",
+      "id": "rpl-kth",
+      "namn": "Institutionen för robotik, perception och lärande (RPL), KTH",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.34833,
+        "lng": 18.07479
+      },
+      "status": "claimed",
+      "kalla": "https://www.kth.se/rpl/contact-us-1.683722"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "e84040cf93",
+      "id": "recs-hkr",
+      "namn": "Research environment of Computer science (RECS), Högskolan Kristianstad",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 56.04952,
+        "lng": 14.14638
+      },
+      "status": "claimed",
+      "kalla": "https://www.hkr.se/en/about/contact/"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "e84040cf93",
+      "id": "profitbyte",
+      "namn": "Profitbyte",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 63.16798,
+        "lng": 14.68407
+      },
+      "status": "claimed",
+      "kalla": "https://www.profitbyte.se/kontakt/"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "e84040cf93",
+      "id": "precise-biometrics",
+      "namn": "Precise Biometrics",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 55.71742,
+        "lng": 13.21373
+      },
+      "status": "claimed",
+      "kalla": "https://www.precisebiometrics.com/our-solutions/systems/precise-visit/"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "e84040cf93",
+      "id": "phyron",
+      "namn": "Phyron",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.33823,
+        "lng": 18.07499
+      },
+      "status": "claimed",
+      "kalla": "https://www.phyron.com/contact"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "e84040cf93",
+      "id": "parsd",
+      "namn": "Parsd",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.34358,
+        "lng": 18.06977
+      },
+      "status": "claimed",
+      "kalla": "https://parsd.com/contact/"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "e84040cf93",
+      "id": "ninetech",
+      "namn": "Ninetech",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.38133,
+        "lng": 13.50333
+      },
+      "status": "claimed",
+      "kalla": "https://www.ninetech.com/kontakt/"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "e84040cf93",
+      "id": "netlight",
+      "namn": "Netlight",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.3317,
+        "lng": 18.06803
+      },
+      "status": "claimed",
+      "kalla": "https://www.netlight.com/contact"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "e84040cf93",
+      "id": "myrspoven",
+      "namn": "Myrspoven",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.31334,
+        "lng": 18.0749
+      },
+      "status": "claimed",
+      "kalla": "https://www.myrspoven.se/about-us"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "e84040cf93",
+      "id": "modulai",
+      "namn": "Modulai",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.31582,
+        "lng": 18.03422
+      },
+      "status": "claimed",
+      "kalla": "https://modulai.io/contact"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "e84040cf93",
+      "id": "mistra",
+      "namn": "Mistra",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.3362,
+        "lng": 18.06259
+      },
+      "status": "claimed",
+      "kalla": "https://mistra.org/kontaktaoss/"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "e84040cf93",
+      "id": "mindified",
+      "namn": "Mindified",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 55.60713,
+        "lng": 13.00013
+      },
+      "status": "claimed",
+      "kalla": "https://www.mindified.com/contact"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "e84040cf93",
+      "id": "mentimeter",
+      "namn": "Mentimeter",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.34204,
+        "lng": 18.06224
+      },
+      "status": "claimed",
+      "kalla": "https://www.mentimeter.com/contact"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "e84040cf93",
+      "id": "manomotion",
+      "namn": "ManoMotion",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.35037,
+        "lng": 18.06784
+      },
+      "status": "claimed",
+      "kalla": "https://www.manomotion.com/contact-manomotion-physicalai-industrial-safety/"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "e84040cf93",
+      "id": "lexplore",
+      "namn": "Lexplore",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.33171,
+        "lng": 18.05974
+      },
+      "status": "claimed",
+      "kalla": "https://lexplore.com/contact-lexplore"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "e84040cf93",
+      "id": "kungsbacka-kommun",
+      "namn": "Kungsbacka kommun",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 57.48984,
+        "lng": 12.07822
+      },
+      "status": "claimed",
+      "kalla": "https://kungsbacka.se/kommun-och-politik/kontakta-oss/gor-en-felanmalan"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "e84040cf93",
+      "id": "kodcentrum",
+      "namn": "Kodcentrum",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.33596,
+        "lng": 18.061
+      },
+      "status": "claimed",
+      "kalla": "https://kodcentrum.se/kontakta-kodcentrum-1"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "e84040cf93",
+      "id": "kntnt",
+      "namn": "Kntnt",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 57.70701,
+        "lng": 11.94501
+      },
+      "status": "claimed",
+      "kalla": "https://www.kntnt.se/kontakta/"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "e84040cf93",
+      "id": "jail-ju",
+      "namn": "Jönköping AI Lab (JAIL), Jönköping University",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 58.02267,
+        "lng": 14.46887
+      },
+      "status": "claimed",
+      "kalla": "https://ju.se/en/about-us/contact-and-press.html"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "e84040cf93",
+      "id": "hpc2n",
+      "namn": "HPC2N – High Performance Computing Center North",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 63.82051,
+        "lng": 20.30683
+      },
+      "status": "claimed",
+      "kalla": "https://www.hpc2n.umu.se/contact"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "9fd9612d8a",
+      "id": "hippoly",
+      "namn": "Hippoly",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 57.69886,
+        "lng": 11.94993
+      },
+      "status": "claimed",
+      "kalla": "https://hippoly.com/sv/kontakt/"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "9fd9612d8a",
+      "id": "hektar",
+      "namn": "Hektar",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 57.70444,
+        "lng": 11.97049
+      },
+      "status": "claimed",
+      "kalla": "https://www.hektar.ai/contact"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "9fd9612d8a",
+      "id": "greater-than",
+      "namn": "Greater Than",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.33888,
+        "lng": 18.08322
+      },
+      "status": "claimed",
+      "kalla": "https://greaterthan.eu/about-us/"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "9fd9612d8a",
+      "id": "forte",
+      "namn": "Forte",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.31295,
+        "lng": 18.06828
+      },
+      "status": "claimed",
+      "kalla": "https://forte.se/om-oss/kontakta-oss"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "9fd9612d8a",
+      "id": "formas",
+      "namn": "Formas",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.33915,
+        "lng": 18.05607
+      },
+      "status": "claimed",
+      "kalla": "https://formas.se/om-formas/kontakta-oss.html"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "9fd9612d8a",
+      "id": "foi",
+      "namn": "Totalförsvarets forskningsinstitut",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.40445,
+        "lng": 17.94536
+      },
+      "status": "claimed",
+      "kalla": "https://www.foi.se/om-foi/kontakta-oss.html"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "9fd9612d8a",
+      "id": "exini-diagnostics",
+      "namn": "EXINI Diagnostics",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 55.71758,
+        "lng": 13.21384
+      },
+      "status": "claimed",
+      "kalla": "https://exini.com/about/contact-us/"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "9fd9612d8a",
+      "id": "evoma",
+      "namn": "Evoma",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 58.388,
+        "lng": 13.84244
+      },
+      "status": "claimed",
+      "kalla": "https://evoma.se/contact/"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "9fd9612d8a",
+      "id": "embedl",
+      "namn": "Embedl",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 57.68651,
+        "lng": 11.99984
+      },
+      "status": "claimed",
+      "kalla": "https://www.embedl.com/contact"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "9fd9612d8a",
+      "id": "doctrin",
+      "namn": "Doctrin",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.34585,
+        "lng": 18.03646
+      },
+      "status": "claimed",
+      "kalla": "https://doctrin.se/doctrin-och-praktikertjanst-tecknar-nytt-ramavtal-kring-digitala-vardkontakter/"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "9fd9612d8a",
+      "id": "dista-lnu",
+      "namn": "Data Intensive Software Technologies and Applications (DISTA), Linnéuniversitetet",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 56.85473,
+        "lng": 14.83111
+      },
+      "status": "claimed",
+      "kalla": "https://www.lnu.se/mot-linneuniversitetet/kontakta-och-besoka/"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "9fd9612d8a",
+      "id": "digital-step",
+      "namn": "Digital Step",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 55.59866,
+        "lng": 13.00821
+      },
+      "status": "claimed",
+      "kalla": "https://www.digitalstep.se"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "9fd9612d8a",
+      "id": "digg",
+      "namn": "Myndigheten för digital förvaltning",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 62.38865,
+        "lng": 17.29531
+      },
+      "status": "claimed",
+      "kalla": "https://www.digg.se/om-oss/kontakta-oss"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "9fd9612d8a",
+      "id": "dataforeningen",
+      "namn": "Dataföreningen i Sverige",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.33233,
+        "lng": 18.04806
+      },
+      "status": "claimed",
+      "kalla": "https://dfs.se/kontakt/"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "9fd9612d8a",
+      "id": "contextvision",
+      "namn": "ContextVision",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 58.41117,
+        "lng": 15.62703
+      },
+      "status": "claimed",
+      "kalla": "https://www.contextvision.se/contact/"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "9fd9612d8a",
+      "id": "combain",
+      "namn": "Combain",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 55.71758,
+        "lng": 13.21384
+      },
+      "status": "claimed",
+      "kalla": "https://combain.com/about/contact-us/"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "9fd9612d8a",
+      "id": "clasp-gu",
+      "namn": "CLASP – Centrum för språkteori och sannolikhetsstudier, Göteborgs universitet",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 57.69445,
+        "lng": 11.98519
+      },
+      "status": "claimed",
+      "kalla": "https://www.gu.se/clasp/om-oss/kontakt"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "9fd9612d8a",
+      "id": "centiro",
+      "namn": "Centiro",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 57.6984,
+        "lng": 12.83
+      },
+      "status": "claimed",
+      "kalla": "https://www.centiro.com/get-in-touch/contact-us"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "9fd9612d8a",
+      "id": "brikka",
+      "namn": "Brikka",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 63.3988,
+        "lng": 13.08088
+      },
+      "status": "claimed",
+      "kalla": "https://www.brikka.se/kontakt"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "9fd9612d8a",
+      "id": "blincvision",
+      "namn": "BlincVision",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 55.71687,
+        "lng": 13.2248
+      },
+      "status": "claimed",
+      "kalla": "https://blincvision.com/contact/"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "9fd9612d8a",
+      "id": "bahnhof-cloud",
+      "namn": "Bahnhof Cloud",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.33878,
+        "lng": 18.06016
+      },
+      "status": "claimed",
+      "kalla": "https://bahnhof.cloud/kontakt/"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "9fd9612d8a",
+      "id": "avionero",
+      "namn": "Avionero",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 55.60459,
+        "lng": 13.0051
+      },
+      "status": "claimed",
+      "kalla": "https://avionero.com/contact"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "9fd9612d8a",
+      "id": "atlas-ai",
+      "namn": "Atlas AI",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 57.65672,
+        "lng": 12.13643
+      },
+      "status": "claimed",
+      "kalla": "https://atlasai.se/kontakt"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "9fd9612d8a",
+      "id": "astrid-education",
+      "namn": "Astrid Education",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.33707,
+        "lng": 18.07555
+      },
+      "status": "claimed",
+      "kalla": "https://education.withastrid.ai/contact"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "9fd9612d8a",
+      "id": "amra-medical",
+      "namn": "AMRA Medical",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 58.41248,
+        "lng": 15.62544
+      },
+      "status": "claimed",
+      "kalla": "https://amramedical.com/contact-us/"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "9fd9612d8a",
+      "id": "algoryx",
+      "namn": "Algoryx",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 63.81742,
+        "lng": 20.31893
+      },
+      "status": "claimed",
+      "kalla": "https://www.algoryx.se/contact/"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "9fd9612d8a",
+      "id": "ai-vision-sweden",
+      "namn": "AI Vision Sweden",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.33596,
+        "lng": 18.061
+      },
+      "status": "claimed",
+      "kalla": "https://ai-vision.se/contact"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "9fd9612d8a",
+      "id": "ai-sweden",
+      "namn": "AI Sweden",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 57.7068,
+        "lng": 11.93877
+      },
+      "status": "claimed",
+      "kalla": "https://www.ai.se/sv/ekosystem/tillgang-till-co-locations"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "9fd9612d8a",
+      "id": "addcomply",
+      "namn": "AddComply",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 57.77938,
+        "lng": 14.15986
+      },
+      "status": "claimed",
+      "kalla": "https://addcomply.com/about-us/"
+    },
     {
       "datum": "2026-10-13",
       "commit": "03f8fec3f1",
