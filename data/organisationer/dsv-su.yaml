@@ -62,6 +62,15 @@ kommun:
   verified_by: agent
   note: Säte för Stockholms universitet enligt allabolag. Institutionen utgör universitetets campus i Kista, som ligger i Stockholms kommun.
 
+coordinates:
+  value: { lat: 59.40715, lng: 17.94583 }
+  status: claimed
+  source_url: https://www.su.se/english/divisions/department-of-computer-and-systems-sciences/about-the-department
+  source_type: own_site
+  verified_at: 2026-10-13
+  verified_by: agent
+  note: "Adress enligt webbplatsen, geokodad med OpenStreetMap Nominatim (ODbL)."
+
 evidence:
   - url: https://www.su.se/enheter/institutionen-for-data--och-systemvetenskap/forskning/forskargrupper
     kind: case
@@ -80,4 +89,4 @@ links:
   github: https://github.com/dsv-data-science
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-04
+record_updated_at: 2026-10-13
