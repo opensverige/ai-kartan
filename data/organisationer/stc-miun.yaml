@@ -61,6 +61,15 @@ kommun:
   verified_by: agent
   note: Säte för Mittuniversitetet enligt allabolag; centrets campus anges inte på startsidan.
 
+coordinates:
+  value: { lat: 62.3945, lng: 17.28398 }
+  status: claimed
+  source_url: https://www.miun.se/kontakt
+  source_type: own_site
+  verified_at: 2026-10-13
+  verified_by: agent
+  note: "Adress enligt webbplatsen, geokodad med OpenStreetMap Nominatim (ODbL)."
+
 evidence:
   - url: https://www.miun.se/en/Research/research-centers/stc/Publications/
     kind: publikation
@@ -70,4 +79,4 @@ evidence:
     verified_by: agent
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-04
+record_updated_at: 2026-10-13
