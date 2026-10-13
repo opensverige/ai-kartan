@@ -62,6 +62,15 @@ kommun:
   verified_by: agent
   note: Kommunsäte för Göteborgs universitet enligt allabolag.se.
 
+coordinates:
+  value: { lat: 57.69445, lng: 11.98519 }
+  status: claimed
+  source_url: https://spraakbanken.gu.se/kontakt
+  source_type: own_site
+  verified_at: 2026-10-13
+  verified_by: agent
+  note: "Besöksadress enligt webbplatsen, geokodad med OpenStreetMap Nominatim (ODbL)."
+
 founded:
   value: 1975
   status: claimed
@@ -100,4 +109,4 @@ links:
   github: https://github.com/spraakbanken
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-04
+record_updated_at: 2026-10-13

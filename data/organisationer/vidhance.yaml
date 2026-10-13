@@ -68,6 +68,15 @@ kommun:
   verified_by: agent
   note: "Kommunsäte enligt allabolag."
 
+coordinates:
+  value: { lat: 59.85731, lng: 17.64144 }
+  status: claimed
+  source_url: https://vidhance.com/contact-2/
+  source_type: own_site
+  verified_at: 2026-10-13
+  verified_by: agent
+  note: "Besöksadress enligt webbplatsen, geokodad med OpenStreetMap Nominatim (ODbL)."
+
 founded:
   value: 2007
   status: confirmed
@@ -98,4 +107,4 @@ links:
   github: https://github.com/vidhance
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-04
+record_updated_at: 2026-10-13
