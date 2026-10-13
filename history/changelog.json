@@ -1,8 +1,42 @@
 {
-  "generated_at": "2026-10-13T16:06:25Z",
-  "antal": 510,
+  "generated_at": "2026-10-13T18:29:20Z",
+  "antal": 512,
   "senaste_andring": "2026-10-13",
   "rader": [
+    {
+      "datum": "2026-10-13",
+      "commit": "57a908b746",
+      "id": "chair-chalmers",
+      "namn": "Chalmers AI Research Centre (CHAIR)",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 57.68932,
+        "lng": 11.97366
+      },
+      "status": "claimed",
+      "kalla": "https://www.chalmers.se/en/about-chalmers/contact/"
+    },
+    {
+      "datum": "2026-10-13",
+      "commit": "57a908b746",
+      "id": "chair-chalmers",
+      "namn": "Chalmers AI Research Centre (CHAIR)",
+      "falt": "evidence",
+      "andring": "ändrad",
+      "gammalt": [
+        "https://www.chalmers.se/en/centres/chair/faculty/neurips-conference-papers/",
+        "https://www.chalmers.se/en/centres/chair/research/"
+      ],
+      "nytt": [
+        "https://www.chalmers.se/en/centres/chair/research/",
+        "https://www.chalmers.se/en/research/centres/chair/faculty/neurips-conference-papers/"
+      ],
+      "status": null,
+      "gammal_status": null,
+      "kalla": null
+    },
     {
       "datum": "2026-10-13",
       "commit": "85c12e6660",
