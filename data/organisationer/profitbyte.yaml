@@ -57,6 +57,14 @@ kommun:
   verified_at: 2026-10-04
   verified_by: manual
   note: Ort enligt infra.opensverige.se (Östersund). Kontrollera mot register.
+coordinates:
+  value: { lat: 63.16798, lng: 14.68407 }
+  status: claimed
+  source_url: https://www.profitbyte.se/kontakt/
+  source_type: own_site
+  verified_at: 2026-10-13
+  verified_by: agent
+  note: "Besöksadress enligt webbplatsen, geokodad med OpenStreetMap Nominatim (ODbL)."
 active:
   value: true
   status: confirmed
@@ -81,4 +89,4 @@ evidence:
 links:
   infra_id: profitbyte
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-07
+record_updated_at: 2026-10-13
