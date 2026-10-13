@@ -68,6 +68,15 @@ kommun:
   verified_by: agent
   note: "Kommunsäte enligt allabolag.se: Skövde."
 
+coordinates:
+  value: { lat: 58.388, lng: 13.84244 }
+  status: claimed
+  source_url: https://evoma.se/contact/
+  source_type: own_site
+  verified_at: 2026-10-13
+  verified_by: agent
+  note: "Besöksadress enligt webbplatsen, geokodad med OpenStreetMap Nominatim (ODbL)."
+
 founded:
   value: 2013
   status: confirmed
@@ -105,4 +114,4 @@ links:
   linkedin: https://www.linkedin.com/company/evoma-ab/
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-04
+record_updated_at: 2026-10-13
