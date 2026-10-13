@@ -1,4 +1,5 @@
 [
+  { "datum": "2026-10-13", "text": "Kartan visar exakt adress där den finns: fylld prick på adressen, kontur i kommunens yta för dem som saknar en. Rutan Plats säger varifrån adressen kommer och har en länk till rättelse." },
   { "datum": "2026-10-13", "text": "Telefonens första skärm säger vad kartan är: rubrik, antal och fyra frågor att prova står i bottenbladet innan kartan har laddat." },
   { "datum": "2026-10-13", "text": "Kartsidan och listan räknar om kartan används, inte bara öppnas. Söktext, filterval och vilken organisation som öppnas följer aldrig med." },
   { "datum": "2026-10-12", "text": "Veckopulsen: kartans panel och sidan Ändringar visar hur många organisationer som lagts till de senaste sju dagarna, dag för dag." },
