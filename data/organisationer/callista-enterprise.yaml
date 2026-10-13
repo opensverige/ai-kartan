@@ -70,6 +70,15 @@ kommun:
   verified_by: agent
   note: "Kommunsäte enligt allabolag.se: Göteborg."
 
+coordinates:
+  value: { lat: 57.70486, lng: 11.99212 }
+  status: confirmed
+  source_url: https://vardefulla-datamangder.bolagsverket.se/bolagsverket/bolagsverket_bulkfil.zip
+  source_type: company_register
+  verified_at: 2026-10-13
+  verified_by: agent
+  note: "Registrerad postadress enligt Bolagsverket (värdefulla datamängder, 2026-10-12), geokodad med OpenStreetMap Nominatim (ODbL)."
+
 founded:
   value: 2000
   status: confirmed
@@ -103,4 +112,4 @@ evidence:
     verified_by: agent
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-04
+record_updated_at: 2026-10-13
