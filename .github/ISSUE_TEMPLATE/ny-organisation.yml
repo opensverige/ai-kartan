@@ -48,7 +48,7 @@ body:
     id: kommun
     attributes:
       label: Kommun där organisationen har sitt säte
-      description: Kommunens namn, t.ex. Uppsala. Kartan visar bara kommunnivå, aldrig gatuadress.
+      description: Kommunens namn, t.ex. Uppsala. Skriv ingen gatuadress här. Exakt plats på kartan hämtas från er webbplats eller ur register.
       placeholder: Uppsala
     validations:
       required: true

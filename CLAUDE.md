@@ -10,7 +10,7 @@ Tech Embassy – Sveriges öppna AI-karta. En statisk Astro-sajt byggd från `da
 
 1. **Hitta aldrig på en källa.** Varje `source_url` ska vara en sida du faktiskt har öppnat och som visar värdet. Kan du inte belägga en uppgift: `status: unknown`, `value: null`.
 2. **Egen webbplats ger högst `claimed`.** `confirmed` kräver `company_register`, `regulator`, `third_party`, `academic` eller `infra_dataset`. Valideringen stoppar annat.
-3. **Inga personuppgifter.** Inga namn, e-postadresser, telefonnummer, gatuadresser eller personnummer. Enskilda firmor läggs aldrig till av en agent, bara av personen själv.
+3. **Inga personuppgifter.** Inga namn, e-postadresser, telefonnummer, gatuadresser eller personnummer. Enskilda firmor läggs aldrig till av en agent, bara av personen själv. En exakt position sparas som koordinat med källa, aldrig som gatuadress i text, och aldrig ur en adress med c/o eller lägenhetsnummer. Reglerna står i `src/pages/metod.astro` under Plats.
 4. **Andra kartor och listor är bara tips om namn.** Kopiera aldrig deras beskrivningar eller uppgifter. Gå alltid till primärkällan. Skälet är katalogskydd (49 § upphovsrättslagen) och metoden.
 5. **Neutral svenska.** Beskriv vad som byggs, inte hur bra det är. Inga värdeord.
 6. **Märk dig.** `verified_by: agent` på allt du verifierat. AI kontrollerar belägg, aldrig värde: du avgör aldrig om en organisation förtjänar att vara med, bara om länken visar det som påstås.

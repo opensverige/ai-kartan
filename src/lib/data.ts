@@ -413,6 +413,8 @@ export function tillKartpost(o: Org) {
     lat: o.h.position?.lat ?? null,
     lng: o.h.position?.lng ?? null,
     pt: o.h.position_typ,
+    // Varifrån en exakt position kommer: organisationens webbplats, register eller eget besked.
+    pk: o.coordinates?.value ? (o.coordinates.source_type === 'self_submitted' ? 'eget' : ['company_register', 'third_party', 'regulator'].includes(o.coordinates.source_type ?? '') ? 'register' : 'webb') : null,
     d: o.description.value,
     s: o.h.senast_verifierad,
     c: o.h.antal_bekraftade,

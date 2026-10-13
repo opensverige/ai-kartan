@@ -42,7 +42,7 @@ Källtypen styr vilken status som är möjlig. `own_site`, `own_docs`, `press` o
 
 - Schemat saknar fält för kontaktpersoner, anställda, ägare, e-post och telefon. Lägg inte till sådana. Valideringen stoppar dem.
 - Enskilda firmor läggs bara till av personen själv (`self_submitted: true`), utan organisationsnummer och utan koordinater. Tills vidare tas de inte emot alls: det öppnar när det går att begära borttagning utan konto.
-- Positioner är kommunens mittpunkt. Exakta koordinater bara när organisationen själv publicerar en kontorsadress.
+- Positionen är en exakt adress där den finns, annars kommunens mittpunkt. Adressen är organisationens egen från webbplatsen, annars den registrerade postadressen. Bara koordinaten sparas, aldrig gatuadressen. Reglerna står på sajten under Metod, Plats.
 
 ## Rätta och ta bort
 

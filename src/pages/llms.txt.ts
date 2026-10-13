@@ -40,7 +40,7 @@ ${amne ? `- En plats och ett område tillsammans, där minst fem organisationer 
 
 ## Begränsningar
 - Kartan visar vad som finns, inte vad som är bäst. Den ger inga rekommendationer.
-- Positioner visar kommunen, aldrig en gatuadress. Organisationerna i en kommun radas upp runt kommunens mittpunkt.
+- En organisation med känd adress står på den: besöksadressen från organisationens webbplats, annars den registrerade postadressen. Övriga visas på kommunnivå och radas upp runt kommunens mittpunkt. Datan bär koordinater, aldrig gatuadresser.
 - Enskilda firmor tas inte emot än. Inga finns på kartan.
 - "Okänd" betyder inte undersökt, inte nej.
 `;
