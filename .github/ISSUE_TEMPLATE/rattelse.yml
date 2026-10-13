@@ -28,6 +28,7 @@ body:
         - offers (erbjuder)
         - areas (områden)
         - kommun (säte)
+        - coordinates (adress på kartan)
         - founded (grundat)
         - active (aktiv)
         - evidence (belägg)
