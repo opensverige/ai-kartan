@@ -5,7 +5,7 @@ import TypTagg from '../../components/TypTagg.astro';
 import { hamtaData, allaFakta, visaVarde, kalltypEtikett, formateraDatum, typikoner, url, absolutUrl, SAJT } from '../../lib/data';
 import type { Org } from '../../lib/data';
 import { brodsmulor, metabeskrivning } from '../../lib/meta';
-import { ikon } from '../../lib/ikoner';
+import { ikon, logga } from '../../lib/ikoner';
 
 export function getStaticPaths() {
   const d = hamtaData();
@@ -154,10 +154,17 @@ const citat = `OpenSverige AI-kartan, ”${org.name.value}”, hämtad ${idag}, 
       <div>
         <h2 id="ratta">Rätta eller ta bort</h2>
         <p class="lasbredd">Fel? Skriv i <a class="kanal" href={SAJT.discordKanal.url} rel="noopener">#{SAJT.discordKanal.namn}</a> på Discord eller öppna ett ärende på GitHub. Länka en källa. Vi svarar inom 14 dagar.</p>
+        {/* Tjänstens logga före texten och en pil efter: knapparna leder bort från kartan. */}
         <p class="rad">
-          <a class="knapp knapp--liten" href={SAJT.discord} rel="noopener">Gå med i Discord</a>
-          <a class="knapp knapp--ghost knapp--liten" href={rattelseUrl} rel="noopener">Rätta via GitHub</a>
-          <a class="knapp knapp--ghost knapp--liten" href={borttagningUrl} rel="noopener">Ta bort via GitHub</a>
+          <a class="knapp knapp--liten" href={SAJT.discord} rel="noopener">
+            <Fragment set:html={logga('discord', 16)} />Gå med i Discord<Fragment set:html={ikon('ut', 14)} />
+          </a>
+          <a class="knapp knapp--ghost knapp--liten" href={rattelseUrl} rel="noopener">
+            <Fragment set:html={logga('github', 16)} />Rätta via GitHub<Fragment set:html={ikon('ut', 14)} />
+          </a>
+          <a class="knapp knapp--ghost knapp--liten" href={borttagningUrl} rel="noopener">
+            <Fragment set:html={logga('github', 16)} />Ta bort via GitHub<Fragment set:html={ikon('ut', 14)} />
+          </a>
         </p>
         <p class="meta">
           Båda vägarna kräver konto. E-post kommer. <a href={url('/bidra#varfor')}>Varför?</a><br />
