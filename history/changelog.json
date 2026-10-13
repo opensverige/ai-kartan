@@ -1,8 +1,20 @@
 {
-  "generated_at": "2026-10-12T10:30:00Z",
-  "antal": 367,
-  "senaste_andring": "2026-10-12",
+  "generated_at": "2026-10-13T08:30:38Z",
+  "antal": 368,
+  "senaste_andring": "2026-10-13",
   "rader": [
+    {
+      "datum": "2026-10-13",
+      "commit": "03f8fec3f1",
+      "id": "persistent-flow",
+      "namn": "Persistent Flow",
+      "falt": "hela posten",
+      "andring": "tillagd",
+      "gammalt": null,
+      "nytt": null,
+      "status": null,
+      "kalla": "https://persistentflow.com"
+    },
     {
       "datum": "2026-10-12",
       "commit": "34758b3912",
