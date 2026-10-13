@@ -61,15 +61,6 @@ kommun:
   verified_by: agent
   note: Säte för Chalmers tekniska högskola AB enligt allabolag. CHAIR har mötesplats på Campus Johanneberg enligt egen sida.
 
-coordinates:
-  value: { lat: 57.69203, lng: 11.97511 }
-  status: claimed
-  source_url: https://www.chalmers.se/en/about-chalmers/organisation-and-governance/foundation/
-  source_type: own_site
-  verified_at: 2026-10-13
-  verified_by: agent
-  note: "Adress enligt webbplatsen, geokodad med OpenStreetMap Nominatim (ODbL)."
-
 evidence:
   - url: https://www.chalmers.se/en/centres/chair/faculty/neurips-conference-papers/
     kind: publikation
@@ -85,4 +76,4 @@ evidence:
     verified_by: agent
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-13
+record_updated_at: 2026-10-04
