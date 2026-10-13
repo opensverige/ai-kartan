@@ -1,0 +1,113 @@
+id: persistent-flow
+
+name:
+  value: Persistent Flow
+  status: claimed
+  source_url: https://persistentflow.com
+  source_type: own_site
+  verified_at: 2026-10-13
+  verified_by: agent
+
+legal_name:
+  value: Persistent Flow AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5595860114
+  source_type: third_party
+  verified_at: 2026-10-13
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5595860114
+  source_type: third_party
+  verified_at: 2026-10-13
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: aktiebolag."
+
+org_number:
+  value: "559586-0114"
+  status: confirmed
+  source_url: https://www.allabolag.se/5595860114
+  source_type: third_party
+  verified_at: 2026-10-13
+  verified_by: agent
+  note: "Samma nummer som i webbplatsens sidfot."
+
+website: https://persistentflow.com
+
+description:
+  value: Utvecklar Persistent Flow, ett delat minne för AI-assistenter som kopplas in via MCP. Det som sparas i en assistent går att hämta i en annan, med källa och historik, och sökning, rangordning och faktautvinning körs enligt dokumentationen på modeller i Sverige.
+  status: claimed
+  source_url: https://persistentflow.com/docs/introduction
+  source_type: own_docs
+  verified_at: 2026-10-13
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://persistentflow.com/pricing
+  source_type: own_site
+  verified_at: 2026-10-13
+  verified_by: agent
+
+areas:
+  value: [agenter_automation]
+  status: claimed
+  source_url: https://persistentflow.com/docs/introduction
+  source_type: own_docs
+  verified_at: 2026-10-13
+  verified_by: agent
+
+kommun:
+  value: "0182"
+  status: confirmed
+  source_url: https://www.allabolag.se/5595860114
+  source_type: third_party
+  verified_at: 2026-10-13
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Nacka."
+
+founded:
+  value: 2026
+  status: confirmed
+  source_url: https://www.allabolag.se/5595860114
+  source_type: third_party
+  verified_at: 2026-10-13
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2026-05-18."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5595860114
+  source_type: third_party
+  verified_at: 2026-10-13
+  verified_by: agent
+  note: "Status enligt allabolag.se 2026-10-13: aktiv."
+
+evidence:
+  - url: https://persistentflow.com/docs/introduction
+    kind: produkt
+    title: "Persistent Flow: delat minne för AI-assistenter, anslutet via MCP"
+    status: claimed
+    verified_at: 2026-10-13
+    verified_by: agent
+    note: Dokumentationen är version 1.1, uppdaterad 4 oktober 2026. Tjänsten har en gratisplan.
+  - url: https://persistentflow.com/docs/sovereignty
+    kind: produkt
+    title: "Sökning, rangordning och faktautvinning körs på modeller i Sverige"
+    status: claimed
+    verified_at: 2026-10-13
+    verified_by: agent
+    note: Sidan namnger inte vilka modeller eller leverantörer som används.
+  - url: https://persistentflow.com/docs/connect
+    kind: produkt
+    title: "Anslutningsguide med tjänstens adress och åtta klienter som bolaget har prövat"
+    status: claimed
+    verified_at: 2026-10-13
+    verified_by: agent
+
+record_created_at: 2026-10-13
+record_updated_at: 2026-10-13
