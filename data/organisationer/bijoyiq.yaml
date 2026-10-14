@@ -1,0 +1,107 @@
+id: bijoyiq
+
+name:
+  value: BijoyIQ
+  status: claimed
+  source_url: https://bijoyiq.com
+  source_type: own_site
+  verified_at: 2026-10-14
+  verified_by: agent
+
+legal_name:
+  value: BijoyIQ Consulting AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5595281345
+  source_type: third_party
+  verified_at: 2026-10-14
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5595281345
+  source_type: third_party
+  verified_at: 2026-10-14
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: aktiebolag."
+
+org_number:
+  value: "559528-1345"
+  status: confirmed
+  source_url: https://www.allabolag.se/5595281345
+  source_type: third_party
+  verified_at: 2026-10-14
+  verified_by: agent
+  note: "Samma nummer som i tipset och i CV-pilotens sidfot."
+
+website: https://bijoyiq.com
+
+description:
+  value: Konsultbolag inom prissättning, dataanalys och marknadsföring. Driver CV-piloten, en webbtjänst där AI granskar cv, hjälper till med personliga brev och tränar jobbsökande inför intervjun.
+  status: claimed
+  source_url: https://bijoyiq.com
+  source_type: own_site
+  verified_at: 2026-10-14
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://cvpiloten.se/om-oss
+  source_type: own_site
+  verified_at: 2026-10-14
+  verified_by: agent
+
+areas:
+  value: [sprakteknik]
+  status: claimed
+  source_url: https://cvpiloten.se/om-oss
+  source_type: own_site
+  verified_at: 2026-10-14
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5595281345
+  source_type: third_party
+  verified_at: 2026-10-14
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+founded:
+  value: 2025
+  status: confirmed
+  source_url: https://www.allabolag.se/5595281345
+  source_type: third_party
+  verified_at: 2026-10-14
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2025-04-22."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5595281345
+  source_type: third_party
+  verified_at: 2026-10-14
+  verified_by: agent
+  note: "Status enligt allabolag.se 2026-10-14: aktiv."
+
+evidence:
+  - url: https://cvpiloten.se/om-oss
+    kind: produkt
+    title: "CV-piloten: AI-tjänst som granskar cv, hjälper med brev och tränar inför intervjun"
+    status: claimed
+    verified_at: 2026-10-14
+    verified_by: agent
+    note: Sidan anger BijoyIQ Consulting AB som bolaget bakom tjänsten.
+  - url: https://cvpiloten.se/integritet
+    kind: produkt
+    title: "Hur CV-piloten skickar användarnas material till AI-modeller via OpenAI:s och Googles API:er"
+    status: claimed
+    verified_at: 2026-10-14
+    verified_by: agent
+    note: Namn och kontaktuppgifter byts ut innan texten skickas till AI-leverantören.
+
+record_created_at: 2026-10-14
+record_updated_at: 2026-10-14
