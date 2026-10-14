@@ -1,8 +1,32 @@
 {
-  "generated_at": "2026-10-13T18:29:20Z",
-  "antal": 512,
-  "senaste_andring": "2026-10-13",
+  "generated_at": "2026-10-14T11:48:06Z",
+  "antal": 514,
+  "senaste_andring": "2026-10-14",
   "rader": [
+    {
+      "datum": "2026-10-14",
+      "commit": "d75ca6aefd",
+      "id": "bijoyiq",
+      "namn": "BijoyIQ",
+      "falt": "hela posten",
+      "andring": "tillagd",
+      "gammalt": null,
+      "nytt": null,
+      "status": null,
+      "kalla": "https://bijoyiq.com"
+    },
+    {
+      "datum": "2026-10-14",
+      "commit": "aa27de412b",
+      "id": "glauser-creative",
+      "namn": "Glauser Creative",
+      "falt": "hela posten",
+      "andring": "tillagd",
+      "gammalt": null,
+      "nytt": null,
+      "status": null,
+      "kalla": "https://www.glauser.com"
+    },
     {
       "datum": "2026-10-13",
       "commit": "57a908b746",
