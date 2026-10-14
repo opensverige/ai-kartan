@@ -1,0 +1,101 @@
+id: glauser-creative
+
+name:
+  value: Glauser Creative
+  status: claimed
+  source_url: https://letmira.com
+  source_type: own_site
+  verified_at: 2026-10-14
+  verified_by: agent
+  note: "Namnet står i sidfoten på Miras webbplats."
+
+legal_name:
+  value: Glauser Creative AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5567581300
+  source_type: third_party
+  verified_at: 2026-10-14
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5567581300
+  source_type: third_party
+  verified_at: 2026-10-14
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: aktiebolag."
+
+org_number:
+  value: "556758-1300"
+  status: confirmed
+  source_url: https://www.allabolag.se/5567581300
+  source_type: third_party
+  verified_at: 2026-10-14
+  verified_by: agent
+  note: "Samma nummer som i tipset."
+
+website: https://www.glauser.com
+
+description:
+  value: Utvecklar Mira, en webbtjänst där en AI intervjuar ett företags användare i röst eller text om varför de inte betalar, och sammanställer svaren till rapporter med rekommendationer.
+  status: claimed
+  source_url: https://letmira.com
+  source_type: own_site
+  verified_at: 2026-10-14
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://letmira.com
+  source_type: own_site
+  verified_at: 2026-10-14
+  verified_by: agent
+
+areas:
+  value: [agenter_automation]
+  status: claimed
+  source_url: https://letmira.com
+  source_type: own_site
+  verified_at: 2026-10-14
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5567581300
+  source_type: third_party
+  verified_at: 2026-10-14
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+founded:
+  value: 2008
+  status: confirmed
+  source_url: https://www.allabolag.se/5567581300
+  source_type: third_party
+  verified_at: 2026-10-14
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2008-05-19."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5567581300
+  source_type: third_party
+  verified_at: 2026-10-14
+  verified_by: agent
+  note: "Status enligt allabolag.se 2026-10-14: aktiv."
+
+evidence:
+  - url: https://letmira.com
+    kind: produkt
+    title: "Mira: AI-intervjuer med ett företags användare, sammanställda till rapporter"
+    status: claimed
+    verified_at: 2026-10-14
+    verified_by: agent
+    note: Sidfoten anger Glauser Creative. Tjänsten går att börja använda gratis och har en demo.
+
+record_created_at: 2026-10-14
+record_updated_at: 2026-10-14
