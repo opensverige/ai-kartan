@@ -22,6 +22,7 @@ import {
   idagISverige,
 } from './lib/organisationer.mjs';
 import { provaBelaggstyp, utanEgetBelagg } from './lib/belagg.mjs';
+import { MARKNADSORD } from './lib/marknadsord.mjs';
 
 const argv = process.argv.slice(2);
 const somJson = argv.includes('--json');
@@ -49,7 +50,6 @@ function arLinkedinOrganisation(adress) {
     return false;
   }
 }
-const MARKNADSORD = /\b(ledande|världsledande|bäst[a]?|nummer ett|revolutionerande|unik[ta]?|banbrytande|marknadsledande)\b/i;
 const KALLTYP_FAR_BEKRAFTA = new Set(tax.kalltyper.filter((k) => k.may_confirm).map((k) => k.id));
 
 function* allaNycklarOchStrangar(obj, stig = []) {
