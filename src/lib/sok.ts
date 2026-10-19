@@ -109,7 +109,7 @@ function stammar(ord: string): string[] {
 }
 
 /** Ord som ska stå i början av ett ord. "gotland" finns i Östergötland. "rost" finns i prostata och "voice" i invoice. "tts" följer samma regel. */
-const ORDSTART = new Set(['gotland', 'gotlands', 'rost', 'voice', 'tts']);
+export const ORDSTART: ReadonlySet<string> = new Set(['gotland', 'gotlands', 'rost', 'voice', 'tts']);
 const ordgranser = new Map<string, RegExp>();
 
 /**
