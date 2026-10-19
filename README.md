@@ -110,6 +110,8 @@ Miljövariabler vid bygge: `SITE_URL` (standard `https://karta.opensverige.se`) 
 
 ## Fråga kartan
 
+Kartsidan börjar med ett fält där man frågar med egna ord. Svaret kommer ur kartans data, och en öppen modell hos Berget AI gör om frågan till kartans filter. Koden ligger i `src/lib/fraga/`, gränssnittet i `src/components/Fraga.astro` och serverfunktionen i `api/fraga.ts`. Designen står i `docs/superpowers/specs/2026-10-19-fraga-kartan-design.md`.
+
 Nyckeln ligger i `.env` som `FRAGA_API_NYCKEL`, och i Vercel som miljövariabel. Den committas aldrig.
 
 `npm run build && npm run prova:fraga` mäter modellerna.

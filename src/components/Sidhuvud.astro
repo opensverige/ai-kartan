@@ -62,8 +62,8 @@ function aktiv(href: string): boolean {
       <kbd class="sok__kbd" aria-hidden="true">⌘K</kbd>
       <div class="sok__lada" id="sokresultat" hidden></div>
     </form>
-    {/* Fråga kartan: i betan står här en knapp som ser ut som sökrutan och öppnar paletten.
-        Den syns bara på kartsidan med ?fraga=1, se Bas.astro och Fraga.astro. */}
+    {/* Fråga kartan: på kartsidan står här en knapp som ser ut som sökrutan och öppnar paletten.
+        Övriga sidor har sökrutan ovanför. Se Bas.astro och Fraga.astro. */}
     <div class="huvudplats">
       <button type="button" class="huvudplats__knapp" data-fraga-oppna aria-haspopup="dialog">
         <span class="huvudplats__glyf" aria-hidden="true">✦</span>
@@ -123,7 +123,7 @@ function aktiv(href: string): boolean {
   document.addEventListener('keydown', (e) => {
     if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
       e.preventDefault();
-      // I Fråga kartans beta är sökrutan dold. Då öppnar kortkommandot paletten i stället.
+      // På kartsidan är sökrutan dold. Där öppnar kortkommandot Fråga kartans palett i stället.
       const palett = document.querySelector<HTMLElement>('html[data-fraga] [data-fraga-oppna]');
       if (palett) return palett.click();
       falt?.focus();
