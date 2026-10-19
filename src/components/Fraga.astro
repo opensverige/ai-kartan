@@ -202,6 +202,7 @@ import { SAJT } from '../lib/data';
 
     function oppna(): void {
       if (!dialog.open) dialog.showModal();
+      kartgranssnitt()?.handling('ai');
       input.focus();
       input.select();
       visa();
@@ -329,6 +330,7 @@ import { SAJT } from '../lib/data';
         senaste = { q, svar: svar.svar, vy };
         ritaSvar(vy);
         besked.textContent = vy.besked;
+        kartgranssnitt()?.handelser.fragaStalld(svar.svar.sort);
       } catch {
         if (mitt !== nummer) return;
         tillstand = 'svar';
@@ -358,8 +360,11 @@ import { SAJT } from '../lib/data';
       }
       const org = rad.dataset.org;
       if (org) {
+        // En rad i ett svar räknas som ett klick i svaret. En rad bland förslagen är en vanlig sökning.
+        const iSvaret = tillstand === 'svar';
+        if (iSvaret) kartgranssnitt()?.handelser.fragaKlick('organisation');
         stang();
-        return byt('karta', (k) => k.oppnaOrg(org));
+        return byt('karta', (k) => k.oppnaOrg(org, iSvaret ? null : 'sok'));
       }
       const [typ, kod] = (rad.dataset.plats ?? '').split(':');
       if (kod) {
@@ -411,6 +416,7 @@ import { SAJT } from '../lib/data';
       if (kartlank) {
         if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
         e.preventDefault();
+        kartgranssnitt()?.handelser.fragaKlick('alla_pa_kartan');
         const f = kartlank.dataset.kartlank === 'svar' && senaste ? senaste.svar.filter : TOMT_FILTER;
         stang();
         return byt('karta', (k) => k.aterstall(f));
@@ -435,10 +441,19 @@ import { SAJT } from '../lib/data';
         void fraga(input.value);
         return input.focus();
       }
+      // Länken till Discord öppnas som vanligt. Klicket räknas bara.
+      if (mal.closest('[data-klick="discord"]')) return kartgranssnitt()?.handelser.fragaKlick('discord');
       const kopieraKnapp = mal.closest<HTMLButtonElement>('[data-kopiera]');
-      if (kopieraKnapp) return void kopiera(kopieraKnapp);
+      if (kopieraKnapp) {
+        kartgranssnitt()?.handelser.fragaKlick('kopiera');
+        return void kopiera(kopieraKnapp);
+      }
       const tumme = mal.closest<HTMLButtonElement>('[data-tumme]');
       if (tumme) {
+        // Bara det första valet per svar räknas, så att ett ångrat tryck inte blir två svar.
+        const svar = tumme.dataset.tumme;
+        const forsta = !tumme.parentElement?.querySelector('[aria-pressed="true"]');
+        if (forsta && (svar === 'ja' || svar === 'nej')) kartgranssnitt()?.handelser.fragaTumme(svar);
         tumme.parentElement?.querySelectorAll('[data-tumme]').forEach((b) => b.setAttribute('aria-pressed', String(b === tumme)));
         return;
       }
@@ -454,7 +469,8 @@ import { SAJT } from '../lib/data';
     });
     document.getElementById('fraga-utforska')?.addEventListener('click', () => byt('karta', undefined, true));
     // Den som drar, zoomar, trycker på en prick eller öppnar en organisation lämnar första skärmen.
-    document.addEventListener(HANDLING, () => lage() === 'hem' && byt('karta'));
+    // Att öppna paletten räknas också som en handling, men den lämnar inte första skärmen.
+    document.addEventListener(HANDLING, (e) => lage() === 'hem' && (e as CustomEvent<string>).detail !== 'ai' && byt('karta'));
     document.addEventListener(ORG, () => lage() === 'hem' && byt('karta'));
     document.addEventListener(REDO, () => {
       if (!dialog.open) return;

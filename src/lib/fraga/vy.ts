@@ -152,7 +152,7 @@ export function lagesrad(s: Pick<Svar, 'modellfel'>, lage: Klientlage): string |
 export function overlamnaHtml(fraga: string, kartlank: string, l: Lankar): string {
   const kopia = `${fraga}\n(via ${kartadress(l, kartlank)})`;
   return (
-    `<a class="palett__knapp palett__knapp--discord" href="${esc(l.discord)}" rel="noopener" target="_blank">Bolla med builders i Discord →</a>` +
+    `<a class="palett__knapp palett__knapp--discord" href="${esc(l.discord)}" rel="noopener" target="_blank" data-klick="discord">Bolla med builders i Discord →</a>` +
     `<button type="button" class="palett__knapp palett__knapp--tyst" data-kopiera="${esc(kopia)}">Kopiera frågan</button>`
   );
 }

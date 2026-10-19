@@ -97,3 +97,30 @@ test('ingen händelse bär fler än två egenskaper', () => {
     assert.ok(Object.keys(egenskaper).length <= 2, `${namn} har för många egenskaper`);
   }
 });
+
+test('Fråga kartan: svarets sort, klicket och tummen räknas med fasta värden', () => {
+  assert.equal(tillaten('fraga_stalld', { sort: 'traffar' }), true);
+  for (const sort of ['traffar', 'bred', 'tomt', 'manniska', 'ranking', 'kontakt', 'opensverige', 'utanfor']) assert.equal(tillaten('fraga_stalld', { sort }), true, sort);
+  assert.equal(tillaten('fraga_klick', { mal: 'discord' }), true);
+  for (const mal of ['organisation', 'alla_pa_kartan', 'discord', 'kopiera']) assert.equal(tillaten('fraga_klick', { mal }), true, mal);
+  assert.equal(tillaten('fraga_tumme', { svar: 'ja' }), true);
+  assert.equal(tillaten('fraga_tumme', { svar: 'nej' }), true);
+  assert.equal(tillaten('forsta_handling', { typ: 'ai' }), true);
+});
+
+test('Fråga kartan: frågans text kan aldrig följa med', () => {
+  assert.equal(tillaten('fraga_stalld', { sort: 'traffar', text: 'x' }), false);
+  assert.equal(tillaten('fraga_stalld', { sort: 'Vilka bygger röstagenter?' }), false);
+  assert.equal(tillaten('fraga_klick', { mal: 'sinch' }), false);
+  assert.equal(tillaten('fraga_tumme', { svar: 'kanske' }), false);
+  const { skickat, skicka } = fangare();
+  const h = skapaHandelser(skicka);
+  h.fragaStalld('traffar');
+  h.fragaKlick('alla_pa_kartan');
+  h.fragaTumme('ja');
+  assert.deepEqual(skickat, [
+    ['fraga_stalld', { sort: 'traffar' }],
+    ['fraga_klick', { mal: 'alla_pa_kartan' }],
+    ['fraga_tumme', { svar: 'ja' }],
+  ]);
+});

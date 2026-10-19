@@ -2236,10 +2236,14 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       redo: false,
       poster: (): readonly Kartrad[] => alla,
       sok: (q) => sok(q),
-      oppnaOrg(id) {
+      oppnaOrg(id, via) {
         const o = alla.find((x) => x.id === id);
-        if (o) visaDetalj(o);
+        if (!o) return;
+        if (via) handelser.orgOppnad(via);
+        visaDetalj(o);
       },
+      handling,
+      handelser,
       aterstall(f) {
         lamnaMedlemsvy();
         lasUrl(new URLSearchParams(filterTillSok(f)));

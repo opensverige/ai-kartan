@@ -4,6 +4,7 @@
 
 import type { Map as MapLibreMap } from 'maplibre-gl';
 import type { Filter } from '../filter.ts';
+import type { Handelser, Handling, Oppnadvia } from '../handelser.ts';
 import type { Skalpost } from './skal.ts';
 
 /** Organisationerna har kommit. `redo` på gränssnittet säger samma sak för den som lyssnar för sent. */
@@ -34,7 +35,12 @@ export interface Kartgranssnitt {
   poster(): readonly Kartrad[];
   /** Samma sökning som sidhuvudets sökruta, med bästa träffen först. */
   sok(q: string): { org: readonly Kartrad[]; platser: readonly Platsrad[] };
-  oppnaOrg(id: string): void;
+  /** Öppnar organisationen i panelen. `via` räknas som öppnad organisation, null räknas inte. */
+  oppnaOrg(id: string, via: Oppnadvia | null): void;
+  /** Samma som kartans egna handlingar: knuffen försvinner och den första handlingen räknas. */
+  handling(typ: Handling): void;
+  /** Kartans räknare. Fråga kartan räknar med dem, så att första handlingen bara räknas en gång. */
+  handelser: Handelser;
   /** Byter urvalet till filtret, stänger en öppen organisation och passar in kartan. */
   aterstall(f: Filter): void;
   /** Kartytans storlek har ändrats. Kartan ritas om, och ramas in när `ramaIn` är sant. */

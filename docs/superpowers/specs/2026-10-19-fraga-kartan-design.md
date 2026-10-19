@@ -349,11 +349,11 @@ Följderna:
 
   ```ts
   fraga_stalld: { sort: ['traffar', 'bred', 'tomt', 'manniska', 'ranking', 'kontakt', 'opensverige', 'utanfor'] },
-  fraga_klick:  { mal: ['kort', 'alla_pa_kartan', 'discord', 'kopiera'] },
+  fraga_klick:  { mal: ['organisation', 'alla_pa_kartan', 'discord', 'kopiera'] },
   fraga_tumme:  { svar: ['ja', 'nej'] },
   ```
 
-  Dessutom läggs `ai` till i `forsta_handling.typ`. Värdet `fraga` finns redan och betyder frågepillren. Vercel tar emot högst två egenskaper per händelse, så modellens användning skickas inte som händelse. Den syns i serverns loggar som räknare.
+  Dessutom läggs `ai` till i `forsta_handling.typ`. Den räknas när paletten öppnas. En rad bland förslagen räknas som `org_oppnad` via `sok`, en rad i ett svar som `fraga_klick` med `organisation`. Värdet `fraga` finns redan och betyder frågepillren. Vercel tar emot högst två egenskaper per händelse, så modellens användning skickas inte som händelse. Den syns i serverns loggar som räknare.
 
 ## 6. Utvärdering
 
