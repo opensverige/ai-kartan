@@ -1,0 +1,200 @@
+// Tester för anropet till språkmodellen: schema, kontroll, prompt och att fel ger null.
+//   node --test src/lib/fraga/inferens.test.mjs
+
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { byggMeddelanden, byggSchema, arModellsvar, skapaTolkare, systemprompt } from './inferens.ts';
+
+const ETIKETTER = {
+  omraden: { halsa: 'Hälsa och life science' },
+  erbjuder: { infrastruktur: 'Infrastruktur och hosting' },
+  typer: { bolag: 'Bolag' },
+  typerPlural: { bolag: 'Bolag' },
+  lan: {},
+};
+const FAQ = [{ id: 'bidra', fragor: ['Hur lägger jag till mitt bolag?'] }];
+const GILTIGT = {
+  avsikt: 'hitta',
+  omrade: ['halsa'],
+  erbjuder: [],
+  typ: [],
+  plats: 'Göteborg',
+  sokord: ['röst'],
+  faq: [],
+  manniska: false,
+  tolkning: 'Jag tolkar det som att du söker organisationer inom hälsa i Göteborg.',
+};
+const INST = { bas: 'https://api.example/v1', nyckel: 'hemlig', modell: 'google/gemma', tidsgrans: 6000 };
+
+function falskHamta(innehall, status = 200) {
+  const anrop = [];
+  const fn = async (url, init) => {
+    anrop.push({ url, init });
+    const content = Array.isArray(innehall) ? innehall[anrop.length - 1] : innehall;
+    return new Response(JSON.stringify({ choices: [{ message: { content } }] }), { status });
+  };
+  return { anrop, fn };
+}
+
+function kroppAv(anrop) {
+  assert.equal(typeof anrop.init.body, 'string');
+  return JSON.parse(anrop.init.body);
+}
+
+test('byggSchema stänger objektet och räknar upp de nio fälten', () => {
+  const schema = byggSchema(ETIKETTER, ['bidra']);
+  assert.equal(schema.additionalProperties, false);
+  assert.deepEqual(schema.required, ['avsikt', 'omrade', 'erbjuder', 'typ', 'plats', 'sokord', 'faq', 'manniska', 'tolkning']);
+  assert.deepEqual(schema.properties.omrade.items.enum, ['halsa']);
+  assert.equal(schema.properties.sokord.maxItems, 2);
+});
+
+test('tom faq-lista blir en array som inte rymmer något', () => {
+  const schema = byggSchema(ETIKETTER, []);
+  assert.deepEqual(schema.properties.faq, { type: 'array', maxItems: 0 });
+});
+
+test('arModellsvar godkänner ett giltigt svar', () => {
+  assert.equal(arModellsvar(GILTIGT, ETIKETTER, ['bidra']), true);
+});
+
+test('arModellsvar avvisar värden utanför schemat', () => {
+  const fall = [
+    [{ ...GILTIGT, omrade: ['finns-inte'] }, 'okänt område'],
+    [{ ...GILTIGT, extra: true }, 'extra nyckel'],
+    [{ ...GILTIGT, sokord: ['a', 'b', 'c'] }, 'tre sökord'],
+    [{ ...GILTIGT, tolkning: 'x'.repeat(201) }, 'för lång tolkning'],
+    [{ ...GILTIGT, avsikt: 'annat' }, 'okänd avsikt'],
+    [null, 'null'],
+  ];
+  for (const [varde, namn] of fall) {
+    assert.equal(arModellsvar(varde, ETIKETTER, ['bidra']), false, namn);
+  }
+});
+
+test('systemprompten är likadan mellan anrop och saknar datum', () => {
+  const text = systemprompt(ETIKETTER, FAQ);
+  assert.equal(text, systemprompt(ETIKETTER, FAQ));
+  assert.ok(text.includes('halsa: Hälsa och life science'));
+  assert.ok(text.includes('bidra:'));
+  assert.equal(/\d{4}-\d{2}-\d{2}/.test(text), false);
+});
+
+test('byggMeddelanden lägger historiken mellan system och den nya frågan', () => {
+  const filter = { q: 'röst', erbjuder: [], typ: [], omrade: ['halsa'], lan: '', kommun: '' };
+  const meddelanden = byggMeddelanden('regler', 'bara i Göteborg', [{ fraga: 'hälsa', filter }]);
+  assert.deepEqual(meddelanden.map((m) => m.role), ['system', 'user', 'assistant', 'user']);
+  assert.equal(meddelanden[0].content, 'regler');
+  assert.equal(meddelanden[1].content, 'hälsa');
+  assert.equal(meddelanden[2].content, JSON.stringify(filter));
+  assert.equal(meddelanden[3].content, 'bara i Göteborg');
+});
+
+test('anropets kropp och huvuden följer schemat', async () => {
+  const e = {
+    omraden: { halsa: 'Hälsa och life science' },
+    erbjuder: { infrastruktur: 'Infrastruktur och hosting' },
+    typer: { bolag: 'Bolag' },
+    typerPlural: { bolag: 'Bolag' },
+    lan: {},
+  };
+  const faq = [{ id: 'bidra', fragor: ['Hur lägger jag till mitt bolag?'] }];
+  const { anrop, fn } = falskHamta(JSON.stringify(GILTIGT));
+  const tolkare = skapaTolkare({ ...INST, modell: 'google/gemma' }, e, faq, fn);
+  e.omraden.extra = 'Ska inte med';
+  faq.push({ id: 'ny', fragor: ['ny fråga'] });
+  const filter = { q: 'röst', erbjuder: [], typ: [], omrade: ['halsa'], lan: '', kommun: '' };
+  await tolkare('och hosting', [{ fraga: 'hälsa', filter }]);
+  assert.equal(anrop.length, 1);
+  assert.equal(anrop[0].url, 'https://api.example/v1/chat/completions');
+  assert.equal(anrop[0].init.method, 'POST');
+  assert.equal(anrop[0].init.headers.authorization, 'Bearer hemlig');
+  assert.equal(anrop[0].init.headers['content-type'], 'application/json');
+  const kropp = kroppAv(anrop[0]);
+  assert.equal(kropp.temperature, 0);
+  assert.equal(kropp.max_tokens, 400);
+  assert.equal(kropp.model, 'google/gemma');
+  assert.equal(kropp.response_format.type, 'json_schema');
+  assert.equal(kropp.response_format.json_schema.strict, true);
+  assert.equal(kropp.response_format.json_schema.name, 'tolkning');
+  assert.deepEqual(kropp.response_format.json_schema.schema.properties.omrade.items.enum, ['halsa']);
+  assert.equal(kropp.messages[0].content.includes('Ska inte med'), false);
+  assert.equal(kropp.messages[0].content.includes('ny fråga'), false);
+  assert.deepEqual(kropp.messages.map((m) => m.role), ['system', 'user', 'assistant', 'user']);
+  assert.equal(kropp.messages[2].content, JSON.stringify(filter));
+  assert.equal(kropp.messages[3].content, 'och hosting');
+});
+
+test('ett giltigt svar ges efter ett anrop', async () => {
+  const { anrop, fn } = falskHamta(JSON.stringify(GILTIGT));
+  const tolkare = skapaTolkare(INST, ETIKETTER, FAQ, fn);
+  assert.deepEqual(await tolkare('röst i Göteborg', []), GILTIGT);
+  assert.equal(anrop.length, 1);
+});
+
+test('ogiltig JSON första gången och ett giltigt svar andra gången', async () => {
+  const { anrop, fn } = falskHamta(['{inte', JSON.stringify(GILTIGT)]);
+  const tolkare = skapaTolkare(INST, ETIKETTER, FAQ, fn);
+  assert.deepEqual(await tolkare('röst i Göteborg', []), GILTIGT);
+  assert.equal(anrop.length, 2);
+});
+
+test('ogiltig JSON båda gångerna ger null', async () => {
+  const { anrop, fn } = falskHamta('{inte');
+  const tolkare = skapaTolkare(INST, ETIKETTER, FAQ, fn);
+  assert.equal(await tolkare('röst i Göteborg', []), null);
+  assert.equal(anrop.length, 2);
+});
+
+test('svar utanför schemat båda gångerna ger null', async () => {
+  const { anrop, fn } = falskHamta(JSON.stringify({ ...GILTIGT, omrade: ['finns-inte'] }));
+  const tolkare = skapaTolkare(INST, ETIKETTER, FAQ, fn);
+  assert.equal(await tolkare('röst i Göteborg', []), null);
+  assert.equal(anrop.length, 2);
+});
+
+test('HTTP 500 ger null utan nytt försök', async () => {
+  const { anrop, fn } = falskHamta(JSON.stringify(GILTIGT), 500);
+  const tolkare = skapaTolkare(INST, ETIKETTER, FAQ, fn);
+  assert.equal(await tolkare('röst i Göteborg', []), null);
+  assert.equal(anrop.length, 1);
+});
+
+test('ett anrop som aldrig svarar ger null inom tidsgränsen', { timeout: 2000 }, async () => {
+  const fn = (_url, init) => new Promise((_resolve, reject) => {
+    const signal = init?.signal;
+    if (!signal) return;
+    signal.addEventListener('abort', () => {
+      reject(new DOMException('The operation was aborted', 'AbortError'));
+    });
+  });
+  const tolkare = skapaTolkare({ ...INST, tidsgrans: 100 }, ETIKETTER, FAQ, fn);
+  const start = Date.now();
+  assert.equal(await tolkare('röst i Göteborg', []), null);
+  assert.ok(Date.now() - start < 400);
+});
+
+test('ett nätverksfel ger null', async () => {
+  const fn = async () => {
+    throw new Error('nätverk');
+  };
+  const tolkare = skapaTolkare(INST, ETIKETTER, FAQ, fn);
+  assert.equal(await tolkare('röst i Göteborg', []), null);
+});
+
+test('tolkaren anropar aldrig console', async () => {
+  const fangat = [];
+  const original = { log: console.log, error: console.error, warn: console.warn, info: console.info };
+  for (const nyckel of Object.keys(original)) console[nyckel] = (...args) => fangat.push(args);
+  try {
+    const { fn } = falskHamta(JSON.stringify(GILTIGT));
+    await skapaTolkare(INST, ETIKETTER, FAQ, fn)('Hemlig fråga om röst', []);
+    const kast = async () => {
+      throw new Error('Hemlig fråga om röst');
+    };
+    await skapaTolkare(INST, ETIKETTER, FAQ, kast)('Hemlig fråga om röst', []);
+    assert.equal(fangat.length, 0);
+  } finally {
+    Object.assign(console, original);
+  }
+});
