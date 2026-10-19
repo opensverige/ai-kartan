@@ -125,6 +125,35 @@ Rutan visas när frågan gäller människor ("bolla", "någon att", "samarbeta")
 
 Inget postas automatiskt och ingen Discord-identitet skapas.
 
+### 3.8 Lägen: inget råfel når besökaren (beslutat med Gustaf)
+
+Besökaren ser aldrig en statuskod, ordet "Error", `null`, en stackspårning eller en röd felruta. Varje läge ger en väg framåt: ett svar ur sökningen, kartan, Discord eller "Försök igen". Lägesraden är information och läses upp med `aria-live="polite"`. Den är inget larm.
+
+**När modellen inte kan svara blir svaret ändå ett svar.** Motorn går reservvägen (5.8), och svaret får en liten rad överst med en dämpad ✦, i samma stil som AI-raden under fältet:
+
+| Läge | När | Raden | Koden |
+|---|---|---|---|
+| AI pausad | Krediterna är slut (Berget svarar 402, eller 429 med quota, credit, billing eller insufficient). Nyckeln är ogiltig (401 eller 403). Ingen nyckel finns, eller brytaren är på. | "AI-tolkningen är pausad just nu. Svaren bygger på orden i din fråga." | Vakten slutar fråga modellen i 15 minuter. Loggen får sorten. |
+| AI svarade inte | Tidsgränsen gick ut, Berget svarade 5xx, nätverksfel, upptaget (429), eller ogiltigt svar två gånger | "AI:n svarade inte den här gången. Svaren bygger på orden i din fråga." | Efter tre sådana i rad pausar vakten i 1 minut. Vid upptaget pausar den direkt i 1 minut. |
+
+**Lägen i webbläsaren:**
+
+| Läge | När | Besökaren ser |
+|---|---|---|
+| Servern nås inte | 404 (GitHub Pages, `astro dev`), 403, 405, 503 eller nätverksfel mot `/api/fraga` | Svaret ur reservvägen, som räknas fram i webbläsaren, och raden "AI:n svarade inte den här gången. Svaren bygger på orden i din fråga." |
+| För många frågor | 429 från brandväggen | Svaret ur reservvägen och raden "Du har frågat många gånger i rad. Svaren bygger på orden i din fråga." |
+| Ingen anslutning | Kartans data har inte kunnat laddas, så inte heller reservvägen fungerar | "Ingen anslutning just nu." och knappen **Försök igen →**. Frågan står kvar. |
+| Kartan laddar | Besökaren frågar innan kartans data finns | "Söker i kartan …" står kvar tills datan finns, högst 10 s, sedan läget Ingen anslutning |
+| Lång fråga | Från 260 tecken | En räknare under fältet, "40 tecken kvar". Över 300: "Frågan är för lång. Korta den lite." och skicka går inte att trycka på. |
+| Samtalet fullt | Efter 6 frågor | Fältet säger "Samtalet är fullt", och svaret slutar med **Ny fråga →** |
+| Ersatt fråga | En ny fråga skickas innan den förra fått svar | Den förra frågan står kvar med raden "Ersatt av nästa fråga." i grått |
+| Okänd plats | Modellen gav en plats som inte finns | "Jag hittar ingen plats som heter ”Norrland”, så jag sökte i hela Sverige." |
+| Sökord borttagna | 5.7 steg 2 | "Ingen nämner ”känsliga”. Här är alla som erbjuder infrastruktur och hosting." |
+
+Fallen i 3.6 (bred, ranking, kontakt, OpenSverige, inga träffar, utanför ämnet) gäller som förut.
+
+**Kontraktet:** `Svar` får fältet `modellfel` med ett av värdena `'saknas'`, `'slut'`, `'nyckel'`, `'begransad'`, `'nere'`, `'tidsgrans'`, `'ogiltig'`, eller `null` när modellen svarade eller inte behövdes. Webbläsaren väljer rad ur fältet: `saknas`, `slut` och `nyckel` ger AI pausad, och övriga ger AI svarade inte. Tolkaren kastar ett namngivet fel i stället för att ge `null`, och motorn fångar det. Vakten håller sitt läge i funktionens minne, en gång per serverinstans.
+
 ## 4. Neutraliteten (beslutad med Gustaf)
 
 Principen är att modellen håller så få spakar som möjligt:

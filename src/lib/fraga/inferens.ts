@@ -1,12 +1,13 @@
 // Anropet till språkmodellen. Den får bara föreslå filter och en mening.
-// Schemat skickas med, och svaret kontrolleras här igen. Allt som går fel ger
-// null, så motorn tar reservvägen. Frågans text loggas inte.
+// Schemat skickas med, och svaret kontrolleras här igen. Allt som går fel kastas
+// som ett namngivet fel, så att motorn tar reservvägen och webbläsaren kan välja
+// en lugn rad i stället för ett råfel. Frågans text loggas inte.
 // Valideringen är skriven för hand: funktionen på Vercel får bara med src/lib,
 // och paket ur node_modules följer inte med.
 
 import type { Etiketter } from '../sokindex.ts';
 import type { Tolkare } from './motor.ts';
-import type { Avsikt, Modellsvar, Tidigare } from './typer.ts';
+import type { Avsikt, Modellfelsort, Modellsvar, Tidigare } from './typer.ts';
 
 export interface Inferens {
   bas: string;
@@ -25,7 +26,30 @@ interface Meddelande {
   content: string;
 }
 
-type Forsok = { sort: 'svar'; svar: Modellsvar } | { sort: 'http' } | { sort: 'ogiltigt' };
+type Forsok = { sort: 'svar'; svar: Modellsvar } | { sort: 'ogiltigt' };
+
+export type Modellfel = Error & { modellfel: Modellfelsort };
+
+/** Ett fel med namn, som motorn känner igen. */
+export function modellfel(sort: Modellfelsort): Modellfel {
+  return Object.assign(new Error(`modellen: ${sort}`), { modellfel: sort });
+}
+
+export function arModellfel(e: unknown): e is Modellfel {
+  return e instanceof Error && typeof (e as Partial<Modellfel>).modellfel === 'string';
+}
+
+/** Slut på krediter känns igen på 402, eller på ord i felet. Leverantörerna skriver det olika. */
+const SLUT = /quota|credit|billing|insufficient|balance|payment/i;
+
+/** Felets namn ur leverantörens svar. Kroppen läses bara för att känna igen slut på krediter. */
+export function felsort(status: number, kropp: string): Modellfelsort {
+  if (status === 402 || ((status === 403 || status === 429) && SLUT.test(kropp))) return 'slut';
+  if (status === 401 || status === 403) return 'nyckel';
+  if (status === 429) return 'begransad';
+  if (status >= 500) return 'nere';
+  return 'ogiltig';
+}
 
 const AVSIKTER: readonly Avsikt[] = ['hitta', 'opensverige', 'manniska', 'ranking', 'kontakt', 'utanfor'];
 const FALT = ['avsikt', 'omrade', 'erbjuder', 'typ', 'plats', 'sokord', 'faq', 'manniska', 'tolkning'] as const;
@@ -190,7 +214,7 @@ export function skapaTolkare(inst: Inferens, e: Etiketter, faq: readonly FaqFrag
   const system = systemprompt(e, faq);
   const url = `${inst.bas}/chat/completions`;
 
-  return async (fraga: string, tidigare: readonly Tidigare[]): Promise<Modellsvar | null> => {
+  return async (fraga: string, tidigare: readonly Tidigare[]): Promise<Modellsvar> => {
     // En tidsgräns för hela anropet, inklusive det nya försöket. Samma avbrott
     // stoppar båda, så det andra inte får en egen frist.
     const kontroll = new AbortController();
@@ -219,7 +243,7 @@ export function skapaTolkare(inst: Inferens, e: Etiketter, faq: readonly FaqFrag
         signal: kontroll.signal,
       });
       // Ett HTTP-fel blir inte bättre av ett nytt försök.
-      if (!svar.ok) return { sort: 'http' };
+      if (!svar.ok) throw modellfel(felsort(svar.status, await svar.text().catch(() => '')));
       try {
         const modell = await lasModellsvar(svar, e, faqIds);
         return modell ? { sort: 'svar', svar: modell } : { sort: 'ogiltigt' };
@@ -232,13 +256,15 @@ export function skapaTolkare(inst: Inferens, e: Etiketter, faq: readonly FaqFrag
     try {
       const forsta = await korAnrop();
       if (forsta.sort === 'svar') return forsta.svar;
-      if (forsta.sort === 'http' || kontroll.signal.aborted) return null;
+      if (kontroll.signal.aborted) throw modellfel('tidsgrans');
       // Nytt försök bara när mer än halva tiden är kvar. Annars hinner det inte.
-      if (Date.now() - start >= inst.tidsgrans / 2) return null;
+      if (Date.now() - start >= inst.tidsgrans / 2) throw modellfel('ogiltig');
       const andra = await korAnrop();
-      return andra.sort === 'svar' ? andra.svar : null;
-    } catch {
-      return null;
+      if (andra.sort === 'svar') return andra.svar;
+      throw modellfel('ogiltig');
+    } catch (fel) {
+      if (arModellfel(fel)) throw fel;
+      throw modellfel(kontroll.signal.aborted ? 'tidsgrans' : 'nere');
     } finally {
       clearTimeout(timer);
     }

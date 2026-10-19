@@ -5,13 +5,28 @@ import type { Kartpost } from '../src/lib/data.ts';
 import { tillSokpost } from '../src/lib/sokindex.ts';
 import { datakalla, PRODUKTION, skyddskaka, tillatnaUrsprung } from '../src/lib/fraga/datakalla.ts';
 import { hanteraFraga, type Hanterardelar } from '../src/lib/fraga/handler.ts';
-import type { Motordata } from '../src/lib/fraga/motor.ts';
-import type { Fragedata } from '../src/lib/fraga/typer.ts';
+import { skapaTolkare, type Inferens } from '../src/lib/fraga/inferens.ts';
+import type { Motordata, Tolkare } from '../src/lib/fraga/motor.ts';
+import { TIDSGRANS_MS, type Fragedata } from '../src/lib/fraga/typer.ts';
+import { skapaVakt } from '../src/lib/fraga/vakt.ts';
 
 const CACHE_MS = 5 * 60 * 1000;
 const HAMTA_MS = 4000;
 const URSPRUNG = tillatnaUrsprung(process.env);
 const cache = new Map<string, { tid: number; data: Motordata }>();
+
+// Utan nyckel finns ingen modell, och svaren går via reservvägen med raden om att AI-tolkningen är pausad.
+const INFERENS: Inferens | null = process.env.FRAGA_API_NYCKEL
+  ? {
+      bas: process.env.FRAGA_API_BAS ?? 'https://api.berget.ai/v1',
+      nyckel: process.env.FRAGA_API_NYCKEL,
+      modell: process.env.FRAGA_MODELL ?? 'google/gemma-4-31B-it',
+      tidsgrans: TIDSGRANS_MS,
+    }
+  : null;
+// En vakt per serverinstans, så att en paus gäller alla frågor till den instansen.
+const VAKT = skapaVakt();
+const tolkarePerData = new WeakMap<Motordata, Tolkare>();
 
 async function lasJson<T>(adress: string, kaka: string | null): Promise<T> {
   const svar = await fetch(adress, { headers: kaka ? { cookie: kaka } : {}, signal: AbortSignal.timeout(HAMTA_MS) });
@@ -35,6 +50,7 @@ async function hamtaData(req: Request): Promise<Motordata> {
     kommuner: fd.kommuner,
     lan: fd.lan,
   };
+  if (INFERENS) tolkarePerData.set(data, VAKT.omsluta(skapaTolkare(INFERENS, fd.etiketter, fd.faq)));
   cache.set(bas, { tid: Date.now(), data });
   return data;
 }
@@ -44,7 +60,7 @@ const idag = (): string => new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/
 const delar: Hanterardelar = {
   ursprung: URSPRUNG,
   hamtaData,
-  tolkare: null,
+  tolkare: (data) => tolkarePerData.get(data) ?? null,
   idag,
   logga: (rad) => console.log(JSON.stringify(rad)),
 };

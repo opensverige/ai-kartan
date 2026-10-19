@@ -9,7 +9,8 @@ import { arManniska, faqUtanModell, forfilter } from './forfilter.ts';
 import { godkandRad, mallrad } from './kontroll.ts';
 import { hittaPlats, type Plats } from './platser.ts';
 import { matchskal, type Skalpost } from './skal.ts';
-import type { Modellsvar, Svar, Tidigare } from './typer.ts';
+import type { Modellfelsort, Modellsvar, Svar, Tidigare } from './typer.ts';
+import { arModellfel } from './inferens.ts';
 import { urvalsfro, valjUt } from './urval.ts';
 
 export type Tolkare = (fraga: string, tidigare: readonly Tidigare[]) => Promise<Modellsvar | null>;
@@ -43,7 +44,7 @@ function harAnnanFacett(f: Filter): boolean {
   return f.erbjuder.length > 0 || f.typ.length > 0 || f.omrade.length > 0 || f.lan !== '' || f.kommun !== '';
 }
 
-function fastSvar(sort: FastSort, utanModell: boolean, faq: readonly string[] = []): Svar {
+function fastSvar(sort: FastSort, utanModell: boolean, modellfel: Modellfelsort | null, faq: readonly string[] = []): Svar {
   return {
     sort,
     tolkning: '',
@@ -59,15 +60,22 @@ function fastSvar(sort: FastSort, utanModell: boolean, faq: readonly string[] = 
     faq: [...faq],
     manniska: false,
     utanModell,
+    modellfel,
   };
 }
 
-async function lasModell(tolkare: Tolkare | null, fraga: string, tidigare: readonly Tidigare[]): Promise<Modellsvar | null> {
-  if (!tolkare) return null;
+/** Modellens svar, eller varför det saknas. Ett fel utan namn räknas som att modellen var nere. */
+async function lasModell(
+  tolkare: Tolkare | null,
+  fraga: string,
+  tidigare: readonly Tidigare[],
+): Promise<{ m: Modellsvar | null; fel: Modellfelsort | null }> {
+  if (!tolkare) return { m: null, fel: 'saknas' };
   try {
-    return await tolkare(fraga, tidigare);
-  } catch {
-    return null;
+    const m = await tolkare(fraga, tidigare);
+    return m ? { m, fel: null } : { m: null, fel: 'ogiltig' };
+  } catch (e) {
+    return { m: null, fel: arModellfel(e) ? e.modellfel : 'nere' };
   }
 }
 
@@ -133,6 +141,7 @@ function svarMed(
   regel: 'alla' | 'dagligt',
   skal: Record<string, string[]>,
   utanModell: boolean,
+  modellfel: Modellfelsort | null,
 ): Svar {
   return {
     sort,
@@ -149,6 +158,7 @@ function svarMed(
     faq: [],
     manniska: ur.manniska,
     utanModell,
+    modellfel,
   };
 }
 
@@ -160,22 +170,22 @@ export async function svara(
   idag: string,
 ): Promise<Svar> {
   const pf = forfilter(fraga);
-  if (arFast(pf)) return fastSvar(pf, true);
+  if (arFast(pf)) return fastSvar(pf, true, null);
 
-  const m = await lasModell(tolkare, fraga, tidigare);
+  const { m, fel } = await lasModell(tolkare, fraga, tidigare);
   const utanModell = m === null;
-  if (m && arFast(m.avsikt)) return fastSvar(m.avsikt, utanModell);
+  if (m && arFast(m.avsikt)) return fastSvar(m.avsikt, utanModell, fel);
   if (m?.avsikt === 'opensverige') {
     const kand = m.faq.filter((id) => data.faqIds.includes(id));
-    return fastSvar('opensverige', utanModell, kand.length ? kand : faqUtanModell(fraga));
+    return fastSvar('opensverige', utanModell, fel, kand.length ? kand : faqUtanModell(fraga));
   }
-  if (!m && pf === 'opensverige') return fastSvar('opensverige', true, faqUtanModell(fraga));
+  if (!m && pf === 'opensverige') return fastSvar('opensverige', true, fel, faqUtanModell(fraga));
 
   const ur = m ? filterFranModell(m, data) : filterUtanModell(fraga);
   const orgnamn = data.poster.map((o) => o.n);
   if (arTomt(ur.filter)) {
     const rad = tolkningsrad(m, ur, data.etiketter, [], orgnamn);
-    return svarMed(ur.manniska ? 'manniska' : 'bred', ur, rad, [], [], [], 'alla', {}, utanModell);
+    return svarMed(ur.manniska ? 'manniska' : 'bred', ur, rad, [], [], [], 'alla', {}, utanModell, fel);
   }
 
   let filter = ur.filter;
@@ -188,7 +198,7 @@ export async function svara(
   }
   const anvant: UrFraga = { ...ur, filter };
   const tolkning = tolkningsrad(m, anvant, data.etiketter, borttaget, orgnamn);
-  if (traff.ids.length === 0) return svarMed('tomt', anvant, tolkning, borttaget, [], [], 'alla', {}, utanModell);
+  if (traff.ids.length === 0) return svarMed('tomt', anvant, tolkning, borttaget, [], [], 'alla', {}, utanModell, fel);
 
   const perId = new Map(data.poster.map((o) => [o.id, o]));
   const { visade, regel } = valjUt(traff.ids, (id) => perId.get(id)?.n ?? '', urvalsfro(idag, filter));
@@ -197,5 +207,5 @@ export async function svara(
     const post = perId.get(id);
     if (post) skal[id] = matchskal(post, filter, traff.t, data.etiketter);
   }
-  return svarMed('traffar', anvant, tolkning, borttaget, traff.ids, visade, regel, skal, utanModell);
+  return svarMed('traffar', anvant, tolkning, borttaget, traff.ids, visade, regel, skal, utanModell, fel);
 }

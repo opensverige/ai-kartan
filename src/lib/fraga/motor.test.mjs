@@ -199,3 +199,22 @@ test('kommunen sätter länet och en post i en annan stad ger tomt', async () =>
   assert.equal(svar.filter.lan, '14');
   assert.equal(svar.sort, 'tomt');
 });
+
+test('modellfel säger varför modellen inte svarade, och svaret kommer ändå', async () => {
+  const { modellfel } = await import('./inferens.ts');
+  const kastar = (sort) => async () => {
+    throw modellfel(sort);
+  };
+  const slut = await svara('voice', [], DATA, kastar('slut'), '2026-10-19');
+  assert.equal(slut.modellfel, 'slut');
+  assert.equal(slut.utanModell, true);
+  assert.ok(slut.ids.includes('rosthuset'));
+  assert.equal((await svara('voice', [], DATA, kastar('tidsgrans'), '2026-10-19')).modellfel, 'tidsgrans');
+  assert.equal((await svara('voice', [], DATA, async () => { throw new Error('okänt'); }, '2026-10-19')).modellfel, 'nere');
+  assert.equal((await svara('voice', [], DATA, null, '2026-10-19')).modellfel, 'saknas');
+});
+
+test('modellfel är null när modellen svarade eller inte behövdes', async () => {
+  assert.equal((await svara('voice', [], DATA, stub(modell({ sokord: ['röst'] })), '2026-10-19')).modellfel, null);
+  assert.equal((await svara('Vilket är det bästa bolaget?', [], DATA, null, '2026-10-19')).modellfel, null);
+});

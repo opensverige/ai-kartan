@@ -22,7 +22,7 @@ const URSPRUNG = 'https://karta.opensverige.se';
 
 function delar(andra = {}) {
   const loggat = [];
-  return { loggat, d: { ursprung: [URSPRUNG], hamtaData: async () => DATA, tolkare: null, idag: () => '2026-10-19', logga: (rad) => loggat.push(rad), ...andra } };
+  return { loggat, d: { ursprung: [URSPRUNG], hamtaData: async () => DATA, tolkare: () => null, idag: () => '2026-10-19', logga: (rad) => loggat.push(rad), ...andra } };
 }
 function anrop(kropp, { metod = 'POST', ursprung = URSPRUNG } = {}) {
   const headers = { 'content-type': 'application/json' };
@@ -115,8 +115,27 @@ test('frågans text loggas aldrig', async () => {
     assert.equal(fangat.length, 0);
     assert.ok(loggat.length >= 1);
     for (const rad of loggat) assert.ok(!JSON.stringify(rad).includes('Hemlig'), JSON.stringify(rad));
-    assert.deepEqual(Object.keys(loggat[0]).sort(), ['ms', 'sort', 'utanModell']);
+    assert.deepEqual(Object.keys(loggat[0]).sort(), ['modellfel', 'ms', 'sort', 'utanModell']);
   } finally {
     Object.assign(console, original);
   }
+});
+
+test('tolkaren skapas ur datan, och felets namn hamnar i svaret och loggen', async () => {
+  const { modellfel } = await import('./inferens.ts');
+  let sedd = null;
+  const { loggat, d } = delar({
+    tolkare: (data) => {
+      sedd = data;
+      return async () => {
+        throw modellfel('slut');
+      };
+    },
+  });
+  const svar = await hanteraFraga(anrop(giltig()), d);
+  const kropp = await svar.json();
+  assert.equal(sedd, DATA);
+  assert.equal(kropp.modellfel, 'slut');
+  assert.equal(kropp.sort, 'traffar');
+  assert.equal(loggat.at(-1).modellfel, 'slut');
 });

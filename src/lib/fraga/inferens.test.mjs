@@ -1,9 +1,19 @@
-// Tester för anropet till språkmodellen: schema, kontroll, prompt och att fel ger null.
+// Tester för anropet till språkmodellen: schema, kontroll, prompt och att varje fel får ett namn.
 //   node --test src/lib/fraga/inferens.test.mjs
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { byggMeddelanden, byggSchema, arModellsvar, skapaTolkare, systemprompt } from './inferens.ts';
+import { byggMeddelanden, byggSchema, arModellsvar, skapaTolkare, systemprompt, felsort, arModellfel } from './inferens.ts';
+
+/** Väntar ut ett kast och ger felets namn, eller null om felet saknar namn. */
+async function felnamn(lofte) {
+  try {
+    await lofte;
+  } catch (e) {
+    return arModellfel(e) ? e.modellfel : null;
+  }
+  assert.fail('tolkaren skulle ha kastat');
+}
 
 const ETIKETTER = {
   omraden: { halsa: 'Hälsa och life science' },
@@ -139,28 +149,28 @@ test('ogiltig JSON första gången och ett giltigt svar andra gången', async ()
   assert.equal(anrop.length, 2);
 });
 
-test('ogiltig JSON båda gångerna ger null', async () => {
+test('ogiltig JSON båda gångerna ger felet ogiltig', async () => {
   const { anrop, fn } = falskHamta('{inte');
   const tolkare = skapaTolkare(INST, ETIKETTER, FAQ, fn);
-  assert.equal(await tolkare('röst i Göteborg', []), null);
+  assert.equal(await felnamn(tolkare('röst i Göteborg', [])), 'ogiltig');
   assert.equal(anrop.length, 2);
 });
 
-test('svar utanför schemat båda gångerna ger null', async () => {
+test('svar utanför schemat båda gångerna ger felet ogiltig', async () => {
   const { anrop, fn } = falskHamta(JSON.stringify({ ...GILTIGT, omrade: ['finns-inte'] }));
   const tolkare = skapaTolkare(INST, ETIKETTER, FAQ, fn);
-  assert.equal(await tolkare('röst i Göteborg', []), null);
+  assert.equal(await felnamn(tolkare('röst i Göteborg', [])), 'ogiltig');
   assert.equal(anrop.length, 2);
 });
 
-test('HTTP 500 ger null utan nytt försök', async () => {
+test('HTTP 500 ger felet nere utan nytt försök', async () => {
   const { anrop, fn } = falskHamta(JSON.stringify(GILTIGT), 500);
   const tolkare = skapaTolkare(INST, ETIKETTER, FAQ, fn);
-  assert.equal(await tolkare('röst i Göteborg', []), null);
+  assert.equal(await felnamn(tolkare('röst i Göteborg', [])), 'nere');
   assert.equal(anrop.length, 1);
 });
 
-test('ett anrop som aldrig svarar ger null inom tidsgränsen', { timeout: 2000 }, async () => {
+test('ett anrop som aldrig svarar ger felet tidsgrans inom tidsgränsen', { timeout: 2000 }, async () => {
   const fn = (_url, init) => new Promise((_resolve, reject) => {
     const signal = init?.signal;
     if (!signal) return;
@@ -170,16 +180,16 @@ test('ett anrop som aldrig svarar ger null inom tidsgränsen', { timeout: 2000 }
   });
   const tolkare = skapaTolkare({ ...INST, tidsgrans: 100 }, ETIKETTER, FAQ, fn);
   const start = Date.now();
-  assert.equal(await tolkare('röst i Göteborg', []), null);
+  assert.equal(await felnamn(tolkare('röst i Göteborg', [])), 'tidsgrans');
   assert.ok(Date.now() - start < 400);
 });
 
-test('ett nätverksfel ger null', async () => {
+test('ett nätverksfel ger felet nere', async () => {
   const fn = async () => {
     throw new Error('nätverk');
   };
   const tolkare = skapaTolkare(INST, ETIKETTER, FAQ, fn);
-  assert.equal(await tolkare('röst i Göteborg', []), null);
+  assert.equal(await felnamn(tolkare('röst i Göteborg', [])), 'nere');
 });
 
 test('tolkaren anropar aldrig console', async () => {
@@ -192,9 +202,34 @@ test('tolkaren anropar aldrig console', async () => {
     const kast = async () => {
       throw new Error('Hemlig fråga om röst');
     };
-    await skapaTolkare(INST, ETIKETTER, FAQ, kast)('Hemlig fråga om röst', []);
+    await felnamn(skapaTolkare(INST, ETIKETTER, FAQ, kast)('Hemlig fråga om röst', []));
     assert.equal(fangat.length, 0);
   } finally {
     Object.assign(console, original);
   }
+});
+
+test('slut på krediter och fel nyckel får egna namn, utan nytt försök', async () => {
+  const fel = (status, kropp) => {
+    const anrop = [];
+    return { anrop, fn: async (url, init) => { anrop.push({ url, init }); return new Response(kropp, { status }); } };
+  };
+  const slut = fel(402, JSON.stringify({ error: { code: 'payment_required', message: 'Out of credits' } }));
+  assert.equal(await felnamn(skapaTolkare(INST, ETIKETTER, FAQ, slut.fn)('röst', [])), 'slut');
+  assert.equal(slut.anrop.length, 1);
+  const nyckel = fel(401, JSON.stringify({ error: { code: 'invalid_api_key', type: 'authentication_error' } }));
+  assert.equal(await felnamn(skapaTolkare(INST, ETIKETTER, FAQ, nyckel.fn)('röst', [])), 'nyckel');
+});
+
+test('felsort känner igen slut på krediter i flera former', () => {
+  assert.equal(felsort(402, ''), 'slut');
+  assert.equal(felsort(429, JSON.stringify({ error: { code: 'insufficient_quota' } })), 'slut');
+  assert.equal(felsort(429, JSON.stringify({ error: { message: 'You have run out of credits' } })), 'slut');
+  assert.equal(felsort(403, JSON.stringify({ error: { type: 'billing_error', message: 'Insufficient balance' } })), 'slut');
+  assert.equal(felsort(429, JSON.stringify({ error: { message: 'Rate limit exceeded' } })), 'begransad');
+  assert.equal(felsort(401, ''), 'nyckel');
+  assert.equal(felsort(403, 'Forbidden'), 'nyckel');
+  assert.equal(felsort(500, ''), 'nere');
+  assert.equal(felsort(503, '<html>'), 'nere');
+  assert.equal(felsort(400, ''), 'ogiltig');
 });

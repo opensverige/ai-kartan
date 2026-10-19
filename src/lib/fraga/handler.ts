@@ -5,7 +5,7 @@
 import type { Filter } from '../filter.ts';
 import type { Etiketter } from '../sokindex.ts';
 import { svara, type Motordata, type Tolkare } from './motor.ts';
-import { MAX_FRAGOR, MAX_TECKEN, type Tidigare } from './typer.ts';
+import { MAX_FRAGOR, MAX_TECKEN, type Modellfelsort, type Tidigare } from './typer.ts';
 
 /** Störst tillåtna kropp i byte. En fråga på 300 tecken och fem tidigare ryms med god marginal. */
 export const MAX_KROPP = 4096;
@@ -15,14 +15,16 @@ export interface Kropp {
   tidigare: Tidigare[];
 }
 
-export type Loggrad = { sort: string; ms: number; utanModell: boolean };
+/** Det enda som loggas. Aldrig frågan. modellfel säger till exempel när krediterna är slut. */
+export type Loggrad = { sort: string; ms: number; utanModell: boolean; modellfel: Modellfelsort | null };
 
 export interface Hanterardelar {
   /** Adresser som får fråga, till exempel https://karta.opensverige.se. */
   ursprung: readonly string[];
   /** Får anropet, så att kopplingen kan välja var datan hämtas. */
   hamtaData: (req: Request) => Promise<Motordata>;
-  tolkare: Tolkare | null;
+  /** Tolkaren byggs ur datan, eftersom schemat och prompten bygger på taxonomin. null utan nyckel. */
+  tolkare: (data: Motordata) => Tolkare | null;
   idag: () => string;
   logga: (rad: Loggrad) => void;
 }
@@ -97,14 +99,14 @@ export async function hanteraFraga(req: Request, d: Hanterardelar): Promise<Resp
   try {
     data = await d.hamtaData(req);
   } catch {
-    d.logga({ sort: 'data-saknas', ms: Date.now() - start, utanModell: true });
+    d.logga({ sort: 'data-saknas', ms: Date.now() - start, utanModell: true, modellfel: null });
     return json(503, { fel: 'Kartans data går inte att läsa just nu.' });
   }
 
   const k = lasKropp(kropp, data.etiketter);
   if ('fel' in k) return json(400, { fel: k.fel });
 
-  const svar = await svara(k.fraga, k.tidigare, data, d.tolkare, d.idag());
-  d.logga({ sort: svar.sort, ms: Date.now() - start, utanModell: svar.utanModell });
+  const svar = await svara(k.fraga, k.tidigare, data, d.tolkare(data), d.idag());
+  d.logga({ sort: svar.sort, ms: Date.now() - start, utanModell: svar.utanModell, modellfel: svar.modellfel });
   return json(200, svar);
 }

@@ -43,6 +43,12 @@ export interface Tidigare {
   filter: Filter;
 }
 
+/**
+ * Varför modellen inte svarade. saknas, slut och nyckel gör att AI-tolkningen visas som pausad,
+ * och övriga att AI:n inte svarade den här gången. Besökaren ser aldrig själva namnet.
+ */
+export type Modellfelsort = 'saknas' | 'slut' | 'nyckel' | 'begransad' | 'nere' | 'tidsgrans' | 'ogiltig';
+
 export type Svarssort = 'traffar' | 'bred' | 'tomt' | 'manniska' | 'ranking' | 'kontakt' | 'opensverige' | 'utanfor';
 
 export interface Svar {
@@ -60,4 +66,6 @@ export interface Svar {
   faq: string[];
   manniska: boolean;
   utanModell: boolean;
+  /** null när modellen svarade eller inte behövdes. */
+  modellfel: Modellfelsort | null;
 }
