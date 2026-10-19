@@ -41,13 +41,22 @@ export function arModellfel(e: unknown): e is Modellfel {
 
 /** Slut på krediter känns igen på 402, eller på ord i felet. Leverantörerna skriver det olika. */
 const SLUT = /quota|credit|billing|insufficient|balance|payment/i;
+/** Koder som säger att modellen inte finns, när felet inte upprepar modellens namn. */
+const OKAND_MODELL = /model_not_found|"param"\s*:\s*"model"/i;
 
-/** Felets namn ur leverantörens svar. Kroppen läses bara för att känna igen slut på krediter. */
-export function felsort(status: number, kropp: string): Modellfelsort {
+/**
+ * Felets namn ur leverantörens svar. Kroppen läses bara för att känna igen slut på krediter och en
+ * modell som inte finns. En 404 betyder att modellen eller adressen saknas, till exempel när
+ * leverantören har tagit bort modellen. En 400 räknas dit bara när felet nämner modellen vid namn
+ * eller med en kod. Annars kan det vara ett fel i just det här anropet, och då är sorten ogiltig.
+ */
+export function felsort(status: number, kropp: string, modell = ''): Modellfelsort {
   if (status === 402 || ((status === 403 || status === 429) && SLUT.test(kropp))) return 'slut';
   if (status === 401 || status === 403) return 'nyckel';
   if (status === 429) return 'begransad';
   if (status >= 500) return 'nere';
+  if (status === 404) return 'modell';
+  if (status === 400 && ((modell !== '' && kropp.includes(modell)) || OKAND_MODELL.test(kropp))) return 'modell';
   return 'ogiltig';
 }
 
@@ -244,7 +253,7 @@ export function skapaTolkare(inst: Inferens, e: Etiketter, faq: readonly FaqFrag
         signal: kontroll.signal,
       });
       // Ett HTTP-fel blir inte bättre av ett nytt försök.
-      if (!svar.ok) throw modellfel(felsort(svar.status, await svar.text().catch(() => '')));
+      if (!svar.ok) throw modellfel(felsort(svar.status, await svar.text().catch(() => ''), inst.modell));
       try {
         const modell = await lasModellsvar(svar, e, faqIds);
         return modell ? { sort: 'svar', svar: modell } : { sort: 'ogiltigt' };

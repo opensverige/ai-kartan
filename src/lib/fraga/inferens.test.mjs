@@ -234,6 +234,38 @@ test('felsort känner igen slut på krediter i flera former', () => {
   assert.equal(felsort(400, ''), 'ogiltig');
 });
 
+test('felsort känner igen en modell som inte finns', () => {
+  const modell = 'mistralai/Mistral-Small-3.2-24B-Instruct-2506';
+  assert.equal(felsort(404, ''), 'modell');
+  assert.equal(felsort(404, '<html><body>Not Found</body></html>'), 'modell');
+  assert.equal(felsort(404, JSON.stringify({ error: { message: 'The model `x` does not exist', code: 'model_not_found' } }), modell), 'modell');
+  assert.equal(felsort(400, JSON.stringify({ error: { message: `Invalid model name passed in model=${modell}` } }), modell), 'modell');
+  assert.equal(felsort(400, JSON.stringify({ error: { message: 'Unknown model', type: 'invalid_request_error', param: 'model' } }), modell), 'modell');
+  assert.equal(felsort(400, JSON.stringify({ error: { code: 'model_not_found' } })), 'modell');
+  // En 400 som bara säger "model" gäller det här anropet, inte modellen.
+  assert.equal(felsort(400, JSON.stringify({ error: { message: "This model's maximum context length is 32768 tokens" } }), modell), 'ogiltig');
+  assert.equal(felsort(400, '', modell), 'ogiltig');
+  // Ett tomt modellnamn finns i varje text. Det får inte göra varje 400 till en saknad modell.
+  assert.equal(felsort(400, 'Bad Request', ''), 'ogiltig');
+});
+
+test('en modell som inte finns får eget namn, utan nytt försök', async () => {
+  const anrop = [];
+  const fn = async (url, init) => {
+    anrop.push({ url, init });
+    return new Response(JSON.stringify({ error: { message: `The model \`${INST.modell}\` does not exist.` } }), { status: 404 });
+  };
+  assert.equal(await felnamn(skapaTolkare(INST, ETIKETTER, FAQ, fn)('röst', [])), 'modell');
+  assert.equal(anrop.length, 1);
+  const fyrahundra = [];
+  const fn400 = async (url, init) => {
+    fyrahundra.push({ url, init });
+    return new Response(JSON.stringify({ error: { message: `Invalid model name passed in model=${INST.modell}` } }), { status: 400 });
+  };
+  assert.equal(await felnamn(skapaTolkare(INST, ETIKETTER, FAQ, fn400)('röst', [])), 'modell');
+  assert.equal(fyrahundra.length, 1);
+});
+
 test('systemprompten säger att bara det besökaren nämner blir filter', () => {
   const text = systemprompt(ETIKETTER, FAQ);
   assert.match(text, /nämner/);

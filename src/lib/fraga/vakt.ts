@@ -1,7 +1,8 @@
 // Vakten slutar fråga modellen en stund när den inte kan svara, så att varje fråga inte väntar
-// ut samma fel och inga anrop görs i onödan. Är krediterna slut eller nyckeln fel pausar den i
-// 15 minuter. Är modellen upptagen, eller nere tre gånger i rad, pausar den i en minut. Under en
-// paus kastar den samma fel direkt, och motorn tar reservvägen. Läget finns i serverns minne.
+// ut samma fel och inga anrop görs i onödan. Är krediterna slut, nyckeln fel eller modellen borta
+// pausar den i 15 minuter. Är modellen upptagen, eller nere tre gånger i rad, pausar den i en
+// minut. Under en paus kastar den samma fel direkt, och motorn tar reservvägen. Läget finns i
+// serverns minne.
 
 import { arModellfel, modellfel } from './inferens.ts';
 import type { Tolkare } from './motor.ts';
@@ -37,7 +38,7 @@ export function skapaVakt(nu: () => number = Date.now): Vakt {
           return svar;
         } catch (e) {
           const sort: Modellfelsort = arModellfel(e) ? e.modellfel : 'nere';
-          if (sort === 'slut' || sort === 'nyckel') pausa(sort, PAUS_SLUT_MS);
+          if (sort === 'slut' || sort === 'nyckel' || sort === 'modell') pausa(sort, PAUS_SLUT_MS);
           else if (sort === 'begransad') pausa(sort, PAUS_KORT_MS);
           else if (++iRad >= FEL_I_RAD) pausa(sort, PAUS_KORT_MS);
           throw arModellfel(e) ? e : modellfel(sort);

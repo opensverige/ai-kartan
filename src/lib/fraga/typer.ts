@@ -44,10 +44,11 @@ export interface Tidigare {
 }
 
 /**
- * Varför modellen inte svarade. saknas, slut och nyckel gör att AI-tolkningen visas som pausad,
- * och övriga att AI:n inte svarade den här gången. Besökaren ser aldrig själva namnet.
+ * Varför modellen inte svarade. saknas, slut, nyckel och modell gör att AI-tolkningen visas som
+ * pausad, och övriga att AI:n inte svarade den här gången. modell betyder att leverantören inte
+ * känner igen modellen, till exempel när den har tagits bort. Besökaren ser aldrig själva namnet.
  */
-export type Modellfelsort = 'saknas' | 'slut' | 'nyckel' | 'begransad' | 'nere' | 'tidsgrans' | 'ogiltig';
+export type Modellfelsort = 'saknas' | 'slut' | 'nyckel' | 'modell' | 'begransad' | 'nere' | 'tidsgrans' | 'ogiltig';
 
 export type Svarssort = 'traffar' | 'bred' | 'tomt' | 'manniska' | 'ranking' | 'kontakt' | 'opensverige' | 'utanfor';
 

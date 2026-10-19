@@ -45,7 +45,7 @@ export interface Svarsvy {
 }
 
 const STATUS: Record<string, string> = { confirmed: 'bekräftad', claimed: 'egen uppgift', planned: 'planerad', unknown: 'okänd' };
-const PAUSAD: readonly Modellfelsort[] = ['saknas', 'slut', 'nyckel'];
+const PAUSAD: readonly Modellfelsort[] = ['saknas', 'slut', 'nyckel', 'modell'];
 const ORDEN = 'Svaren bygger på orden i din fråga.';
 /** Så många tecken av beskrivningen visas före träffen, så att ordet hamnar tidigt även på en telefon. */
 const FORE = 12;

@@ -63,6 +63,21 @@ test('fel nyckel pausar som slut på krediter', async () => {
   assert.equal(t.antal(), 1);
 });
 
+test('en modell som inte finns pausar i 15 minuter, sedan frågas modellen igen', async () => {
+  const k = klocka();
+  const t = tolkare(modellfel('modell'));
+  const omsluten = skapaVakt(k.nu).omsluta(t.fn);
+  assert.equal(await namn(omsluten('a', [])), 'modell');
+  assert.equal(await namn(omsluten('b', [])), 'modell');
+  assert.equal(t.antal(), 1);
+  k.ga(PAUS_SLUT_MS - 1);
+  await namn(omsluten('c', []));
+  assert.equal(t.antal(), 1);
+  k.ga(1);
+  await namn(omsluten('d', []));
+  assert.equal(t.antal(), 2);
+});
+
 test('upptaget pausar en minut', async () => {
   const k = klocka();
   const t = tolkare(modellfel('begransad'));

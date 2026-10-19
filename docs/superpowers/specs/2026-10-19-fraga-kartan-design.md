@@ -127,7 +127,7 @@ Besökaren ser aldrig en statuskod, ordet "Error", `null`, en stackspårning ell
 
 | Läge | När | Raden | Koden |
 |---|---|---|---|
-| AI pausad | Krediterna är slut (Berget svarar 402, eller 429 med quota, credit, billing eller insufficient). Nyckeln är ogiltig (401 eller 403). Ingen nyckel finns, eller brytaren är på. | "AI-tolkningen är pausad just nu. Svaren bygger på orden i din fråga." | Vakten slutar fråga modellen i 15 minuter. Loggen får sorten. |
+| AI pausad | Krediterna är slut (Berget svarar 402, eller 429 med quota, credit, billing eller insufficient). Nyckeln är ogiltig (401 eller 403). Modellen finns inte, till exempel när den har tagits bort (404, eller 400 som nämner modellen). Ingen nyckel finns, eller brytaren är på. | "AI-tolkningen är pausad just nu. Svaren bygger på orden i din fråga." | Vakten slutar fråga modellen i 15 minuter. Loggen får sorten. |
 | AI svarade inte | Tidsgränsen gick ut, Berget svarade 5xx, nätverksfel, upptaget (429), eller ogiltigt svar två gånger | "AI:n svarade inte den här gången. Svaren bygger på orden i din fråga." | Efter tre sådana i rad pausar vakten i 1 minut. Vid upptaget pausar den direkt i 1 minut. |
 
 **Lägen i webbläsaren:**
@@ -145,7 +145,7 @@ Besökaren ser aldrig en statuskod, ordet "Error", `null`, en stackspårning ell
 
 Fallen i 3.6 (bred, ranking, kontakt, OpenSverige, inga träffar, utanför ämnet) gäller som förut.
 
-**Kontraktet:** `Svar` får fältet `modellfel` med ett av värdena `'saknas'`, `'slut'`, `'nyckel'`, `'begransad'`, `'nere'`, `'tidsgrans'`, `'ogiltig'`, eller `null` när modellen svarade eller inte behövdes. Webbläsaren väljer rad ur fältet: `saknas`, `slut` och `nyckel` ger AI pausad, och övriga ger AI svarade inte. Tolkaren kastar ett namngivet fel i stället för att ge `null`, och motorn fångar det. Vakten håller sitt läge i funktionens minne, en gång per serverinstans.
+**Kontraktet:** `Svar` får fältet `modellfel` med ett av värdena `'saknas'`, `'slut'`, `'nyckel'`, `'modell'`, `'begransad'`, `'nere'`, `'tidsgrans'`, `'ogiltig'`, eller `null` när modellen svarade eller inte behövdes. Webbläsaren väljer rad ur fältet: `saknas`, `slut`, `nyckel` och `modell` ger AI pausad, och övriga ger AI svarade inte. Tolkaren kastar ett namngivet fel i stället för att ge `null`, och motorn fångar det. Vakten håller sitt läge i funktionens minne, en gång per serverinstans.
 
 ## 4. Neutraliteten (beslutad med Gustaf)
 
