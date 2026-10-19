@@ -10,8 +10,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import Ajv from 'ajv';
 import addFormats from 'ajv-formats';
+import YAML from 'yaml';
 import {
   KATALOG_ORG,
+  ROT,
   SCHEMA_FIL,
   lasGeo,
   lasJson,
@@ -200,6 +202,53 @@ function filerPer(poster, nyckel) {
   return ut;
 }
 
+const KUNSKAP_FIL = path.join(ROT, 'data', 'fragor', 'opensverige.yaml');
+const KUNSKAP_ID = /^[a-z0-9-]+$/;
+const KUNSKAP_DATUM = /^\d{4}-\d{2}-\d{2}$/;
+
+/** Fel i svaren om föreningen. Filen saknas i testens tillfälliga katalog, och då är det inget att kontrollera. */
+function kontrolleraKunskap() {
+  if (!fs.existsSync(KUNSKAP_FIL)) return [];
+  let data;
+  try {
+    data = YAML.parse(fs.readFileSync(KUNSKAP_FIL, 'utf8'));
+  } catch (e) {
+    return [`opensverige.yaml: YAML går inte att läsa: ${e.message}`];
+  }
+  if (!Array.isArray(data)) return ['opensverige.yaml: filen ska vara en lista med svar.'];
+
+  const fel = [];
+  const sedda = new Set();
+  for (const post of data) {
+    const id = post && typeof post.id === 'string' ? post.id : '';
+    const namn = id || 'en post';
+    if (!post || typeof post !== 'object' || Array.isArray(post)) {
+      fel.push('en post: saknar id, svar, kalla_url och kontrollerad.');
+      continue;
+    }
+    if (!id) fel.push(`${namn}: saknar id.`);
+    else if (!KUNSKAP_ID.test(id)) fel.push(`${namn}: id ska bestå av gemener, siffror och bindestreck.`);
+    if (id) {
+      if (sedda.has(id)) fel.push(`${namn}: samma id förekommer två gånger.`);
+      sedda.add(id);
+    }
+    if (!Array.isArray(post.fragor) || post.fragor.length < 1 || post.fragor.some((f) => typeof f !== 'string')) {
+      fel.push(`${namn}: fragor ska vara en lista med minst en sträng.`);
+    }
+    if (typeof post.svar !== 'string' || post.svar.length === 0) fel.push(`${namn}: saknar svar.`);
+    else {
+      if (post.svar.length > 400) fel.push(`${namn}: svar är längre än 400 tecken.`);
+      const traff = post.svar.match(MARKNADSORD);
+      if (traff) fel.push(`${namn}: svar innehåller värdeord (${traff[0]}).`);
+    }
+    if (typeof post.kalla_url !== 'string' || post.kalla_url.length === 0) fel.push(`${namn}: saknar kalla_url.`);
+    else if (!post.kalla_url.startsWith('https://')) fel.push(`${namn}: kalla_url ska börja med https://.`);
+    if (typeof post.kontrollerad !== 'string' || post.kontrollerad.length === 0) fel.push(`${namn}: saknar kontrollerad.`);
+    else if (!KUNSKAP_DATUM.test(post.kontrollerad)) fel.push(`${namn}: kontrollerad ska ha formen ÅÅÅÅ-MM-DD.`);
+  }
+  return fel;
+}
+
 function huvud() {
   let poster = lasOrganisationer();
   // Jämförs mot alla poster, även när bara några filer valideras.
@@ -233,6 +282,12 @@ function huvud() {
     antalFel += r.fel.length;
     antalVarningar += r.varningar.length;
     resultat.push({ fil: post.fil, id, ...r });
+  }
+
+  const kunskapsfel = kontrolleraKunskap();
+  if (kunskapsfel.length) {
+    antalFel += kunskapsfel.length;
+    resultat.push({ fil: 'data/fragor/opensverige.yaml', id: null, fel: kunskapsfel, varningar: [] });
   }
 
   const perTyp = {};

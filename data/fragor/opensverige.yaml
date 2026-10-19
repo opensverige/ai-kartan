@@ -1,0 +1,57 @@
+# Svar om föreningen OpenSverige för Fråga kartan. Varje svar bygger bara på sidan i kalla_url,
+# och kontrollerad är dagen sidan lästes. Ändras en sida ska svaret och datumet ändras här.
+# Gustaf godkände svaren 2026-10-19. Nya svar godkänns av en människa innan de går in.
+
+- id: vad-ar-opensverige
+  fragor: [Vad är OpenSverige?, Vem står bakom kartan?, What is OpenSverige?]
+  svar: OpenSverige är en ideell förening för dem som bygger med AI i Sverige, till exempel AI-agenter och MCP-servrar. Föreningen har en Discord, öppna demos och träffar i flera städer, och driver den här kartan.
+  kalla_url: https://opensverige.se/
+  kontrollerad: 2026-10-19
+
+- id: ideell-forening
+  fragor: [Är OpenSverige en ideell förening?, Är det ett företag?, Is OpenSverige a non-profit?]
+  svar: Ja. OpenSverige är en ideell förening med organisationsnummer 802557-3422. Den bildades den 23 april 2026.
+  kalla_url: https://opensverige.se/
+  kontrollerad: 2026-10-19
+
+- id: bli-medlem
+  fragor: [Hur blir jag medlem?, Hur går jag med i föreningen?, How do I join?]
+  svar: Du blir medlem på opensverige.se/bli-medlem, som privatperson eller organisation. Du fyller i namn och e-post, godkänner stadgarna och klickar på länken i mejlet inom 24 timmar.
+  kalla_url: https://opensverige.se/bli-medlem
+  kontrollerad: 2026-10-19
+
+- id: kostnad
+  fragor: [Kostar medlemskap något?, Vad är medlemsavgiften?, Does membership cost anything?]
+  svar: Nej, avgiften är frivillig. Enligt stadgarna får medlemskapet aldrig villkoras av att du betalar.
+  kalla_url: https://opensverige.se/stadgar
+  kontrollerad: 2026-10-19
+
+- id: discord-medlem
+  fragor: [Måste jag vara medlem för att gå med i Discord?, Hur går jag med i Discord?, Do I need to be a member to join the Discord?]
+  svar: Nej. Discord är gratis och kräver ingen ansökan. Medlemskap i föreningen är frivilligt och något separat.
+  kalla_url: https://opensverige.se/
+  kontrollerad: 2026-10-19
+
+- id: bidra
+  fragor: [Hur lägger jag till mitt bolag på kartan?, Hur rättar jag en uppgift?, How do I add my company?]
+  svar: Du lägger till, rättar eller tar bort en organisation via kartans sida Bidra. Det enklaste är att skriva i kanalen #infra-intag på Discord, och det går också via ett ärende på GitHub. Det kostar inget.
+  kalla_url: https://karta.opensverige.se/bidra
+  kontrollerad: 2026-10-19
+
+- id: projekt
+  fragor: [Vilka projekt finns?, Vad bygger OpenSverige?, What projects does OpenSverige run?]
+  svar: Projekten står på opensverige.se/showcase, bland annat AI-kartan, AI-Infra och Agent Readiness Scanner. Det som byggs just nu ligger i Discord.
+  kalla_url: https://opensverige.se/showcase
+  kontrollerad: 2026-10-19
+
+- id: meetups
+  fragor: [Var hittar jag meetups?, Finns det träffar eller demos?, Are there meetups?]
+  svar: Träffar ordnas i Stockholm, Göteborg och Malmö, oftast på söndagar. Det räcker med tre personer för att starta en i en ny stad. Öppna demos och träffar står på opensverige.se.
+  kalla_url: https://opensverige.se/
+  kontrollerad: 2026-10-19
+
+- id: opensverige-och-tech-embassy
+  fragor: [Vad är skillnaden mellan OpenSverige och Tech Embassy?, Vem driver Tech Embassy?, What is Tech Embassy?]
+  svar: OpenSverige är föreningen. Tech Embassy är namnet på flera öppna översikter, i dag AI-Infra och den här kartan, som föreningen driver ideellt. Inget rankas, och ingen betalar för att synas.
+  kalla_url: https://karta.opensverige.se/om
+  kontrollerad: 2026-10-19

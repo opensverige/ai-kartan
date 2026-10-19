@@ -20,7 +20,8 @@
     { "source": "/api/data/:id", "destination": "/api/data/:id.json" },
     { "source": "/api/karta", "destination": "/api/karta.json" },
     { "source": "/api/andringar", "destination": "/api/andringar.json" },
-    { "source": "/api/status", "destination": "/api/status.json" }
+    { "source": "/api/status", "destination": "/api/status.json" },
+    { "source": "/api/fraga-data", "destination": "/api/fraga-data.json" }
   ],
   "headers": [
     {

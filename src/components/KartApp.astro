@@ -6,7 +6,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import Filterrad from './Filterrad.astro';
 import Fragerad from './Fragerad.astro';
 import Veckopuls from './Veckopuls.astro';
-import { hamtaData, tillKartpost, typikoner, url, formateraDatum, SAJT } from '../lib/data';
+import { hamtaData, tillKartpost, typikoner, url, formateraDatum, SAJT, etiketter as byggEtiketter } from '../lib/data';
 import { medVersion } from '../lib/meta';
 import { ikon } from '../lib/ikoner';
 import { medlemsvy, type Medlemsdata } from '../lib/medlemmar';
@@ -23,14 +23,7 @@ const s = d.statistik;
 // Sidan hämtas alltid färsk, men kartdatan får ligga en timme i webbläsaren. Adressen bär därför en
 // version ur innehållet, så att en återkommande besökare aldrig får ny sida med gammal lista.
 const kartdata = medVersion(url('/api/karta.json'), new TextEncoder().encode(JSON.stringify(d.organisationer.map(tillKartpost))));
-const etiketter = {
-  typer: Object.fromEntries(d.taxonomi.typer.map((t) => [t.id, t.label])),
-  typerPlural: Object.fromEntries(d.taxonomi.typer.map((t) => [t.id, t.plural ?? t.label])),
-  erbjuder: Object.fromEntries(d.taxonomi.erbjuder.map((t) => [t.id, t.label])),
-  omraden: Object.fromEntries(d.taxonomi.omraden.map((t) => [t.id, t.label])),
-  lan: Object.fromEntries(d.lan.map((l) => [l.kod, l.namn])),
-  typikoner: typikoner(),
-};
+const etiketter = { ...byggEtiketter(d), typikoner: typikoner() };
 const allaEfterNamn = d.organisationer.slice().sort((a, b) => a.name.value.localeCompare(b.name.value, 'sv'));
 // Var föreningens medlemmar finns, som antal per region. Ritas på kartan först när besökaren ber om det.
 const medlemmar = lage === 'karta' ? medlemsvy(medlemsdata as Medlemsdata, d.kommuner) : null;

@@ -26,13 +26,18 @@ function post(id, webbplats, andra = () => {}) {
   return p;
 }
 
-/** Kör valideringen på posterna, alla eller bara de `valda`, och ger tillbaka kod och text. */
-function validera(poster, valda = []) {
+/** Kör valideringen på posterna, alla eller bara de `valda`, och ger tillbaka kod och text.
+ *  `kunskap` skrivs till data/fragor/opensverige.yaml. Utan den finns ingen kunskapsfil att kontrollera. */
+function validera(poster, valda = [], kunskap) {
   const rot = fs.mkdtempSync(path.join(os.tmpdir(), 'ai-kartan-validera-'));
   try {
     for (const del of ['schema', path.join('data', 'taxonomi'), path.join('data', 'geo')]) fs.cpSync(path.join(REPO, del), path.join(rot, del), { recursive: true });
     fs.mkdirSync(path.join(rot, 'data', 'organisationer'), { recursive: true });
     for (const p of poster) fs.writeFileSync(path.join(rot, 'data', 'organisationer', `${p.id}.yaml`), YAML.stringify(p, { lineWidth: 0 }));
+    if (typeof kunskap === 'string') {
+      fs.mkdirSync(path.join(rot, 'data', 'fragor'), { recursive: true });
+      fs.writeFileSync(path.join(rot, 'data', 'fragor', 'opensverige.yaml'), kunskap);
+    }
     const svar = spawnSync(process.execPath, [SKRIPT, ...valda.map((id) => `data/organisationer/${id}.yaml`)], { cwd: rot, encoding: 'utf8', env: { ...process.env, AI_KARTAN_ROT: rot } });
     return { kod: svar.status, text: svar.stdout + svar.stderr };
   } finally {
@@ -85,6 +90,81 @@ test('en personprofil på LinkedIn stoppas', () => {
   // En adress som ser ut som en organisationssida men leder till en person, eller till en annan värd.
   for (const ej of ['https://www.linkedin.com/company/../in/anna-exempel', 'https://linkedin.com.ond.example/company/x', 'https://ondlinkedin.com/company/x', 'https://lnkd.in/abc'])
     assert.notEqual(med(ej).kod, 0, ej);
+});
+
+test('kunskap utan källa stoppas', () => {
+  const r = validera(
+    [post('test-ett', 'https://example.org')],
+    [],
+    `- id: ett
+  fragor: [En fråga?]
+  svar: Ett svar.
+  kontrollerad: 2026-10-19
+`,
+  );
+  assert.equal(r.kod, 1, r.text);
+  assert.match(r.text, /kalla_url/);
+});
+
+test('kunskap med värdeord stoppas', () => {
+  const r = validera(
+    [post('test-ett', 'https://example.org')],
+    [],
+    `- id: ett
+  fragor: [En fråga?]
+  svar: Sveriges ledande förening.
+  kalla_url: https://example.org
+  kontrollerad: 2026-10-19
+`,
+  );
+  assert.equal(r.kod, 1, r.text);
+});
+
+test('kunskap med dubbelt id stoppas', () => {
+  const r = validera(
+    [post('test-ett', 'https://example.org')],
+    [],
+    `- id: ett
+  fragor: [En fråga?]
+  svar: Ett svar.
+  kalla_url: https://example.org
+  kontrollerad: 2026-10-19
+- id: ett
+  fragor: [En annan fråga?]
+  svar: Ett annat svar.
+  kalla_url: https://example.org/annan
+  kontrollerad: 2026-10-19
+`,
+  );
+  assert.equal(r.kod, 1, r.text);
+});
+
+test('kunskap med datum i fel form stoppas', () => {
+  const r = validera(
+    [post('test-ett', 'https://example.org')],
+    [],
+    `- id: ett
+  fragor: [En fråga?]
+  svar: Ett svar.
+  kalla_url: https://example.org
+  kontrollerad: 19 oktober 2026
+`,
+  );
+  assert.equal(r.kod, 1, r.text);
+});
+
+test('giltig kunskap går igenom', () => {
+  const r = validera(
+    [post('test-ett', 'https://example.org')],
+    [],
+    `- id: ett
+  fragor: [En fråga?]
+  svar: Ett svar.
+  kalla_url: https://example.org
+  kontrollerad: 2026-10-19
+`,
+  );
+  assert.equal(r.kod, 0, r.text);
 });
 
 test('dagens datum är det svenska, inte det i UTC', () => {
