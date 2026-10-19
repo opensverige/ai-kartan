@@ -3,6 +3,10 @@
   "framework": "astro",
   "cleanUrls": true,
   "trailingSlash": false,
+  "regions": ["arn1"],
+  "functions": {
+    "api/fraga.ts": { "maxDuration": 10 }
+  },
   "redirects": [
     {
       "source": "/(.*)",
@@ -30,11 +34,15 @@
       ]
     },
     {
-      "source": "/api/(.*)",
+      "source": "/api/((?!fraga$).*)",
       "headers": [
         { "key": "Access-Control-Allow-Origin", "value": "*" },
         { "key": "Cache-Control", "value": "public, max-age=3600, stale-while-revalidate=86400" }
       ]
+    },
+    {
+      "source": "/api/fraga",
+      "headers": [{ "key": "Cache-Control", "value": "no-store" }]
     },
     {
       "source": "/ikoner/(.*)",
