@@ -31,7 +31,9 @@
     "ajv": "^8.20.0",
     "ajv-formats": "^3.0.1",
     "astro": "^7.4.0",
+    "fontkitten": "^1.0.3",
     "maplibre-gl": "^6.14.0",
+    "sharp": "^0.35.5",
     "yaml": "^2.9.1"
   },
   "devDependencies": {
