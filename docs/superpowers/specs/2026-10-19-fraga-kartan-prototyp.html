@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Svaret och motorn – mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet">
+<style>
+:root {
+  --ink: 45 17% 5%;
+  --ink-soft: 30 7% 22%;
+  --ink-mute: 40 11% 32%;
+  --moss: 120 24% 23%;
+  --moss-deep: 120 26% 17%;
+  --amber: 38 74% 33%;
+  --rust: 25 60% 40%;
+  --link: 24 62% 36%;
+  --rule: 45 14% 79%;
+  --discord: 235 86% 65%;
+  --yta: 42 45% 98%;
+  --yta-kort: 45 60% 99%;
+  --yta-chip: 42 26% 92%;
+  --kant: 40 20% 87%;
+  --font-sans: 'Bricolage Grotesque', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --skugga-flyt: 0 1px 2px hsl(var(--ink) / 0.06), 0 12px 32px -14px hsl(var(--ink) / 0.3);
+  --skugga-ruta: 0 1px 2px hsl(var(--ink) / 0.05), 0 18px 44px -18px hsl(var(--ink) / 0.35);
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --t: 320ms var(--ease);
+  --t-flytt: 560ms var(--ease);
+  --panel-b: 440px;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { display: flex; flex-direction: column; overflow: hidden; font-family: var(--font-sans); color: hsl(var(--ink)); background: #1b1c1a; -webkit-font-smoothing: antialiased; }
+button, input { font: inherit; color: inherit; }
+a { color: inherit; }
+
+/* ---------- Mockupverktygets list ---------- */
+.verktyg { flex: none; display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; padding: 10px 16px; background: #1b1c1a; color: #e9e6df; font-size: 13px; }
+.verktyg__grupp { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+.verktyg__etikett { font-family: var(--font-mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: #9d998f; margin-right: 6px; }
+.verktyg button { border: 1px solid #3a3b37; background: #262724; border-radius: 999px; padding: 6px 12px; cursor: pointer; color: #e9e6df; transition: background var(--t), border-color var(--t); }
+.verktyg button[aria-pressed="true"] { background: #e9e6df; color: #1b1c1a; border-color: #e9e6df; }
+.verktyg__prova button { border-style: dashed; }
+
+/* ---------- Scen ---------- */
+.scen { position: relative; flex: 1; min-height: 0; display: grid; place-items: center; }
+.enhet { position: relative; overflow: hidden; background: hsl(var(--yta)); width: 100%; height: 100%; }
+.scen[data-vy="mobil"] { padding: 18px 0 28px; }
+.scen[data-vy="mobil"] .enhet { width: 390px; height: min(844px, 100%); border-radius: 38px; box-shadow: 0 0 0 10px #0e0f0d, 0 30px 80px rgba(0,0,0,.5); }
+
+/* ---------- Sidhuvud ---------- */
+.sidhuvud { position: absolute; inset: 0 0 auto 0; height: 68px; z-index: 20; display: flex; align-items: center; gap: 20px; padding: 0 20px; background: hsl(var(--yta)); border-bottom: 1px solid hsl(var(--kant)); }
+.logga { display: flex; align-items: center; gap: 10px; cursor: pointer; border: 0; background: none; padding: 0; text-align: left; }
+.logga img { width: 34px; height: 34px; }
+.logga b { display: block; font-size: 20px; font-weight: 600; letter-spacing: -.01em; line-height: 1; }
+.logga small { display: block; font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase; color: hsl(var(--ink-mute)); margin-top: 4px; }
+.vyval { display: flex; gap: 2px; padding: 4px; border-radius: 12px; background: hsl(var(--yta-chip)); font-size: 14px; }
+.vyval span { padding: 6px 14px; border-radius: 9px; }
+.vyval span:first-child { background: #fff; font-weight: 600; box-shadow: 0 1px 2px hsl(var(--ink) / .08); }
+.huvudplats { flex: 1; max-width: 640px; height: 44px; }
+.hhoger { margin-left: auto; display: flex; gap: 8px; }
+.hknapp { height: 42px; padding: 0 16px; border-radius: 10px; border: 1px solid hsl(var(--kant)); background: #fff; display: inline-flex; align-items: center; font-size: 14px; font-weight: 500; }
+.hknapp--mork { background: hsl(var(--ink)); color: #fff; border-color: transparent; }
+@media (max-width: 1000px) { .logga div, .vyval { display: none; } }
+.scen[data-vy="mobil"] .sidhuvud { height: 60px; padding: 0 14px; gap: 10px; }
+.scen[data-vy="mobil"] .logga div, .scen[data-vy="mobil"] .vyval, .scen[data-vy="mobil"] .hhoger { display: none; }
+
+#karta { position: absolute; inset: 68px 0 0 0; z-index: 1; }
+.scen[data-vy="mobil"] #karta { top: 60px; }
+.maplibregl-ctrl-attrib { font-family: var(--font-mono); font-size: 10px; }
+
+/* ---------- Första skärmen ---------- */
+.ingang { position: absolute; z-index: 10; inset: auto 0 0 0; padding: 72px 24px 28px; display: grid; grid-template-columns: minmax(0, 1fr); justify-items: center; background: linear-gradient(to top, hsl(var(--yta)) 62%, hsl(var(--yta) / 0)); transition: opacity var(--t), visibility var(--t); }
+.ingang__inre { width: min(640px, 100%); }
+.ingang h1 { margin: 0 0 16px; text-align: center; font-size: clamp(28px, 3vw, 38px); line-height: 1.05; letter-spacing: -.025em; font-weight: 600; text-wrap: balance; }
+.hemplats { height: 62px; }
+.under { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 10px; padding: 0 4px; }
+.ai { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .03em; color: hsl(var(--ink-mute)); display: inline-flex; align-items: center; gap: 7px; }
+.ai i { width: 6px; height: 6px; border-radius: 50%; background: hsl(var(--moss)); animation: puls 2.4s var(--ease) infinite; }
+@keyframes puls { 0%, 100% { opacity: .3; } 50% { opacity: 1; } }
+.utforska { border: 0; background: none; padding: 4px 0; font-size: 14.5px; font-weight: 500; color: hsl(var(--ink-soft)); cursor: pointer; text-decoration: underline; text-decoration-color: hsl(var(--rule)); text-underline-offset: 4px; transition: color var(--t), text-decoration-color var(--t); }
+.utforska:hover { color: hsl(var(--ink)); text-decoration-color: hsl(var(--ink)); }
+.scen[data-vy="mobil"] .ingang { padding: 56px 16px 18px; }
+.scen[data-vy="mobil"] .ingang h1 { font-size: 26px; margin-bottom: 12px; }
+.scen[data-vy="mobil"] .hemplats { height: 56px; }
+.scen[data-vy="mobil"] .under { flex-direction: column-reverse; align-items: center; gap: 6px; margin-top: 12px; }
+.enhet:not([data-lage="hem"]) .ingang { opacity: 0; visibility: hidden; pointer-events: none; }
+
+/* ---------- Fältet ---------- */
+.sokfalt { position: absolute; z-index: 30; display: flex; align-items: center; gap: 10px; margin: 0; background: #fff; border: 1px solid hsl(var(--kant)); border-radius: 18px; box-shadow: var(--skugga-ruta); padding: 0 10px 0 16px; transition: left var(--t-flytt), top var(--t-flytt), width var(--t-flytt), height var(--t-flytt), border-radius var(--t-flytt), box-shadow var(--t), border-color var(--t), padding var(--t-flytt); }
+.sokfalt.utan-flytt { transition: none; }
+.sokfalt:focus-within { border-color: hsl(var(--moss) / .55); box-shadow: 0 0 0 4px hsl(var(--moss) / .12), var(--skugga-ruta); }
+.sokfalt__glyf { flex: none; width: 22px; height: 22px; display: grid; place-items: center; font-size: 19px; line-height: 1; color: hsl(var(--moss)); animation: glimt 4.8s var(--ease) infinite; transform-origin: 50% 52%; }
+@keyframes glimt { 0%, 62%, 100% { transform: rotate(0) scale(1); opacity: 1; } 70% { transform: rotate(45deg) scale(.72); opacity: .55; } 80% { transform: rotate(90deg) scale(1.08); opacity: 1; } }
+.sokfalt input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font-size: 17px; padding: 0; transition: font-size var(--t-flytt); }
+.sokfalt input::placeholder { color: hsl(var(--ink-mute) / .75); }
+.skicka { flex: none; width: 40px; height: 40px; border: 0; border-radius: 12px; background: hsl(var(--moss)); color: #fff; font-size: 18px; cursor: pointer; display: grid; place-items: center; transition: background var(--t), transform var(--t), opacity var(--t), width var(--t-flytt), height var(--t-flytt), border-radius var(--t-flytt); }
+.skicka:disabled { opacity: .35; cursor: default; }
+.skicka:not(:disabled):hover { background: hsl(var(--moss-deep)); }
+.enhet[data-lage="karta"] .sokfalt { border-radius: 999px; box-shadow: none; padding: 0 5px 0 13px; border-color: hsl(var(--rule)); }
+.enhet[data-lage="karta"] .sokfalt:focus-within, .enhet[data-lage="chatt"] .sokfalt:focus-within { box-shadow: 0 0 0 4px hsl(var(--moss) / .12); }
+.enhet[data-lage="karta"] .sokfalt__glyf { width: 18px; font-size: 16px; }
+.enhet[data-lage="karta"] .sokfalt input, .enhet[data-lage="chatt"] .sokfalt input { font-size: 15.5px; }
+.enhet[data-lage="karta"] .skicka { width: 34px; height: 34px; border-radius: 999px; font-size: 15px; }
+.enhet[data-lage="chatt"] .sokfalt { border-radius: 14px; box-shadow: 0 1px 2px hsl(var(--ink) / .05); padding: 0 6px 0 13px; }
+.enhet[data-lage="chatt"] .skicka { width: 36px; height: 36px; border-radius: 10px; font-size: 16px; }
+
+.forslag { position: absolute; left: 0; right: 0; bottom: calc(100% + 8px); margin: 0; padding: 6px; list-style: none; background: #fff; border: 1px solid hsl(var(--kant)); border-radius: 16px; box-shadow: var(--skugga-ruta); max-height: 340px; overflow: auto; }
+.enhet[data-lage="karta"] .forslag { bottom: auto; top: calc(100% + 8px); }
+.forslag[hidden] { display: none; }
+.forslag li { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; cursor: pointer; font-size: 15px; }
+.forslag li[aria-selected="true"] { background: hsl(var(--yta-chip) / .7); }
+.forslag__rubrik { font-family: var(--font-mono); font-size: 10.5px !important; letter-spacing: .08em; text-transform: uppercase; color: hsl(var(--ink-mute)); padding: 10px 12px 4px !important; cursor: default !important; }
+.forslag__fraga b { font-weight: 600; white-space: nowrap; }
+.forslag__fraga span:not(.forslag__markor) { color: hsl(var(--ink-mute)); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.forslag__fraga kbd { margin-left: auto; font-family: var(--font-mono); font-size: 11px; color: hsl(var(--ink-mute)); }
+.forslag__markor { flex: none; width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center; font-size: 13px; color: #fff; background: hsl(var(--moss)); }
+.forslag__prick { flex: none; width: 10px; height: 10px; border-radius: 50%; margin: 0 8px; box-shadow: 0 0 0 2px #fff, 0 0 0 3px hsl(var(--kant)); }
+.forslag__org { display: flex; flex-direction: column; min-width: 0; }
+.forslag__org small { color: hsl(var(--ink-mute)); font-size: 13px; }
+
+/* ---------- Panelen: lista, en organisation eller samtalet ---------- */
+.panel { position: absolute; z-index: 8; top: 68px; bottom: 0; left: 0; width: var(--panel-b); background: hsl(var(--yta)); border-right: 1px solid hsl(var(--kant)); transform: translateX(-100%); transition: transform var(--t), height var(--t); display: flex; flex-direction: column; }
+.enhet:not([data-lage="hem"]) .panel { transform: none; }
+.panel__lista, .panel__org { padding: 22px; overflow: auto; }
+.panel__kicker { font-family: var(--font-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: hsl(var(--moss)); margin: 0 0 8px; }
+.panel h2 { margin: 0; font-size: 34px; line-height: 1.02; letter-spacing: -.02em; font-weight: 600; }
+.panel__antal { margin: 8px 0 16px; color: hsl(var(--ink-soft)); }
+.panel__post { margin-top: 10px; border: 1px solid hsl(var(--kant)); border-radius: 14px; background: #fff; padding: 12px 14px; }
+.panel__post b { display: block; }
+.panel__post small { color: hsl(var(--ink-mute)); }
+.panel__tillbaka { border: 0; background: none; padding: 0; margin-bottom: 18px; font-size: 14px; color: hsl(var(--ink-mute)); cursor: pointer; }
+.panel__text { line-height: 1.5; color: hsl(var(--ink-soft)); }
+.panel__lank { display: inline-flex; margin-top: 8px; color: hsl(var(--link)); font-weight: 500; text-decoration: underline; text-underline-offset: 4px; }
+.enhet[data-lage="chatt"] .panel__lista, .enhet[data-lage="chatt"] .panel__org { display: none; }
+.enhet:not([data-lage="chatt"]) .chatt { display: none; }
+
+.chatt { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.chatt__topp { flex: none; display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid hsl(var(--kant)); }
+.chatt__topp button { border: 0; background: none; padding: 6px 4px; font-size: 14px; color: hsl(var(--ink-mute)); cursor: pointer; transition: color var(--t); }
+.chatt__topp button:hover { color: hsl(var(--ink)); }
+.chatt__namn { margin: 0 auto; font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: hsl(var(--moss)); }
+.chatt__logg { flex: 1; min-height: 0; overflow: auto; padding: 18px 16px 8px; scroll-behavior: smooth; }
+.chattplats { flex: none; height: 52px; margin: 8px 16px 6px; }
+.chatt__not { flex: none; margin: 0 16px 12px; font-family: var(--font-mono); font-size: 10px; letter-spacing: .03em; color: hsl(var(--ink-mute)); text-align: center; }
+
+.msg { margin-bottom: 18px; animation: in 420ms var(--ease) both; }
+@keyframes in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.msg--du { display: flex; justify-content: flex-end; }
+.msg--du p { margin: 0; max-width: 85%; padding: 10px 14px; border-radius: 16px 16px 4px 16px; background: hsl(var(--ink)); color: #fff; font-size: 15px; line-height: 1.4; }
+.msg--ai { font-size: 15px; line-height: 1.5; }
+.msg__status { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 11.5px; color: hsl(var(--ink-mute)); }
+.msg__status i { font-style: normal; color: hsl(var(--moss)); display: inline-block; animation: snurr 1.2s linear infinite; }
+@keyframes snurr { to { transform: rotate(360deg); } }
+.msg__tolkning { margin: 0 0 10px; }
+.msg__tolkning b { font-weight: 600; }
+.meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin: 0 0 10px; font-size: 13px; color: hsl(var(--ink-mute)); }
+.meta a { color: hsl(var(--link)); font-weight: 500; text-underline-offset: 3px; }
+.kort { border: 1px solid hsl(var(--kant)); border-radius: 14px; background: #fff; padding: 12px 14px; margin-bottom: 8px; transition: border-color var(--t), box-shadow var(--t); animation: in 480ms var(--ease) both; }
+.kort:hover, .kort.aktiv { border-color: hsl(var(--rule)); box-shadow: var(--skugga-flyt); }
+.kort__huvud { display: flex; align-items: baseline; gap: 8px; }
+.kort__prick { flex: none; width: 9px; height: 9px; border-radius: 50%; transform: translateY(-1px); }
+.kort__namn { font-weight: 600; font-size: 16px; border: 0; background: none; padding: 0; cursor: pointer; text-align: left; }
+.kort__var { margin-left: auto; font-size: 12.5px; color: hsl(var(--ink-mute)); white-space: nowrap; }
+.kort__text { margin: 6px 0 0; font-size: 14px; line-height: 1.45; color: hsl(var(--ink-soft)); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.kort__status { display: inline-flex; gap: 6px; align-items: center; margin-top: 6px; font-family: var(--font-mono); font-size: 10.5px; color: hsl(var(--ink-mute)); }
+.kort__status b { font-weight: 500; padding: 1px 6px; border-radius: 4px; }
+.status--claimed { background: hsl(var(--amber) / .12); color: hsl(var(--amber)); }
+.status--confirmed { background: hsl(var(--moss) / .12); color: hsl(var(--moss)); }
+.kort__varfor { margin: 8px 0 0; font-size: 13px; color: hsl(var(--ink-soft)); }
+.kort__varfor span { color: hsl(var(--ink-mute)); }
+.kort__lank { display: inline-block; margin-top: 8px; font-size: 13.5px; font-weight: 500; color: hsl(var(--link)); text-underline-offset: 3px; }
+.svarsrader { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.svarsrader button { border: 1px solid hsl(var(--kant)); background: hsl(var(--yta-kort)); border-radius: 999px; padding: 7px 12px; font-size: 13.5px; cursor: pointer; transition: background var(--t), border-color var(--t); }
+.svarsrader button:hover { background: #fff; border-color: hsl(var(--rule)); }
+.overlamna { margin-top: 12px; padding: 14px; border-radius: 14px; background: hsl(var(--discord) / .08); border: 1px solid hsl(var(--discord) / .25); }
+.overlamna p { margin: 0 0 10px; font-size: 14.5px; }
+.overlamna__knappar { display: flex; flex-wrap: wrap; gap: 8px; }
+.knapp { display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 14px; border-radius: 10px; font-size: 14px; font-weight: 600; text-decoration: none; cursor: pointer; border: 1px solid transparent; transition: background var(--t), transform var(--t); }
+.knapp--discord { background: hsl(var(--discord)); color: #fff; }
+.knapp--discord:hover { background: hsl(235 70% 58%); }
+.knapp--tyst { background: #fff; border-color: hsl(var(--kant)); color: hsl(var(--ink)); font-weight: 500; }
+.knapp:active { transform: scale(.97); }
+.hur { margin-top: 10px; font-size: 13px; color: hsl(var(--ink-mute)); }
+.hur summary { cursor: pointer; list-style: none; display: inline-flex; gap: 6px; align-items: center; }
+.hur summary::-webkit-details-marker { display: none; }
+.hur summary::before { content: '›'; display: inline-block; transition: transform var(--t); }
+.hur[open] summary::before { transform: rotate(90deg); }
+.hur ol { margin: 8px 0 0; padding-left: 18px; line-height: 1.55; }
+.hur li span { font-family: var(--font-mono); font-size: 10px; padding: 1px 5px; border-radius: 4px; margin-left: 4px; }
+.etikett--kod { background: hsl(var(--moss) / .1); color: hsl(var(--moss)); }
+.etikett--modell { background: hsl(var(--amber) / .12); color: hsl(var(--amber)); }
+.hur pre { margin: 8px 0 0; padding: 10px; border-radius: 10px; background: hsl(var(--yta-chip) / .7); font-family: var(--font-mono); font-size: 11px; line-height: 1.5; white-space: pre-wrap; color: hsl(var(--ink-soft)); }
+.tumme { display: flex; gap: 6px; align-items: center; margin-top: 10px; font-size: 12.5px; color: hsl(var(--ink-mute)); }
+.tumme button { border: 1px solid hsl(var(--kant)); background: #fff; border-radius: 8px; padding: 3px 9px; font-size: 12.5px; cursor: pointer; }
+.tumme button[aria-pressed="true"] { background: hsl(var(--ink)); color: #fff; border-color: transparent; }
+
+.scen[data-vy="mobil"] .panel { top: auto; right: 0; width: auto; height: 190px; border-right: 0; border-top: 1px solid hsl(var(--kant)); border-radius: 22px 22px 0 0; transform: translateY(100%); box-shadow: 0 -12px 30px -18px hsl(var(--ink) / .4); }
+.scen[data-vy="mobil"] .enhet:not([data-lage="hem"]) .panel { transform: none; }
+.scen[data-vy="mobil"] .enhet[data-lage="chatt"] .panel { height: 74%; }
+.scen[data-vy="mobil"] .panel h2 { font-size: 22px; }
+.scen[data-vy="mobil"] .panel__lista .panel__post, .scen[data-vy="mobil"] .panel__lista .panel__kicker { display: none; }
+
+/* ---------- Motorn: steg för steg ---------- */
+.motor { position: absolute; inset: 0; z-index: 60; background: hsl(var(--yta)); overflow: auto; padding: 28px clamp(16px, 4vw, 56px) 48px; opacity: 0; visibility: hidden; transition: opacity var(--t), visibility var(--t); }
+.scen.visa-motor .motor { opacity: 1; visibility: visible; }
+.motor__inre { max-width: 980px; margin: 0 auto; }
+.motor h2 { margin: 0; font-size: clamp(26px, 3vw, 36px); letter-spacing: -.02em; font-weight: 600; }
+.motor__ingress { margin: 8px 0 22px; color: hsl(var(--ink-soft)); max-width: 46em; line-height: 1.5; }
+.motor__fraga { font-family: var(--font-mono); font-size: 12px; color: hsl(var(--ink-mute)); margin-bottom: 14px; }
+.steg { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 0 14px; }
+.steg__nr { position: relative; display: grid; justify-items: center; }
+.steg__nr span { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font-family: var(--font-mono); font-size: 13px; background: #fff; border: 1px solid hsl(var(--kant)); z-index: 1; }
+.steg__nr::after { content: ''; position: absolute; top: 32px; bottom: -4px; width: 1px; background: hsl(var(--kant)); }
+.steg:last-child .steg__nr::after { display: none; }
+.steg__kropp { padding-bottom: 22px; }
+.steg__rubrik { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 4px 0 6px; font-size: 18px; font-weight: 600; }
+.steg__rubrik small { font-family: var(--font-mono); font-size: 10.5px; font-weight: 500; padding: 2px 7px; border-radius: 5px; }
+.steg__text { margin: 0; color: hsl(var(--ink-soft)); line-height: 1.5; font-size: 15px; }
+.steg__data { margin-top: 8px; padding: 10px 12px; border-radius: 10px; background: #fff; border: 1px solid hsl(var(--kant)); font-family: var(--font-mono); font-size: 11.5px; line-height: 1.55; color: hsl(var(--ink-soft)); white-space: pre-wrap; }
+.steg__reserv { margin-top: 6px; font-size: 13px; color: hsl(var(--ink-mute)); }
+.ramar { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; margin-top: 18px; }
+.ram { border: 1px solid hsl(var(--kant)); background: #fff; border-radius: 14px; padding: 14px; }
+.ram h3 { margin: 0 0 6px; font-size: 15px; }
+.ram p { margin: 0; font-size: 13.5px; line-height: 1.5; color: hsl(var(--ink-soft)); }
+.motor__stang { position: sticky; top: 0; float: right; border: 1px solid hsl(var(--kant)); background: #fff; border-radius: 999px; padding: 8px 14px; cursor: pointer; }
+
+.besked { position: absolute; z-index: 40; left: 50%; bottom: 24px; transform: translate(-50%, 20px); opacity: 0; background: hsl(var(--ink)); color: #fff; padding: 10px 16px; border-radius: 12px; font-size: 14px; transition: opacity var(--t), transform var(--t); pointer-events: none; }
+.besked.syns { opacity: 1; transform: translate(-50%, 0); }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }
+</style>
+</head>
+<body>
+
+<div class="verktyg" role="toolbar" aria-label="Mockupens val">
+  <div class="verktyg__grupp">
+    <span class="verktyg__etikett">Vy</span>
+    <button type="button" data-satt="vy" data-varde="desktop" aria-pressed="true">Desktop</button>
+    <button type="button" data-satt="vy" data-varde="mobil" aria-pressed="false">Mobil</button>
+  </div>
+  <div class="verktyg__grupp verktyg__prova">
+    <span class="verktyg__etikett">Pröva</span>
+    <button type="button" data-prova="Vilka bygger röstagenter på svenska?">Smal</button>
+    <button type="button" data-prova="Hitta mig alla som arbetar med AI">Bred</button>
+    <button type="button" data-prova="Jag behöver någon att bolla SIP och telefoni med">Människa</button>
+    <button type="button" data-prova="Vilket är Sveriges bästa AI-bolag?">Ranking</button>
+    <button type="button" data-prova="Vad är OpenSverige?">OpenSverige</button>
+    <button type="button" data-prova="Vilka bygger kvantdatorer för bananodling?">Tomt</button>
+  </div>
+  <div class="verktyg__grupp">
+    <button type="button" id="motorknapp" aria-pressed="false">Visa motorn</button>
+    <button type="button" id="omstart">Börja om</button>
+  </div>
+</div>
+
+<div class="scen" data-vy="desktop">
+  <div class="enhet" data-lage="hem">
+    <header class="sidhuvud">
+      <button type="button" class="logga" id="logga" aria-label="Till början"><img src="https://karta.opensverige.se/ikoner/opensverige.png" alt=""><div><b>OpenSverige</b><small>AI-kartan · ideell, oberoende, inte statlig</small></div></button>
+      <div class="vyval"><span>Karta</span><span>Lista</span></div>
+      <div class="huvudplats" id="huvudplats" aria-hidden="true"></div>
+      <div class="hhoger"><span class="hknapp hknapp--mork">+ Lägg till</span><span class="hknapp">Meny</span></div>
+    </header>
+
+    <div id="karta"></div>
+
+    <section class="ingang" aria-labelledby="h1">
+      <div class="ingang__inre">
+        <h1 id="h1">Fråga Sveriges AI-karta</h1>
+        <div class="hemplats" id="hemplats" aria-hidden="true"></div>
+        <div class="under">
+          <span class="ai"><i aria-hidden="true"></i>AI · svarar med länkar till källorna</span>
+          <button type="button" class="utforska" id="utforska">eller utforska kartan själv <span aria-hidden="true">→</span></button>
+        </div>
+      </div>
+    </section>
+
+    <aside class="panel" aria-label="Organisationer och svar">
+      <div class="panel__lista" id="lista">
+        <p class="panel__kicker">Tech Embassy · oberoende, inte statlig</p>
+        <h2>Alla som bygger AI i Sverige</h2>
+        <p class="panel__antal"><b id="antal">341</b> organisationer · +3 nya senaste 7 dagarna</p>
+        <div id="poster"></div>
+      </div>
+      <div class="panel__org" id="org" hidden></div>
+      <section class="chatt" aria-label="Samtal med AI">
+        <div class="chatt__topp">
+          <button type="button" id="tillkartan">← Kartan</button>
+          <p class="chatt__namn">✦ Fråga kartan</p>
+          <button type="button" id="nyfraga">Ny fråga</button>
+        </div>
+        <div class="chatt__logg" id="logg" aria-live="polite"></div>
+        <div class="chattplats" id="chattplats" aria-hidden="true"></div>
+        <p class="chatt__not">AI kan ta fel. Fakta och status kommer från kartans källor.</p>
+      </section>
+    </aside>
+
+    <form class="sokfalt" id="sokfalt" role="search">
+      <span class="sokfalt__glyf" aria-hidden="true">✦</span>
+      <input id="falt" type="text" autocomplete="off" spellcheck="false" placeholder="Fråga med egna ord …" aria-label="Fråga med egna ord eller sök" role="combobox" aria-expanded="false" aria-controls="forslag" aria-autocomplete="list">
+      <button type="submit" class="skicka" id="skicka" aria-label="Fråga AI" disabled>→</button>
+      <ul class="forslag" id="forslag" role="listbox" hidden></ul>
+    </form>
+
+    <div class="besked" id="besked" role="status"></div>
+  </div>
+
+  <section class="motor" id="motor" aria-label="Så fungerar sökmotorn">
+    <div class="motor__inre">
+      <button type="button" class="motor__stang" id="motorstang">Stäng</button>
+      <h2>Så tar motorn fram ett svar</h2>
+      <p class="motor__ingress">Sex steg. Koden bestämmer vilka som visas och i vilken ordning. Modellen gör bara två saker: tolkar frågan och formulerar texten runt resultatet. Utan modellen fungerar steg 1, 3, 4 och 6 ändå, som vanlig sökning.</p>
+      <div class="motor__fraga" id="motorfraga">Ställ en fråga i prototypen, så visas varje stegs data här.</div>
+      <div id="motorsteg"></div>
+      <div class="ramar">
+        <div class="ram"><h3>Var det körs</h3><p>Sajten förblir statisk. En enda serverfunktion, /api/fraga, tar emot frågan. Sökindexet byggs ur YAML-filerna vid varje bygge, samma data som kartan.</p></div>
+        <div class="ram"><h3>Skydd mot kostnad och missbruk</h3><p>Gräns per besökare och minut, max längd på fråga och samtal, utgiftstak hos leverantören. En brytare stänger av modellen; sökningen fungerar vidare.</p></div>
+        <div class="ram"><h3>Inget sparas</h3><p>Samtalet finns bara i webbläsaren. Servern sparar inga frågor. Bara räknare utan text: kategori, träff eller tomt, klick.</p></div>
+        <div class="ram"><h3>Prövas mot en frågelista</h3><p>Fjorton frågetyper ur PRD:n plus din breda fråga. Samma fråga ska ge samma urval, och inget svar får innehålla värdeord.</p></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script>
+const scen = document.querySelector('.scen');
+const enhet = document.querySelector('.enhet');
+const sokfalt = document.getElementById('sokfalt');
+const falt = document.getElementById('falt');
+const skicka = document.getElementById('skicka');
+const forslag = document.getElementById('forslag');
+const logg = document.getElementById('logg');
+const KARTA_URL = 'https://karta.opensverige.se';
+const DISCORD = 'https://discord.gg/ZbV4qB34um';
+const TYP = { bolag: 'Bolag', enskild_firma: 'Enskild firma', myndighet: 'Myndighet', kommun_region: 'Kommun eller region', larosate: 'Lärosäte', community: 'Community', finansiar: 'Finansiär', infrastruktur: 'Infrastruktur' };
+const FARG = { bolag: '#2d4a2d', enskild_firma: '#477a47', myndighet: '#2c2a22', kommun_region: '#6b6359', larosate: '#93661c', community: '#a35a29', finansiar: '#94532a', infrastruktur: '#52667a' };
+const STATUS = { confirmed: 'bekräftad', claimed: 'egen uppgift', planned: 'planerad', unknown: 'okänd' };
+const SVERIGE = [[10.6, 55.2], [24.3, 69.1]];
+const URVAL = 5;
+let karta = null;
+let orgar = [];
+let senaste = null;
+const lage = () => enhet.dataset.lage;
+const mobil = () => scen.dataset.vy === 'mobil';
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const norm = (s) => (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+const vanta = (ms) => new Promise((r) => setTimeout(r, ms));
+
+/* =====================================================================
+   MOTORN. I den riktiga versionen är steg 2 och 5 modellanrop.
+   Här simuleras de med regler, så att flödet går att känna på.
+   ===================================================================== */
+
+// Steg 1: förfilter (kod). Fångar det som aldrig ska till modellen.
+const RANKING = /(^|\s)(bast|basta|topp|ledande|framsta|rekommendera\w*|vilken ar bast)(\s|$|\?)/;
+const INTRO = /(introducera|presentera mig|kontaktuppgift|kontaktperson|telefonnummer|mejladress|e-postadress|\bvd\b|vd:n)/;
+const OPENSVERIGE = /(opensverige|open sverige|foreningen|medlem|medlemskap|ga med|tech embassy|lagga till|lagger till|lagg till|ratta|mitt bolag pa kartan)/;
+const UTANFOR = /(vader|recept|skriv en dikt|aktiekurs|fotboll|horoskop)/;
+function forfilter(nq) {
+  if (RANKING.test(nq)) return 'ranking';
+  if (INTRO.test(nq)) return 'intro';
+  if (OPENSVERIGE.test(nq)) return 'opensverige';
+  if (UTANFOR.test(nq)) return 'utanfor';
+  return null;
+}
+
+// Steg 2: tolkning. Riktig version: modellen fyller i ett schema vars värden är låsta till taxonomin.
+const OMRADEN = {
+  agenter_automation: ['agent', 'agenter', 'ai-agenter', 'automation', 'automatisering'],
+  datorseende: ['datorseende', 'bildanalys', 'computer vision', 'maskinseende'],
+  energi_klimat: ['energi', 'klimat'],
+  fastighet_bygg: ['fastighet', 'fastigheter', 'bygg'],
+  fintech: ['finans', 'fintech', 'bank', 'forsakring'],
+  forsvar_sakerhet: ['forsvar', 'cybersakerhet', 'sakerhet'],
+  halsa: ['halsa', 'vard', 'sjukvard', 'medtech', 'life science'],
+  industri: ['industri', 'tillverkning'],
+  juridik: ['juridik', 'juridisk', 'legal tech'],
+  robotik: ['robot', 'robotar', 'robotik', 'dronare'],
+  sprakteknik: ['sprakteknik', 'sprakmodell', 'sprakmodeller', 'nlp', 'llm'],
+  transport_mobilitet: ['transport', 'mobilitet', 'fordon'],
+  utbildning: ['utbildning', 'skola', 'larande'],
+};
+const OMRADE_ETIKETT = { agenter_automation: 'Agenter och automation', datorseende: 'Datorseende', energi_klimat: 'Energi och klimat', fastighet_bygg: 'Fastighet och bygg', fintech: 'Finans och försäkring', forsvar_sakerhet: 'Försvar och säkerhet', halsa: 'Hälsa och life science', industri: 'Industri och tillverkning', juridik: 'Juridik', robotik: 'Robotik', sprakteknik: 'Språkteknik', transport_mobilitet: 'Transport och mobilitet', utbildning: 'Utbildning' };
+const ERBJUDER = {
+  infrastruktur: ['gpu', 'gpu-kapacitet', 'infrastruktur', 'compute', 'berakning', 'berakningskraft', 'hosting', 'inferens', 'datacenter'],
+  oppen_kallkod: ['oppen kallkod', 'open source', 'open-source'],
+  finansiering: ['finansiering', 'riskkapital', 'bidrag'],
+  community: ['meetup', 'meetups', 'natverk'],
+};
+const ERBJUDER_ETIKETT = { infrastruktur: 'Infrastruktur och hosting', oppen_kallkod: 'Öppen källkod', finansiering: 'Finansiering', community: 'Community' };
+const TYPORD = { larosate: ['larosate', 'larosaten', 'universitet', 'hogskola', 'forskningsmiljo'], myndighet: ['myndighet', 'myndigheter'], kommun_region: ['kommun', 'kommuner', 'region', 'regioner'], finansiar: ['finansiar', 'finansiarer', 'investerare'] };
+// Begrepp som inte finns i taxonomin söks som text, med sina synonymer.
+const BEGREPP = [
+  { namn: 'röst och tal', utlosare: ['rost', 'rostagent', 'rostagenter', 'voice', 'tal', 'tts', 'speech', 'telefoni', 'sip', 'samtal'], monster: /(^|[^a-z])(rost|voice|tts|speech|telefoni|samtal|tal(igenk|teknik|syntes|robot| till text)|text till tal)/ },
+];
+const MANNISKA = /(bolla|nagon att|sparra|samarbet|prata med|diskutera med|builders|hjalp av en)/;
+const AIORD = /(^|\s)(ai|artificiell|maskininlarning|modell|modeller|bygger|jobbar|arbetar)(\s|$)/;
+const UTFYLLNAD = new Set('hitta mig alla som arbetar jobbar med jag vi behover vill ha vilka vilken vem finns det i pa inom for till av och eller en ett att nagon nagra svenska svensk sverige sweden ai bygger gor kan letar efter soker om the a of in who is are bolag foretag organisationer organisation kring ar har'.split(' '));
+
+let PLATSER = [];
+function byggPlatser() {
+  const kommuner = new Map();
+  const lan = new Map();
+  for (const o of orgar) {
+    if (o.kn && o.k) kommuner.set(norm(o.kn), { sort: 'kommun', kod: o.k, namn: o.kn });
+    if (o.ln && o.l) lan.set(norm(o.ln).replace(/s? lan$/, ''), { sort: 'lan', kod: o.l, namn: o.ln });
+  }
+  PLATSER = [...[...kommuner].map(([nyckel, p]) => ({ nyckel, ...p })), ...[...lan].filter(([n]) => !kommuner.has(n)).map(([nyckel, p]) => ({ nyckel, ...p }))]
+    .sort((a, b) => b.nyckel.length - a.nyckel.length);
+}
+const harOrd = (nq, ord) => new RegExp(`(^|[^a-z])${ord.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}([^a-z]|$)`).test(nq);
+
+function tolka(q) {
+  const nq = norm(q);
+  const fraga = { avsikt: 'hitta_organisationer', omraden: [], erbjuder: [], typer: [], platser: [], begrepp: [], ord: [], manniska: MANNISKA.test(nq) };
+  let rest = ` ${nq.replace(/[?!.,]/g, ' ')} `;
+  const ta = (ord) => { rest = rest.replace(new RegExp(`(^|[^a-z])${ord}([^a-z]|$)`, 'g'), ' '); };
+  for (const [id, ord] of Object.entries(OMRADEN)) for (const o of ord) if (harOrd(nq, o)) { if (!fraga.omraden.includes(id)) fraga.omraden.push(id); ta(o); }
+  for (const [id, ord] of Object.entries(ERBJUDER)) for (const o of ord) if (harOrd(nq, o)) { if (!fraga.erbjuder.includes(id)) fraga.erbjuder.push(id); ta(o); }
+  for (const [id, ord] of Object.entries(TYPORD)) for (const o of ord) if (harOrd(nq, o)) { if (!fraga.typer.includes(id)) fraga.typer.push(id); ta(o); }
+  for (const b of BEGREPP) for (const o of b.utlosare) if (harOrd(nq, o)) { if (!fraga.begrepp.includes(b.namn)) fraga.begrepp.push(b.namn); ta(o); }
+  for (const p of PLATSER) if (harOrd(nq, p.nyckel) && !fraga.platser.some((x) => x.namn === p.namn)) { fraga.platser.push({ sort: p.sort, kod: p.kod, namn: p.namn }); ta(p.nyckel); }
+  fraga.ord = rest.split(/\s+/).filter((o) => o.length > 2 && !UTFYLLNAD.has(o) && !/(bolla|nagon|sparra|idé|ide)/.test(o));
+  fraga.kriterier = fraga.omraden.length + fraga.erbjuder.length + fraga.typer.length + fraga.platser.length + fraga.begrepp.length;
+  return fraga;
+}
+
+// Steg 3: hämtning (kod). Varje kriterium ska stämma. Skälen sparas per organisation.
+function hamta(fraga) {
+  const anvandOrd = fraga.kriterier === 0 && fraga.ord.length > 0;
+  return orgar.map((o) => {
+    const skal = [];
+    const text = norm(`${o.n} ${o.d}`);
+    for (const a of fraga.omraden) { if (!o.a.includes(a)) return null; skal.push(`område ${OMRADE_ETIKETT[a]}`); }
+    for (const e of fraga.erbjuder) { if (!o.o.includes(e)) return null; skal.push(`erbjuder ${ERBJUDER_ETIKETT[e].toLowerCase()}`); }
+    if (fraga.typer.length) { if (!fraga.typer.includes(o.t)) return null; skal.push(TYP[o.t].toLowerCase()); }
+    if (fraga.platser.length) { const p = fraga.platser.find((p) => (p.sort === 'kommun' ? o.k === p.kod : o.l === p.kod)); if (!p) return null; skal.push(p.namn); }
+    // Normaliseringen behåller längden på svenska tecken, så träffen kan visas som den står i texten.
+    for (const namn of fraga.begrepp) { const b = BEGREPP.find((x) => x.namn === namn); const m = text.match(b.monster); if (!m) return null; const i = m.index + m[1].length; const ord = `${o.n} ${o.d}`.slice(i).match(/^[\p{L}-]+(?: till text)?/u)[0]; skal.push(`”${ord}” i beskrivningen`); }
+    if (anvandOrd) { for (const ord of fraga.ord) { if (!text.includes(ord)) return null; skal.push(`”${ord}” i beskrivningen`); } }
+    return { o, skal };
+  }).filter(Boolean);
+}
+
+// Steg 4: urval och ordning (kod). Får allt plats: namnordning. Annars ett urval som byts varje dag.
+function dagsfro(s) { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; }
+function valjUt(kandidater, q) {
+  const sorterade = [...kandidater].sort((a, b) => a.o.n.localeCompare(b.o.n, 'sv'));
+  if (sorterade.length <= URVAL) return { visade: sorterade, regel: 'namn A–Ö' };
+  let fro = dagsfro(`${new Date().toISOString().slice(0, 10)}|${norm(q)}`);
+  const slump = () => ((fro = Math.imul(fro ^ (fro >>> 15), 2246822519) >>> 0) / 4294967296);
+  const blandade = sorterade.map((k) => ({ k, r: slump() })).sort((a, b) => a.r - b.r).slice(0, URVAL).map((x) => x.k);
+  return { visade: blandade.sort((a, b) => a.o.n.localeCompare(b.o.n, 'sv')), regel: 'urval som byts varje dag, visas i namnordning' };
+}
+
+function kartlank(fraga) {
+  const p = new URLSearchParams();
+  if (fraga.erbjuder[0]) p.set('erbjuder', fraga.erbjuder[0]);
+  if (fraga.typer[0]) p.set('typ', fraga.typer[0]);
+  if (fraga.omraden[0]) p.set('omrade', fraga.omraden[0]);
+  const plats = fraga.platser[0];
+  if (plats) p.set(plats.sort === 'kommun' ? 'kommun' : 'lan', plats.kod);
+  if (fraga.begrepp.includes('röst och tal')) p.set('q', 'röst');
+  else if (fraga.kriterier === 0 && fraga.ord.length) p.set('q', fraga.ord.join(' '));
+  const s = p.toString();
+  return `${KARTA_URL}/${s ? `?${s}` : ''}`;
+}
+
+// Steg 5: formulering. Riktig version: modellen skriver bara tolkningsraden, i ett schema.
+// Kort, fakta och skäl kommer från koden. All text passerar värdeordsfiltret.
+const MARKNADSORD = /\b(ledande|världsledande|bäst[a]?|nummer ett|revolutionerande|unik[ta]?|banbrytande|marknadsledande)\b/i;
+function tolkningsrad(fraga) {
+  const delar = [];
+  const arbetar = [];
+  if (fraga.begrepp.length) arbetar.push(`med ${fraga.begrepp.join(' och ')}`);
+  if (fraga.omraden.length) arbetar.push(`inom ${fraga.omraden.map((a) => OMRADE_ETIKETT[a].toLowerCase()).join(' och ')}`);
+  if (arbetar.length) delar.push(`arbetar ${arbetar.join(' ')}`);
+  if (fraga.erbjuder.length) delar.push(`erbjuder ${fraga.erbjuder.map((e) => ERBJUDER_ETIKETT[e].toLowerCase()).join(' och ')}`);
+  if (fraga.platser.length) delar.push(`finns i ${fraga.platser.map((p) => p.namn).join(' eller ')}`);
+  if (fraga.kriterier === 0 && fraga.ord.length) delar.push(`nämner ${fraga.ord.map((o) => `”${o}”`).join(' och ')}`);
+  const PLURAL = { larosate: 'lärosäten', myndighet: 'myndigheter', kommun_region: 'kommuner och regioner', finansiar: 'finansiärer', community: 'communities', bolag: 'bolag', infrastruktur: 'infrastruktur' };
+  const vem = fraga.typer.length ? fraga.typer.map((t) => PLURAL[t]).join(' och ') : 'organisationer';
+  const rad = delar.length ? `Jag tolkar det som att du söker ${vem} som ${delar.join(' och ')}.` : `Jag tolkar det som att du söker ${vem}.`;
+  return MARKNADSORD.test(rad) ? 'Här är det som matchar din fråga.' : rad;
+}
+
+// Allt samlat. Returnerar svaret och varje stegs data, så att motorvyn kan visa dem.
+function motor(q) {
+  const nq = norm(q);
+  const steg = { fraga: q, forfilter: forfilter(nq) };
+  if (steg.forfilter) return { sort: steg.forfilter, steg };
+  const fraga = tolka(q);
+  steg.tolkning = fraga;
+  if (fraga.kriterier === 0 && fraga.ord.length === 0) {
+    if (fraga.manniska) return { sort: 'manniska', steg };
+    if (AIORD.test(nq) || nq.split(/\s+/).length <= 6) { steg.kandidater = orgar.length; return { sort: 'bred', steg }; }
+    return { sort: 'utanfor', steg };
+  }
+  const kandidater = hamta(fraga);
+  steg.kandidater = kandidater.length;
+  if (!kandidater.length) return { sort: 'tomt', steg, fraga };
+  const { visade, regel } = valjUt(kandidater, q);
+  steg.urval = { visade: visade.map((k) => k.o.n), regel, totalt: kandidater.length };
+  steg.formulering = { tolkning: tolkningsrad(fraga), filter: 'värdeord: inga' };
+  return { sort: 'traffar', steg, fraga, kandidater, visade, regel, lank: kartlank(fraga) };
+}
+
+/* =====================================================================
+   SVAREN
+   ===================================================================== */
+function laggTill(html, klass) {
+  const el = document.createElement('div');
+  el.className = `msg ${klass}`;
+  el.innerHTML = html;
+  logg.appendChild(el);
+  logg.scrollTop = logg.scrollHeight;
+  return el;
+}
+async function skrivUt(el, text) {
+  // Bara tolkningsraden strömmar. Korten ritas direkt ur datan.
+  for (let i = 1; i <= text.length; i += 2) { el.textContent = text.slice(0, i); await vanta(12); }
+  el.textContent = text;
+}
+function kortHtml(k, i) {
+  const o = k.o;
+  return `<article class="kort" data-id="${esc(o.id)}" style="animation-delay:${i * 70}ms">
+    <div class="kort__huvud"><span class="kort__prick" style="background:${FARG[o.t] || '#2d4a2d'}"></span>
+      <button type="button" class="kort__namn" data-flyg="${esc(o.id)}">${esc(o.n)}</button>
+      <span class="kort__var">${esc(TYP[o.t] || '')} · ${esc(o.kn || 'Utan plats')}</span></div>
+    <p class="kort__text">${esc(o.d)}</p>
+    <div class="kort__status"><b class="status--${esc(o.ds || 'claimed')}">${esc(STATUS[o.ds] || 'egen uppgift')}</b>kontrollerad ${esc(o.dv || o.s || '')}</div>
+    <p class="kort__varfor"><span>Matchar:</span> ${esc(k.skal.join(' · '))}</p>
+    <a class="kort__lank" href="${KARTA_URL}/organisation/${esc(o.id)}" target="_blank" rel="noopener">Visa på Tech Embassy →</a>
+  </article>`;
+}
+function hurHtml(svar) {
+  const t = svar.steg.tolkning;
+  const json = JSON.stringify({ avsikt: t.avsikt, omraden: t.omraden, erbjuder: t.erbjuder, typer: t.typer, platser: t.platser.map((p) => p.namn), begrepp: t.begrepp, manniska: t.manniska }, null, 1).replace(/\n\s*/g, ' ');
+  return `<details class="hur"><summary>Så hittade jag dem</summary>
+    <ol>
+      <li>Frågan tolkades till filter <span class="etikett--modell">modell</span><pre>${esc(json)}</pre></li>
+      <li>Kartan söktes med filtren: ${svar.kandidater.length} av ${orgar.length} matchar <span class="etikett--kod">kod</span></li>
+      <li>${svar.kandidater.length > URVAL ? `Visar ${svar.visade.length}: ${esc(svar.regel)}` : 'Alla visas, i namnordning'} <span class="etikett--kod">kod</span></li>
+      <li>Kortens text och status kommer direkt ur datan <span class="etikett--kod">kod</span></li>
+    </ol>
+    <p>Modellen väljer inte vilka som visas eller i vilken ordning.</p>
+  </details>`;
+}
+function overlamnaHtml(q) {
+  return `<div class="overlamna">
+    <p><b>Vill du bolla det här med folk som bygger?</b> Ta frågan till OpenSveriges Discord.</p>
+    <div class="overlamna__knappar">
+      <a class="knapp knapp--discord" href="${DISCORD}" target="_blank" rel="noopener">Bolla med builders i Discord →</a>
+      <button type="button" class="knapp knapp--tyst" data-kopiera="${esc(q)}">Kopiera frågan</button>
+    </div></div>`;
+}
+const tummeHtml = () => '<div class="tumme">Hjälpte det? <button type="button" data-tumme="ja" aria-pressed="false">Ja</button><button type="button" data-tumme="nej" aria-pressed="false">Nej</button></div>';
+
+async function fraga(q) {
+  q = q.trim();
+  if (!q) return;
+  falt.value = '';
+  skicka.disabled = true;
+  stangForslag();
+  if (lage() !== 'chatt') satLage('chatt', { flyga: false });
+  laggTill(`<p>${esc(q)}</p>`, 'msg--du');
+  const ai = laggTill('<span class="msg__status"><i>✦</i>Söker i kartan …</span>', 'msg--ai');
+  await vanta(650);
+  const svar = motor(q);
+  senaste = svar;
+  ritaMotor();
+  if (window.brainstorm) window.brainstorm.choice(`fraga-${svar.sort}`);
+
+  if (svar.sort === 'traffar') {
+    ai.innerHTML = `<p class="msg__tolkning"></p>`;
+    await skrivUt(ai.querySelector('.msg__tolkning'), svar.steg.formulering.tolkning);
+    const delar = svar.kandidater.length > URVAL
+      ? `<b>${svar.kandidater.length}</b> på kartan matchar · visar ${svar.visade.length}, urvalet byts varje dag`
+      : `<b>${svar.kandidater.length}</b> på kartan matchar`;
+    ai.insertAdjacentHTML('beforeend', `<p class="meta"><span>${delar}</span><a href="${svar.lank}" target="_blank" rel="noopener">Visa alla ${svar.kandidater.length} på kartan →</a></p>`);
+    ai.insertAdjacentHTML('beforeend', svar.visade.map(kortHtml).join(''));
+    ai.insertAdjacentHTML('beforeend', hurHtml(svar));
+    if (svar.fraga.manniska) ai.insertAdjacentHTML('beforeend', overlamnaHtml(q));
+    ai.insertAdjacentHTML('beforeend', tummeHtml());
+    lyft(svar.kandidater.map((k) => k.o));
+  } else if (svar.sort === 'bred') {
+    ai.innerHTML = `<p class="msg__tolkning">Alla ${orgar.length} på kartan bygger AI, så jag behöver veta mer. Vad är viktigast?</p>
+      <div class="svarsrader">
+        <button type="button" data-skicka="Vilka arbetar med AI inom hälsa?">Ett område, t.ex. hälsa</button>
+        <button type="button" data-skicka="Vilka bygger AI i Göteborg?">En ort, t.ex. Göteborg</button>
+        <button type="button" data-skicka="Jag behöver GPU-kapacitet i Sverige">Infrastruktur och GPU</button>
+        <button type="button" data-skicka="Vilka lärosäten forskar på AI?">Lärosäten och forskning</button>
+      </div>
+      <p class="meta" style="margin-top:10px"><a href="${KARTA_URL}/" target="_blank" rel="noopener">Eller se alla ${orgar.length} på kartan →</a></p>`;
+    lyft(orgar);
+  } else if (svar.sort === 'manniska') {
+    ai.innerHTML = `<p class="msg__tolkning">Det låter som något att prata igenom med folk som har gjort det. Kartan visar organisationer, inte personer.</p>${overlamnaHtml(q)}`;
+    lyft([]);
+  } else if (svar.sort === 'ranking') {
+    ai.innerHTML = `<p class="msg__tolkning">Kartan rankar inte, och det gör inte jag heller. Ingen kan köpa en plats. Jag kan visa vilka som bygger det du letar efter.</p>
+      <p class="meta">Vad ska de bygga, eller var ska de finnas?</p>`;
+    lyft([]);
+  } else if (svar.sort === 'intro') {
+    ai.innerHTML = `<p class="msg__tolkning">Jag kan inte introducera dig eller ge kontaktuppgifter till personer. Kartan har inga personuppgifter. Organisationens egen sida finns på varje kort.</p>${overlamnaHtml(q)}`;
+    lyft([]);
+  } else if (svar.sort === 'opensverige') {
+    const laggTillFraga = /(lagga till|lagger till|lagg till|ratta|mitt bolag)/.test(norm(q));
+    ai.innerHTML = laggTillFraga
+      ? `<p class="msg__tolkning">Du föreslår en organisation på sidan Bidra. Det enklaste är att skriva i kanalen #infra-intag på Discord. Det går också via ett ärende på GitHub. Varje uppgift behöver en källa.</p>
+         <p class="meta"><a href="${KARTA_URL}/bidra" target="_blank" rel="noopener">Läs på karta.opensverige.se/bidra →</a><a href="${KARTA_URL}/kriterier" target="_blank" rel="noopener">Kriterierna →</a></p>`
+      : `<p class="msg__tolkning">OpenSverige är en ideell förening, inget företag. Föreningen driver den här kartan, Tech Embassy. Inget rankas och ingen kan köpa en plats.</p>
+         <p class="meta"><a href="https://opensverige.se" target="_blank" rel="noopener">Läs på opensverige.se →</a><a href="${KARTA_URL}/om" target="_blank" rel="noopener">Om kartan →</a></p>
+         <p class="meta" style="font-style:italic">Prototyp: i riktiga versionen citeras stycket ur den publicerade sidan, med datum.</p>`;
+    ai.insertAdjacentHTML('beforeend', tummeHtml());
+    lyft([]);
+  } else if (svar.sort === 'tomt') {
+    ai.innerHTML = `<p class="msg__tolkning">Jag hittar ingen på kartan som matchar det. Kartan har inte allt, så någon i communityn kan veta mer.</p>${overlamnaHtml(q)}
+      <p class="meta" style="margin-top:10px"><a href="${KARTA_URL}/bidra" target="_blank" rel="noopener">Saknas någon? Föreslå den →</a></p>`;
+    lyft([]);
+  } else {
+    ai.innerHTML = `<p class="msg__tolkning">Jag är till för frågor om svenska AI-byggare, organisationer, infrastruktur och OpenSverige.</p>`;
+    lyft([]);
+  }
+  logg.scrollTop = logg.scrollHeight;
+}
+
+logg.addEventListener('click', async (e) => {
+  const flyg = e.target.closest('[data-flyg]');
+  if (flyg) {
+    const o = orgar.find((x) => x.id === flyg.dataset.flyg);
+    if (o && o.lat && karta) { karta.setPadding({ top: 0, bottom: 0, left: 0, right: 0 }); karta.flyTo({ center: [o.lng, o.lat], zoom: 9, padding: kartMarginal(), duration: 900 }); }
+    return;
+  }
+  const s = e.target.closest('[data-skicka]');
+  if (s) return fraga(s.dataset.skicka);
+  const k = e.target.closest('[data-kopiera]');
+  if (k) { try { await navigator.clipboard.writeText(`${k.dataset.kopiera}\n(via ${KARTA_URL})`); } catch {} besked('Frågan är kopierad. Klistra in den i Discord.'); return; }
+  const t = e.target.closest('[data-tumme]');
+  if (t) { t.parentElement.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b === t))); besked('Tack. Bara ja eller nej sparas, inte frågan.'); }
+});
+logg.addEventListener('mouseover', (e) => {
+  const kort = e.target.closest('.kort');
+  if (!karta || !karta.getLayer('org')) return;
+  karta.setPaintProperty('org', 'circle-stroke-color', kort ? ['case', ['==', ['get', 'id'], kort.dataset.id], '#0f0e0b', '#fff'] : '#fff');
+  karta.setPaintProperty('org', 'circle-stroke-width', kort ? ['case', ['==', ['get', 'id'], kort.dataset.id], 3, 1.2] : 1.2);
+});
+
+/* ---- Kartan lyfter svaret: träffarna syns, resten dämpas ---- */
+function kartMarginal() {
+  const el = karta.getContainer().getBoundingClientRect();
+  if (mobil()) return { top: 20, bottom: Math.min(el.height * 0.74 + 10, el.height - 120), left: 20, right: 20 };
+  return { top: 40, bottom: 40, left: Math.min(document.querySelector('.panel').offsetWidth + 40, el.width - 160), right: 40 };
+}
+function lyft(lista) {
+  if (!karta || !karta.getLayer('org')) return;
+  const ids = lista.map((o) => o.id);
+  const alla = lista.length === orgar.length;
+  karta.setPaintProperty('org', 'circle-opacity', alla || !ids.length ? 1 : ['case', ['in', ['get', 'id'], ['literal', ids]], 1, 0.14]);
+  karta.setPaintProperty('org', 'circle-stroke-opacity', alla || !ids.length ? 1 : ['case', ['in', ['get', 'id'], ['literal', ids]], 1, 0.14]);
+  karta.setPaintProperty('org', 'circle-radius', alla || !ids.length ? ['interpolate', ['linear'], ['zoom'], 4, 4, 9, 7.5] : ['case', ['in', ['get', 'id'], ['literal', ids]], 6, 3.5]);
+  const pos = lista.filter((o) => o.lat && o.lng);
+  karta.setPadding({ top: 0, bottom: 0, left: 0, right: 0 });
+  if (!pos.length || alla) { passa(700); return; }
+  const b = new maplibregl.LngLatBounds();
+  pos.forEach((o) => b.extend([o.lng, o.lat]));
+  karta.fitBounds(b, { padding: kartMarginal(), maxZoom: 9, duration: 900, easing: (t) => 1 - Math.pow(1 - t, 4) });
+}
+
+/* =====================================================================
+   MOTORVYN: samma data som svaret, steg för steg
+   ===================================================================== */
+function ritaMotor() {
+  const s = senaste?.steg;
+  document.getElementById('motorfraga').textContent = s ? `Senaste frågan: ”${s.fraga}”` : 'Ställ en fråga i prototypen, så visas varje stegs data här.';
+  const t = s?.tolkning;
+  const steg = [
+    { namn: 'Förfilter', vem: 'kod', text: 'Fångar ranking, introduktioner, frågor om OpenSverige och sådant utanför ämnet. De får fasta svar och når aldrig modellen. Samma idé som tomtSvar i sok.ts i dag.', data: s ? (s.forfilter ? `fångad: ${s.forfilter}` : 'släpptes vidare') : null, reserv: 'Kräver ingen modell.' },
+    { namn: 'Tolkning', vem: 'modell', text: 'En liten, billig modell gör om frågan till filter. Svaret är låst till ett schema: områden, erbjudanden, typer och platser får bara ha värden ur taxonomin. Modellen ser inga organisationer i det här steget.', data: t ? JSON.stringify({ omraden: t.omraden, erbjuder: t.erbjuder, typer: t.typer, platser: t.platser.map((p) => p.namn), begrepp: t.begrepp, ord: t.ord, manniska: t.manniska }, null, 1) : null, reserv: 'Utan modell: frågan går rakt in i sok.ts, som redan tolkar synonymer och engelska.' },
+    { namn: 'Hämtning', vem: 'kod', text: 'Filtren körs mot hela kartan med sok.ts och taxonomin. Varje kriterium ska stämma. För varje träff sparas vilket fält som matchade, och det blir kortets "Matchar".', data: s && s.kandidater != null ? `${s.kandidater} av ${orgar.length} matchar` : null, reserv: 'Samma kod som kartans sökruta.' },
+    { namn: 'Urval och ordning', vem: 'kod', text: `Får alla plats visas de i namnordning. Matchar fler än ${URVAL} visas ett urval som byts varje dag, plus länken till alla på kartan. Ingen ordning är en rankning, och regeln står i svaret.`, data: s?.urval ? `${s.urval.regel}\n${s.urval.visade.join(', ')}` : null, reserv: 'Deterministiskt: samma fråga samma dag ger samma urval.' },
+    { namn: 'Formulering', vem: 'modell', text: 'Modellen skriver bara tolkningsraden, i ett schema. Den får inte nämna något id som inte finns bland träffarna. All text körs genom samma värdeordsfilter som datan (MARKNADSORD i validera.mjs).', data: s?.formulering ? `${s.formulering.tolkning}\n${s.formulering.filter}` : null, reserv: 'Utan modell: en mall skriver raden ur filtren.' },
+    { namn: 'Rendering', vem: 'kod', text: 'Webbläsaren ritar korten direkt ur datan: namn, typ, plats, beskrivning ordagrant, status, datum och permalänk. Kartan lyfter träffarna. Modellen kan inte göra om en egen uppgift till bekräftad.', data: senaste?.visade ? `${senaste.visade.length} kort, ${senaste.kandidater.length} prickar lyfta` : null, reserv: '' },
+  ];
+  document.getElementById('motorsteg').innerHTML = steg.map((x, i) => `<div class="steg"><div class="steg__nr"><span>${i + 1}</span></div><div class="steg__kropp">
+    <div class="steg__rubrik">${x.namn} <small class="etikett--${x.vem}">${x.vem}</small></div>
+    <p class="steg__text">${x.text}</p>
+    ${x.data ? `<div class="steg__data">${esc(x.data)}</div>` : ''}
+    ${x.reserv ? `<p class="steg__reserv">${x.reserv}</p>` : ''}</div></div>`).join('');
+}
+
+/* =====================================================================
+   FÄLTET, LÄGEN OCH FÖRSLAG (som i förra versionen)
+   ===================================================================== */
+function placera(animera) {
+  const id = { hem: 'hemplats', karta: 'huvudplats', chatt: 'chattplats' }[lage()];
+  const mal = document.getElementById(id);
+  const e = enhet.getBoundingClientRect();
+  const r = mal.getBoundingClientRect();
+  if (!animera) sokfalt.classList.add('utan-flytt');
+  Object.assign(sokfalt.style, { left: `${r.left - e.left}px`, top: `${r.top - e.top}px`, width: `${r.width}px`, height: `${r.height}px` });
+  if (!animera) requestAnimationFrame(() => sokfalt.classList.remove('utan-flytt'));
+}
+function passa(tid = 0) {
+  if (!karta) return;
+  karta.resize();
+  karta.setPadding({ top: 0, bottom: 0, left: 0, right: 0 });
+  const el = karta.getContainer().getBoundingClientRect();
+  const ing = document.querySelector('.ingang').getBoundingClientRect();
+  let pad = lage() === 'hem' ? { top: 20, bottom: Math.max(20, el.bottom - ing.top - 40), left: 20, right: 20 } : kartMarginal();
+  pad.left = Math.min(pad.left, el.width - 160);
+  pad.bottom = Math.min(pad.bottom, el.height - pad.top - 140);
+  karta.fitBounds(SVERIGE, { padding: pad, duration: tid, maxZoom: 6, easing: (t) => 1 - Math.pow(1 - t, 4) });
+}
+function satLage(nytt, { flyga = true } = {}) {
+  if (lage() === nytt) return;
+  enhet.dataset.lage = nytt;
+  stangForslag();
+  // Panelens höjd ändras i mobil; vänta på den innan fältet mäter sin plats.
+  placera(true);
+  setTimeout(() => placera(true), 340);
+  skrivExempel();
+  if (flyga) passa(650);
+}
+
+const EXEMPEL = ['Vilka bygger röstagenter på svenska?', 'Jag behöver GPU-kapacitet i Sverige', 'AI inom hälsa i Göteborg', 'Var kan jag bolla en idé med builders?', 'Vad är OpenSverige?'];
+const stillaMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let exTimer = null;
+let exIndex = 0;
+function skrivExempel() {
+  clearTimeout(exTimer);
+  if (lage() === 'karta') { falt.placeholder = 'Sök eller fråga …'; return; }
+  if (lage() === 'chatt') { falt.placeholder = 'Fråga vidare …'; return; }
+  if (stillaMotion) { falt.placeholder = `Fråga med egna ord, t.ex. ${EXEMPEL[0].toLowerCase()}`; return; }
+  const text = EXEMPEL[exIndex % EXEMPEL.length];
+  let n = 0;
+  const skriv = () => { if (falt.value || lage() !== 'hem') return; falt.placeholder = text.slice(0, ++n); exTimer = setTimeout(n < text.length ? skriv : sudda, n < text.length ? 42 + Math.random() * 40 : 2000); };
+  const sudda = () => { if (falt.value || lage() !== 'hem') return; falt.placeholder = text.slice(0, --n); if (n > 0) exTimer = setTimeout(sudda, 18); else { exIndex++; exTimer = setTimeout(skrivExempel, 280); } };
+  skriv();
+}
+
+let rader = [];
+let vald = 0;
+function traffarDirekt(q) {
+  const nq = norm(q);
+  if (nq.length < 2) return [];
+  return orgar.map((o) => { const n = norm(o.n); const p = n.startsWith(nq) ? 3 : n.includes(nq) ? 2 : norm(o.kn).includes(nq) ? 1 : 0; return { o, p }; })
+    .filter((t) => t.p > 0).sort((a, b) => b.p - a.p || a.o.n.localeCompare(b.o.n, 'sv')).slice(0, 4).map((t) => t.o);
+}
+function visaForslag() {
+  const q = falt.value.trim();
+  skicka.disabled = !q;
+  if (!q) { stangForslag(); if (lage() === 'hem') skrivExempel(); return; }
+  if (lage() === 'chatt') { stangForslag(); return; }
+  const hits = traffarDirekt(q);
+  rader = [{ sort: 'fraga', q }, ...hits.map((o) => ({ sort: 'org', o }))];
+  vald = 0;
+  let html = `<li role="option" class="forslag__fraga" data-i="0"><span class="forslag__markor" aria-hidden="true">✦</span><b>Fråga AI</b><span>”${esc(q)}”</span><kbd>Enter</kbd></li>`;
+  if (hits.length) html += '<li class="forslag__rubrik" role="presentation">Direkt i kartan</li>';
+  hits.forEach((o, i) => { html += `<li role="option" data-i="${i + 1}"><span class="forslag__prick" style="background:${FARG[o.t] || '#2d4a2d'}" aria-hidden="true"></span><span class="forslag__org"><b>${esc(o.n)}</b><small>${esc(o.kn || 'Utan plats')} · ${TYP[o.t] || ''}</small></span></li>`; });
+  forslag.innerHTML = html;
+  forslag.hidden = false;
+  falt.setAttribute('aria-expanded', 'true');
+  markera();
+}
+function markera() { forslag.querySelectorAll('[data-i]').forEach((li) => li.setAttribute('aria-selected', String(Number(li.dataset.i) === vald))); }
+function stangForslag() { forslag.hidden = true; falt.setAttribute('aria-expanded', 'false'); }
+function valj(i) { const rad = rader[i]; if (!rad) return; if (rad.sort === 'fraga') fraga(rad.q); else oppnaOrg(rad.o.id); }
+falt.addEventListener('input', visaForslag);
+falt.addEventListener('keydown', (e) => {
+  if (forslag.hidden) return;
+  if (e.key === 'ArrowDown') { e.preventDefault(); vald = Math.min(vald + 1, rader.length - 1); markera(); }
+  if (e.key === 'ArrowUp') { e.preventDefault(); vald = Math.max(vald - 1, 0); markera(); }
+  if (e.key === 'Escape') stangForslag();
+});
+forslag.addEventListener('mousedown', (e) => { const li = e.target.closest('[data-i]'); if (li) { e.preventDefault(); valj(Number(li.dataset.i)); } });
+sokfalt.addEventListener('submit', (e) => { e.preventDefault(); const q = falt.value.trim(); if (!q) return; if (forslag.hidden || vald === 0) fraga(q); else valj(vald); });
+document.addEventListener('mousedown', (e) => { if (!sokfalt.contains(e.target)) stangForslag(); });
+document.addEventListener('keydown', (e) => { if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); falt.focus(); } });
+
+function visaLista() { document.getElementById('org').hidden = true; document.getElementById('lista').hidden = false; }
+function oppnaOrg(id) {
+  const o = orgar.find((x) => x.id === id);
+  if (!o) return;
+  stangForslag();
+  satLage('karta', { flyga: false });
+  const el = document.getElementById('org');
+  el.innerHTML = `<button type="button" class="panel__tillbaka" id="tillbaka">← Alla organisationer</button>
+    <p class="panel__kicker">${TYP[o.t] || ''}</p><h2>${esc(o.n)}</h2>
+    <p class="panel__antal">${esc(o.kn || 'Utan plats')}${o.ln ? ' · ' + esc(o.ln) : ''}</p>
+    <p class="panel__text">${esc(o.d)}</p>
+    <a class="panel__lank" href="${KARTA_URL}/organisation/${esc(o.id)}" target="_blank" rel="noopener">Visa på Tech Embassy →</a>`;
+  el.hidden = false;
+  document.getElementById('lista').hidden = true;
+  document.getElementById('tillbaka').addEventListener('click', visaLista);
+  lyft(orgar);
+  if (karta && o.lat && o.lng) { karta.setPadding({ top: 0, bottom: 0, left: 0, right: 0 }); karta.flyTo({ center: [o.lng, o.lat], zoom: 8, padding: kartMarginal(), duration: 900 }); }
+}
+
+let beskTimer;
+function besked(text) { const el = document.getElementById('besked'); el.textContent = text; el.classList.add('syns'); clearTimeout(beskTimer); beskTimer = setTimeout(() => el.classList.remove('syns'), 2600); }
+function borjaOm() {
+  enhet.dataset.lage = 'hem';
+  falt.value = ''; skicka.disabled = true; logg.innerHTML = '';
+  stangForslag(); visaLista(); placera(false); lyft(orgar); passa(); skrivExempel();
+}
+document.querySelectorAll('[data-satt]').forEach((b) => b.addEventListener('click', () => {
+  scen.dataset.vy = b.dataset.varde;
+  document.querySelectorAll('[data-satt="vy"]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+  requestAnimationFrame(() => setTimeout(borjaOm, 30));
+}));
+document.querySelectorAll('[data-prova]').forEach((b) => b.addEventListener('click', () => { scen.classList.remove('visa-motor'); fraga(b.dataset.prova); }));
+const motorknapp = document.getElementById('motorknapp');
+function vaxlaMotor(visa) { scen.classList.toggle('visa-motor', visa); motorknapp.setAttribute('aria-pressed', String(visa)); motorknapp.textContent = visa ? 'Dölj motorn' : 'Visa motorn'; }
+motorknapp.addEventListener('click', () => vaxlaMotor(!scen.classList.contains('visa-motor')));
+document.getElementById('motorstang').addEventListener('click', () => vaxlaMotor(false));
+document.getElementById('omstart').addEventListener('click', borjaOm);
+document.getElementById('logga').addEventListener('click', borjaOm);
+document.getElementById('utforska').addEventListener('click', () => satLage('karta'));
+document.getElementById('tillkartan').addEventListener('click', () => { satLage('karta', { flyga: false }); });
+document.getElementById('nyfraga').addEventListener('click', () => { logg.innerHTML = ''; lyft(orgar); falt.focus(); });
+window.addEventListener('resize', () => placera(false));
+placera(false);
+skrivExempel();
+ritaMotor();
+
+karta = new maplibregl.Map({ container: 'karta', style: 'https://tiles.openfreemap.org/styles/positron', bounds: SVERIGE, fitBoundsOptions: { padding: 40 }, attributionControl: { compact: true } });
+karta.on('dragstart', () => { if (lage() === 'hem') satLage('karta', { flyga: false }); });
+karta.on('zoomstart', (e) => { if (e.originalEvent && lage() === 'hem') satLage('karta', { flyga: false }); });
+karta.on('load', async () => {
+  passa();
+  try {
+    const [kartdata, full] = await Promise.all([
+      fetch(`${KARTA_URL}/api/karta.json`).then((r) => r.json()),
+      fetch(`${KARTA_URL}/api/data.json`).then((r) => r.json()).catch(() => null),
+    ]);
+    const status = new Map((full?.organisationer || []).map((o) => [o.id, o.description]));
+    orgar = kartdata.organisationer.map((o) => ({ ...o, ds: status.get(o.id)?.status, dv: status.get(o.id)?.verified_at }));
+    byggPlatser();
+    document.getElementById('antal').textContent = orgar.length;
+    document.getElementById('poster').innerHTML = orgar.slice(0, 6).map((o) => `<div class="panel__post"><b>${esc(o.n)}</b><small>${esc(o.kn || 'Utan plats')} · ${TYP[o.t] || ''}</small></div>`).join('');
+    const features = orgar.filter((o) => o.lat && o.lng).map((o) => ({ type: 'Feature', geometry: { type: 'Point', coordinates: [o.lng, o.lat] }, properties: { id: o.id, farg: FARG[o.t] || '#2d4a2d' } }));
+    karta.addSource('org', { type: 'geojson', data: { type: 'FeatureCollection', features } });
+    karta.addLayer({ id: 'org', type: 'circle', source: 'org', paint: { 'circle-radius': ['interpolate', ['linear'], ['zoom'], 4, 4, 9, 7.5], 'circle-color': ['get', 'farg'], 'circle-stroke-color': '#fff', 'circle-stroke-width': 1.2, 'circle-opacity': 1, 'circle-stroke-opacity': 1, 'circle-radius-transition': { duration: 400 }, 'circle-opacity-transition': { duration: 400 } } });
+    karta.on('click', 'org', (e) => oppnaOrg(e.features[0].properties.id));
+    karta.on('mouseenter', 'org', () => { karta.getCanvas().style.cursor = 'pointer'; });
+    karta.on('mouseleave', 'org', () => { karta.getCanvas().style.cursor = ''; });
+  } catch (fel) { console.warn('Kunde inte hämta kartdata', fel); }
+});
+</script>
+</body>
+</html>
