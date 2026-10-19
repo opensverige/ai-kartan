@@ -1,0 +1,1200 @@
+---
+// Fråga kartan: första skärmen och sökpaletten (specen 3.1–3.8). Paletten är som Mobbins sökruta:
+// ett fält och en lista. Medan man skriver visas träffar direkt och "Fråga AI" överst, och svaret
+// står i samma lista. Varje fråga står för sig. Allt syns bara i betan, när Bas.astro har satt
+// html[data-fraga]. Utan flaggan är kartsidan som förut, och skriptet gör ingenting.
+import { SAJT } from '../lib/data';
+---
+
+<section class="ingang" aria-labelledby="ingang-rubrik" data-discord={SAJT.discord}>
+  <div class="ingang__inre">
+    <h1 class="ingang__rubrik" id="ingang-rubrik">Fråga Sveriges AI-karta</h1>
+    <button type="button" class="ingang__falt" data-fraga-oppna aria-haspopup="dialog" aria-label="Fråga kartan med egna ord">
+      <span class="fraga-glyf" aria-hidden="true">✦</span>
+      <span class="ingang__exempel" id="fraga-exempel" aria-hidden="true">Fråga med egna ord …</span>
+      <span class="ingang__pil" aria-hidden="true">→</span>
+    </button>
+    <div class="ingang__under">
+      <span class="ingang__ai"><i aria-hidden="true"></i>AI · svarar med länkar till källorna</span>
+      <button type="button" class="ingang__utforska" id="fraga-utforska">eller utforska kartan själv <span aria-hidden="true">→</span></button>
+    </div>
+  </div>
+</section>
+
+<dialog class="palett" id="palett" aria-label="Sök eller fråga kartan">
+  <div class="palett__ruta">
+    <form class="palett__falt" id="palett-form" role="search">
+      <span class="fraga-glyf" aria-hidden="true">✦</span>
+      <label class="visuellt-dold" for="palett-sok">Sök eller fråga med egna ord</label>
+      <input
+        id="palett-sok"
+        type="text"
+        autocomplete="off"
+        autocapitalize="sentences"
+        spellcheck="false"
+        enterkeyhint="search"
+        placeholder="Sök eller fråga med egna ord …"
+        role="combobox"
+        aria-expanded="false"
+        aria-controls="palett-lista"
+        aria-autocomplete="list"
+      />
+      <button type="button" class="palett__stang" data-stang aria-label="Stäng"><kbd>esc</kbd></button>
+      <button type="button" class="palett__avbryt" data-stang>Avbryt</button>
+    </form>
+    <div class="palett__kropp" id="palett-kropp"></div>
+    <div class="palett__vidare" id="palett-vidare" hidden></div>
+    <p class="palett__fot">
+      <span class="palett__tangenter" aria-hidden="true"><kbd>↑</kbd> <kbd>↓</kbd> välj · <kbd>↵</kbd> öppna · <kbd>esc</kbd> stäng</span>
+      <span id="palett-not">AI kan ta fel. Fakta och status kommer från kartans källor.</span>
+    </p>
+    <p class="visuellt-dold" id="palett-besked" role="status"></p>
+  </div>
+</dialog>
+
+<script>
+  import { TOMT_FILTER, type Filter } from '../lib/filter';
+  import { MAX_TECKEN, type Fragedata, type Svar } from '../lib/fraga/typer';
+  import { HANDLING, ORG, REDO, kartgranssnitt, type Kartgranssnitt, type Kartrad } from '../lib/fraga/kartgranssnitt';
+  import { chipsHtml, esc, forslagHtml, ingenAnslutningHtml, svarHtml, type Lankar, type Svarsvy, type Vyetiketter } from '../lib/fraga/vy';
+  import { skapaKlient } from '../lib/fraga/klient';
+
+  type Lage = 'hem' | 'karta';
+  type Flik = 'omraden' | 'typer' | 'lan';
+  type Tillstand = 'tom' | 'forslag' | 'vantar' | 'svar';
+
+  /** Exemplen i första skärmens fält och pillren i den tomma paletten: [pillret, frågan]. Specen 3.1. */
+  const EXEMPEL: readonly (readonly [string, string])[] = [
+    ['Röstagenter på svenska', 'Vilka bygger röstagenter på svenska?'],
+    ['GPU-kapacitet i Sverige', 'Jag behöver GPU-kapacitet i Sverige'],
+    ['AI inom hälsa i Göteborg', 'AI inom hälsa i Göteborg'],
+    ['Bolla en idé med builders', 'Var kan jag bolla en idé med builders?'],
+    ['Vad är OpenSverige?', 'Vad är OpenSverige?'],
+  ];
+  /** Kommer kartans data inte inom så lång tid blir svaret Ingen anslutning (specen 3.8). */
+  const VANTA_MS = 10000;
+
+  const rot = document.documentElement;
+  const dialog = document.querySelector<HTMLDialogElement>('#palett');
+  const app = document.querySelector<HTMLElement>('.app');
+  if (rot.dataset.fraga && dialog && app) starta(dialog, app);
+
+  function starta(dialog: HTMLDialogElement, app: HTMLElement) {
+    const form = dialog.querySelector<HTMLFormElement>('#palett-form')!;
+    const input = dialog.querySelector<HTMLInputElement>('#palett-sok')!;
+    const kropp = dialog.querySelector<HTMLElement>('#palett-kropp')!;
+    const vidare = dialog.querySelector<HTMLElement>('#palett-vidare')!;
+    const not = dialog.querySelector<HTMLElement>('#palett-not')!;
+    const besked = dialog.querySelector<HTMLElement>('#palett-besked')!;
+    const exempel = document.querySelector<HTMLElement>('#fraga-exempel');
+    const NOT = not.textContent ?? '';
+    const etiketter = JSON.parse(document.getElementById('etiketter')?.textContent || '{}') as Vyetiketter;
+    const kartbas = app.dataset.kartbas || '/';
+    const lankar: Lankar = {
+      // Absolut, eftersom kopian till Discord ska gå att följa utanför sajten.
+      kartbas: new URL(kartbas, location.href).href,
+      orgbas: app.dataset.orgbas || `${kartbas}organisation/`,
+      bidra: app.dataset.bidra || `${kartbas}bidra`,
+      discord: document.querySelector<HTMLElement>('.ingang')?.dataset.discord ?? '',
+    };
+    const stilla = window.matchMedia('(prefers-reduced-motion: reduce)');
+    // Samma dag som servern räknar med, så att dagens urval blir detsamma i reservvägen.
+    const idag = (): string => new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Stockholm' }).format(new Date());
+    const lage = (): Lage => (rot.dataset.fragelage === 'hem' ? 'hem' : 'karta');
+
+    let tillstand: Tillstand = 'tom';
+    let senaste: { q: string; svar: Svar; vy: Svarsvy } | null = null;
+    let aktiv = -1;
+    // Räknas upp när det som står i paletten byts. Ett svar som kommer för en äldre text ritas inte.
+    let nummer = 0;
+    let flik: Flik = 'omraden';
+    let bladval: Filter[] = [];
+
+    /* ---------- Data och klienten ---------- */
+
+    let fragedata: Promise<Fragedata> | null = null;
+    function hamtaFragedata(): Promise<Fragedata> {
+      if (!fragedata) {
+        const hamtning = fetch(`${kartbas}api/fraga-data.json`).then((r) => {
+          if (!r.ok) throw new Error(`fraga-data svarade ${r.status}`);
+          return r.json() as Promise<Fragedata>;
+        });
+        // Ett misslyckat försök ska inte fastna: nästa fråga försöker igen.
+        hamtning.catch(() => (fragedata = null));
+        fragedata = hamtning;
+      }
+      return fragedata;
+    }
+
+    function vantaPaPoster(): Promise<readonly Kartrad[]> {
+      const k = kartgranssnitt();
+      if (k?.redo) return Promise.resolve(k.poster());
+      return new Promise((resolve, reject) => {
+        const klar = (): void => {
+          window.clearTimeout(vakt);
+          resolve(kartgranssnitt()?.poster() ?? []);
+        };
+        const vakt = window.setTimeout(() => {
+          document.removeEventListener(REDO, klar);
+          reject(new Error('Kartans data kom inte'));
+        }, VANTA_MS);
+        document.addEventListener(REDO, klar, { once: true });
+      });
+    }
+
+    const klient = skapaKlient({
+      adress: `${kartbas}api/fraga`,
+      // Reservvägen: samma motor i webbläsaren, utan modell. Den laddas först när den behövs.
+      lokalt: async (k) => {
+        const [poster, fd, { svara }] = await Promise.all([vantaPaPoster(), hamtaFragedata(), import('../lib/fraga/motor')]);
+        const data = { poster, etiketter: fd.etiketter, faqIds: fd.faq.map((f) => f.id), kommuner: fd.kommuner, lan: fd.lan };
+        return svara(k.fraga, k.tidigare, data, null, idag());
+      },
+    });
+
+    /* ---------- Sidans lägen ---------- */
+
+    /** Byter läge. När kartytan har fått sin nya storlek görs `sedan`, till exempel att öppna en organisation. */
+    function byt(nytt: Lage, sedan?: (k: Kartgranssnitt) => void, ramaIn = false): void {
+      const andrat = lage() !== nytt;
+      rot.dataset.fragelage = nytt;
+      if (andrat && nytt === 'hem') skrivExempel();
+      requestAnimationFrame(() => {
+        const k = kartgranssnitt();
+        if (!k) return;
+        if (andrat) k.passa(ramaIn && !sedan);
+        sedan?.(k);
+      });
+    }
+
+    // Exemplen skrivs ut i första skärmens fält, ett i taget. Med stillastående rörelse står ett kvar.
+    let exempelvakt = 0;
+    let exempelNr = 0;
+    function skrivExempel(): void {
+      if (!exempel) return;
+      window.clearTimeout(exempelvakt);
+      if (stilla.matches) {
+        exempel.textContent = `Fråga med egna ord, till exempel: ${EXEMPEL[0][1]}`;
+        return;
+      }
+      const text = EXEMPEL[exempelNr % EXEMPEL.length][1];
+      let n = 0;
+      const skriv = (): void => {
+        if (lage() !== 'hem') return;
+        n += 1;
+        exempel.textContent = text.slice(0, n);
+        exempelvakt = window.setTimeout(n < text.length ? skriv : sudda, n < text.length ? 42 + Math.random() * 40 : 2000);
+      };
+      const sudda = (): void => {
+        if (lage() !== 'hem') return;
+        n -= 1;
+        exempel.textContent = text.slice(0, n) || '​';
+        if (n > 0) exempelvakt = window.setTimeout(sudda, 18);
+        else {
+          exempelNr += 1;
+          exempelvakt = window.setTimeout(skrivExempel, 280);
+        }
+      };
+      skriv();
+    }
+
+    /* ---------- Paletten ---------- */
+
+    function oppna(): void {
+      if (!dialog.open) dialog.showModal();
+      input.focus();
+      input.select();
+      visa();
+    }
+    const stang = (): void => {
+      if (dialog.open) dialog.close();
+    };
+
+    /** Det som ska stå i paletten för texten i fältet. */
+    function visa(): void {
+      const q = input.value.trim();
+      uppdateraNot(q);
+      if (senaste && q === senaste.q) return ritaSvar(senaste.vy);
+      nummer += 1;
+      if (!q) return ritaTom();
+      ritaForslag(q);
+    }
+
+    const val = (): HTMLElement[] => [...kropp.querySelectorAll<HTMLElement>('[role="option"]')];
+
+    function markera(i: number): void {
+      const rader = val();
+      if (!rader.length) return;
+      aktiv = ((i % rader.length) + rader.length) % rader.length;
+      rader.forEach((r, n) => r.setAttribute('aria-selected', String(n === aktiv)));
+      input.setAttribute('aria-activedescendant', rader[aktiv].id);
+      rader[aktiv].scrollIntoView({ block: 'nearest' });
+    }
+
+    /** Ny lista i paletten: raderna får id, och den första markeras när Enter ska välja den. */
+    function nyLista(markeraForsta: boolean): void {
+      const rader = val();
+      rader.forEach((r, n) => (r.id = `palett-val-${n}`));
+      input.setAttribute('aria-expanded', String(rader.length > 0));
+      input.removeAttribute('aria-activedescendant');
+      aktiv = -1;
+      if (markeraForsta) markera(0);
+    }
+
+    function ritaTom(): void {
+      tillstand = 'tom';
+      const poster = kartgranssnitt()?.poster() ?? [];
+      const rakna = (falt: (o: Kartrad) => readonly (string | null)[]): [string, number][] => {
+        const m = new Map<string, number>();
+        for (const o of poster) for (const v of falt(o)) if (v) m.set(v, (m.get(v) ?? 0) + 1);
+        return [...m].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'sv'));
+      };
+      const flikar: Record<Flik, { namn: string; tecken: string; rader: { text: string; antal: number; filter: Filter }[] }> = {
+        omraden: {
+          namn: 'Områden',
+          tecken: '◇',
+          rader: rakna((o) => o.a)
+            .filter(([id]) => etiketter.omraden[id])
+            .map(([id, antal]) => ({ text: etiketter.omraden[id], antal, filter: { ...TOMT_FILTER, omrade: [id] } })),
+        },
+        typer: {
+          namn: 'Typer',
+          tecken: '○',
+          rader: rakna((o) => [o.t]).map(([id, antal]) => ({ text: etiketter.typerPlural[id] ?? etiketter.typer[id] ?? id, antal, filter: { ...TOMT_FILTER, typ: [id] } })),
+        },
+        lan: {
+          namn: 'Län',
+          tecken: '⌖',
+          rader: rakna((o) => [o.l])
+            .filter(([kod]) => etiketter.lan[kod])
+            .map(([kod, antal]) => ({ text: etiketter.lan[kod], antal, filter: { ...TOMT_FILTER, lan: kod } })),
+        },
+      };
+      const vald = flikar[flik];
+      bladval = vald.rader.map((r) => r.filter);
+      const piller = vald.rader.map((r, i) => `<button type="button" class="palett-chip" data-blad="${i}">${esc(r.text)} <small>${r.antal}</small></button>`).join('');
+      const nav = (Object.keys(flikar) as Flik[])
+        .map((id) => `<button type="button" data-flik="${id}" aria-pressed="${id === flik}"><i aria-hidden="true">${flikar[id].tecken}</i>${flikar[id].namn}</button>`)
+        .join('');
+      kropp.innerHTML =
+        `<p class="palett__rubrik">Prova att fråga</p>${chipsHtml(EXEMPEL)}` +
+        `<div class="palett-blad"><div class="palett-blad__nav" role="group" aria-label="Bläddra i kartan">${nav}</div>` +
+        `<div><p class="palett__rubrik">${vald.namn} på kartan</p>` +
+        (piller ? `<div class="palett-chips">${piller}</div>` : '<p class="palett__vantar"><span aria-hidden="true">✦</span>Kartan laddar …</p>') +
+        `</div></div>`;
+      vidare.hidden = true;
+      vidare.replaceChildren();
+      nyLista(false);
+    }
+
+    function ritaForslag(q: string): void {
+      tillstand = 'forslag';
+      const t = kartgranssnitt()?.sok(q) ?? { org: [], platser: [] };
+      kropp.innerHTML = forslagHtml(q, t.org.slice(0, 5), t.platser.slice(0, 3), etiketter);
+      vidare.hidden = true;
+      vidare.replaceChildren();
+      nyLista(true);
+    }
+
+    function ritaSvar(v: Svarsvy): void {
+      tillstand = 'svar';
+      kropp.innerHTML = v.kropp;
+      vidare.innerHTML = v.vidare;
+      vidare.hidden = !v.vidare;
+      kropp.scrollTop = 0;
+      nyLista(false);
+    }
+
+    async function fraga(text: string): Promise<void> {
+      const q = text.trim();
+      if (!q || q.length > MAX_TECKEN) return;
+      input.value = q;
+      uppdateraNot(q);
+      if (senaste && senaste.q === q) return ritaSvar(senaste.vy);
+      const mitt = ++nummer;
+      tillstand = 'vantar';
+      kropp.innerHTML = '<p class="palett__vantar"><span aria-hidden="true">✦</span>Söker i kartan …</p>';
+      vidare.hidden = true;
+      vidare.replaceChildren();
+      nyLista(false);
+      besked.textContent = 'Söker i kartan …';
+      try {
+        const [svar, poster, fd] = await Promise.all([
+          klient.fraga({ fraga: q, tidigare: [] }),
+          vantaPaPoster(),
+          hamtaFragedata().catch(() => null),
+        ]);
+        if (!svar || mitt !== nummer) return;
+        const vy = svarHtml(svar.svar, svar.lage, new Map(poster.map((o) => [o.id, o])), fd?.faq ?? [], etiketter, lankar, q);
+        senaste = { q, svar: svar.svar, vy };
+        ritaSvar(vy);
+        besked.textContent = vy.besked;
+      } catch {
+        if (mitt !== nummer) return;
+        tillstand = 'svar';
+        kropp.innerHTML = ingenAnslutningHtml();
+        besked.textContent = 'Ingen anslutning just nu.';
+      }
+    }
+
+    /** Räknaren längst ner från 260 tecken. Den läses upp när läget byts, inte för varje tecken. */
+    let sistaNot = '';
+    function uppdateraNot(q: string): void {
+      const n = q.length;
+      const rakna = n > MAX_TECKEN ? 'Frågan är för lång. Korta den lite.' : n >= MAX_TECKEN - 40 ? `${MAX_TECKEN - n} tecken kvar` : '';
+      not.textContent = rakna || NOT;
+      not.classList.toggle('palett__not--rakna', Boolean(rakna));
+      const nu = n > MAX_TECKEN ? 'lang' : rakna ? 'rakna' : '';
+      if (nu !== sistaNot) {
+        sistaNot = nu;
+        if (rakna) besked.textContent = rakna;
+      }
+    }
+
+    function valj(rad: HTMLElement): void {
+      if (rad.hasAttribute('data-fraga')) {
+        if (rad.getAttribute('aria-disabled') !== 'true') void fraga(input.value);
+        return;
+      }
+      const org = rad.dataset.org;
+      if (org) {
+        stang();
+        return byt('karta', (k) => k.oppnaOrg(org));
+      }
+      const [typ, kod] = (rad.dataset.plats ?? '').split(':');
+      if (kod) {
+        stang();
+        byt('karta', (k) => k.aterstall(typ === 'lan' ? { ...TOMT_FILTER, lan: kod } : { ...TOMT_FILTER, kommun: kod }));
+      }
+    }
+
+    async function kopiera(knapp: HTMLButtonElement): Promise<void> {
+      const forut = knapp.textContent;
+      try {
+        await navigator.clipboard.writeText(knapp.dataset.kopiera ?? '');
+        knapp.textContent = 'Kopierad';
+      } catch {
+        knapp.textContent = 'Gick inte att kopiera';
+      }
+      window.setTimeout(() => (knapp.textContent = forut), 2400);
+    }
+
+    /* ---------- Händelser i paletten ---------- */
+
+    input.addEventListener('input', visa);
+    input.addEventListener('keydown', (e) => {
+      if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+      e.preventDefault();
+      const steg = e.key === 'ArrowDown' ? 1 : -1;
+      markera(aktiv < 0 ? (steg > 0 ? 0 : -1) : aktiv + steg);
+    });
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const rad = aktiv >= 0 ? val()[aktiv] : undefined;
+      if (rad) valj(rad);
+      else void fraga(input.value);
+    });
+    // Esc stänger paletten. Kartan under ska inte också reagera på samma tryck.
+    dialog.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') e.stopPropagation();
+    });
+    kropp.addEventListener('mousemove', (e) => {
+      const rad = (e.target as HTMLElement).closest<HTMLElement>('[role="option"]');
+      const i = rad ? val().indexOf(rad) : -1;
+      if (i >= 0 && i !== aktiv) markera(i);
+    });
+    dialog.addEventListener('click', (e) => {
+      const mal = e.target as HTMLElement;
+      // Ytan runt rutan hör till dialogen själv. Ett klick där stänger.
+      if (mal === dialog || mal.closest('[data-stang]')) return stang();
+      const kartlank = mal.closest<HTMLAnchorElement>('a[data-kartlank]');
+      if (kartlank) {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        e.preventDefault();
+        const f = kartlank.dataset.kartlank === 'svar' && senaste ? senaste.svar.filter : TOMT_FILTER;
+        stang();
+        return byt('karta', (k) => k.aterstall(f));
+      }
+      const skicka = mal.closest<HTMLElement>('[data-skicka]');
+      if (skicka) {
+        void fraga(skicka.dataset.skicka ?? '');
+        return input.focus();
+      }
+      const blad = mal.closest<HTMLElement>('[data-blad]');
+      const bladfilter = blad ? bladval[Number(blad.dataset.blad)] : undefined;
+      if (bladfilter) {
+        stang();
+        return byt('karta', (k) => k.aterstall(bladfilter));
+      }
+      const nyFlik = mal.closest<HTMLElement>('[data-flik]')?.dataset.flik;
+      if (nyFlik === 'omraden' || nyFlik === 'typer' || nyFlik === 'lan') {
+        flik = nyFlik;
+        return ritaTom();
+      }
+      if (mal.closest('[data-forsok]')) {
+        void fraga(input.value);
+        return input.focus();
+      }
+      const kopieraKnapp = mal.closest<HTMLButtonElement>('[data-kopiera]');
+      if (kopieraKnapp) return void kopiera(kopieraKnapp);
+      const tumme = mal.closest<HTMLButtonElement>('[data-tumme]');
+      if (tumme) {
+        tumme.parentElement?.querySelectorAll('[data-tumme]').forEach((b) => b.setAttribute('aria-pressed', String(b === tumme)));
+        return;
+      }
+      const rad = mal.closest<HTMLElement>('[role="option"]');
+      if (rad) valj(rad);
+    });
+
+    /* ---------- Händelser på sidan ---------- */
+
+    // Fältet på första skärmen och sidhuvudets knapp öppnar paletten. Sidhuvudets ⌘K trycker på knappen.
+    document.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).closest('[data-fraga-oppna]')) oppna();
+    });
+    document.getElementById('fraga-utforska')?.addEventListener('click', () => byt('karta', undefined, true));
+    // Den som drar, zoomar, trycker på en prick eller öppnar en organisation lämnar första skärmen.
+    document.addEventListener(HANDLING, () => lage() === 'hem' && byt('karta'));
+    document.addEventListener(ORG, () => lage() === 'hem' && byt('karta'));
+    document.addEventListener(REDO, () => {
+      if (!dialog.open) return;
+      if (tillstand === 'tom') ritaTom();
+      if (tillstand === 'forslag') ritaForslag(input.value.trim());
+    });
+    // Loggan går tillbaka till första skärmen, utan urval, i stället för att ladda om sidan.
+    document.querySelector<HTMLAnchorElement>('.marke')?.addEventListener('click', (e) => {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+      e.preventDefault();
+      stang();
+      input.value = '';
+      senaste = null;
+      byt('hem', (k) => k.aterstall(TOMT_FILTER));
+    });
+
+    if (lage() === 'hem') skrivExempel();
+  }
+</script>
+
+<style is:global>
+  .ingang,
+  .palett {
+    display: none;
+  }
+  html[data-fraga] {
+    --fraga-ease: cubic-bezier(0.16, 1, 0.3, 1);
+    --fraga-skugga: 0 1px 2px hsl(var(--ink) / 0.06), 0 30px 80px -24px hsl(var(--ink) / 0.45);
+  }
+
+  /* ---------- Första skärmen ---------- */
+
+  /* Övertoningen ovanför fältet släpper igenom pekaren, så att kartan går att dra där. */
+  html[data-fraga] .ingang {
+    position: absolute;
+    z-index: 7;
+    inset: auto 0 0 0;
+    display: grid;
+    justify-items: center;
+    padding: 72px 24px 28px;
+    background: linear-gradient(to top, hsl(var(--yta)) 62%, hsl(var(--yta) / 0));
+    pointer-events: none;
+    transition: opacity 320ms var(--fraga-ease), visibility 320ms var(--fraga-ease);
+  }
+  html[data-fraga]:not([data-fragelage='hem']) .ingang {
+    opacity: 0;
+    visibility: hidden;
+  }
+  .ingang__inre {
+    width: min(640px, 100%);
+    pointer-events: auto;
+  }
+  .app .ingang__rubrik {
+    margin: 0 0 16px;
+    color: hsl(var(--ink));
+    font: 600 clamp(28px, 3vw, 38px) / 1.05 var(--font-sans);
+    letter-spacing: -0.025em;
+    text-align: center;
+    text-wrap: balance;
+  }
+  .ingang__falt {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    height: 62px;
+    padding: 0 10px 0 18px;
+    border: 1px solid hsl(var(--kant));
+    border-radius: 18px;
+    background: hsl(var(--bg));
+    box-shadow: 0 1px 2px hsl(var(--ink) / 0.05), 0 18px 44px -18px hsl(var(--ink) / 0.35);
+    color: hsl(var(--ink-mute));
+    font: 400 17px/1.2 var(--font-sans);
+    text-align: left;
+    cursor: text;
+    transition: border-color 320ms var(--fraga-ease), box-shadow 320ms var(--fraga-ease);
+  }
+  .ingang__falt:hover {
+    border-color: hsl(var(--rule));
+  }
+  .ingang__falt:focus-visible {
+    outline: 0;
+    border-color: hsl(var(--moss) / 0.55);
+    box-shadow: 0 0 0 4px hsl(var(--moss) / 0.14), 0 18px 44px -18px hsl(var(--ink) / 0.35);
+  }
+  .fraga-glyf {
+    flex: none;
+    display: inline-grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    color: hsl(var(--moss));
+    font-size: 19px;
+    line-height: 1;
+    transform-origin: 50% 52%;
+    animation: fraga-glimt 4.8s var(--fraga-ease) infinite;
+  }
+  .ingang__exempel {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .ingang__pil {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: hsl(var(--moss));
+    color: hsl(var(--bg));
+    font-size: 18px;
+  }
+  .ingang__under {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 10px;
+    padding: 0 4px;
+  }
+  .ingang__ai {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: hsl(var(--ink-mute));
+    font: 400 10.5px/1.3 var(--font-mono);
+    letter-spacing: 0.03em;
+  }
+  .ingang__ai i {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: hsl(var(--moss));
+    animation: fraga-puls 2.4s var(--fraga-ease) infinite;
+  }
+  .ingang__utforska {
+    padding: 8px 0;
+    border: 0;
+    background: none;
+    color: hsl(var(--ink-soft));
+    font: 500 14.5px/1.2 var(--font-sans);
+    text-decoration: underline;
+    text-decoration-color: hsl(var(--rule));
+    text-underline-offset: 4px;
+    cursor: pointer;
+    transition: color 320ms var(--fraga-ease), text-decoration-color 320ms var(--fraga-ease);
+  }
+  .ingang__utforska:hover {
+    color: hsl(var(--ink));
+    text-decoration-color: currentColor;
+  }
+
+  /* På första skärmen syns bara kartan och fältet. Kartans källrad flyttas upp, så att den syns. */
+  html[data-fraga][data-fragelage='hem'] .app[data-lage='karta'] :is(.filteryta, .kartknappar, .karta__not, .visa-panel, .medlemskort) {
+    display: none !important;
+  }
+  html[data-fraga][data-fragelage='hem'] .app[data-lage='karta'] :is(.maplibregl-ctrl-bottom-right, .maplibregl-ctrl-bottom-left) {
+    top: 0;
+    bottom: auto !important;
+  }
+  @media (min-width: 901px) {
+    html[data-fraga][data-fragelage='hem'] .app[data-lage='karta'] {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    html[data-fraga][data-fragelage='hem'] .app[data-lage='karta'] .panel {
+      display: none;
+    }
+  }
+  @media (max-width: 900px) {
+    html[data-fraga] .app[data-lage='karta'] .panel {
+      transition: transform var(--t-blad), visibility var(--t-blad);
+    }
+    html[data-fraga][data-fragelage='hem'] .app[data-lage='karta'] .panel {
+      transform: translateY(100%);
+      visibility: hidden;
+    }
+    html[data-fraga] .ingang {
+      padding: 56px 16px calc(14px + env(safe-area-inset-bottom));
+    }
+    html[data-fraga] .app .ingang__rubrik {
+      margin-bottom: 12px;
+      font-size: 26px;
+    }
+    .ingang__falt {
+      height: 56px;
+      font-size: 16px;
+    }
+    .ingang__under {
+      flex-direction: column-reverse;
+      gap: 2px;
+      margin-top: 8px;
+    }
+  }
+
+  /* ---------- Paletten ---------- */
+
+  html[data-fraga] .palett[open] {
+    display: flex;
+  }
+  .palett {
+    position: fixed;
+    inset: 0;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 11vh 16px 16px;
+    overflow: hidden;
+    border: 0;
+    background: transparent;
+    color: hsl(var(--ink));
+  }
+  .palett::backdrop {
+    background: hsl(45 17% 5% / 0.32);
+    backdrop-filter: blur(2px);
+  }
+  .palett__ruta {
+    display: flex;
+    flex-direction: column;
+    width: min(760px, 100%);
+    max-height: 100%;
+    overflow: hidden;
+    border: 1px solid hsl(var(--kant));
+    border-radius: 22px;
+    background: hsl(var(--yta-kort));
+    box-shadow: var(--fraga-skugga);
+    animation: fraga-in 320ms var(--fraga-ease) both;
+  }
+  .palett__falt {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 66px;
+    margin: 0;
+    padding: 0 14px 0 20px;
+    border-bottom: 1px solid hsl(var(--kant));
+  }
+  .palett__falt input {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: hsl(var(--ink));
+    font: 400 19px/1.2 var(--font-sans);
+  }
+  .palett__falt input::placeholder {
+    color: hsl(var(--ink-mute));
+    opacity: 1;
+  }
+  .palett kbd {
+    padding: 4px 6px;
+    border: 1px solid hsl(var(--kant));
+    border-radius: 6px;
+    background: hsl(var(--yta-chip));
+    color: hsl(var(--ink-mute));
+    font: 500 11px/1 var(--font-mono);
+  }
+  .palett__stang {
+    padding: 4px;
+    border: 0;
+    background: none;
+    cursor: pointer;
+  }
+  .palett__avbryt {
+    display: none;
+  }
+  .palett__kropp {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 14px;
+  }
+  .palett__vidare {
+    flex: none;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 14px;
+    padding: 12px 18px;
+    border-top: 1px solid hsl(var(--kant));
+    background: hsl(var(--yta));
+  }
+  .palett__vidare[hidden] {
+    display: none;
+  }
+  .app .palett__fot {
+    flex: none;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 9px 18px;
+    border-top: 1px solid hsl(var(--kant));
+    color: hsl(var(--ink-mute));
+    font: 400 10.5px/1.4 var(--font-mono);
+  }
+  .palett__fot kbd {
+    padding: 1px 5px;
+    font-size: 10px;
+  }
+  .palett__not--rakna {
+    color: hsl(var(--ink));
+    font-weight: 500;
+  }
+  .app .palett__rubrik {
+    margin: 4px 4px 10px;
+    color: hsl(var(--ink-mute));
+    font: 500 10.5px/1.2 var(--font-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .palett-rader [role='group'] {
+    margin-top: 14px;
+  }
+
+  /* Rader: Fråga AI, organisationer och platser */
+  .palett-rad {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 9px 10px;
+    border-radius: 14px;
+    cursor: pointer;
+    animation: fraga-rad 420ms var(--fraga-ease) both;
+  }
+  .palett-rad[aria-selected='true'] {
+    background: hsl(var(--yta-chip));
+  }
+  .palett-rad[aria-disabled='true'] {
+    cursor: default;
+  }
+  .palett-rad__ikon {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    overflow: hidden;
+    border-radius: 12px;
+    background: var(--typ-bolag);
+    box-shadow: inset 0 0 0 1px hsl(var(--ink) / 0.06);
+    color: #fff;
+    font: 600 15px/1 var(--font-sans);
+  }
+  /* Typens färg är för ljus för vit text i den här storleken. En nyans mörkare klarar AA. */
+  .palett-rad__ikon--enskild_firma { background: hsl(120 30% 36%); }
+  .palett-rad__ikon--myndighet { background: var(--typ-myndighet); }
+  .palett-rad__ikon--kommun_region { background: var(--typ-kommun_region); }
+  .palett-rad__ikon--larosate { background: var(--typ-larosate); }
+  .palett-rad__ikon--community { background: var(--typ-community); }
+  .palett-rad__ikon--finansiar { background: var(--typ-finansiar); }
+  .palett-rad__ikon--infrastruktur { background: var(--typ-infrastruktur); }
+  .palett-rad__ikon--ai {
+    background: hsl(var(--moss));
+    font-size: 20px;
+  }
+  .palett-rad__ikon--bild,
+  .palett-rad__ikon--plats {
+    border: 1px solid hsl(var(--kant));
+    background: hsl(var(--bg));
+    box-shadow: none;
+    color: hsl(var(--ink-soft));
+    font-size: 18px;
+  }
+  .palett-rad__ikon--bild img {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+  }
+  .palett-rad__text {
+    flex: 1;
+    min-width: 0;
+    display: grid;
+    gap: 2px;
+  }
+  .palett-rad__namn,
+  .palett-rad__under {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .palett-rad__namn {
+    font: 600 16px/1.3 var(--font-sans);
+  }
+  .palett-rad__fraga {
+    color: hsl(var(--ink-mute));
+    font-weight: 400;
+  }
+  .palett-rad__under {
+    color: hsl(var(--ink-mute));
+    font-size: 14px;
+    line-height: 1.4;
+  }
+  .palett-rad__under mark {
+    padding: 0 1px;
+    border-radius: 3px;
+    background: hsl(var(--amber) / 0.16);
+    color: hsl(var(--ink));
+  }
+  .palett-rad__hoger {
+    flex: none;
+    display: grid;
+    justify-items: end;
+    gap: 4px;
+    color: hsl(var(--ink-mute));
+    font: 400 10.5px/1.2 var(--font-mono);
+  }
+  .palett-rad__marke {
+    padding: 2px 6px;
+    border-radius: var(--r-tag);
+    background: hsl(var(--yta-chip));
+    color: hsl(var(--ink-soft));
+    font-weight: 500;
+  }
+  .palett-rad__marke--claimed {
+    background: hsl(var(--amber) / 0.12);
+    color: hsl(38 74% 26%);
+  }
+  .palett-rad__marke--confirmed {
+    background: hsl(var(--moss) / 0.12);
+    color: hsl(var(--moss));
+  }
+  .palett-rad__tangent {
+    flex: none;
+  }
+
+  /* Den tomma paletten: frågor att pröva och kartan att bläddra i */
+  .palett-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 18px;
+  }
+  .palett-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 40px;
+    padding: 0 15px 0 12px;
+    border: 1px solid hsl(var(--kant));
+    border-radius: var(--r-pill);
+    background: hsl(var(--bg));
+    color: hsl(var(--ink));
+    font: 400 14.5px/1.2 var(--font-sans);
+    cursor: pointer;
+    transition: background 320ms var(--fraga-ease), border-color 320ms var(--fraga-ease);
+  }
+  .palett-chip:hover,
+  .palett-chip:focus-visible {
+    border-color: hsl(var(--rule));
+    background: hsl(var(--yta-chip));
+  }
+  .palett-chip:focus-visible {
+    outline: 0;
+    box-shadow: 0 0 0 3px hsl(var(--moss) / 0.25);
+  }
+  .palett-chip__glyf {
+    color: hsl(var(--moss));
+    font-size: 14px;
+  }
+  .palett-chip small {
+    color: hsl(var(--ink-mute));
+    font: 400 11px/1 var(--font-mono);
+  }
+  .palett-blad {
+    display: grid;
+    grid-template-columns: 180px minmax(0, 1fr);
+    gap: 18px;
+  }
+  .palett-blad__nav {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .palett-blad__nav button {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 10px;
+    height: 42px;
+    padding: 0 12px;
+    border: 0;
+    border-radius: 12px;
+    background: none;
+    color: hsl(var(--ink-soft));
+    font: 500 15.5px/1 var(--font-sans);
+    text-align: left;
+    cursor: pointer;
+  }
+  .palett-blad__nav button[aria-pressed='true'] {
+    background: hsl(var(--yta-chip));
+    color: hsl(var(--ink));
+  }
+  .palett-blad__nav i {
+    width: 18px;
+    color: hsl(var(--ink-mute));
+    font-style: normal;
+    text-align: center;
+  }
+
+  /* Svaret: en rad om tolkningen, raderna och vägen vidare. Inga bubblor. */
+  .palett-svarshuvud {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 2px 4px 12px;
+  }
+  .palett-svarshuvud__glyf {
+    color: hsl(var(--moss));
+    font-size: 18px;
+    line-height: 1.4;
+  }
+  .app .palett-svarshuvud p {
+    flex: 1;
+    font-size: 15.5px;
+    line-height: 1.45;
+  }
+  .palett-svarshuvud small {
+    display: block;
+    margin-top: 3px;
+    color: hsl(var(--ink-mute));
+    font: 400 10.5px/1.4 var(--font-mono);
+  }
+  .app .palett-lagesrad {
+    display: flex;
+    gap: 8px;
+    margin: 0 4px 12px;
+    color: hsl(var(--ink-mute));
+    font: 400 11.5px/1.5 var(--font-mono);
+  }
+  .app .palett__text {
+    max-width: 36em;
+    margin: 4px 4px 14px;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  .app .palett__kalla {
+    margin: 0 4px;
+    color: hsl(var(--ink-mute));
+    font: 400 11px/1.5 var(--font-mono);
+  }
+  .palett__text a,
+  .palett__kalla a,
+  .palett__lank {
+    color: hsl(var(--link));
+  }
+  .palett__lank {
+    font-size: 13.5px;
+  }
+  .app .palett__vantar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 6px 4px;
+    color: hsl(var(--ink-mute));
+    font: 400 12px/1.4 var(--font-mono);
+  }
+  .palett__vantar span {
+    display: inline-block;
+    color: hsl(var(--moss));
+    animation: fraga-snurr 1.2s linear infinite;
+  }
+  .palett-hur {
+    margin: 12px 4px 0;
+    color: hsl(var(--ink-soft));
+    font-size: 13.5px;
+  }
+  .palett-hur summary {
+    display: inline-block;
+    color: hsl(var(--ink-mute));
+    text-decoration: underline;
+    text-decoration-color: hsl(var(--rule));
+    text-underline-offset: 3px;
+    list-style: none;
+    cursor: pointer;
+  }
+  .palett-hur summary::-webkit-details-marker {
+    display: none;
+  }
+  .palett-hur ol {
+    margin: 10px 0 0;
+    padding: 12px 14px 12px 32px;
+    border-radius: 14px;
+    background: hsl(var(--yta-chip) / 0.6);
+    line-height: 1.55;
+  }
+  .app .palett-hur p {
+    margin: 8px 0 0;
+    font-weight: 500;
+  }
+  .palett__knapp {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 40px;
+    padding: 0 16px;
+    border: 1px solid transparent;
+    border-radius: var(--r-pill);
+    background: hsl(var(--moss));
+    color: #fff;
+    font: 600 14.5px/1.2 var(--font-sans);
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 320ms var(--fraga-ease);
+  }
+  .palett__knapp:hover {
+    background: hsl(var(--moss-deep));
+    color: #fff;
+  }
+  .palett__knapp--discord {
+    background: hsl(235 62% 50%);
+  }
+  .palett__knapp--discord:hover {
+    background: hsl(235 62% 43%);
+  }
+  .palett__knapp--tyst {
+    border-color: hsl(var(--kant));
+    background: hsl(var(--bg));
+    color: hsl(var(--ink));
+    font-weight: 500;
+  }
+  .palett__knapp--tyst:hover {
+    background: hsl(var(--yta-chip));
+    color: hsl(var(--ink));
+  }
+  .palett__kropp > .palett__knapp {
+    margin: 0 4px;
+  }
+  .palett-tumme {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto;
+    color: hsl(var(--ink-mute));
+    font-size: 12.5px;
+  }
+  .palett-tumme button {
+    min-height: 30px;
+    padding: 3px 10px;
+    border: 1px solid hsl(var(--kant));
+    border-radius: 8px;
+    background: hsl(var(--bg));
+    color: hsl(var(--ink));
+    font-size: 12.5px;
+    cursor: pointer;
+  }
+  .palett-tumme button[aria-pressed='true'] {
+    border-color: transparent;
+    background: hsl(var(--ink));
+    color: hsl(var(--bg));
+  }
+
+  /* I telefon fyller paletten skärmen, som en egen sida. */
+  @media (max-width: 900px) {
+    .palett {
+      padding: 0;
+    }
+    .palett__ruta {
+      width: 100%;
+      height: 100%;
+      max-height: none;
+      border: 0;
+      border-radius: 0;
+    }
+    .palett__falt {
+      height: 60px;
+      padding: 0 6px 0 16px;
+    }
+    .palett__falt input {
+      font-size: 17px;
+    }
+    .palett__stang,
+    .palett__tangenter,
+    .palett-rad__var {
+      display: none;
+    }
+    .palett__avbryt {
+      display: block;
+      min-height: 44px;
+      padding: 0 10px;
+      border: 0;
+      background: none;
+      color: hsl(var(--ink-soft));
+      font: 500 15px/1 var(--font-sans);
+      cursor: pointer;
+    }
+    .palett__vidare {
+      padding-bottom: calc(12px + env(safe-area-inset-bottom));
+    }
+    .palett-blad {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 6px;
+    }
+    .palett-blad__nav {
+      flex-direction: row;
+      overflow-x: auto;
+    }
+  }
+
+  @keyframes fraga-glimt {
+    0%, 62%, 100% { transform: rotate(0) scale(1); opacity: 1; }
+    70% { transform: rotate(45deg) scale(0.72); opacity: 0.55; }
+    80% { transform: rotate(90deg) scale(1.08); opacity: 1; }
+  }
+  @keyframes fraga-puls {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+  }
+  @keyframes fraga-in {
+    from { opacity: 0; transform: translateY(-8px) scale(0.985); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes fraga-rad {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes fraga-snurr {
+    to { transform: rotate(360deg); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .fraga-glyf,
+    .ingang__ai i,
+    .palett__ruta,
+    .palett-rad,
+    .palett__vantar span {
+      animation: none;
+    }
+    html[data-fraga] .ingang,
+    html[data-fraga] .app[data-lage='karta'] .panel {
+      transition: none;
+    }
+  }
+</style>

@@ -474,6 +474,8 @@ Visuell kontroll görs i webbläsarpanelen med `npm run dev` på `/?fraga=1`, p�
 
 ### Uppgift 13: Första skärmen, fältet och samtalet
 
+> **Ändrad 2026-10-19.** Gustaf valde bort samtalet i panelen. Uppgiften byggdes i stället som en sökpalett som Mobbins (specen 3.2–3.5): `Fraga.astro` har första skärmen och paletten, sidhuvudets sökruta blir en knapp som öppnar den, och varje fråga står för sig. Texten nedan beskriver den ursprungliga planen.
+
 **Filer:**
 - Skapa: `src/components/Fraga.astro`. Den innehåller fältet, förslagslistan, raden under, samtalspanelen, stilarna och ett `<script>` som binder ihop dem.
 - Ändra: `src/components/KartApp.astro`:
@@ -529,6 +531,8 @@ Gränssnittet sätts på `window.aiKartan` i `KartApp.astro`, och händelsen `ai
 - [ ] **Steg 6:** Commit `feat(fraga): första skärmen, fältet och samtalet bakom ?fraga=1`.
 
 ### Uppgift 14: Kartan lyfter svaret
+
+> **Utgår med paletten (förslag 2026-10-19).** Svaret står i paletten över en dämpad karta, och **Visa alla N på kartan** byter kartans urval till svarets filter. Då behövs ingen egen dämpning av prickarna. Gustaf avgör.
 
 **Filer:** Ändra `src/components/KartApp.astro`, där `lyft` är en del av `window.aiKartan`.
 

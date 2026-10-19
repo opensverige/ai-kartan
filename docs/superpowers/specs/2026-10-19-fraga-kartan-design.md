@@ -9,7 +9,7 @@ Prototyp: [2026-10-19-fraga-kartan-prototyp.html](2026-10-19-fraga-kartan-protot
 
 Kartan har 341 organisationer med källa och datum på varje uppgift. För att hitta rätt måste besökaren i dag kunna taxonomin och filtren. Fråga kartan låter besökaren skriva med egna ord och få ett källbundet svar på under en minut. När frågan kräver en människa leder svaret till OpenSveriges Discord.
 
-Det är ett tunt lager ovanpå kartan. Kartan och YAML-filerna förblir källan. Chatten skriver aldrig tillbaka något, och den får aldrig bli det som avgör vem som syns.
+Det är ett tunt lager ovanpå kartan. Kartan och YAML-filerna förblir källan. Fråga kartan skriver aldrig tillbaka något, och den får aldrig bli det som avgör vem som syns.
 
 ## 2. Mål, icke-mål och anti-mål
 
@@ -39,79 +39,71 @@ Det är ett tunt lager ovanpå kartan. Kartan och YAML-filerna förblir källan.
 Kartan fyller skärmen. Nertill, över en mjuk övertoning från sajtens yta:
 
 1. H1. Förslaget i prototypen är "Fråga Sveriges AI-karta". Rubriken är inte slutvald (se 11).
-2. Fältet. Till vänster finns en ✦ som glimtar långsamt. Placeholdern skriver ut exempelfrågor, en i taget, medan fältet är tomt. Exemplen är:
+2. Ett fält som öppnar paletten (3.2). Till vänster finns en ✦ som glimtar långsamt. Fältet skriver ut exempelfrågor, en i taget. Exemplen är:
    - Vilka bygger röstagenter på svenska?
    - Jag behöver GPU-kapacitet i Sverige
    - AI inom hälsa i Göteborg
    - Var kan jag bolla en idé med builders?
    - Vad är OpenSverige?
 
-   Med `prefers-reduced-motion` står ett fast exempel kvar. Skicka-knappen är rund och mossgrön med pil.
+   Med `prefers-reduced-motion` står ett fast exempel kvar. Till höger står en rund, mossgrön knapp med pil.
 3. En rad under fältet. Till vänster: `AI · svarar med länkar till källorna`. Till höger: `eller utforska kartan själv →`.
 
 Inga chips, ingen kicker och ingen ingress. Sidhuvudet har ingen egen sökruta på första skärmen.
 
-### 3.2 Ett fält med tre platser
+### 3.2 Paletten (ändrad av Gustaf 2026-10-19)
 
-Det finns bara ett fält. Det glider mellan tre platser, och texten följer med. Övergången tar 560 ms med `cubic-bezier(0.16, 1, 0.3, 1)`.
+Gustaf valde bort samtalet i panelen. Fråga kartan är i stället en sökpalett som Mobbins: ett fält och en lista, och svaret står i samma lista. Det finns inga bubblor, inga följdfrågor och ingen historik. Varje fråga står för sig.
 
-| Läge | Var fältet står | Placeholder |
+Paletten öppnas från fältet på första skärmen, från sidhuvudets sökruta i kartläget och med `⌘K`. Den ligger mitt på skärmen över en dämpad karta på desktop och fyller skärmen på mobil. Esc, Avbryt eller ett klick utanför stänger den.
+
+| Läge | När | Innehåll |
 |---|---|---|
-| Första skärmen | Nertill, stort | Exemplen skrivs ut |
-| Kartläget | I sidhuvudet, där sökrutan står i dag | Sök eller fråga … |
-| Samtalet | Längst ner i panelen | Fråga vidare … |
+| Tomt | Fältet är tomt | Frågor att pröva, som piller. Under dem Bläddra: områden, typer och län som piller med antal. Ett piller med ett urval byter kartans urval och stänger paletten. |
+| Förslag | Besökaren skriver | **Fråga AI: "det du skrev"** först och förvald, så att Enter frågar AI. Under den upp till fem organisationer och tre platser ur samma sökning som dagens sökruta. En rad har ikon, namn, ett utdrag ur beskrivningen med träffen markerad, typ och ort. |
+| Svar | Enter på Fråga AI | Svaret i samma lista (3.5). |
 
-`⌘K` fokuserar fältet var det än står.
+Piltangenterna flyttar markeringen, och Enter öppnar raden. En organisation öppnas i panelen, och kartan flyger dit. En plats byter kartans urval.
 
-**Omfång:** fältet med AI finns bara på kartsidan `/`. På alla andra sidor, inklusive listsidan `/organisationer`, gör sidhuvudets sökruta samma vanliga sökning som i dag. Frågan förs aldrig mellan sidor i adressen.
+**Omfång:** paletten finns bara på kartsidan `/`. På alla andra sidor, inklusive listsidan `/organisationer`, gör sidhuvudets sökruta samma vanliga sökning som i dag. Frågan förs aldrig mellan sidor i adressen.
 
-### 3.3 Förslag medan man skriver
+### 3.3 Sidans två lägen
 
-En lista öppnas, uppåt på första skärmen och nedåt i sidhuvudet:
-
-1. **Fråga AI: "det du skrev"**. Den är förvald, så Enter frågar AI.
-2. **Direkt i kartan**: upp till fyra organisationer från samma sökning som sidhuvudets sökruta gör i dag. Piltangenterna flyttar markeringen.
-
-I samtalsläget visas ingen lista. Där skickar Enter en följdfråga.
+Sidan har två lägen: första skärmen (3.1) och kartläget. Kartläget är dagens karta med panel och filter. Där står sidhuvudets sökruta, och den öppnar paletten.
 
 ### 3.4 Vad som byter till kartläget
 
 - Klick på en prick. Organisationen öppnas direkt i panelen.
 - Att besökaren själv drar, zoomar eller nyper. Kartans egna rörelser räknas inte.
-- Val av en organisation i förslagslistan.
+- Val av en organisation, en plats eller ett urval i paletten.
+- **Visa alla N på kartan** i ett svar.
 - `eller utforska kartan själv →`.
 
-Hovring räknas inte. Klick på loggan går tillbaka till första skärmen.
+Hovring räknas inte. Klick på loggan går tillbaka till första skärmen och tar bort urvalet.
 
-### 3.5 Samtalet
+### 3.5 Svaret
 
-Samtalet öppnas i panelen: till vänster på desktop, i bottenbladet på mobil. Bottenbladet fälls då upp till ungefär 74 % av höjden.
+Svaret står i paletten. Ett svar med träffar består av:
 
-Överst står `← Kartan`, `✦ Fråga kartan` och `Ny fråga`. Längst ner står fältet och raden "AI kan ta fel. Fakta och status kommer från kartans källor."
+1. **Tolkningsraden**, med en ✦ före. En mening, till exempel "Jag tolkar det som att du söker organisationer som arbetar med röst och tal." Det är bara den raden som modellen skriver. Under den, i liten text: "18 på kartan matchar · visar 5, urvalet byts varje dag · i namnordning".
+2. **Rader**, en per organisation:
+   - initialer i typens färg, eller typens ikon
+   - namnet
+   - ett utdrag ur beskrivningen, ordagrant, med det matchade ordet markerat
+   - typ · ort
+   - statusmärket (`egen uppgift` eller `bekräftad`), med datumet för kontrollen
 
-Ett svar med träffar består av:
+   En rad öppnar organisationen.
+3. **Så hittade jag dem**, som kan fällas ut: filtret, antalet träffar, urvalsregeln och meningen "Modellen väljer inte vilka som visas eller i vilken ordning."
+4. **Raden längst ner:** **Visa alla 18 på kartan →**, Discord när det är relevant (3.7), och Hjälpte det? Ja / Nej.
 
-1. **Tolkningsraden.** En mening, till exempel "Jag tolkar det som att du söker organisationer som arbetar med röst och tal." Den visas efter hand, som om den skrivs. Det är bara den raden som modellen skriver.
-2. **Antal och länk.** "18 på kartan matchar · visar 5, urvalet byts varje dag" och **Visa alla 18 på kartan →**. Länken öppnar kartan med samma filter.
-3. **Kort.** Vart och ett innehåller:
-   - prick i typens färg, namn och typ · ort
-   - beskrivningen ordagrant, högst tre rader
-   - statusmärke (`egen uppgift` eller `bekräftad`) och "kontrollerad ÅÅÅÅ-MM-DD"
-   - "Matchar: …" med de fält som träffade
-   - **Visa på Tech Embassy →**
-4. **"Så hittade jag dem"**, som kan fällas ut: filtren, antalet träffar, urvalsregeln och meningen "Modellen väljer inte vilka som visas eller i vilken ordning."
-5. **Discord**, bara när det är relevant (3.7).
-6. **Hjälpte det? Ja / Nej.**
-
-En fråga börjar alltid från noll. Filter som besökaren har satt på kartan tas inte med. Under samtalet styr svaret vad kartan lyfter. `← Kartan` återställer kartan till de filter som gällde innan, och "Visa alla N på kartan" ersätter dem med svarets filter.
-
-Kartan följer svaret. Organisationer utan träff dämpas till ungefär 15 % och kartan ramar in träffarna. Hovring över ett kort markerar pricken, och klick på namnet flyger dit.
+**Visa alla N på kartan** stänger paletten och byter kartans urval till svarets filter. Kartans filter tas aldrig med i frågan. Längst ner i paletten står "AI kan ta fel. Fakta och status kommer från kartans källor."
 
 ### 3.6 Svar som inte är träfflistor
 
 | Fall | Svar |
 |---|---|
-| Bred fråga, inga kriterier ("Hitta alla som arbetar med AI") | En följdfråga med fyra snabbsvar (område, ort, infrastruktur, lärosäten) och en länk till alla på kartan. Högst en följdfråga per fråga. |
+| Bred fråga, inga kriterier ("Hitta alla som arbetar med AI") | Fyra förslag på smalare frågor (område, ort, infrastruktur, lärosäten) och **Visa alla N på kartan**. Ett förslag ställer en ny fråga. |
 | Ranking ("bästa", "ledande", "rekommendera") | Fast text: kartan rankar inte och ingen kan köpa en plats. Erbjud att visa vilka som bygger det man letar efter. |
 | Kontakt eller introduktion ("introducera mig för vd:n") | Fast text: inga personuppgifter och inga introduktioner. Permalänken har organisationens egen sida. Discord-rutan visas. |
 | OpenSverige | Svaret ur kunskapsfilen visas ordagrant, med källa och datum (5.6). |
@@ -144,9 +136,8 @@ Besökaren ser aldrig en statuskod, ordet "Error", `null`, en stackspårning ell
 | För många frågor | 429 från brandväggen | Svaret ur reservvägen och raden "Du har frågat många gånger i rad. Svaren bygger på orden i din fråga." |
 | Ingen anslutning | Kartans data har inte kunnat laddas, så inte heller reservvägen fungerar | "Ingen anslutning just nu." och knappen **Försök igen →**. Frågan står kvar. |
 | Kartan laddar | Besökaren frågar innan kartans data finns | "Söker i kartan …" står kvar tills datan finns, högst 10 s, sedan läget Ingen anslutning |
-| Lång fråga | Från 260 tecken | En räknare under fältet, "40 tecken kvar". Över 300: "Frågan är för lång. Korta den lite." och skicka går inte att trycka på. |
-| Samtalet fullt | Efter 6 frågor | Fältet säger "Samtalet är fullt", och svaret slutar med **Ny fråga →** |
-| Ersatt fråga | En ny fråga skickas innan den förra fått svar | Den förra frågan står kvar med raden "Ersatt av nästa fråga." i grått |
+| Lång fråga | Från 260 tecken | En räknare längst ner i paletten, "40 tecken kvar". Över 300 säger raden Fråga AI "Frågan är för lång. Korta den lite." och går inte att välja. |
+| Ersatt fråga | Besökaren skriver vidare eller ställer en ny fråga innan svaret har kommit | Det gamla svaret ritas aldrig. Paletten visar det nya läget. |
 | Okänd plats | Modellen gav en plats som inte finns | "Jag hittar ingen plats som heter ”Norrland”, så jag sökte i hela Sverige." |
 | Sökord borttagna | 5.7 steg 2 | "Ingen nämner ”känsliga”. Här är alla som erbjuder infrastruktur och hosting." |
 
@@ -267,7 +258,7 @@ Schemat, i ord:
 
 **Synonymer:** ord som besökare och modellen använder, men som saknar grupp i `sok.ts`, läggs till i `SYNONYMGRUPPER`. Det gäller till exempel röst, voice, tts, talsyntes och röstagent. Det förbättrar också kartans vanliga sökning. Regeln från `sok.ts` gäller: ingen sökning som fungerar i dag får bli sämre, och `npm test` ska vara grönt. På så sätt stämmer antalet i svaret med "Visa alla N", och ingen ny syntax för eller-sökning behövs i adressen.
 
-**Historik:** en följdfråga skickas med de tidigare frågorna och deras filter, aldrig svaren eller organisationerna. "Bara i Göteborg" blir då föregående filter plus en plats. Samtalet tillåter högst 6 frågor. Därefter föreslår svaret "Ny fråga".
+**Historik:** ingen, eftersom varje fråga står för sig (3.2). Fältet `tidigare` finns kvar i anropet och prövas av servern, men webbläsaren skickar alltid en tom lista.
 
 ### 5.4 Kontroll av tolkningsraden
 
@@ -341,7 +332,7 @@ Följderna:
 
 ### 5.10 Skydd mot kostnad och missbruk
 
-- **Längd:** frågan får vara högst 300 tecken. Samtalet får ha högst 6 frågor. Kroppen får vara högst några kB.
+- **Längd:** frågan får vara högst 300 tecken. Kroppen får vara högst några kB.
 - **Takt:** en regel för taktbegränsning i Vercels brandvägg på `/api/fraga`, till exempel 10 anrop per minut och IP. Den finns på alla planer (Hobby har en sådan regel), men den går inte att sätta i `vercel.json`. Den sätts i dashboarden eller med `vercel firewall`, och steget dokumenteras i README. Inget nytt beroende och ingen databas.
 - **Utgiftstak:** en egen API-nyckel bara för kartan, med ett tak eller en budgetvarning hos leverantören om det finns (se 5.3.1). Det är det enda verkliga taket på notan. Kostnaden per fråga mäts med `usage` under betan.
 - **Brytare:** en regel i brandväggen som nekar `/api/fraga` gäller direkt utan ny deploy. Webbläsaren får 403 och använder reservvägen. Att dra in nyckeln har samma effekt. Miljövariabeln för modellen kräver en ny deploy och är till för att byta modell, inte för att stänga av.
@@ -350,7 +341,7 @@ Följderna:
 
 ### 5.11 Integritet
 
-- Samtalet finns bara i sidans minne. Det sparas inte i `localStorage` och försvinner vid omladdning.
+- Frågan och svaret finns bara i sidans minne. De sparas inte i `localStorage` och försvinner vid omladdning.
 - Servern sparar ingenting.
 - **Nytt:** frågans text skickas till den svenska inferensleverantören för tolkning. Det är en ny part, till skillnad från Vercel som redan driver sajten. `/integritet` uppdateras **före den dolda betan** (beslutat av Gustaf), med vad som skickas, varför, till vem, var det körs och leverantörens lagringstid enligt dess villkor.
 - **Leverantören är också en organisation på kartan.** Att föreningen köper inferens av den är ett inköp, inte en rekommendation. Det står öppet på `/integritet` och `/om`. Leverantörens post på kartan behandlas exakt som alla andras.
@@ -409,7 +400,7 @@ Det här är en karta, inte en plan.
 - `vercel.json`: undantag för `/api/fraga` i header-regeln, `maxDuration` och regionen `arn1`.
 - `scripts/prova-fraga.mjs`: provet mot leverantörerna (5.3.1). Det körs för hand och ingår inte i CI.
 - `tsconfig.json`: `api/**/*` i `include`.
-- `KartApp.astro`, `Sidhuvud.astro`, `index.astro`: första skärmen, fältet, samtalet i panelen och kartans lyft.
+- `KartApp.astro`, `Sidhuvud.astro`, `Bas.astro` och en ny `Fraga.astro`: första skärmen och paletten.
 - `src/lib/handelser.ts`, `/integritet`, `/om`: de nya händelserna och texterna.
 - `CHANGELOG.md` enligt repots vana.
 
@@ -417,21 +408,21 @@ Det här är en karta, inte en plan.
 
 Gustaf har inte valt dessa uttryckligen:
 
-1. Samtalet visas i panelen, inte i ett eget lager.
-2. Breda frågor får en följdfråga med snabbsvar.
+1. Svaret står i en sökpalett över kartan, inte i ett samtal (Gustaf ändrade det 2026-10-19).
+2. Breda frågor får fyra förslag på smalare frågor.
 3. Vid fler än 5 träffar visas 5 i ett dagligt urval i namnordning, med regeln utskriven.
 4. Ett modellanrop per fråga, och modellen ser aldrig organisationstext (avvikelse från PRD 9.1).
 5. OpenSverige-svar visas ordagrant ur en kunskapsfil. Modellen väljer bara id.
 6. Hämtningen är kartans egen filterfunktion, och "Visa alla" är filtrets adress.
-7. Högst 300 tecken per fråga och 6 frågor per samtal.
-8. Samtalet sparas inte ens i `localStorage`.
+7. Högst 300 tecken per fråga. Varje fråga står för sig.
+8. Frågan sparas inte ens i `localStorage`.
 9. Fältet med AI finns bara på `/`. Övriga sidor behåller dagens sökruta.
 10. En fråga börjar från noll och tar inte med kartans aktuella filter.
 11. Ord utanför taxonomin hanteras med nya synonymgrupper i `sok.ts`, inte med ny syntax. Prototypens egen eller-matchning för "röst och tal" är en förenkling. Dess länk "Visa alla" visar därför inte exakt samma antal.
 
 ## 9. Lämnat åt byggaren
 
-- Hur `KartApp.astro` (cirka 4 000 rader) delas upp. Fältet och samtalet kan bli egna komponenter.
+- Hur `KartApp.astro` (cirka 4 000 rader) delas upp. Paletten är en egen komponent.
 - Exakta animationer, så länge sajtens easing och `prefers-reduced-motion` följs.
 - Om tolkningsraden strömmas från servern eller bara skrivs ut i webbläsaren. Svaret är litet, så det senare räcker.
 - Prompttexten, och om schemat skickas som `response_format` eller som ett verktyg, beroende på vad leverantören stöder bäst.
@@ -456,6 +447,7 @@ Byggarens frågor och svaren på dem:
 | När uppdateras `/integritet`? | Före den dolda betan (5.11). | Gustaf |
 | Vilken leverantör och modell? | Egen inferens hos en svensk leverantör med öppna modeller. Ingen Anthropic-SDK (5.3). | Gustaf |
 | Berget AI eller Grunden? | Berget AI. Föreningen har ett konto med kredit. Modellen väljs av provet i 5.3.1 och börjar med Gemma 4 31B. | Gustaf |
+| Samtal eller sökpalett? | Sökpalett som Mobbins. Svaret blir rader i samma lista, och varje fråga står för sig. Ingen samtalspanel och inga följdfrågor (3.2). | Gustaf |
 
 Kvar att bestämma, men det blockerar inte bygget:
 

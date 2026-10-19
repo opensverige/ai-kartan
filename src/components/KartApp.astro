@@ -6,6 +6,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import Filterrad from './Filterrad.astro';
 import Fragerad from './Fragerad.astro';
 import Veckopuls from './Veckopuls.astro';
+import Fraga from './Fraga.astro';
 import { hamtaData, tillKartpost, typikoner, url, formateraDatum, SAJT, etiketter as byggEtiketter } from '../lib/data';
 import { medVersion } from '../lib/meta';
 import { ikon } from '../lib/ikoner';
@@ -220,6 +221,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         </aside>
       )}
       <p class="karta__not meta">Fylld prick: exakt adress. Kontur: plats på kommunnivå. <a href={url('/metod#plats')}>Varför?</a></p>
+      <Fraga />
     </div>
   )}
 </div>
@@ -243,11 +245,14 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
   import { tittext } from '../lib/titt';
   import { skapaHandelser, tillVercel, type Handling } from '../lib/handelser';
   import { AVSTAND, knuffordning, etikettrutor, korsar, ryms, type Ruta } from '../lib/knuff';
+  import { REDO, HANDLING, ORG, type Kartgranssnitt, type Kartrad } from '../lib/fraga/kartgranssnitt';
+  import type { Kartpost } from '../lib/data';
 
   type Post = {
     id: string; n: string; t: string; o: string[]; a: string[]; k: string | null; kn: string | null;
     l: string | null; ln: string | null; lat: number | null; lng: number | null; pt: string | null;
     d: string; s: string | null; c: number; f: number; w: string; i: string | null;
+    ds: Kartpost['ds']; dv: Kartpost['dv'];
   };
   /** Post med förberedd söktext: nn är namnet, ns allt som går att söka på. */
   type Rad = Post & { nn: string; ns: string };
@@ -399,6 +404,8 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     function handling(typ: Handling) {
       taBortKnuff();
       handelser.handling(typ);
+      // Fråga kartan lämnar första skärmen när besökaren börjar använda kartan.
+      document.dispatchEvent(new CustomEvent<Handling>(HANDLING, { detail: typ }));
     }
 
     /**
@@ -545,6 +552,8 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       const p = new URLSearchParams(filterTillSok(f));
       if (valdId) p.set('org', valdId);
       if (medlemslage) p.set('vy', 'medlemmar');
+      // Fråga kartan är en dold beta. Flaggan följer med, så att den finns kvar när sidan laddas om.
+      if (document.documentElement.dataset.fraga) p.set('fraga', '1');
       const qs = p.toString();
       // Hela sökvägen, inte bara frågedelen: räkneskriptet tolkar adressen mot sajtens rot och
       // skulle annars ta en ny post i historiken på en undersida för en ny sidvisning.
@@ -874,6 +883,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       skrivUrl(lasFilter(), iHistorik);
       if (iHistorik) detaljIHistorik = true;
       uppdateraGrepp();
+      document.dispatchEvent(new CustomEvent<string>(ORG, { detail: o.id }));
       if (karta && kartaKlar) {
         uppdateraVald();
         if (flyg && o.lat !== null && o.lng !== null) {
@@ -1171,12 +1181,19 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     // hamnar under bladet.
     // Bladets nedfällda höjd står i CSS, som --titt-h. Kartan lämnar den ytan fri, plus källraden och lite luft.
     const tittHojd = (): number => parseFloat(getComputedStyle(app).getPropertyValue('--titt-h')) || 62;
-    const kartMarginal = (): Required<PaddingOptions> =>
-      smal.matches
+    // Fråga kartans första skärm ligger över kartans nedre del. Då ritas Sverige ovanför den.
+    const ingang = app.querySelector<HTMLElement>('.ingang');
+    const kartMarginal = (): Required<PaddingOptions> => {
+      if (ingang && document.documentElement.dataset.fragelage === 'hem') {
+        const kant = smal.matches ? 16 : 40;
+        return { top: kant, bottom: Math.max(kant, ingang.offsetHeight - 24), left: kant, right: kant };
+      }
+      return smal.matches
         ? window.innerHeight < 520
           ? { top: 16, bottom: 72, left: 24, right: 24 }
           : { top: 84, bottom: tittHojd() + 34, left: 24, right: 24 }
         : { top: 96, bottom: 48, left: 48, right: 72 };
+    };
 
     /** `el` och `ek` säger om organisationen är ensam i sitt län respektive sin kommun och då ritas som sig själv. */
     function tillGeoJson(poster: Post[], ensamILan?: Set<string>, ensamIKommun?: Set<string>): GeoJSON.FeatureCollection {
@@ -1523,7 +1540,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         visaKartfel();
         return;
       }
-      (window as unknown as { aiKartan?: unknown }).aiKartan = { karta };
+      granssnitt.karta = karta;
       nyNal = (el, plats) => new Nal({ element: el }).setLngLat(plats).addTo(karta!);
       // Besökarens egna rörelser: dra, nypa, rulla och trycka. Kartans egna flygningar har ingen ursprungshändelse.
       karta.on('movestart', (e) => {
@@ -2210,6 +2227,35 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     app.querySelector('#falla')?.addEventListener('click', () => sattPanel(false));
     app.querySelector('#visa-panel')?.addEventListener('click', () => sattPanel(true));
 
+    /* ---------- Fråga kartan ---------- */
+
+    // Gränssnittet sätts direkt, före kartbiblioteket och datan. Det som behöver dem väntar själv.
+    // Reglerna för hur det används står i src/lib/fraga/kartgranssnitt.ts.
+    const granssnitt: Kartgranssnitt = {
+      karta: null,
+      redo: false,
+      poster: (): readonly Kartrad[] => alla,
+      sok: (q) => sok(q),
+      oppnaOrg(id) {
+        const o = alla.find((x) => x.id === id);
+        if (o) visaDetalj(o);
+      },
+      aterstall(f) {
+        lamnaMedlemsvy();
+        lasUrl(new URLSearchParams(filterTillSok(f)));
+        rattaPlats();
+        stangDetalj(false);
+        filtrera();
+        if (karta && kartaKlar) passaKarta();
+      },
+      passa(ramaIn) {
+        if (!karta || !kartaKlar) return;
+        karta.resize();
+        if (ramaIn) passaKarta();
+      },
+    };
+    (window as unknown as { aiKartan?: Kartgranssnitt }).aiKartan = granssnitt;
+
     /* ---------- Start ---------- */
 
     lasUrl(start);
@@ -2247,6 +2293,8 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
           rattaPlats();
           filtrera();
           if (medKarta) forstaVy();
+          granssnitt.redo = true;
+          document.dispatchEvent(new Event(REDO));
         },
         // Bara ett fel i hämtningen är ett datafel. Ett fel i visningen ska inte skylla på uppkopplingen.
         () => {
