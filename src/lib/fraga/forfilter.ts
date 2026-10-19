@@ -1,6 +1,8 @@
 // Förfiltret stoppar frågor som aldrig ska till modellen, och är reserv när modellen saknas.
-// Ranking fångas som hela ord, så att "toppen" inte blir "topp". Övriga listor fångas i början
-// av ett ord, så att "medlemskapet" träffar "medlemskap". Första listan som träffar vinner.
+// Korta ord fångas som hela ord, med sina böjningar utskrivna: "toppen" är inte "topp", och
+// "vd-assistenter", "AI-receptionister" och "Discord-botar" är AI-frågor, inte kontakt, recept eller
+// föreningen. Långa stammar som "introducera" och "kontaktperson" fångas i början av ett ord.
+// Första listan som träffar vinner.
 
 import { normalisera } from '../sok.ts';
 
@@ -14,15 +16,20 @@ const KONTAKT = [
   'introducera', 'introduce', 'presentera mig', 'kontaktuppgift', 'kontaktperson', 'telefonnummer',
   // Bestämd form har ett m: telefonnumret, telefonnumren.
   'telefonnumr',
-  'mejladress', 'e-post', 'epost', 'vd', 'vd:n', 'ceo',
+  'mejladress',
 ];
+const KONTAKT_ORD = new Set(['vd', 'vd:n', 'vdn', 'ceo', 'ceon', 'e-post', 'e-posten', 'e-postadress', 'e-postadressen', 'epost', 'epostadress']);
 
-const OPENSVERIGE = [
-  'opensverige', 'open sverige', 'foreningen', 'medlem', 'medlemskap', 'medlemsavgift', 'discord',
-  'tech embassy', 'lagga till', 'lagger till', 'lagg till', 'ratta', 'mitt bolag pa kartan',
-];
+const OPENSVERIGE = ['opensverige', 'open sverige', 'foreningen', 'tech embassy', 'lagga till', 'lagger till', 'lagg till', 'ratta', 'mitt bolag pa kartan'];
+const OPENSVERIGE_ORD = new Set([
+  'medlem', 'medlemmen', 'medlemmar', 'medlemmarna', 'medlemskap', 'medlemskapet', 'medlemsavgift', 'medlemsavgiften',
+  'discord', 'discorden', 'discords',
+]);
 
-const UTANFOR = ['vader', 'recept', 'dikt', 'aktiekurs', 'fotboll', 'horoskop'];
+const UTANFOR_ORD = new Set([
+  'vader', 'vadret', 'vadrets', 'recept', 'receptet', 'recepten', 'dikt', 'dikten', 'dikter',
+  'aktiekurs', 'aktiekursen', 'aktiekurser', 'aktiekurserna', 'fotboll', 'fotbollen', 'horoskop', 'horoskopet', 'horoskopen',
+]);
 
 const FAQ: { id: string; ord: string[] }[] = [
   { id: 'bli-medlem', ord: ['medlem', 'ga med i foreningen'] },
@@ -38,10 +45,12 @@ const FAQ: { id: string; ord: string[] }[] = [
 // Att hyra beräkning, hosta en modell eller köra inferens. Sådana frågor får en väg till systersajten
 // AI-Infra, som jämför leverantörerna i detalj. Ordet träffar i början av ett ord: "moln" tar "molntjänst".
 const INFRA = [
-  'gpu', 'grafikkort', 'hosting', 'hosta', 'server', 'servrar', 'datacenter', 'datahall', 'moln', 'cloud', 'compute',
+  'gpu', 'grafikkort', 'hosting', 'hosta', 'datacenter', 'datahall', 'moln', 'cloud', 'compute',
   'berakningskraft', 'berakningskapacitet', 'inferens', 'inference', 'hpc', 'superdator', 'kluster', 'colocation',
   'infrastruktur', 'h100', 'h200', 'a100', 'b200',
 ];
+// Servrar som hela ord, och inte när frågan gäller MCP, som är något man bygger, inte hyr.
+const INFRA_SERVER = new Set(['server', 'servern', 'servrar', 'servrarna', 'serverhall', 'serverhallar']);
 
 const MANNISKA = ['bolla', 'nagon att', 'sparra', 'samarbet', 'prata med', 'diskutera med', 'builders', 'hjalp av en'];
 
@@ -64,12 +73,24 @@ function traffarOrd(text: string, ord: readonly string[]): boolean {
   return ord.some((nyckel) => ordstart(text, rensa(nyckel)));
 }
 
+/** Orden i frågan. Bindestreck och kolon inuti ett ord behålls, så att "vd-assistenter" förblir ett ord. */
+function hela(fraga: string): string[] {
+  return normalisera(fraga)
+    .split(/[^a-z0-9:-]+/)
+    .map((t) => t.replace(/^[-:]+|[-:]+$/g, ''))
+    .filter(Boolean);
+}
+
+function harHelt(fraga: string, ord: ReadonlySet<string>): boolean {
+  return hela(fraga).some((t) => ord.has(t));
+}
+
 export function forfilter(fraga: string): Forfilter | null {
   const text = rensa(fraga);
   if (RANKING.some((ord) => heltOrd(text, ord)) || ordstart(text, RANKING_STAM)) return 'ranking';
-  if (traffarOrd(text, KONTAKT)) return 'kontakt';
-  if (traffarOrd(text, OPENSVERIGE)) return 'opensverige';
-  if (traffarOrd(text, UTANFOR)) return 'utanfor';
+  if (traffarOrd(text, KONTAKT) || harHelt(fraga, KONTAKT_ORD)) return 'kontakt';
+  if (traffarOrd(text, OPENSVERIGE) || harHelt(fraga, OPENSVERIGE_ORD)) return 'opensverige';
+  if (harHelt(fraga, UTANFOR_ORD)) return 'utanfor';
   return null;
 }
 
@@ -80,7 +101,9 @@ export function faqUtanModell(fraga: string): string[] {
 }
 
 export function arInfrafraga(fraga: string): boolean {
-  return traffarOrd(rensa(fraga), INFRA);
+  if (traffarOrd(rensa(fraga), INFRA)) return true;
+  const ord = hela(fraga);
+  return !ord.includes('mcp') && ord.some((t) => INFRA_SERVER.has(t));
 }
 
 export function arManniska(fraga: string): boolean {

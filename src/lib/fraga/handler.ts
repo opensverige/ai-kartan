@@ -5,7 +5,7 @@
 import type { Filter } from '../filter.ts';
 import type { Etiketter } from '../sokindex.ts';
 import { svara, type Motordata, type Tolkare } from './motor.ts';
-import { MAX_FRAGOR, MAX_TECKEN, type Modellfelsort, type Tidigare } from './typer.ts';
+import { MAX_FRAGOR, MAX_TECKEN, type Modellfelsort, type Svar, type Tidigare } from './typer.ts';
 
 /** Störst tillåtna kropp i byte. En fråga på 300 tecken och fem tidigare ryms med god marginal. */
 export const MAX_KROPP = 4096;
@@ -106,7 +106,15 @@ export async function hanteraFraga(req: Request, d: Hanterardelar): Promise<Resp
   const k = lasKropp(kropp, data.etiketter);
   if ('fel' in k) return json(400, { fel: k.fel });
 
-  const svar = await svara(k.fraga, k.tidigare, data, d.tolkare(data), d.idag());
+  let svar: Svar;
+  try {
+    svar = await svara(k.fraga, k.tidigare, data, d.tolkare(data), d.idag());
+  } catch {
+    // Ett fel som ingen har förutsett. Webbläsaren går reservvägen, och loggen säger att det hände
+    // utan att bära felets text, som kan innehålla frågan.
+    d.logga({ sort: 'motorfel', ms: Date.now() - start, utanModell: true, modellfel: null });
+    return json(503, { fel: 'Svaret gick inte att räkna fram just nu.' });
+  }
   d.logga({ sort: svar.sort, ms: Date.now() - start, utanModell: svar.utanModell, modellfel: svar.modellfel });
   return json(200, svar);
 }

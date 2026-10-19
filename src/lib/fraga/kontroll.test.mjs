@@ -47,3 +47,13 @@ test('mallrad skriver erbjuder och sökord med och', () => {
     'Jag tolkar det som att du söker organisationer som erbjuder infrastruktur och hosting och nämner ”känsliga”.',
   );
 });
+
+test('godkandRad underkänner rankande ord, fel början och telefonnummer', () => {
+  const borjan = 'Jag tolkar det som att du söker';
+  assert.equal(godkandRad(`${borjan} de främsta bolagen inom röst.`, []), false);
+  assert.equal(godkandRad(`${borjan} bolag som jag rekommenderar.`, []), false);
+  assert.equal(godkandRad(`${borjan} the best voice companies.`, []), false);
+  assert.equal(godkandRad(`${borjan} bolag med telefon 08-123 45 67.`, []), false);
+  assert.equal(godkandRad('Här är de bolag du letar efter.', []), false);
+  assert.equal(godkandRad(`${borjan} organisationer inom hälsa i Göteborg 2026.`, []), true);
+});

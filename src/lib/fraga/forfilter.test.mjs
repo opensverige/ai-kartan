@@ -50,3 +50,35 @@ test('arInfrafraga ser en fråga om GPU, hosting eller inferens', () => {
     assert.equal(arInfrafraga(fraga), false, fraga);
   }
 });
+
+test('forfilter släpper AI-frågor som bara liknar något utanför ämnet, kontakt eller föreningen', () => {
+  for (const fraga of [
+    'Vilka gör AI-receptionister?',
+    'Vilka bygger AI för diktering?',
+    'AI för väderprognoser',
+    'Fotbollsanalys med datorseende',
+    'AI för receptbelagda läkemedel',
+    'AI för e-postsortering',
+    'Vilka gör vd-assistenter med AI',
+    'Vilka bygger Discord-botar?',
+    'Vilka bygger medlemsregister?',
+  ]) {
+    assert.equal(forfilter(fraga), null, fraga);
+  }
+});
+
+test('forfilter fångar böjda former av det som ligger utanför ämnet och kontaktfrågor', () => {
+  assert.equal(forfilter('Vad blir vädret i morgon?'), 'utanfor');
+  assert.equal(forfilter('Ge mig ett recept på pannkakor'), 'utanfor');
+  assert.equal(forfilter('Skriv en dikt om AI'), 'utanfor');
+  assert.equal(forfilter('Vem är vd för Sinch?'), 'kontakt');
+  assert.equal(forfilter('Introducera mig till vd:n för Sinch'), 'kontakt');
+  assert.equal(forfilter('Kan jag få e-post till någon där?'), 'kontakt');
+  assert.equal(forfilter('Hur blir jag medlem i Discord?'), 'opensverige');
+});
+
+test('arInfrafraga räknar inte MCP-servrar som infrastruktur', () => {
+  assert.equal(arInfrafraga('Vilka bygger MCP-servrar?'), false);
+  assert.equal(arInfrafraga('Vi bygger en MCP server för Fortnox'), false);
+  assert.equal(arInfrafraga('Vi vill hyra servrar'), true);
+});

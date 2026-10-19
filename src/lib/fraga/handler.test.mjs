@@ -139,3 +139,19 @@ test('tolkaren skapas ur datan, och felets namn hamnar i svaret och loggen', asy
   assert.equal(kropp.sort, 'traffar');
   assert.equal(loggat.at(-1).modellfel, 'slut');
 });
+
+test('ett oväntat fel i motorn ger 503 och en loggrad, aldrig felets text', async () => {
+  const { loggat, d } = delar({
+    tolkare: () => {
+      throw new Error('AI inom hälsa: oväntat');
+    },
+  });
+  const svar = await hanteraFraga(anrop(giltig()), d);
+  assert.equal(svar.status, 503);
+  assert.equal(svar.headers.get('cache-control'), 'no-store');
+  const kropp = await svar.text();
+  assert.ok(!kropp.includes('oväntat') && !kropp.includes('AI inom hälsa'));
+  assert.equal(loggat.length, 1);
+  assert.equal(loggat[0].sort, 'motorfel');
+  assert.ok(!JSON.stringify(loggat).includes('hälsa'));
+});

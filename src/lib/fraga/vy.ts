@@ -107,7 +107,7 @@ export function radHtml(o: Radpost, under: string, e: Vyetiketter): string {
 function infraradHtml(l: Lankar): string {
   const adress = l.infra.replace(/^https?:\/\//, '').replace(/\/$/, '');
   return (
-    `<a class="palett-rad palett-rad--infra" role="option" aria-selected="false" href="${esc(l.infra)}" rel="noopener" target="_blank" data-infrarad>` +
+    `<a class="palett-rad palett-rad--infra" role="option" aria-selected="false" tabindex="-1" href="${esc(l.infra)}" rel="noopener" target="_blank" data-infrarad>` +
     `<span class="palett-rad__ikon palett-rad__ikon--bild" aria-hidden="true"><img src="${esc(l.infralogo)}" alt="" width="30" height="30" loading="lazy" decoding="async"></span>` +
     `<span class="palett-rad__text"><span class="palett-rad__namn">Jämför på AI-Infra ↗</span>` +
     `<span class="palett-rad__under">GPU, hosting och inferens: pris, datacenter och ägande per leverantör</span></span>` +

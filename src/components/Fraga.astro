@@ -36,7 +36,6 @@ import { SAJT } from '../lib/data';
         placeholder="Sök eller fråga med egna ord …"
         role="combobox"
         aria-expanded="false"
-        aria-controls="palett-lista"
         aria-autocomplete="list"
       />
       <button type="button" class="palett__stang" data-stang aria-label="Stäng"><kbd>esc</kbd></button>
@@ -109,6 +108,8 @@ import { SAJT } from '../lib/data';
     let aktiv = -1;
     // Räknas upp när det som står i paletten byts. Ett svar som kommer för en äldre text ritas inte.
     let nummer = 0;
+    /** Frågan som väntar på svar, så att paletten kan öppnas igen utan att svaret slängs. */
+    let vantande = '';
     let flik: Flik = 'omraden';
     let bladval: Filter[] = [];
 
@@ -217,8 +218,11 @@ import { SAJT } from '../lib/data';
     function visa(): void {
       const q = input.value.trim();
       uppdateraNot(q);
-      if (senaste && q === senaste.q) return ritaSvar(senaste.vy);
+      // Paletten öppnades igen medan svaret på samma fråga väntar. Det får komma.
+      if (tillstand === 'vantar' && q === vantande) return;
+      // Allt annat byter innehållet, och ett svar som väntar på en annan text ritas inte.
       nummer += 1;
+      if (senaste && q === senaste.q) return ritaSvar(senaste.vy);
       if (!q) return ritaTom();
       ritaForslag(q);
     }
@@ -239,6 +243,9 @@ import { SAJT } from '../lib/data';
       const rader = val();
       rader.forEach((r, n) => (r.id = `palett-val-${n}`));
       input.setAttribute('aria-expanded', String(rader.length > 0));
+      // Listan finns bara när det finns rader att välja. Annars pekar fältet inte på något.
+      if (rader.length) input.setAttribute('aria-controls', 'palett-lista');
+      else input.removeAttribute('aria-controls');
       input.removeAttribute('aria-activedescendant');
       aktiv = -1;
       if (markeraForsta) markera(0);
@@ -313,9 +320,10 @@ import { SAJT } from '../lib/data';
       if (!q || q.length > MAX_TECKEN) return;
       input.value = q;
       uppdateraNot(q);
-      if (senaste && senaste.q === q) return ritaSvar(senaste.vy);
       const mitt = ++nummer;
+      if (senaste && senaste.q === q) return ritaSvar(senaste.vy);
       tillstand = 'vantar';
+      vantande = q;
       kropp.innerHTML = '<p class="palett__vantar"><span aria-hidden="true">✦</span>Söker i kartan …</p>';
       vidare.hidden = true;
       vidare.replaceChildren();
