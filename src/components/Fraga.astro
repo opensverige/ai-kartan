@@ -97,6 +97,8 @@ import { SAJT } from '../lib/data';
       discord: document.querySelector<HTMLElement>('.ingang')?.dataset.discord ?? '',
       infra: app.dataset.infra || 'https://infra.opensverige.se',
       infralogo: app.dataset.infralogo || `${kartbas}ai-infra.png`,
+      // Skriptet körs bara i betan. Flaggan följer med till länkarna, så att en ny flik också är i betan.
+      beta: Boolean(rot.dataset.fraga),
     };
     const stilla = window.matchMedia('(prefers-reduced-motion: reduce)');
     // Samma dag som servern räknar med, så att dagens urval blir detsamma i reservvägen.

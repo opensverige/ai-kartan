@@ -17,6 +17,8 @@ export interface Lankar {
   /** Systersajten AI-Infra och dess logga. */
   infra: string;
   infralogo: string;
+  /** Sidan visas i betan, med ?fraga=1. Då bär länkarna till kartan flaggan. */
+  beta?: boolean;
 }
 
 /** Etiketterna som sidan har, med typernas ikoner när de finns. */
@@ -57,6 +59,16 @@ export function esc(s: string): string {
 /** Kartans adress för en relativ länk som "/?q=röst", med sajtens bas. */
 function kartadress(l: Lankar, kartlank: string): string {
   return `${l.kartbas.replace(/\/$/, '')}${kartlank}`;
+}
+
+/**
+ * Knappen Visa alla på kartan. Ett vanligt klick byter urval utan att ladda om, men en ny flik
+ * läser adressen. I betan bär adressen därför flaggan, och utan urval också #karta, eftersom
+ * betan annars börjar på första skärmen. Kopian till Discord får inte flaggan: betan är dold.
+ */
+function kartknapp(l: Lankar, kartlank: string): string {
+  if (!l.beta) return kartadress(l, kartlank);
+  return kartadress(l, kartlank.includes('?') ? `${kartlank}&fraga=1` : `${kartlank}?fraga=1#karta`);
 }
 
 function initialer(namn: string): string {
@@ -248,7 +260,7 @@ export function svarHtml(
   const discord = overlamnaHtml(fraga, s.kartlank, l);
   const infra = s.filter.erbjuder.includes('infrastruktur') || s.filter.typ.includes('infrastruktur') || arInfrafraga(fraga) ? infraradHtml(l) : '';
   // data-kartlank: sidan byter urval på kartan själv i stället för att ladda om (svarets filter eller alla).
-  const allaPaKartan = `<a class="palett__knapp" href="${esc(kartadress(l, '/'))}" data-kartlank="alla">Visa alla ${poster.size} på kartan →</a>`;
+  const allaPaKartan = `<a class="palett__knapp" href="${esc(kartknapp(l, '/'))}" data-kartlank="alla">Visa alla ${poster.size} på kartan →</a>`;
   let besked = '';
 
   switch (s.sort) {
@@ -264,7 +276,7 @@ export function svarHtml(
         .map((o) => radHtml(o, skalUnder(o, s.skal[o.id] ?? []), e));
       kropp.push(`<div class="palett-rader" id="palett-lista" role="listbox" aria-label="Träffar på kartan">${infra}${rader.join('')}</div>`);
       kropp.push(hurHtml(s, poster.size, e));
-      vidare.push(`<a class="palett__knapp" href="${esc(kartadress(l, s.kartlank))}" data-kartlank="svar">Visa alla ${s.totalt} på kartan →</a>`);
+      vidare.push(`<a class="palett__knapp" href="${esc(kartknapp(l, s.kartlank))}" data-kartlank="svar">Visa alla ${s.totalt} på kartan →</a>`);
       if (s.manniska) vidare.push(discord);
       vidare.push(tumme());
       besked = `${s.totalt} på kartan matchar.`;
