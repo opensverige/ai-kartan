@@ -27,17 +27,18 @@ const INFERENS: Inferens | null = process.env.FRAGA_API_NYCKEL
       tidsgrans: TIDSGRANS_MS,
     }
   : null;
-// Reserven svarar när Berget inte gör det (reserv.ts). Den kräver både nyckel och modell, och får
-// den tid som är kvar av TIDSGRANS_MS. Nebius kör i Finland, med nollagring påslagen i konsolen.
-const RESERV: Inferens | null =
-  process.env.FRAGA_RESERV_NYCKEL && process.env.FRAGA_RESERV_MODELL
-    ? {
-        bas: process.env.FRAGA_RESERV_BAS ?? 'https://api.tokenfactory.nebius.com/v1',
-        nyckel: process.env.FRAGA_RESERV_NYCKEL,
-        modell: process.env.FRAGA_RESERV_MODELL,
-        tidsgrans: TIDSGRANS_MS - RESERV_SENAST_MS,
-      }
-    : null;
+// Reserven svarar när Berget inte gör det (reserv.ts), och får den tid som är kvar av TIDSGRANS_MS.
+// Nebius kör i Finland, med nollagring påslagen i konsolen.
+const RESERV: Inferens | null = process.env.FRAGA_RESERV_NYCKEL
+  ? {
+      bas: process.env.FRAGA_RESERV_BAS ?? 'https://api.tokenfactory.nebius.com/v1',
+      nyckel: process.env.FRAGA_RESERV_NYCKEL,
+      // Gemma 3 27B klarade provet med 17/20, 0 felaktiga organisationer och p95 3,3 s. Nebius har
+      // ingen Mistral, och Qwen och DeepSeek var långsammare och gav fler ogiltiga svar (2026-10-19).
+      modell: process.env.FRAGA_RESERV_MODELL ?? 'google/gemma-3-27b-it',
+      tidsgrans: TIDSGRANS_MS - RESERV_SENAST_MS,
+    }
+  : null;
 // En vakt per leverantör och serverinstans, så att en paus gäller alla frågor till den instansen.
 const VAKT = skapaVakt();
 const VAKT_RESERV = skapaVakt();

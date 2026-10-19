@@ -120,7 +120,7 @@ Taktbegränsningen är en regel i Vercels brandvägg: `/api/fraga`, 10 anrop per
 
 När krediterna är slut pausar vakten modellen i 15 minuter, och besökarna får raden "AI-tolkningen är pausad just nu".
 
-Reserven är Nebius. Svarar inte Berget, för att krediten är slut, nyckeln är fel eller tjänsten är nere, går frågan dit i stället. Den kräver `FRAGA_RESERV_NYCKEL` och `FRAGA_RESERV_MODELL`, och `FRAGA_RESERV_BAS` är `https://api.tokenfactory.nebius.com/v1` om den saknas. Nollagring (Zero Data Retention) ska vara påslagen i Nebius konsol.
+Reserven är Nebius. Svarar inte Berget, för att krediten är slut, nyckeln är fel eller tjänsten är nere, går frågan dit i stället. Den slås på av `FRAGA_RESERV_NYCKEL`. Modellen är `google/gemma-3-27b-it` och adressen `https://api.tokenfactory.nebius.com/v1`, om inte `FRAGA_RESERV_MODELL` och `FRAGA_RESERV_BAS` säger annat. Nollagring (Zero Data Retention) ska vara påslagen i Nebius konsol.
 
 Dagstaket är 500 frågor till modellen per dygn och serverinstans, eller det tal som står i `FRAGA_DAGSTAK`. När det är nått svarar sökningen utan modell till midnatt, med samma rad om att AI-tolkningen är pausad. Den förbetalda krediten hos Berget och Nebius är det hårda taket.
 
