@@ -17,10 +17,11 @@
     "preview": "astro preview",
     "check": "astro check",
     "validera": "node scripts/validera.mjs",
-    "test": "node --test \"scripts/*.test.mjs\" \"src/lib/*.test.mjs\"",
+    "test": "node --test \"scripts/*.test.mjs\" \"src/lib/*.test.mjs\" \"src/lib/fraga/*.test.mjs\"",
     "andringar": "node scripts/andringar.mjs",
     "farskhet": "node scripts/farskhet.mjs",
     "lankkoll": "node scripts/lankkoll.mjs",
+    "prova:fraga": "node --env-file-if-exists=.env scripts/prova-fraga.mjs",
     "importera:infra": "node scripts/importera-infra.mjs",
     "ny": "node scripts/ny-organisation.mjs",
     "delalank": "node scripts/delalank.mjs"

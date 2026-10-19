@@ -62,6 +62,15 @@ function aktiv(href: string): boolean {
       <kbd class="sok__kbd" aria-hidden="true">⌘K</kbd>
       <div class="sok__lada" id="sokresultat" hidden></div>
     </form>
+    {/* Fråga kartan: i betan står här en knapp som ser ut som sökrutan och öppnar paletten.
+        Den syns bara på kartsidan med ?fraga=1, se Bas.astro och Fraga.astro. */}
+    <div class="huvudplats">
+      <button type="button" class="huvudplats__knapp" data-fraga-oppna aria-haspopup="dialog">
+        <span class="huvudplats__glyf" aria-hidden="true">✦</span>
+        <span class="huvudplats__text">Sök eller fråga …</span>
+        <kbd class="sok__kbd huvudplats__kbd" aria-hidden="true">⌘K</kbd>
+      </button>
+    </div>
 
     <div class="sidhuvud__hoger">
       <a class="hknapp hknapp--mork" href={url('/bidra')}>
@@ -106,14 +115,17 @@ function aktiv(href: string): boolean {
 
 <script>
   const falt = document.querySelector<HTMLInputElement>('#sok');
-  const kbd = document.querySelector<HTMLElement>('.sok__kbd');
+  const kbd = document.querySelectorAll<HTMLElement>('.sok__kbd');
   const meny = document.querySelector<HTMLDetailsElement>('.meny');
 
-  if (kbd && !/Mac|iPhone|iPad/.test(navigator.userAgent)) kbd.textContent = 'Ctrl K';
+  if (!/Mac|iPhone|iPad/.test(navigator.userAgent)) kbd.forEach((k) => (k.textContent = 'Ctrl K'));
 
   document.addEventListener('keydown', (e) => {
     if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
       e.preventDefault();
+      // I Fråga kartans beta är sökrutan dold. Då öppnar kortkommandot paletten i stället.
+      const palett = document.querySelector<HTMLElement>('html[data-fraga] [data-fraga-oppna]');
+      if (palett) return palett.click();
       falt?.focus();
       falt?.select();
     }
@@ -280,6 +292,62 @@ function aktiv(href: string): boolean {
   .sok:focus-within .sok__kbd {
     display: none;
   }
+  .huvudplats {
+    display: none;
+  }
+  :global(html[data-fraga]) .sok {
+    display: none;
+  }
+  :global(html[data-fraga]) .huvudplats {
+    display: block;
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 640px;
+    height: 46px;
+    margin: 0 auto;
+  }
+  /* På första skärmen har sidhuvudet ingen sökruta. Platsen står kvar, så att inget annat flyttar sig. */
+  :global(html[data-fragelage='hem']) .huvudplats {
+    visibility: hidden;
+  }
+  .huvudplats__knapp {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    height: 100%;
+    padding: 0 0 0 16px;
+    border: 1.5px solid hsl(var(--ink) / 0.22);
+    border-radius: var(--r-pill);
+    background: hsl(var(--bg));
+    box-shadow: 0 1px 2px hsl(var(--ink) / 0.05);
+    color: hsl(var(--ink-mute));
+    font: 400 16px/1.2 var(--font-sans);
+    text-align: left;
+    cursor: text;
+    transition: border-color var(--t-fast), box-shadow var(--t-fast);
+  }
+  .huvudplats__knapp:hover {
+    border-color: hsl(var(--ink) / 0.45);
+  }
+  .huvudplats__knapp:focus-visible {
+    outline: 0;
+    border-color: hsl(var(--ink));
+    box-shadow: 0 0 0 4px hsl(var(--ink) / 0.08);
+  }
+  .huvudplats__glyf {
+    flex: none;
+    color: hsl(var(--moss));
+    font-size: 16px;
+    line-height: 1;
+  }
+  .huvudplats__text {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 
   .sidhuvud__hoger {
     display: flex;
@@ -407,7 +475,8 @@ function aktiv(href: string): boolean {
       min-height: 44px;
       justify-content: center;
     }
-    .sok {
+    .sok,
+    :global(html[data-fraga]) .huvudplats {
       height: 44px;
     }
     .sok__ikon {

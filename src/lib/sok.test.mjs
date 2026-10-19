@@ -4,7 +4,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { normalisera, tolka, traffar, tomtSvar, finnsI, ALIAS } from './sok.ts';
+import { normalisera, tolka, traffar, tomtSvar, finnsI, ALIAS, karnord } from './sok.ts';
 
 const post = (n, d, extra = {}) => ({ n, t: 'bolag', o: [], a: [], ...extra, nn: normalisera(n), ns: normalisera(`${n} ${d}`) });
 const ALLA = [
@@ -158,4 +158,45 @@ test('"gotland" träffar Gotland, inte Östergötland', () => {
   assert.equal(finnsI('gotlands lan', 'gotland'), true);
   assert.equal(finnsI('storage', 'rag'), false);
   assert.equal(finnsI('dokumenthantering', 'dokument'), true);
+});
+
+const sokI = (lista, q) => {
+  const t = tolka(q, lista);
+  return lista.filter((o) => traffar(o, t)).map((o) => o.n);
+};
+const ROST = [
+  post('Röstbolaget', 'Bygger röstagenter för kundtjänst.'),
+  post('Talverket', 'Säljer TTS för svenska.'),
+  post('Voicebolaget', 'Bygger voice agents för telefoni.'),
+  post('Prostatabolaget', 'Analyserar bilder av prostatacancer.'),
+  post('Fakturan', 'Automatiserar invoice-flöden.'),
+];
+
+test('röst, voice och tts står i början av ett ord', () => {
+  assert.ok(!sokI(ROST, 'röst').includes('Prostatabolaget'));
+  assert.ok(!sokI(ROST, 'voice').includes('Fakturan'));
+});
+
+test('röst, voice och tts hittar varandra', () => {
+  const vantat = ['Röstbolaget', 'Talverket', 'Voicebolaget'];
+  assert.deepEqual(sokI(ROST, 'röst'), vantat);
+  assert.deepEqual(sokI(ROST, 'voice'), vantat);
+  assert.deepEqual(sokI(ROST, 'tts'), vantat);
+});
+
+test('karnord behåller orden som bär frågan och tar bort utfyllnad', () => {
+  assert.equal(karnord('Vilka bygger röstagenter i Göteborg?'), 'röstagenter Göteborg');
+  assert.equal(karnord('Hitta mig alla som arbetar med AI'), '');
+});
+
+test('karnord tar bort ord som hör till frågan, inte till det som söks', () => {
+  assert.equal(karnord('Vilka bygger röstagenter på svenska?'), 'röstagenter');
+  assert.equal(karnord('Jag behöver GPU-kapacitet'), 'GPU-kapacitet');
+  assert.equal(karnord('Jag behöver någon att bolla SIP och telefoni med'), 'SIP telefoni');
+  assert.equal(karnord('Kan du ge tips på svensk språkmodell?'), 'språkmodell');
+});
+
+test('karnord tar bort "ja", som många skriver för "jag"', () => {
+  assert.equal(karnord('Ja behöver hyra GPU'), 'GPU');
+  assert.equal(karnord('Jag behöver hyra GPU'), 'GPU');
 });

@@ -1,0 +1,71 @@
+// Serverfunktionen för Fråga kartan, den enda dynamiska delen av sajten. Allt som går att pröva
+// ligger i src/lib/fraga/. Här kopplas det ihop med Vercel: var datan hämtas och vad som loggas.
+
+import type { Kartpost } from '../src/lib/data.ts';
+import { tillSokpost } from '../src/lib/sokindex.ts';
+import { datakalla, PRODUKTION, skyddskaka, tillatnaUrsprung } from '../src/lib/fraga/datakalla.ts';
+import { hanteraFraga, type Hanterardelar } from '../src/lib/fraga/handler.ts';
+import { skapaTolkare, type Inferens } from '../src/lib/fraga/inferens.ts';
+import type { Motordata, Tolkare } from '../src/lib/fraga/motor.ts';
+import { TIDSGRANS_MS, type Fragedata } from '../src/lib/fraga/typer.ts';
+import { skapaVakt } from '../src/lib/fraga/vakt.ts';
+
+const CACHE_MS = 5 * 60 * 1000;
+const HAMTA_MS = 4000;
+const URSPRUNG = tillatnaUrsprung(process.env);
+const cache = new Map<string, { tid: number; data: Motordata }>();
+
+// Utan nyckel finns ingen modell, och svaren går via reservvägen med raden om att AI-tolkningen är pausad.
+const INFERENS: Inferens | null = process.env.FRAGA_API_NYCKEL
+  ? {
+      bas: process.env.FRAGA_API_BAS ?? 'https://api.berget.ai/v1',
+      nyckel: process.env.FRAGA_API_NYCKEL,
+      // Mistral klarade provet med p95 under 3 s, Gemma inte (specen 5.3.1, provet 2026-10-19).
+      modell: process.env.FRAGA_MODELL ?? 'mistralai/Mistral-Small-3.2-24B-Instruct-2506',
+      tidsgrans: TIDSGRANS_MS,
+    }
+  : null;
+// En vakt per serverinstans, så att en paus gäller alla frågor till den instansen.
+const VAKT = skapaVakt();
+const tolkarePerData = new WeakMap<Motordata, Tolkare>();
+
+async function lasJson<T>(adress: string, kaka: string | null): Promise<T> {
+  const svar = await fetch(adress, { headers: kaka ? { cookie: kaka } : {}, signal: AbortSignal.timeout(HAMTA_MS) });
+  if (!svar.ok) throw new Error(`${svar.status} från ${new URL(adress).pathname}`);
+  return (await svar.json()) as T;
+}
+
+async function hamtaData(req: Request): Promise<Motordata> {
+  const bas = datakalla(req.url, URSPRUNG, PRODUKTION);
+  const sparad = cache.get(bas);
+  if (sparad && Date.now() - sparad.tid < CACHE_MS) return sparad.data;
+  const kaka = new URL(req.url).origin === bas ? skyddskaka(req.headers.get('cookie')) : null;
+  const [karta, fd] = await Promise.all([
+    lasJson<{ organisationer: Kartpost[] }>(`${bas}/api/karta.json`, kaka),
+    lasJson<Fragedata>(`${bas}/api/fraga-data.json`, kaka),
+  ]);
+  const data: Motordata = {
+    poster: karta.organisationer.map((o) => tillSokpost(o, fd.etiketter)),
+    etiketter: fd.etiketter,
+    faqIds: fd.faq.map((f) => f.id),
+    kommuner: fd.kommuner,
+    lan: fd.lan,
+  };
+  if (INFERENS) tolkarePerData.set(data, VAKT.omsluta(skapaTolkare(INFERENS, fd.etiketter, fd.faq)));
+  cache.set(bas, { tid: Date.now(), data });
+  return data;
+}
+
+const idag = (): string => new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Stockholm' }).format(new Date());
+
+const delar: Hanterardelar = {
+  ursprung: URSPRUNG,
+  hamtaData,
+  tolkare: (data) => tolkarePerData.get(data) ?? null,
+  idag,
+  logga: (rad) => console.log(JSON.stringify(rad)),
+};
+
+export function POST(request: Request): Promise<Response> {
+  return hanteraFraga(request, delar);
+}

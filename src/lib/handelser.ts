@@ -12,10 +12,15 @@ export const HANDELSER = {
   /** Kartan och organisationerna är ritade. Jämförs med sidvisningarna: hur många väntade så länge? */
   karta_ritad: { tid: ['under 2 s', '2 till 4 s', '4 till 8 s', 'över 8 s', 'i bakgrunden'] },
   /** Det första besökaren gör på sidan. Andelen besök med en sådan är måttet på om kartan används. */
-  forsta_handling: { typ: ['karta', 'blad', 'sok', 'filter', 'fraga', 'lista', 'medlemmar'] },
+  forsta_handling: { typ: ['karta', 'blad', 'sok', 'filter', 'fraga', 'lista', 'medlemmar', 'ai'] },
   org_oppnad: { via: ['karta', 'lista', 'sok'] },
   utlank: { mal: ['webbplats', 'ai-infra', 'annan'] },
   lagg_till: { fran: ['sidhuvud', 'panel', 'lista'] },
+  /** Fråga kartan gav ett svar. Bara svarets sort följer med, aldrig frågan. */
+  fraga_stalld: { sort: ['traffar', 'bred', 'tomt', 'manniska', 'ranking', 'kontakt', 'opensverige', 'utanfor'] },
+  /** Ett klick i svaret: en organisation, Visa alla på kartan, Discord eller Kopiera frågan. */
+  fraga_klick: { mal: ['organisation', 'alla_pa_kartan', 'discord', 'kopiera'] },
+  fraga_tumme: { svar: ['ja', 'nej'] },
 } as const;
 
 export type Handelsenamn = keyof typeof HANDELSER;
@@ -24,6 +29,9 @@ export type Handling = (typeof HANDELSER.forsta_handling.typ)[number];
 export type Oppnadvia = (typeof HANDELSER.org_oppnad.via)[number];
 export type Utlanksmal = (typeof HANDELSER.utlank.mal)[number];
 export type Laggtillfran = (typeof HANDELSER.lagg_till.fran)[number];
+export type Fragesort = (typeof HANDELSER.fraga_stalld.sort)[number];
+export type Frageklick = (typeof HANDELSER.fraga_klick.mal)[number];
+export type Fragetumme = (typeof HANDELSER.fraga_tumme.svar)[number];
 
 export type Skicka = (namn: string, data: Record<string, unknown>) => void;
 
@@ -69,6 +77,9 @@ export interface Handelser {
   orgOppnad(via: Oppnadvia): void;
   utlank(mal: Utlanksmal): void;
   laggTill(fran: Laggtillfran): void;
+  fragaStalld(sort: Fragesort): void;
+  fragaKlick(mal: Frageklick): void;
+  fragaTumme(svar: Fragetumme): void;
 }
 
 export function skapaHandelser(skicka: Skicka): Handelser {
@@ -90,5 +101,8 @@ export function skapaHandelser(skicka: Skicka): Handelser {
     orgOppnad: (via) => skicka('org_oppnad', { via }),
     utlank: (mal) => skicka('utlank', { mal }),
     laggTill: (fran) => skicka('lagg_till', { fran }),
+    fragaStalld: (sort) => skicka('fraga_stalld', { sort }),
+    fragaKlick: (mal) => skicka('fraga_klick', { mal }),
+    fragaTumme: (svar) => skicka('fraga_tumme', { svar }),
   };
 }

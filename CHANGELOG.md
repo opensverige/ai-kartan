@@ -2,6 +2,10 @@
 
 Kodens och funktionernas historik. Dataändringar loggas separat och automatiskt i `history/changelog.json` och på sajten under Ändringar. Samma rader som här finns maskinläsbart i `history/bygglogg.json`.
 
+## 2026-10-19
+
+- Fråga kartan, i dold beta på `/?fraga=1`. Kartsidan börjar med en första skärm och ett fält där man frågar med egna ord, till exempel ”Vilka bygger röstagenter på svenska?”. Fältet, sidhuvudets sökruta och ⌘K öppnar en sökpalett. Medan man skriver visas organisationer och platser direkt, och Fråga AI överst. Svaret står i samma lista: en rad om hur frågan tolkades, organisationerna med ett utdrag ur beskrivningen och sin status, och Visa alla på kartan, som byter kartans urval. En öppen språkmodell hos Berget AI gör om frågan till kartans filter. Koden väljer vilka som visas och i vilken ordning, och modellen ser aldrig organisationerna. Utan modellen svarar sökningen ändå, och svaret säger det. En fråga om GPU, hosting eller inferens leder också till systersajten AI-Infra. Frågan sparas inte, varken hos oss eller hos Berget. Reglerna ligger i `src/lib/fraga/`, och Personuppgifter säger vad som skickas.
+
 ## 2026-10-13
 
 - Kartan visar exakt adress där den finns. En organisation med känd adress är en fylld prick på sin plats: besöksadressen från den egna webbplatsen, annars den registrerade postadressen hos Bolagsverket eller SCB. Delar flera organisationer hus står antalet i pricken. Övriga ritas som konturer i kommunens rutnät, i en mjuk tonad yta med kommunens namn och antal under, och konturerna svävar en aning. Förut såg rutnätet ut som adresser på en gatukarta, fast rutan var påhittad. Detaljvyns ruta Plats säger när adressen saknas, med en länk till rättelse. Bara koordinaten sparas, aldrig gatuadressen, och adresser med c/o eller lägenhetsnummer används inte. Metod, Personuppgifter, Öppen data, schemat och regel 3 för agenter säger den nya regeln. Ytans regler ligger i `src/lib/kommunyta.ts`.

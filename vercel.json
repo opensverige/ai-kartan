@@ -3,6 +3,10 @@
   "framework": "astro",
   "cleanUrls": true,
   "trailingSlash": false,
+  "regions": ["arn1"],
+  "functions": {
+    "api/fraga.ts": { "maxDuration": 15, "includeFiles": "{src/lib/**/*.ts,scripts/lib/marknadsord.mjs}" }
+  },
   "redirects": [
     {
       "source": "/(.*)",
@@ -16,7 +20,8 @@
     { "source": "/api/data/:id", "destination": "/api/data/:id.json" },
     { "source": "/api/karta", "destination": "/api/karta.json" },
     { "source": "/api/andringar", "destination": "/api/andringar.json" },
-    { "source": "/api/status", "destination": "/api/status.json" }
+    { "source": "/api/status", "destination": "/api/status.json" },
+    { "source": "/api/fraga-data", "destination": "/api/fraga-data.json" }
   ],
   "headers": [
     {
@@ -30,11 +35,15 @@
       ]
     },
     {
-      "source": "/api/(.*)",
+      "source": "/api/((?!fraga$).*)",
       "headers": [
         { "key": "Access-Control-Allow-Origin", "value": "*" },
         { "key": "Cache-Control", "value": "public, max-age=3600, stale-while-revalidate=86400" }
       ]
+    },
+    {
+      "source": "/api/fraga",
+      "headers": [{ "key": "Cache-Control", "value": "no-store" }]
     },
     {
       "source": "/ikoner/(.*)",

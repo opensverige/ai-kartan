@@ -80,6 +80,8 @@ const SYNONYMGRUPPER: string[][] = [
   ['bidrag', 'utlysning', 'forskningsmedel', 'grants'],
   ['aldreomsorg', 'omsorg', 'hemtjanst'],
   ['startup', 'startups', 'start-up'],
+  // Tal ut, inte taligenkänning. "text till tal" tas inte med: "till" träffar tillverkning.
+  ['rost', 'voice', 'tts', 'talsyntes', 'text-to-speech', 'rostagent', 'rostagenter', 'voice agent', 'voice agents'],
 ];
 const SYNONYMER = new Map<string, string[]>();
 for (const grupp of SYNONYMGRUPPER) for (const ord of grupp) SYNONYMER.set(ord, [...new Set([...(SYNONYMER.get(ord) ?? []), ...grupp])]);
@@ -106,8 +108,8 @@ function stammar(ord: string): string[] {
   return ut;
 }
 
-/** Platsnamn som också är slutet på ett annat platsnamn. De ska stå i början av ett ord. */
-const ORDSTART = new Set(['gotland', 'gotlands']);
+/** Ord som ska stå i början av ett ord. "gotland" finns i Östergötland. "rost" finns i prostata och "voice" i invoice. "tts" följer samma regel. */
+export const ORDSTART: ReadonlySet<string> = new Set(['gotland', 'gotlands', 'rost', 'voice', 'tts']);
 const ordgranser = new Map<string, RegExp>();
 
 /**
@@ -180,6 +182,31 @@ export function tolka(q: string, alla: Sokpost[]): Tolkning {
 /** Sant om organisationen passar sökningen. */
 export function traffar(o: Sokpost, tolkning: Tolkning): boolean {
   return tolkning.tom || gruppTraff(o, tolkning.grupper);
+}
+
+/**
+ * Ord som hör till en fråga, inte till det som söks: uppmaningar, behov, verb och att det gäller Sverige.
+ * Kartan har bara svenska organisationer, så "svenska" begränsar inget men stoppar varje träff
+ * som inte råkar nämna ordet. Gäller bara karnord, inte kartans vanliga sökning.
+ */
+const UPPMANING = new Set(
+  // "ja" står med eftersom många skriver det för "jag".
+  'ja hitta mig alla visa lista ge kan du vill tips behover behov nagon nagot nagra bolla hjalp hjalpa svenska svensk svenskt sverige arbeta jobba bygga utveckla gora'.split(' '),
+);
+
+/**
+ * Orden som bär frågan, som besökaren skrev dem. Utfyllnad och uppmaningar
+ * tas bort, så att reservvägen utan modell inte söker på "hitta mig alla".
+ */
+export function karnord(q: string): string {
+  return q
+    .replace(/[?!.,;:]/g, ' ')
+    .split(/\s+/)
+    .filter((ord) => {
+      const nyckel = normalisera(ord);
+      return nyckel !== '' && !UTFYLLNAD.has(nyckel) && !UPPMANING.has(nyckel);
+    })
+    .join(' ');
 }
 
 export interface Tomt {

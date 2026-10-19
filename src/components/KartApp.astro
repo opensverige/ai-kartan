@@ -6,7 +6,8 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import Filterrad from './Filterrad.astro';
 import Fragerad from './Fragerad.astro';
 import Veckopuls from './Veckopuls.astro';
-import { hamtaData, tillKartpost, typikoner, url, formateraDatum, SAJT } from '../lib/data';
+import Fraga from './Fraga.astro';
+import { hamtaData, tillKartpost, typikoner, url, formateraDatum, SAJT, etiketter as byggEtiketter } from '../lib/data';
 import { medVersion } from '../lib/meta';
 import { ikon } from '../lib/ikoner';
 import { medlemsvy, type Medlemsdata } from '../lib/medlemmar';
@@ -23,14 +24,7 @@ const s = d.statistik;
 // Sidan hämtas alltid färsk, men kartdatan får ligga en timme i webbläsaren. Adressen bär därför en
 // version ur innehållet, så att en återkommande besökare aldrig får ny sida med gammal lista.
 const kartdata = medVersion(url('/api/karta.json'), new TextEncoder().encode(JSON.stringify(d.organisationer.map(tillKartpost))));
-const etiketter = {
-  typer: Object.fromEntries(d.taxonomi.typer.map((t) => [t.id, t.label])),
-  typerPlural: Object.fromEntries(d.taxonomi.typer.map((t) => [t.id, t.plural ?? t.label])),
-  erbjuder: Object.fromEntries(d.taxonomi.erbjuder.map((t) => [t.id, t.label])),
-  omraden: Object.fromEntries(d.taxonomi.omraden.map((t) => [t.id, t.label])),
-  lan: Object.fromEntries(d.lan.map((l) => [l.kod, l.namn])),
-  typikoner: typikoner(),
-};
+const etiketter = { ...byggEtiketter(d), typikoner: typikoner() };
 const allaEfterNamn = d.organisationer.slice().sort((a, b) => a.name.value.localeCompare(b.name.value, 'sv'));
 // Var föreningens medlemmar finns, som antal per region. Ritas på kartan först när besökaren ber om det.
 const medlemmar = lage === 'karta' ? medlemsvy(medlemsdata as Medlemsdata, d.kommuner) : null;
@@ -227,6 +221,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         </aside>
       )}
       <p class="karta__not meta">Fylld prick: exakt adress. Kontur: plats på kommunnivå. <a href={url('/metod#plats')}>Varför?</a></p>
+      <Fraga />
     </div>
   )}
 </div>
@@ -243,21 +238,24 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
   import { arPaskagg, cirkel, type Medlemsvy } from '../lib/medlemmar';
   import { kommunytor } from '../lib/kommunyta';
   import { normalisera, tolka, traffar, tomtSvar, finnsI, type Tolkning } from '../lib/sok';
+  import { passarFilter, filterTillSok, type Filter, type FacettNamn } from '../lib/filter';
+  import { tillSokpost, type Etiketter } from '../lib/sokindex';
   import { urvalsrubrik, RUBRIK_ALLA } from '../lib/urvalsrubrik';
   import { arVald } from '../lib/fragor';
   import { tittext } from '../lib/titt';
   import { skapaHandelser, tillVercel, type Handling } from '../lib/handelser';
   import { AVSTAND, knuffordning, etikettrutor, korsar, ryms, type Ruta } from '../lib/knuff';
+  import { REDO, HANDLING, ORG, type Kartgranssnitt, type Kartrad } from '../lib/fraga/kartgranssnitt';
+  import type { Kartpost } from '../lib/data';
 
   type Post = {
     id: string; n: string; t: string; o: string[]; a: string[]; k: string | null; kn: string | null;
     l: string | null; ln: string | null; lat: number | null; lng: number | null; pt: string | null;
     d: string; s: string | null; c: number; f: number; w: string; i: string | null;
+    ds: Kartpost['ds']; dv: Kartpost['dv'];
   };
   /** Post med förberedd söktext: nn är namnet, ns allt som går att söka på. */
   type Rad = Post & { nn: string; ns: string };
-  type FacettNamn = 'erbjuder' | 'typ' | 'omrade' | 'lan';
-  type Filter = { q: string; erbjuder: string[]; typ: string[]; omrade: string[]; lan: string; kommun: string };
   type PlatsTraff = { typ: 'kommun' | 'lan'; kod: string; namn: string; nn: string; under: string; antal: number };
   /** `visat` är orden som faktiskt söktes när utfyllnadsord togs bort. Annars tom. */
   type SokTraff = { org: Rad[]; platser: PlatsTraff[]; totalt: number; visat: string };
@@ -267,7 +265,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
   if (app) starta(app);
 
   function starta(app: HTMLElement) {
-    const etiketter = JSON.parse(document.getElementById('etiketter')!.textContent || '{}') as Record<string, Record<string, string>>;
+    const etiketter = JSON.parse(document.getElementById('etiketter')!.textContent || '{}') as Etiketter & { typikoner?: Record<string, string> };
     // Typer med egen ikon: de ritas som landmärken på kartan och i logorutan på korten.
     const typikoner = etiketter.typikoner ?? {};
     const medKarta = app.dataset.lage === 'karta';
@@ -406,6 +404,8 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     function handling(typ: Handling) {
       taBortKnuff();
       handelser.handling(typ);
+      // Fråga kartan lämnar första skärmen när besökaren börjar använda kartan.
+      document.dispatchEvent(new CustomEvent<Handling>(HANDLING, { detail: typ }));
     }
 
     /**
@@ -543,31 +543,17 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       form.querySelectorAll<HTMLInputElement>(`input[name="${namn}"]`).forEach((i) => (i.checked = varden.includes(i.value)));
     }
 
-    /** Sant om posten klarar filtret. `utom` hoppar över en facett, för att räkna antal per val. */
-    function passar(o: Rad, f: Filter, tolkning: Tolkning, utom?: FacettNamn): boolean {
-      if (!traffar(o, tolkning)) return false;
-      if (utom !== 'erbjuder' && f.erbjuder.length && !f.erbjuder.some((x) => o.o.includes(x))) return false;
-      if (utom !== 'typ' && f.typ.length && !f.typ.includes(o.t)) return false;
-      if (utom !== 'omrade' && f.omrade.length && !f.omrade.some((x) => o.a.includes(x))) return false;
-      if (utom !== 'lan') {
-        if (f.lan && o.l !== f.lan) return false;
-        if (f.kommun && o.k !== f.kommun) return false;
-      }
-      return true;
-    }
+    /** Reglerna står i src/lib/filter.ts, så att Fråga kartan räknar likadant. */
+    const passar = (o: Rad, f: Filter, tolkning: Tolkning, utom?: FacettNamn): boolean => passarFilter(o, f, tolkning, utom);
 
     const sokord = (q: string) => normalisera(q).split(/\s+/).filter(Boolean);
 
     function skrivUrl(f: Filter, nyPost = false) {
-      const p = new URLSearchParams();
-      if (f.q) p.set('q', f.q);
-      if (f.erbjuder.length) p.set('erbjuder', f.erbjuder.join(','));
-      if (f.typ.length) p.set('typ', f.typ.join(','));
-      if (f.omrade.length) p.set('omrade', f.omrade.join(','));
-      if (f.lan) p.set('lan', f.lan);
-      if (f.kommun) p.set('kommun', f.kommun);
+      const p = new URLSearchParams(filterTillSok(f));
       if (valdId) p.set('org', valdId);
       if (medlemslage) p.set('vy', 'medlemmar');
+      // Fråga kartan är en dold beta. Flaggan följer med, så att den finns kvar när sidan laddas om.
+      if (document.documentElement.dataset.fraga) p.set('fraga', '1');
       const qs = p.toString();
       // Hela sökvägen, inte bara frågedelen: räkneskriptet tolkar adressen mot sajtens rot och
       // skulle annars ta en ny post i historiken på en undersida för en ny sidvisning.
@@ -897,6 +883,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       skrivUrl(lasFilter(), iHistorik);
       if (iHistorik) detaljIHistorik = true;
       uppdateraGrepp();
+      document.dispatchEvent(new CustomEvent<string>(ORG, { detail: o.id }));
       if (karta && kartaKlar) {
         uppdateraVald();
         if (flyg && o.lat !== null && o.lng !== null) {
@@ -1194,12 +1181,19 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     // hamnar under bladet.
     // Bladets nedfällda höjd står i CSS, som --titt-h. Kartan lämnar den ytan fri, plus källraden och lite luft.
     const tittHojd = (): number => parseFloat(getComputedStyle(app).getPropertyValue('--titt-h')) || 62;
-    const kartMarginal = (): Required<PaddingOptions> =>
-      smal.matches
+    // Fråga kartans första skärm ligger över kartans nedre del. Då ritas Sverige ovanför den.
+    const ingang = app.querySelector<HTMLElement>('.ingang');
+    const kartMarginal = (): Required<PaddingOptions> => {
+      if (ingang && document.documentElement.dataset.fragelage === 'hem') {
+        const kant = smal.matches ? 16 : 40;
+        return { top: kant, bottom: Math.max(kant, ingang.offsetHeight - 24), left: kant, right: kant };
+      }
+      return smal.matches
         ? window.innerHeight < 520
           ? { top: 16, bottom: 72, left: 24, right: 24 }
           : { top: 84, bottom: tittHojd() + 34, left: 24, right: 24 }
         : { top: 96, bottom: 48, left: 48, right: 72 };
+    };
 
     /** `el` och `ek` säger om organisationen är ensam i sitt län respektive sin kommun och då ritas som sig själv. */
     function tillGeoJson(poster: Post[], ensamILan?: Set<string>, ensamIKommun?: Set<string>): GeoJSON.FeatureCollection {
@@ -1546,7 +1540,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         visaKartfel();
         return;
       }
-      (window as unknown as { aiKartan?: unknown }).aiKartan = { karta };
+      granssnitt.karta = karta;
       nyNal = (el, plats) => new Nal({ element: el }).setLngLat(plats).addTo(karta!);
       // Besökarens egna rörelser: dra, nypa, rulla och trycka. Kartans egna flygningar har ingen ursprungshändelse.
       karta.on('movestart', (e) => {
@@ -2233,6 +2227,39 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     app.querySelector('#falla')?.addEventListener('click', () => sattPanel(false));
     app.querySelector('#visa-panel')?.addEventListener('click', () => sattPanel(true));
 
+    /* ---------- Fråga kartan ---------- */
+
+    // Gränssnittet sätts direkt, före kartbiblioteket och datan. Det som behöver dem väntar själv.
+    // Reglerna för hur det används står i src/lib/fraga/kartgranssnitt.ts.
+    const granssnitt: Kartgranssnitt = {
+      karta: null,
+      redo: false,
+      poster: (): readonly Kartrad[] => alla,
+      sok: (q) => sok(q),
+      oppnaOrg(id, via) {
+        const o = alla.find((x) => x.id === id);
+        if (!o) return;
+        if (via) handelser.orgOppnad(via);
+        visaDetalj(o);
+      },
+      handling,
+      handelser,
+      aterstall(f) {
+        lamnaMedlemsvy();
+        lasUrl(new URLSearchParams(filterTillSok(f)));
+        rattaPlats();
+        stangDetalj(false);
+        filtrera();
+        if (karta && kartaKlar) passaKarta();
+      },
+      passa(ramaIn) {
+        if (!karta || !kartaKlar) return;
+        karta.resize();
+        if (ramaIn) passaKarta();
+      },
+    };
+    (window as unknown as { aiKartan?: Kartgranssnitt }).aiKartan = granssnitt;
+
     /* ---------- Start ---------- */
 
     lasUrl(start);
@@ -2248,14 +2275,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         return r.json();
       })
       .then((data: { organisationer: Post[] }) => {
-        alla = data.organisationer.map((o) => ({
-          ...o,
-          nn: normalisera(o.n),
-          // Id:t är ofta förkortningen folk söker på: scb, foi, smhi.
-          ns: normalisera(
-            [o.n, o.id.replace(/-/g, ' '), o.d, o.kn ?? '', o.ln ?? '', etiketter.typer[o.t] ?? '', ...o.o.map((x) => etiketter.erbjuder[x] ?? ''), ...o.a.map((x) => etiketter.omraden[x] ?? '')].join(' '),
-          ),
-        }));
+        alla = data.organisationer.map((o) => tillSokpost(o, etiketter));
         const perPlats = new Map<string, PlatsTraff>();
         for (const o of alla) {
           if (o.l && o.ln) {
@@ -2277,6 +2297,8 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
           rattaPlats();
           filtrera();
           if (medKarta) forstaVy();
+          granssnitt.redo = true;
+          document.dispatchEvent(new Event(REDO));
         },
         // Bara ett fel i hämtningen är ett datafel. Ett fel i visningen ska inte skylla på uppkopplingen.
         () => {

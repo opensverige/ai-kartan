@@ -3,10 +3,13 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import YAML from 'yaml';
 import { ROT, lasOrganisationer, lasTaxonomi, lasGeo, harled } from '../../scripts/lib/organisationer.mjs';
 import { platserPaLand } from '../../scripts/lib/landplatser.mjs';
 import { hittaTypikoner } from './typikoner';
 import { amnesslug, platsamnen, raknade, type Fragedata, type Platsamne } from './platsamne';
+import type { Etiketter } from './sokindex.ts';
+import type { Kunskap } from './fraga/typer.ts';
 import { typrad } from './text';
 
 export type Status = 'confirmed' | 'claimed' | 'planned' | 'unknown' | 'not_applicable';
@@ -398,6 +401,25 @@ export function platsfragedata(plats: Plats): Fragedata {
 /** Så många rader visar sidan Ändringar. Äldre dagar finns bara i JSON, och dit ska flödet då länka. */
 export const ANDRINGAR_PA_SIDAN = 600;
 
+/** Taxonomins etiketter, samma som kartan skickar till webbläsaren. */
+export function etiketter(d: Dataset): Etiketter {
+  return {
+    typer: Object.fromEntries(d.taxonomi.typer.map((t) => [t.id, t.label])),
+    typerPlural: Object.fromEntries(d.taxonomi.typer.map((t) => [t.id, t.plural ?? t.label])),
+    erbjuder: Object.fromEntries(d.taxonomi.erbjuder.map((t) => [t.id, t.label])),
+    omraden: Object.fromEntries(d.taxonomi.omraden.map((t) => [t.id, t.label])),
+    lan: Object.fromEntries(d.lan.map((l) => [l.kod, l.namn])),
+  };
+}
+
+/** Svaren om föreningen. Tom lista om filen saknas. */
+export function hamtaKunskap(): Kunskap[] {
+  const fil = path.join(ROT, 'data', 'fragor', 'opensverige.yaml');
+  if (!fs.existsSync(fil)) return [];
+  const data: unknown = YAML.parse(fs.readFileSync(fil, 'utf8'));
+  return Array.isArray(data) ? (data as Kunskap[]) : [];
+}
+
 /** Kompakt post för kartan och listan i webbläsaren. */
 export function tillKartpost(o: Org) {
   return {
@@ -419,6 +441,8 @@ export function tillKartpost(o: Org) {
     f: o.h.antal_fakta,
     w: o.website,
     i: o.links?.infra_id ?? null,
+    ds: o.description.status,
+    dv: o.description.verified_at ?? null,
   };
 }
 export type Kartpost = ReturnType<typeof tillKartpost>;
