@@ -159,3 +159,27 @@ test('"gotland" träffar Gotland, inte Östergötland', () => {
   assert.equal(finnsI('storage', 'rag'), false);
   assert.equal(finnsI('dokumenthantering', 'dokument'), true);
 });
+
+const sokI = (lista, q) => {
+  const t = tolka(q, lista);
+  return lista.filter((o) => traffar(o, t)).map((o) => o.n);
+};
+const ROST = [
+  post('Röstbolaget', 'Bygger röstagenter för kundtjänst.'),
+  post('Talverket', 'Säljer TTS för svenska.'),
+  post('Voicebolaget', 'Bygger voice agents för telefoni.'),
+  post('Prostatabolaget', 'Analyserar bilder av prostatacancer.'),
+  post('Fakturan', 'Automatiserar invoice-flöden.'),
+];
+
+test('röst, voice och tts står i början av ett ord', () => {
+  assert.ok(!sokI(ROST, 'röst').includes('Prostatabolaget'));
+  assert.ok(!sokI(ROST, 'voice').includes('Fakturan'));
+});
+
+test('röst, voice och tts hittar varandra', () => {
+  const vantat = ['Röstbolaget', 'Talverket', 'Voicebolaget'];
+  assert.deepEqual(sokI(ROST, 'röst'), vantat);
+  assert.deepEqual(sokI(ROST, 'voice'), vantat);
+  assert.deepEqual(sokI(ROST, 'tts'), vantat);
+});

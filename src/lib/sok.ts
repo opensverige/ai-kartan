@@ -80,6 +80,8 @@ const SYNONYMGRUPPER: string[][] = [
   ['bidrag', 'utlysning', 'forskningsmedel', 'grants'],
   ['aldreomsorg', 'omsorg', 'hemtjanst'],
   ['startup', 'startups', 'start-up'],
+  // Tal ut, inte taligenkänning. "text till tal" tas inte med: "till" träffar tillverkning.
+  ['rost', 'voice', 'tts', 'talsyntes', 'text-to-speech', 'rostagent', 'rostagenter', 'voice agent', 'voice agents'],
 ];
 const SYNONYMER = new Map<string, string[]>();
 for (const grupp of SYNONYMGRUPPER) for (const ord of grupp) SYNONYMER.set(ord, [...new Set([...(SYNONYMER.get(ord) ?? []), ...grupp])]);
@@ -106,8 +108,8 @@ function stammar(ord: string): string[] {
   return ut;
 }
 
-/** Platsnamn som också är slutet på ett annat platsnamn. De ska stå i början av ett ord. */
-const ORDSTART = new Set(['gotland', 'gotlands']);
+/** Ord som ska stå i början av ett ord. "gotland" finns i Östergötland. "rost" finns i prostata och "voice" i invoice. "tts" följer samma regel. */
+const ORDSTART = new Set(['gotland', 'gotlands', 'rost', 'voice', 'tts']);
 const ordgranser = new Map<string, RegExp>();
 
 /**
