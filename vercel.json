@@ -5,7 +5,7 @@
   "trailingSlash": false,
   "regions": ["arn1"],
   "functions": {
-    "api/fraga.ts": { "maxDuration": 10 }
+    "api/fraga.ts": { "maxDuration": 10, "includeFiles": "src/lib/**/*.ts" }
   },
   "redirects": [
     {
