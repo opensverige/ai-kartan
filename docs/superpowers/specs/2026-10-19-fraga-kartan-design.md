@@ -127,7 +127,7 @@ Besökaren ser aldrig en statuskod, ordet "Error", `null`, en stackspårning ell
 
 | Läge | När | Raden | Koden |
 |---|---|---|---|
-| AI pausad | Krediterna är slut (Berget svarar 402, eller 429 med quota, credit, billing eller insufficient). Nyckeln är ogiltig (401 eller 403). Modellen finns inte, till exempel när den har tagits bort (404, eller 400 som nämner modellen). Ingen nyckel finns, eller brytaren är på. | "AI-tolkningen är pausad just nu. Svaren bygger på orden i din fråga." | Vakten slutar fråga modellen i 15 minuter. Loggen får sorten. |
+| AI pausad | Krediterna är slut (Berget svarar 402, eller 429 med quota, credit, billing eller insufficient). Nyckeln är ogiltig (401 eller 403). Modellen finns inte, till exempel när den har tagits bort (404, eller 400 som nämner modellen). Dagstaket är nått (5.10). Ingen nyckel finns, eller brytaren är på. | "AI-tolkningen är pausad just nu. Svaren bygger på orden i din fråga." | Vakten slutar fråga modellen i 15 minuter. Loggen får sorten. |
 | AI svarade inte | Tidsgränsen gick ut, Berget svarade 5xx, nätverksfel, upptaget (429), eller ogiltigt svar två gånger | "AI:n svarade inte den här gången. Svaren bygger på orden i din fråga." | Efter tre sådana i rad pausar vakten i 1 minut. Vid upptaget pausar den direkt i 1 minut. |
 
 **Lägen i webbläsaren:**
@@ -336,7 +336,9 @@ Följderna:
 
 - **Längd:** frågan får vara högst 300 tecken. Kroppen får vara högst några kB.
 - **Takt:** en regel för taktbegränsning i Vercels brandvägg på `/api/fraga`, till exempel 10 anrop per minut och IP. Den finns på alla planer (Hobby har en sådan regel), men den går inte att sätta i `vercel.json`. Den sätts i dashboarden eller med `vercel firewall`, och steget dokumenteras i README. Inget nytt beroende och ingen databas.
-- **Utgiftstak:** en egen API-nyckel bara för kartan, med ett tak eller en budgetvarning hos leverantören om det finns (se 5.3.1). Det är det enda verkliga taket på notan. Kostnaden per fråga mäts med `usage` under betan.
+- **Utgiftstak:** en egen API-nyckel bara för kartan, med ett tak eller en budgetvarning hos leverantören om det finns (se 5.3.1). Kostnaden per fråga mäts med `usage` under betan.
+- **Dagstak (Gustaf 2026-10-19):** högst 500 frågor till modellen per dygn, räknat i svensk tid (`FRAGA_DAGSTAK`). Därefter svarar sökningen utan modell till midnatt, med raden att AI-tolkningen är pausad. Räknaren ligger i serverinstansens minne. Det är enkelt och kräver ingen ny tjänst, men med flera instanser kan taket i värsta fall nås en gång per instans. Den förbetalda krediten hos leverantörerna är det hårda taket.
+- **Reserv (Gustaf 2026-10-19):** Nebius tar frågan när Berget inte kan: krediten slut, fel nyckel, modellen borta, upptagen, nere eller pausad av vakten. Den tar den inte vid tidsgräns eller ogiltigt svar, och inte om felet kom senare än 2 s. Då finns ingen tid kvar, och reserven får bara resten av de 6 s som modellen har. Nebius är ett nederländskt bolag och kör i Finland. Nollagring ska vara påslagen, och `/integritet` säger att Nebius är reserv. Varje leverantör har en egen vakt.
 - **Brytare:** en regel i brandväggen som nekar `/api/fraga` gäller direkt utan ny deploy. Webbläsaren får 403 och använder reservvägen. Att dra in nyckeln har samma effekt. Miljövariabeln för modellen kräver en ny deploy och är till för att byta modell, inte för att stänga av.
 - **Ursprung:** funktionen avvisar anrop vars `Origin` inte är sajtens egen. Undantaget i `vercel.json` (5.9) tar bort CORS-jokertecknet.
 - **Loggar:** frågans text loggas aldrig. Bara sort, tid och om reservvägen användes.
@@ -450,6 +452,7 @@ Byggarens frågor och svaren på dem:
 | Vilken leverantör och modell? | Egen inferens hos en svensk leverantör med öppna modeller. Ingen Anthropic-SDK (5.3). | Gustaf |
 | Berget AI eller Grunden? | Berget AI. Föreningen har ett konto med kredit. Modellen väljs av provet i 5.3.1 och börjar med Gemma 4 31B. | Gustaf |
 | Ska frågor om GPU och hosting leda till AI-Infra? | Ja, tydligt: en egen rad bland förslagen och först i svaret (3.5). | Gustaf |
+| Dagstak och reserv? | 500 frågor till modellen per dygn, räknat i koden per serverinstans. Nebius som reserv, med nollagring (5.10). | Gustaf |
 | Samtal eller sökpalett? | Sökpalett som Mobbins. Svaret blir rader i samma lista, och varje fråga står för sig. Ingen samtalspanel och inga följdfrågor (3.2). | Gustaf |
 
 Kvar att bestämma, men det blockerar inte bygget:

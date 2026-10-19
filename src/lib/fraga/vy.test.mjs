@@ -153,7 +153,7 @@ test('så hittade jag dem, och tummarna', () => {
 
 test('lägesraden väljs ur modellfelet och klientens läge', () => {
   assert.equal(lagesrad({ modellfel: null }, 'server'), null);
-  for (const fel of ['saknas', 'slut', 'nyckel', 'modell']) assert.equal(lagesrad({ modellfel: fel }, 'server'), 'AI-tolkningen är pausad just nu. Svaren bygger på orden i din fråga.');
+  for (const fel of ['saknas', 'slut', 'nyckel', 'modell', 'tak']) assert.equal(lagesrad({ modellfel: fel }, 'server'), 'AI-tolkningen är pausad just nu. Svaren bygger på orden i din fråga.');
   for (const fel of ['begransad', 'nere', 'tidsgrans', 'ogiltig']) assert.equal(lagesrad({ modellfel: fel }, 'server'), 'AI:n svarade inte den här gången. Svaren bygger på orden i din fråga.');
   assert.equal(lagesrad({ modellfel: 'saknas' }, 'lokal'), 'AI:n svarade inte den här gången. Svaren bygger på orden i din fråga.');
   assert.equal(lagesrad({ modellfel: 'saknas' }, 'takt'), 'Du har frågat många gånger i rad. Svaren bygger på orden i din fråga.');
