@@ -243,6 +243,8 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
   import { arPaskagg, cirkel, type Medlemsvy } from '../lib/medlemmar';
   import { kommunytor } from '../lib/kommunyta';
   import { normalisera, tolka, traffar, tomtSvar, finnsI, type Tolkning } from '../lib/sok';
+  import { passarFilter, filterTillSok, type Filter, type FacettNamn } from '../lib/filter';
+  import { tillSokpost, type Etiketter } from '../lib/sokindex';
   import { urvalsrubrik, RUBRIK_ALLA } from '../lib/urvalsrubrik';
   import { arVald } from '../lib/fragor';
   import { tittext } from '../lib/titt';
@@ -256,8 +258,6 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
   };
   /** Post med förberedd söktext: nn är namnet, ns allt som går att söka på. */
   type Rad = Post & { nn: string; ns: string };
-  type FacettNamn = 'erbjuder' | 'typ' | 'omrade' | 'lan';
-  type Filter = { q: string; erbjuder: string[]; typ: string[]; omrade: string[]; lan: string; kommun: string };
   type PlatsTraff = { typ: 'kommun' | 'lan'; kod: string; namn: string; nn: string; under: string; antal: number };
   /** `visat` är orden som faktiskt söktes när utfyllnadsord togs bort. Annars tom. */
   type SokTraff = { org: Rad[]; platser: PlatsTraff[]; totalt: number; visat: string };
@@ -267,7 +267,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
   if (app) starta(app);
 
   function starta(app: HTMLElement) {
-    const etiketter = JSON.parse(document.getElementById('etiketter')!.textContent || '{}') as Record<string, Record<string, string>>;
+    const etiketter = JSON.parse(document.getElementById('etiketter')!.textContent || '{}') as Etiketter & { typikoner?: Record<string, string> };
     // Typer med egen ikon: de ritas som landmärken på kartan och i logorutan på korten.
     const typikoner = etiketter.typikoner ?? {};
     const medKarta = app.dataset.lage === 'karta';
@@ -543,29 +543,13 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       form.querySelectorAll<HTMLInputElement>(`input[name="${namn}"]`).forEach((i) => (i.checked = varden.includes(i.value)));
     }
 
-    /** Sant om posten klarar filtret. `utom` hoppar över en facett, för att räkna antal per val. */
-    function passar(o: Rad, f: Filter, tolkning: Tolkning, utom?: FacettNamn): boolean {
-      if (!traffar(o, tolkning)) return false;
-      if (utom !== 'erbjuder' && f.erbjuder.length && !f.erbjuder.some((x) => o.o.includes(x))) return false;
-      if (utom !== 'typ' && f.typ.length && !f.typ.includes(o.t)) return false;
-      if (utom !== 'omrade' && f.omrade.length && !f.omrade.some((x) => o.a.includes(x))) return false;
-      if (utom !== 'lan') {
-        if (f.lan && o.l !== f.lan) return false;
-        if (f.kommun && o.k !== f.kommun) return false;
-      }
-      return true;
-    }
+    /** Reglerna står i src/lib/filter.ts, så att Fråga kartan räknar likadant. */
+    const passar = (o: Rad, f: Filter, tolkning: Tolkning, utom?: FacettNamn): boolean => passarFilter(o, f, tolkning, utom);
 
     const sokord = (q: string) => normalisera(q).split(/\s+/).filter(Boolean);
 
     function skrivUrl(f: Filter, nyPost = false) {
-      const p = new URLSearchParams();
-      if (f.q) p.set('q', f.q);
-      if (f.erbjuder.length) p.set('erbjuder', f.erbjuder.join(','));
-      if (f.typ.length) p.set('typ', f.typ.join(','));
-      if (f.omrade.length) p.set('omrade', f.omrade.join(','));
-      if (f.lan) p.set('lan', f.lan);
-      if (f.kommun) p.set('kommun', f.kommun);
+      const p = new URLSearchParams(filterTillSok(f));
       if (valdId) p.set('org', valdId);
       if (medlemslage) p.set('vy', 'medlemmar');
       const qs = p.toString();
@@ -2248,14 +2232,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         return r.json();
       })
       .then((data: { organisationer: Post[] }) => {
-        alla = data.organisationer.map((o) => ({
-          ...o,
-          nn: normalisera(o.n),
-          // Id:t är ofta förkortningen folk söker på: scb, foi, smhi.
-          ns: normalisera(
-            [o.n, o.id.replace(/-/g, ' '), o.d, o.kn ?? '', o.ln ?? '', etiketter.typer[o.t] ?? '', ...o.o.map((x) => etiketter.erbjuder[x] ?? ''), ...o.a.map((x) => etiketter.omraden[x] ?? '')].join(' '),
-          ),
-        }));
+        alla = data.organisationer.map((o) => tillSokpost(o, etiketter));
         const perPlats = new Map<string, PlatsTraff>();
         for (const o of alla) {
           if (o.l && o.ln) {
