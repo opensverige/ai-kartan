@@ -10,13 +10,14 @@ import { svara } from './motor.ts';
 const ETIKETTER = {
   typer: { bolag: 'Bolag', myndighet: 'Myndighet' },
   typerPlural: { bolag: 'Bolag', myndighet: 'Myndigheter' },
-  erbjuder: { infrastruktur: 'Infrastruktur och hosting', oppen_kallkod: 'Öppen källkod' },
+  erbjuder: { infrastruktur: 'Infrastruktur och hosting', oppen_kallkod: 'Öppen källkod', produkt: 'Egen produkt' },
   omraden: {
     datorseende: 'Datorseende',
     halsa: 'Hälsa och life science',
     robotik: 'Robotik',
     agenter_automation: 'Agenter och automation',
     offentlig_sektor: 'Offentlig sektor',
+    generell: 'Generell AI',
   },
   lan: {},
 };
@@ -217,4 +218,35 @@ test('modellfel säger varför modellen inte svarade, och svaret kommer ändå',
 test('modellfel är null när modellen svarade eller inte behövdes', async () => {
   assert.equal((await svara('voice', [], DATA, stub(modell({ sokord: ['röst'] })), '2026-10-19')).modellfel, null);
   assert.equal((await svara('Vilket är det bästa bolaget?', [], DATA, null, '2026-10-19')).modellfel, null);
+});
+
+test('modellens sökord rensas från verb och utfyllnad, så en bred fråga förblir bred', async () => {
+  assert.equal((await kor('Hitta mig alla som arbetar med AI', stub(modell({ sokord: ['arbeta'] })))).sort, 'bred');
+  assert.equal((await kor('Vilka bygger röst?', stub(modell({ sokord: ['bygga', 'röst'] })))).filter.q, 'röst');
+});
+
+test('generell, bolag och egen produkt gäller bara när frågan säger dem', async () => {
+  const bred = await kor('Hitta mig alla som arbetar med AI', stub(modell({ omrade: ['generell'], tolkning: 'Jag tolkar det som att du söker människor som arbetar med generell AI.' })));
+  assert.equal(bred.sort, 'bred');
+  const tomt = await kor('Vilka bygger kvantdatorer?', stub(modell({ omrade: ['generell'], erbjuder: ['produkt'], typ: ['bolag'], sokord: ['kvantdatorer'] })));
+  assert.equal(tomt.sort, 'tomt');
+  assert.deepEqual([tomt.filter.typ, tomt.filter.erbjuder, tomt.filter.omrade], [[], [], []]);
+  const bolag = await kor('Vilka bolag bygger robotar?', stub(modell({ typ: ['bolag'], omrade: ['robotik'] })));
+  assert.deepEqual(bolag.filter.typ, ['bolag']);
+  const foretag = await kor('Företag med egen produkt inom robotik', stub(modell({ typ: ['bolag'], erbjuder: ['produkt'], omrade: ['robotik'] })));
+  assert.deepEqual([foretag.filter.typ, foretag.filter.erbjuder], [['bolag'], ['produkt']]);
+  const generell = await kor('Generell AI i Stockholm', stub(modell({ omrade: ['generell'] })));
+  assert.deepEqual(generell.filter.omrade, ['generell']);
+});
+
+test('när koden tar bort en gissad facett skrivs tolkningsraden av mallen', async () => {
+  const svar = await kor('Vilka bygger robotar?', stub(modell({ typ: ['bolag'], omrade: ['robotik'], tolkning: 'Jag tolkar det som att du söker bolag inom robotik.' })));
+  assert.deepEqual(svar.filter.typ, []);
+  assert.equal(svar.tolkning, 'Jag tolkar det som att du söker organisationer inom robotik.');
+});
+
+test('ett tomt filter blir bara Discord-svar när frågan säger att den gäller människor', async () => {
+  assert.equal((await kor('Hitta mig alla som arbetar med AI', stub(modell({ manniska: true })))).sort, 'bred');
+  assert.equal((await kor('Hitta mig alla som arbetar med AI', stub(modell({ avsikt: 'manniska' })))).sort, 'bred');
+  assert.equal((await kor('Var kan jag bolla en idé med builders?', stub(modell({ manniska: true })))).sort, 'manniska');
 });

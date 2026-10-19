@@ -185,12 +185,12 @@ export function traffar(o: Sokpost, tolkning: Tolkning): boolean {
 }
 
 /**
- * Ord som hör till en fråga, inte till det som söks: uppmaningar, behov och att det gäller Sverige.
+ * Ord som hör till en fråga, inte till det som söks: uppmaningar, behov, verb och att det gäller Sverige.
  * Kartan har bara svenska organisationer, så "svenska" begränsar inget men stoppar varje träff
  * som inte råkar nämna ordet. Gäller bara karnord, inte kartans vanliga sökning.
  */
 const UPPMANING = new Set(
-  'hitta mig alla visa lista ge kan du vill tips behover behov nagon nagot nagra bolla hjalp hjalpa svenska svensk svenskt sverige'.split(' '),
+  'hitta mig alla visa lista ge kan du vill tips behover behov nagon nagot nagra bolla hjalp hjalpa svenska svensk svenskt sverige arbeta jobba bygga utveckla gora'.split(' '),
 );
 
 /**

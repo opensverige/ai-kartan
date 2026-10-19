@@ -233,3 +233,10 @@ test('felsort känner igen slut på krediter i flera former', () => {
   assert.equal(felsort(503, '<html>'), 'nere');
   assert.equal(felsort(400, ''), 'ogiltig');
 });
+
+test('systemprompten säger att bara det besökaren nämner blir filter', () => {
+  const text = systemprompt(ETIKETTER, FAQ);
+  assert.match(text, /nämner/);
+  assert.match(text, /generell/);
+  assert.match(text, /verb/);
+});

@@ -3,7 +3,7 @@
 // Utan modell, eller när tolkaren kastar, används frågetexten direkt.
 
 import { arTomt, filterTillSok, passarFilter, TOMT_FILTER, type Filter } from '../filter.ts';
-import { karnord, tolka, type Tolkning } from '../sok.ts';
+import { karnord, normalisera, tolka, type Tolkning } from '../sok.ts';
 import type { Etiketter } from '../sokindex.ts';
 import { arManniska, faqUtanModell, forfilter } from './forfilter.ts';
 import { godkandRad, mallrad } from './kontroll.ts';
@@ -30,6 +30,29 @@ interface UrFraga {
   plats: Plats | null;
   okandPlats: string | null;
   manniska: boolean;
+  /** Sant när koden tog bort något modellen föreslog. Då stämmer inte modellens mening längre. */
+  justerad: boolean;
+}
+
+/**
+ * Facetter som en liten modell gissar fram ur nästan vilken fråga som helst: "vilka" blir bolag,
+ * "bygger" blir egen produkt och "AI" blir generell AI. De gäller bara när frågan säger dem.
+ * Provet 2026-10-19 visade att en regel i prompten inte räcker.
+ */
+const GISSADE: readonly { falt: 'typ' | 'erbjuder' | 'omrade'; id: string; ord: RegExp }[] = [
+  { falt: 'typ', id: 'bolag', ord: /(^|[^a-z])(bolag|foretag|company|companies|startup|firma|aktiebolag)/ },
+  { falt: 'erbjuder', id: 'produkt', ord: /(^|[^a-z])(produkt|tjanst|app|plattform|api|verktyg|product|tool|saas)/ },
+  { falt: 'omrade', id: 'generell', ord: /(^|[^a-z])(generell|general)/ },
+];
+
+/** Tar bort gissade facetter som frågan inte säger. Ger listan och om något togs bort. */
+function utanGissningar(fraga: string, falt: 'typ' | 'erbjuder' | 'omrade', ids: string[]): { ids: string[]; borttagen: boolean } {
+  const text = normalisera(fraga);
+  const kvar = ids.filter((id) => {
+    const gissad = GISSADE.find((g) => g.falt === falt && g.id === id);
+    return !gissad || gissad.ord.test(text);
+  });
+  return { ids: kvar, borttagen: kvar.length !== ids.length };
 }
 
 function arFast(avsikt: string | null): avsikt is 'ranking' | 'kontakt' | 'utanfor' {
@@ -79,7 +102,7 @@ async function lasModell(
   }
 }
 
-function filterFranModell(m: Modellsvar, data: Motordata): UrFraga {
+function filterFranModell(m: Modellsvar, data: Motordata, fraga: string): UrFraga {
   const plats = m.plats ? hittaPlats(m.plats, data.kommuner, data.lan) : null;
   // Kartan sätter alltid länet tillsammans med kommunen.
   let lan = '';
@@ -90,15 +113,20 @@ function filterFranModell(m: Modellsvar, data: Motordata): UrFraga {
   } else if (plats?.sort === 'lan') {
     lan = plats.kod;
   }
+  const erbjuder = utanGissningar(fraga, 'erbjuder', kanda(m.erbjuder, data.etiketter.erbjuder));
+  const typ = utanGissningar(fraga, 'typ', kanda(m.typ, data.etiketter.typer));
+  const omrade = utanGissningar(fraga, 'omrade', kanda(m.omrade, data.etiketter.omraden));
   return {
     plats,
     okandPlats: m.plats && !plats ? m.plats : null,
     manniska: m.manniska || m.avsikt === 'manniska',
+    justerad: erbjuder.borttagen || typ.borttagen || omrade.borttagen,
     filter: {
-      q: m.sokord.join(' '),
-      erbjuder: kanda(m.erbjuder, data.etiketter.erbjuder),
-      typ: kanda(m.typ, data.etiketter.typer),
-      omrade: kanda(m.omrade, data.etiketter.omraden),
+      // Samma rensning som reservvägen, så att ett verb från modellen inte stoppar varje träff.
+      q: karnord(m.sokord.join(' ')),
+      erbjuder: erbjuder.ids,
+      typ: typ.ids,
+      omrade: omrade.ids,
       lan,
       kommun,
     },
@@ -111,6 +139,7 @@ function filterUtanModell(fraga: string): UrFraga {
     plats: null,
     okandPlats: null,
     manniska: arManniska(fraga),
+    justerad: false,
   };
 }
 
@@ -127,7 +156,7 @@ function tolkningsrad(
   orgnamn: readonly string[],
 ): string {
   const rad = m?.tolkning ?? '';
-  if (rad && godkandRad(rad, orgnamn) && borttaget.length === 0 && ur.okandPlats === null) return rad;
+  if (rad && !ur.justerad && godkandRad(rad, orgnamn) && borttaget.length === 0 && ur.okandPlats === null) return rad;
   return mallrad(ur.filter, etiketter, ur.plats);
 }
 
@@ -181,11 +210,14 @@ export async function svara(
   }
   if (!m && pf === 'opensverige') return fastSvar('opensverige', true, fel, faqUtanModell(fraga));
 
-  const ur = m ? filterFranModell(m, data) : filterUtanModell(fraga);
+  const ur = m ? filterFranModell(m, data, fraga) : filterUtanModell(fraga);
   const orgnamn = data.poster.map((o) => o.n);
   if (arTomt(ur.filter)) {
     const rad = tolkningsrad(m, ur, data.etiketter, [], orgnamn);
-    return svarMed(ur.manniska ? 'manniska' : 'bred', ur, rad, [], [], [], 'alla', {}, utanModell, fel);
+    // Ett svar med bara Discord är ett starkare besked än en lista, så frågan själv måste säga att
+    // den gäller människor. Modellen läser annars "alla som arbetar med AI" som en fråga om folk.
+    const sort = ur.manniska && arManniska(fraga) ? 'manniska' : 'bred';
+    return svarMed(sort, ur, rad, [], [], [], 'alla', {}, utanModell, fel);
   }
 
   let filter = ur.filter;

@@ -20,7 +20,8 @@ const INFERENS: Inferens | null = process.env.FRAGA_API_NYCKEL
   ? {
       bas: process.env.FRAGA_API_BAS ?? 'https://api.berget.ai/v1',
       nyckel: process.env.FRAGA_API_NYCKEL,
-      modell: process.env.FRAGA_MODELL ?? 'google/gemma-4-31B-it',
+      // Mistral klarade provet med p95 under 3 s, Gemma inte (specen 5.3.1, provet 2026-10-19).
+      modell: process.env.FRAGA_MODELL ?? 'mistralai/Mistral-Small-3.2-24B-Instruct-2506',
       tidsgrans: TIDSGRANS_MS,
     }
   : null;

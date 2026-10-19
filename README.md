@@ -100,12 +100,25 @@ npm run build        # validerar och bygger till dist/
 | `npm run andringar` | Bygger `history/changelog.json` ur git-historiken: varje ändrat fält med datum. |
 | `npm run farskhet` | Färskhetsrapport. Exit 1 när loggen stått still i 10 dagar eller en post gått 180 dagar utan kontroll. |
 | `npm run lankkoll` | Kontrollerar att alla länkar i datan svarar. `--andrade main --strikt` för PR-kontroll. |
+| `npm run prova:fraga` | Mäter Fråga kartan mot `scripts/fragefall.json`. Utan nyckel körs bara reservvägen. |
 | `npm run importera:infra` | Importerar svenska leverantörer från infra.opensverige.se som typen `infrastruktur`. |
 | `node scripts/ny-organisation.mjs --fil arende.md` | Gör det långa ärendeformuläret till en YAML-fil. |
 | `node scripts/tips.mjs --fil arende.md` | Läser det korta formuläret och skriver svaret som boten ger i ärendet. |
 | `npm test` | Kör testerna för intaget av nya organisationer och för nedladdningen av ett urval. |
 
 Miljövariabler vid bygge: `SITE_URL` (standard `https://karta.opensverige.se`) och `BASE_PATH` (standard `/`).
+
+## Fråga kartan
+
+Nyckeln ligger i `.env` som `FRAGA_API_NYCKEL`, och i Vercel som miljövariabel. Den committas aldrig.
+
+`npm run build && npm run prova:fraga` mäter modellerna.
+
+Brytaren är en regel i Vercels brandvägg som nekar `/api/fraga`. Webbläsaren använder då reservvägen.
+
+Taktbegränsningen är en regel i Vercels brandvägg: `/api/fraga`, 10 anrop per 60 s och IP.
+
+När krediterna är slut pausar vakten modellen i 15 minuter, och besökarna får raden "AI-tolkningen är pausad just nu".
 
 ## Bidra
 
