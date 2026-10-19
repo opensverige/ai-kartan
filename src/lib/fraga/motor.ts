@@ -7,7 +7,7 @@ import { karnord, normalisera, tolka, type Tolkning } from '../sok.ts';
 import type { Etiketter } from '../sokindex.ts';
 import { arManniska, faqUtanModell, forfilter } from './forfilter.ts';
 import { godkandRad, mallrad } from './kontroll.ts';
-import { hittaPlats, type Plats } from './platser.ts';
+import { arHelaLandet, hittaPlats, type Plats } from './platser.ts';
 import { matchskal, type Skalpost } from './skal.ts';
 import type { Modellfelsort, Modellsvar, Svar, Tidigare } from './typer.ts';
 import { arModellfel } from './inferens.ts';
@@ -103,7 +103,9 @@ async function lasModell(
 }
 
 function filterFranModell(m: Modellsvar, data: Motordata, fraga: string): UrFraga {
-  const plats = m.plats ? hittaPlats(m.plats, data.kommuner, data.lan) : null;
+  // Modellen ger ibland Sverige som plats. Det är hela landet: ingen begränsning och ingen okänd plats.
+  const helaLandet = m.plats !== '' && arHelaLandet(m.plats);
+  const plats = m.plats && !helaLandet ? hittaPlats(m.plats, data.kommuner, data.lan) : null;
   // Kartan sätter alltid länet tillsammans med kommunen.
   let lan = '';
   let kommun = '';
@@ -118,7 +120,7 @@ function filterFranModell(m: Modellsvar, data: Motordata, fraga: string): UrFrag
   const omrade = utanGissningar(fraga, 'omrade', kanda(m.omrade, data.etiketter.omraden));
   return {
     plats,
-    okandPlats: m.plats && !plats ? m.plats : null,
+    okandPlats: m.plats && !plats && !helaLandet ? m.plats : null,
     manniska: m.manniska || m.avsikt === 'manniska',
     justerad: erbjuder.borttagen || typ.borttagen || omrade.borttagen,
     filter: {
@@ -230,7 +232,8 @@ export async function svara(
   }
   const anvant: UrFraga = { ...ur, filter };
   const tolkning = tolkningsrad(m, anvant, data.etiketter, borttaget, orgnamn);
-  if (traff.ids.length === 0) return svarMed('tomt', anvant, tolkning, borttaget, [], [], 'alla', {}, utanModell, fel);
+  // Utan träffar gäller en fråga om människor folk att prata med, inte en organisation som saknas.
+  if (traff.ids.length === 0) return svarMed(arManniska(fraga) ? 'manniska' : 'tomt', anvant, tolkning, borttaget, [], [], 'alla', {}, utanModell, fel);
 
   const perId = new Map(data.poster.map((o) => [o.id, o]));
   const { visade, regel } = valjUt(traff.ids, (id) => perId.get(id)?.n ?? '', urvalsfro(idag, filter));

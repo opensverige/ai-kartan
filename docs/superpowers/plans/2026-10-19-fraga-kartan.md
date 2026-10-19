@@ -532,7 +532,7 @@ Gränssnittet sätts på `window.aiKartan` i `KartApp.astro`, och händelsen `ai
 
 ### Uppgift 14: Kartan lyfter svaret
 
-> **Utgår med paletten (förslag 2026-10-19).** Svaret står i paletten över en dämpad karta, och **Visa alla N på kartan** byter kartans urval till svarets filter. Då behövs ingen egen dämpning av prickarna. Gustaf avgör.
+> **Utgår (beslutat av Gustaf 2026-10-19).** Svaret står i paletten över en dämpad karta, och **Visa alla N på kartan** byter kartans urval till svarets filter. Då behövs ingen egen dämpning av prickarna.
 
 **Filer:** Ändra `src/components/KartApp.astro`, där `lyft` är en del av `window.aiKartan`.
 

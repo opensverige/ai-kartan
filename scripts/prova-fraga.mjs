@@ -91,6 +91,9 @@ function jamfor(vantat, svar) {
   if (Object.hasOwn(vantat, 'manniska') && svar.manniska !== vantat.manniska) {
     skillnader.push({ falt: 'manniska', vantat: vantat.manniska, blev: svar.manniska });
   }
+  if (Object.hasOwn(vantat, 'okandPlats') && svar.okandPlats !== vantat.okandPlats) {
+    skillnader.push({ falt: 'okandPlats', vantat: vantat.okandPlats, blev: svar.okandPlats });
+  }
   if (Object.hasOwn(vantat, 'faq') && !svar.faq.includes(vantat.faq)) {
     skillnader.push({ falt: 'faq', vantat: vantat.faq, blev: svar.faq });
   }

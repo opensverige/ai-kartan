@@ -91,5 +91,15 @@
     "grupp": "halsa-goteborg",
     "fraga": "Vilka gör AI för sjukvård i Göteborg?",
     "forvantat": { "omrade": ["halsa"], "kommun": "1480" }
+  },
+  {
+    "id": "gpu-sverige",
+    "fraga": "Jag behöver GPU-kapacitet i Sverige",
+    "forvantat": { "sort": "traffar", "erbjuder": ["infrastruktur"], "lan": "", "okandPlats": null }
+  },
+  {
+    "id": "bolla-ide",
+    "fraga": "Var kan jag bolla en idé med builders?",
+    "forvantat": { "sort": "manniska" }
   }
 ]

@@ -250,3 +250,19 @@ test('ett tomt filter blir bara Discord-svar när frågan säger att den gäller
   assert.equal((await kor('Hitta mig alla som arbetar med AI', stub(modell({ avsikt: 'manniska' })))).sort, 'bred');
   assert.equal((await kor('Var kan jag bolla en idé med builders?', stub(modell({ manniska: true })))).sort, 'manniska');
 });
+
+test('Sverige som plats är hela landet, inte en okänd plats', async () => {
+  for (const plats of ['Sverige', 'hela Sverige', 'Sweden']) {
+    const svar = await kor('Jag behöver GPU-kapacitet i Sverige', stub(modell({ erbjuder: ['infrastruktur'], plats })));
+    assert.equal(svar.okandPlats, null, plats);
+    assert.equal(svar.filter.lan, '', plats);
+    assert.deepEqual(svar.ids, ['molnet'], plats);
+  }
+});
+
+test('en fråga om människor utan träffar får Discord-svaret, inte Inga träffar', async () => {
+  const svar = await kor('Var kan jag bolla en idé med builders?', stub(modell({ sokord: ['idé', 'builders'], manniska: true })));
+  assert.equal(svar.sort, 'manniska');
+  const tomt = await kor('Vilka bygger kvantdatorer?', stub(modell({ sokord: ['kvantdatorer'] })));
+  assert.equal(tomt.sort, 'tomt');
+});

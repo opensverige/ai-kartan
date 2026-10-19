@@ -40,6 +40,13 @@ function forst(text: string, rader: MedNyckel[]): MedNyckel | undefined {
   return langstForst(rader).find((rad) => traffarNamn(text, rad.nyckel));
 }
 
+/** Ord för hela landet. Som plats begränsar de inget, och de är inte heller en okänd plats. */
+const HELA_LANDET = new Set(['sverige', 'hela sverige', 'i sverige', 'sweden', 'hela landet', 'landet']);
+
+export function arHelaLandet(text: string): boolean {
+  return HELA_LANDET.has(normalisera(text).trim().replace(/\s+/g, ' '));
+}
+
 export function hittaPlats(
   text: string,
   kommuner: readonly { kod: string; namn: string }[],

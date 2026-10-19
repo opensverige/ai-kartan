@@ -3,7 +3,7 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { hittaPlats } from './platser.ts';
+import { arHelaLandet, hittaPlats } from './platser.ts';
 
 const KOMMUNER = [
   { kod: '1480', namn: 'Göteborg' },
@@ -55,4 +55,9 @@ test('hittaPlats tar länet när hela länsnamnet står, även om en kommun hete
   assert.deepEqual(plats('AI i Stockholms län'), { sort: 'lan', kod: '01', namn: 'Stockholms län' });
   assert.deepEqual(plats('bolag i Gotlands län'), { sort: 'lan', kod: '09', namn: 'Gotlands län' });
   assert.deepEqual(plats('i Västra Götalands län'), { sort: 'lan', kod: '14', namn: 'Västra Götalands län' });
+});
+
+test('hela landet är ingen plats att filtrera på', () => {
+  for (const text of ['Sverige', 'hela Sverige', 'i Sverige', 'Sweden', 'hela landet']) assert.equal(arHelaLandet(text), true, text);
+  for (const text of ['Göteborg', 'Västsverige', 'Norrland']) assert.equal(arHelaLandet(text), false, text);
 });
