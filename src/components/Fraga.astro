@@ -57,10 +57,10 @@ import { SAJT } from '../lib/data';
   import { HANDLING, ORG, REDO, kartgranssnitt, type Kartgranssnitt, type Kartrad } from '../lib/fraga/kartgranssnitt';
   import { chipsHtml, esc, forslagHtml, ingenAnslutningHtml, svarHtml, type Lankar, type Svarsvy, type Vyetiketter } from '../lib/fraga/vy';
   import { skapaKlient } from '../lib/fraga/klient';
+  import { skapaPalettlage } from '../lib/fraga/palettlage';
 
   type Lage = 'hem' | 'karta';
   type Flik = 'omraden' | 'typer' | 'lan';
-  type Tillstand = 'tom' | 'forslag' | 'vantar' | 'svar';
 
   /** Exemplen i första skärmens fält och pillren i den tomma paletten: [pillret, frågan]. Specen 3.1. */
   const EXEMPEL: readonly (readonly [string, string])[] = [
@@ -103,13 +103,9 @@ import { SAJT } from '../lib/data';
     const idag = (): string => new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Stockholm' }).format(new Date());
     const lage = (): Lage => (rot.dataset.fragelage === 'hem' ? 'hem' : 'karta');
 
-    let tillstand: Tillstand = 'tom';
-    let senaste: { q: string; svar: Svar; vy: Svarsvy } | null = null;
+    // Vad paletten visar och vilket svar som får ritas. Besluten står i palettlage.ts.
+    const palett = skapaPalettlage<{ svar: Svar; vy: Svarsvy }>();
     let aktiv = -1;
-    // Räknas upp när det som står i paletten byts. Ett svar som kommer för en äldre text ritas inte.
-    let nummer = 0;
-    /** Frågan som väntar på svar, så att paletten kan öppnas igen utan att svaret slängs. */
-    let vantande = '';
     let flik: Flik = 'omraden';
     let bladval: Filter[] = [];
 
@@ -218,13 +214,10 @@ import { SAJT } from '../lib/data';
     function visa(): void {
       const q = input.value.trim();
       uppdateraNot(q);
-      // Paletten öppnades igen medan svaret på samma fråga väntar. Det får komma.
-      if (tillstand === 'vantar' && q === vantande) return;
-      // Allt annat byter innehållet, och ett svar som väntar på en annan text ritas inte.
-      nummer += 1;
-      if (senaste && q === senaste.q) return ritaSvar(senaste.vy);
-      if (!q) return ritaTom();
-      ritaForslag(q);
+      const v = palett.visa(q);
+      if (v.sort === 'svar') return ritaSvar(v.sparat.vy);
+      if (v.sort === 'tom') return ritaTom();
+      if (v.sort === 'forslag') ritaForslag(v.q);
     }
 
     const val = (): HTMLElement[] => [...kropp.querySelectorAll<HTMLElement>('[role="option"]')];
@@ -252,7 +245,6 @@ import { SAJT } from '../lib/data';
     }
 
     function ritaTom(): void {
-      tillstand = 'tom';
       const poster = kartgranssnitt()?.poster() ?? [];
       const rakna = (falt: (o: Kartrad) => readonly (string | null)[]): [string, number][] => {
         const m = new Map<string, number>();
@@ -298,7 +290,6 @@ import { SAJT } from '../lib/data';
     }
 
     function ritaForslag(q: string): void {
-      tillstand = 'forslag';
       const t = kartgranssnitt()?.sok(q) ?? { org: [], platser: [] };
       kropp.innerHTML = forslagHtml(q, t.org.slice(0, 5), t.platser.slice(0, 3), etiketter, lankar);
       vidare.hidden = true;
@@ -307,7 +298,6 @@ import { SAJT } from '../lib/data';
     }
 
     function ritaSvar(v: Svarsvy): void {
-      tillstand = 'svar';
       kropp.innerHTML = v.kropp;
       vidare.innerHTML = v.vidare;
       vidare.hidden = !v.vidare;
@@ -317,13 +307,11 @@ import { SAJT } from '../lib/data';
 
     async function fraga(text: string): Promise<void> {
       const q = text.trim();
-      if (!q || q.length > MAX_TECKEN) return;
+      const start = palett.fraga(q);
+      if (start.sort === 'ingen') return;
       input.value = q;
       uppdateraNot(q);
-      const mitt = ++nummer;
-      if (senaste && senaste.q === q) return ritaSvar(senaste.vy);
-      tillstand = 'vantar';
-      vantande = q;
+      if (start.sort === 'svar') return ritaSvar(start.sparat.vy);
       kropp.innerHTML = '<p class="palett__vantar"><span aria-hidden="true">✦</span>Söker i kartan …</p>';
       vidare.hidden = true;
       vidare.replaceChildren();
@@ -335,15 +323,14 @@ import { SAJT } from '../lib/data';
           vantaPaPoster(),
           hamtaFragedata().catch(() => null),
         ]);
-        if (!svar || mitt !== nummer) return;
+        if (!svar || !palett.aktuell(start.stalld)) return;
         const vy = svarHtml(svar.svar, svar.lage, new Map(poster.map((o) => [o.id, o])), fd?.faq ?? [], etiketter, lankar, q);
-        senaste = { q, svar: svar.svar, vy };
+        palett.svarat(start.stalld, { svar: svar.svar, vy });
         ritaSvar(vy);
         besked.textContent = vy.besked;
         kartgranssnitt()?.handelser.fragaStalld(svar.svar.sort);
       } catch {
-        if (mitt !== nummer) return;
-        tillstand = 'svar';
+        if (!palett.misslyckad(start.stalld)) return;
         kropp.innerHTML = ingenAnslutningHtml();
         besked.textContent = 'Ingen anslutning just nu.';
       }
@@ -373,7 +360,7 @@ import { SAJT } from '../lib/data';
       const org = rad.dataset.org;
       if (org) {
         // En rad i ett svar räknas som ett klick i svaret. En rad bland förslagen är en vanlig sökning.
-        const iSvaret = tillstand === 'svar';
+        const iSvaret = palett.tillstand() === 'svar';
         if (iSvaret) kartgranssnitt()?.handelser.fragaKlick('organisation');
         stang();
         return byt('karta', (k) => k.oppnaOrg(org, iSvaret ? null : 'sok'));
@@ -431,6 +418,7 @@ import { SAJT } from '../lib/data';
         if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
         e.preventDefault();
         kartgranssnitt()?.handelser.fragaKlick('alla_pa_kartan');
+        const senaste = palett.senaste();
         const f = kartlank.dataset.kartlank === 'svar' && senaste ? senaste.svar.filter : TOMT_FILTER;
         stang();
         return byt('karta', (k) => k.aterstall(f));
@@ -488,8 +476,8 @@ import { SAJT } from '../lib/data';
     document.addEventListener(ORG, () => lage() === 'hem' && byt('karta'));
     document.addEventListener(REDO, () => {
       if (!dialog.open) return;
-      if (tillstand === 'tom') ritaTom();
-      if (tillstand === 'forslag') ritaForslag(input.value.trim());
+      if (palett.tillstand() === 'tom') ritaTom();
+      if (palett.tillstand() === 'forslag') ritaForslag(input.value.trim());
     });
     // Loggan går tillbaka till första skärmen, utan urval, i stället för att ladda om sidan.
     document.querySelector<HTMLAnchorElement>('.marke')?.addEventListener('click', (e) => {
@@ -497,7 +485,7 @@ import { SAJT } from '../lib/data';
       e.preventDefault();
       stang();
       input.value = '';
-      senaste = null;
+      palett.glom();
       byt('hem', (k) => k.aterstall(TOMT_FILTER));
     });
 
