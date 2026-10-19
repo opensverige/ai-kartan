@@ -4,7 +4,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { normalisera, tolka, traffar, tomtSvar, finnsI, ALIAS } from './sok.ts';
+import { normalisera, tolka, traffar, tomtSvar, finnsI, ALIAS, karnord } from './sok.ts';
 
 const post = (n, d, extra = {}) => ({ n, t: 'bolag', o: [], a: [], ...extra, nn: normalisera(n), ns: normalisera(`${n} ${d}`) });
 const ALLA = [
@@ -182,4 +182,16 @@ test('röst, voice och tts hittar varandra', () => {
   assert.deepEqual(sokI(ROST, 'röst'), vantat);
   assert.deepEqual(sokI(ROST, 'voice'), vantat);
   assert.deepEqual(sokI(ROST, 'tts'), vantat);
+});
+
+test('karnord behåller orden som bär frågan och tar bort utfyllnad', () => {
+  assert.equal(karnord('Vilka bygger röstagenter i Göteborg?'), 'röstagenter Göteborg');
+  assert.equal(karnord('Hitta mig alla som arbetar med AI'), '');
+});
+
+test('karnord tar bort ord som hör till frågan, inte till det som söks', () => {
+  assert.equal(karnord('Vilka bygger röstagenter på svenska?'), 'röstagenter');
+  assert.equal(karnord('Jag behöver GPU-kapacitet'), 'GPU-kapacitet');
+  assert.equal(karnord('Jag behöver någon att bolla SIP och telefoni med'), 'SIP telefoni');
+  assert.equal(karnord('Kan du ge tips på svensk språkmodell?'), 'språkmodell');
 });

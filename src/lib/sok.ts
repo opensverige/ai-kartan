@@ -184,6 +184,30 @@ export function traffar(o: Sokpost, tolkning: Tolkning): boolean {
   return tolkning.tom || gruppTraff(o, tolkning.grupper);
 }
 
+/**
+ * Ord som hör till en fråga, inte till det som söks: uppmaningar, behov och att det gäller Sverige.
+ * Kartan har bara svenska organisationer, så "svenska" begränsar inget men stoppar varje träff
+ * som inte råkar nämna ordet. Gäller bara karnord, inte kartans vanliga sökning.
+ */
+const UPPMANING = new Set(
+  'hitta mig alla visa lista ge kan du vill tips behover behov nagon nagot nagra bolla hjalp hjalpa svenska svensk svenskt sverige'.split(' '),
+);
+
+/**
+ * Orden som bär frågan, som besökaren skrev dem. Utfyllnad och uppmaningar
+ * tas bort, så att reservvägen utan modell inte söker på "hitta mig alla".
+ */
+export function karnord(q: string): string {
+  return q
+    .replace(/[?!.,;:]/g, ' ')
+    .split(/\s+/)
+    .filter((ord) => {
+      const nyckel = normalisera(ord);
+      return nyckel !== '' && !UTFYLLNAD.has(nyckel) && !UPPMANING.has(nyckel);
+    })
+    .join(' ');
+}
+
 export interface Tomt {
   sort: 'jobb' | 'regler' | 'falt';
   rubrik: string;
