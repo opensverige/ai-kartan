@@ -5,7 +5,7 @@
   "trailingSlash": false,
   "regions": ["arn1"],
   "functions": {
-    "api/fraga.ts": { "maxDuration": 10, "includeFiles": "src/lib/**/*.ts" }
+    "api/fraga.ts": { "maxDuration": 10, "includeFiles": "{src/lib/**/*.ts,scripts/lib/marknadsord.mjs}" }
   },
   "redirects": [
     {
