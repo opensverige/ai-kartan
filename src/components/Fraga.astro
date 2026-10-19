@@ -96,6 +96,8 @@ import { SAJT } from '../lib/data';
       orgbas: app.dataset.orgbas || `${kartbas}organisation/`,
       bidra: app.dataset.bidra || `${kartbas}bidra`,
       discord: document.querySelector<HTMLElement>('.ingang')?.dataset.discord ?? '',
+      infra: app.dataset.infra || 'https://infra.opensverige.se',
+      infralogo: app.dataset.infralogo || `${kartbas}ai-infra.png`,
     };
     const stilla = window.matchMedia('(prefers-reduced-motion: reduce)');
     // Samma dag som servern räknar med, så att dagens urval blir detsamma i reservvägen.
@@ -291,7 +293,7 @@ import { SAJT } from '../lib/data';
     function ritaForslag(q: string): void {
       tillstand = 'forslag';
       const t = kartgranssnitt()?.sok(q) ?? { org: [], platser: [] };
-      kropp.innerHTML = forslagHtml(q, t.org.slice(0, 5), t.platser.slice(0, 3), etiketter);
+      kropp.innerHTML = forslagHtml(q, t.org.slice(0, 5), t.platser.slice(0, 3), etiketter, lankar);
       vidare.hidden = true;
       vidare.replaceChildren();
       nyLista(true);
@@ -354,6 +356,8 @@ import { SAJT } from '../lib/data';
     }
 
     function valj(rad: HTMLElement): void {
+      // Raden till AI-Infra är en länk. Enter öppnar den som ett klick.
+      if (rad.hasAttribute('data-infrarad')) return rad.click();
       if (rad.hasAttribute('data-fraga')) {
         if (rad.getAttribute('aria-disabled') !== 'true') void fraga(input.value);
         return;
@@ -412,6 +416,8 @@ import { SAJT } from '../lib/data';
       const mal = e.target as HTMLElement;
       // Ytan runt rutan hör till dialogen själv. Ett klick där stänger.
       if (mal === dialog || mal.closest('[data-stang]')) return stang();
+      // AI-Infra öppnas i en ny flik som vanligt. Klicket räknas som en länk ut.
+      if (mal.closest('[data-infrarad]')) return kartgranssnitt()?.handelser.utlank('ai-infra');
       const kartlank = mal.closest<HTMLAnchorElement>('a[data-kartlank]');
       if (kartlank) {
         if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
@@ -808,6 +814,16 @@ import { SAJT } from '../lib/data';
   }
   .palett-rad[aria-selected='true'] {
     background: hsl(var(--yta-chip));
+  }
+  /* AI-Infra är en länk ut, och ska synas som en väg vidare bland raderna. */
+  .palett-rad--infra {
+    margin: 4px 0;
+    border: 1px solid hsl(var(--kant));
+    color: hsl(var(--ink));
+    text-decoration: none;
+  }
+  .palett-rad--infra:hover {
+    color: hsl(var(--ink));
   }
   .palett-rad[aria-disabled='true'] {
     cursor: default;

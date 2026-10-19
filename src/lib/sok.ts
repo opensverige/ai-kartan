@@ -190,7 +190,8 @@ export function traffar(o: Sokpost, tolkning: Tolkning): boolean {
  * som inte råkar nämna ordet. Gäller bara karnord, inte kartans vanliga sökning.
  */
 const UPPMANING = new Set(
-  'hitta mig alla visa lista ge kan du vill tips behover behov nagon nagot nagra bolla hjalp hjalpa svenska svensk svenskt sverige arbeta jobba bygga utveckla gora'.split(' '),
+  // "ja" står med eftersom många skriver det för "jag".
+  'ja hitta mig alla visa lista ge kan du vill tips behover behov nagon nagot nagra bolla hjalp hjalpa svenska svensk svenskt sverige arbeta jobba bygga utveckla gora'.split(' '),
 );
 
 /**

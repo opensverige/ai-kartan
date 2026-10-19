@@ -35,6 +35,14 @@ const FAQ: { id: string; ord: string[] }[] = [
   { id: 'ideell-forening', ord: ['ideell', 'foretag'] },
 ];
 
+// Att hyra beräkning, hosta en modell eller köra inferens. Sådana frågor får en väg till systersajten
+// AI-Infra, som jämför leverantörerna i detalj. Ordet träffar i början av ett ord: "moln" tar "molntjänst".
+const INFRA = [
+  'gpu', 'grafikkort', 'hosting', 'hosta', 'server', 'servrar', 'datacenter', 'datahall', 'moln', 'cloud', 'compute',
+  'berakningskraft', 'berakningskapacitet', 'inferens', 'inference', 'hpc', 'superdator', 'kluster', 'colocation',
+  'infrastruktur', 'h100', 'h200', 'a100', 'b200',
+];
+
 const MANNISKA = ['bolla', 'nagon att', 'sparra', 'samarbet', 'prata med', 'diskutera med', 'builders', 'hjalp av en'];
 
 /** Skiljetecken blir mellanslag, så att "vd:n" och "e-post" delas som listorna väntar sig. */
@@ -69,6 +77,10 @@ export function faqUtanModell(fraga: string): string[] {
   const text = rensa(fraga);
   const traffar = FAQ.filter((post) => traffarOrd(text, post.ord)).map((post) => post.id);
   return traffar.length ? traffar : ['vad-ar-opensverige'];
+}
+
+export function arInfrafraga(fraga: string): boolean {
+  return traffarOrd(rensa(fraga), INFRA);
 }
 
 export function arManniska(fraga: string): boolean {

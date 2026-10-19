@@ -14,7 +14,7 @@ const E = {
   lan: { '14': 'Västra Götalands län' },
   typikoner: { myndighet: '/ikoner/myndighet.png' },
 };
-const L = { kartbas: '/', orgbas: '/organisation/', bidra: '/bidra', discord: 'https://discord.gg/test' };
+const L = { kartbas: '/', orgbas: '/organisation/', bidra: '/bidra', discord: 'https://discord.gg/test', infra: 'https://infra.test', infralogo: '/ai-infra.png' };
 const POST = { id: 'sinch', n: 'Sinch', t: 'bolag', kn: 'Stockholm', d: 'Utvecklar API:er för röst och meddelanden.', ds: 'claimed', dv: '2026-10-04' };
 const MYNDIGHET = { id: 'myndigheten', n: 'Myndigheten', t: 'myndighet', kn: null, d: 'Handlägger.', ds: 'confirmed', dv: '2026-10-01' };
 const POSTER = new Map([['sinch', POST], ['myndigheten', MYNDIGHET]]);
@@ -57,7 +57,7 @@ test('raden visar namn, utdrag, typ och ort, status med datum, och escapar', () 
 });
 
 test('förslagen: Fråga AI först, sedan organisationer och platser', () => {
-  const h = forslagHtml('röst', [POST], [{ typ: 'lan', kod: '14', namn: 'Västra Götalands län', under: 'Län', antal: 1 }], E);
+  const h = forslagHtml('röst', [POST], [{ typ: 'lan', kod: '14', namn: 'Västra Götalands län', under: 'Län', antal: 1 }], E, L);
   assert.ok(h.indexOf('Fråga AI') < h.indexOf('Sinch'));
   assert.ok(h.indexOf('Sinch') < h.indexOf('Västra Götalands län'));
   assert.ok(h.includes('role="listbox"'));
@@ -69,7 +69,7 @@ test('förslagen: Fråga AI först, sedan organisationer och platser', () => {
 });
 
 test('en för lång fråga kan inte väljas', () => {
-  const h = forslagHtml('a'.repeat(301), [], [], E);
+  const h = forslagHtml('a'.repeat(301), [], [], E, L);
   assert.ok(h.includes('aria-disabled="true"'));
   assert.ok(h.includes('Frågan är för lång. Korta den lite.'));
 });
@@ -168,4 +168,22 @@ test('inget råfel når besökaren, i något läge', () => {
 
 test('tolkningsraden escapas', () => {
   assert.ok(vy(svar({ tolkning: 'Jag <b>tolkar</b>' })).kropp.includes('Jag &lt;b&gt;tolkar&lt;/b&gt;'));
+});
+
+test('en fråga om GPU eller hosting visar AI-Infra direkt under Fråga AI', () => {
+  const h = forslagHtml('Ja behöver hyra GPU', [], [], E, L);
+  assert.ok(h.includes('href="https://infra.test"'));
+  assert.ok(h.includes('data-infrarad'));
+  assert.ok(h.includes('role="option"'));
+  assert.ok(h.indexOf('Fråga AI') < h.indexOf('AI-Infra'));
+  assert.ok(!forslagHtml('röst', [POST], [], E, L).includes('AI-Infra'));
+});
+
+test('ett svar om infrastruktur har AI-Infra först, också när kartan inte har något', () => {
+  const infra = vy(svar({ filter: { ...TOMT_FILTER, erbjuder: ['infrastruktur'] } }), 'server', 'Vem hyr ut servrar?');
+  assert.ok(infra.kropp.indexOf('AI-Infra') < infra.kropp.indexOf('Sinch'));
+  assert.ok(infra.kropp.includes('href="https://infra.test"'));
+  const tomt = vy(svar({ sort: 'tomt', ...TOMT }), 'server', 'Jag behöver hyra GPU');
+  assert.ok(tomt.kropp.includes('AI-Infra'));
+  assert.ok(!allt(vy(svar())).includes('AI-Infra'));
 });

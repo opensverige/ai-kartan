@@ -195,3 +195,8 @@ test('karnord tar bort ord som hör till frågan, inte till det som söks', () =
   assert.equal(karnord('Jag behöver någon att bolla SIP och telefoni med'), 'SIP telefoni');
   assert.equal(karnord('Kan du ge tips på svensk språkmodell?'), 'språkmodell');
 });
+
+test('karnord tar bort "ja", som många skriver för "jag"', () => {
+  assert.equal(karnord('Ja behöver hyra GPU'), 'GPU');
+  assert.equal(karnord('Jag behöver hyra GPU'), 'GPU');
+});

@@ -97,6 +97,8 @@ Svaret står i paletten. Ett svar med träffar består av:
 3. **Så hittade jag dem**, som kan fällas ut: filtret, antalet träffar, urvalsregeln och meningen "Modellen väljer inte vilka som visas eller i vilken ordning."
 4. **Raden längst ner:** **Visa alla 18 på kartan →**, Discord när det är relevant (3.7), och Hjälpte det? Ja / Nej.
 
+**AI-Infra (Gustaf 2026-10-19).** När frågan gäller GPU, hosting, moln, inferens eller datacenter står en rad till systersajten AI-Infra: bland förslagen direkt under Fråga AI, och först i svaret, också när kartan inte har något. Raden heter **Jämför på AI-Infra ↗** och öppnar infra.opensverige.se. Det är koden som avgör när den står, efter ordlistan i `forfilter.ts` eller svarets filter, och klicket räknas som `utlank` med `ai-infra`.
+
 **Visa alla N på kartan** stänger paletten och byter kartans urval till svarets filter. Kartans filter tas aldrig med i frågan. Längst ner i paletten står "AI kan ta fel. Fakta och status kommer från kartans källor."
 
 ### 3.6 Svar som inte är träfflistor
@@ -447,6 +449,7 @@ Byggarens frågor och svaren på dem:
 | När uppdateras `/integritet`? | Före den dolda betan (5.11). | Gustaf |
 | Vilken leverantör och modell? | Egen inferens hos en svensk leverantör med öppna modeller. Ingen Anthropic-SDK (5.3). | Gustaf |
 | Berget AI eller Grunden? | Berget AI. Föreningen har ett konto med kredit. Modellen väljs av provet i 5.3.1 och börjar med Gemma 4 31B. | Gustaf |
+| Ska frågor om GPU och hosting leda till AI-Infra? | Ja, tydligt: en egen rad bland förslagen och först i svaret (3.5). | Gustaf |
 | Samtal eller sökpalett? | Sökpalett som Mobbins. Svaret blir rader i samma lista, och varje fråga står för sig. Ingen samtalspanel och inga följdfrågor (3.2). | Gustaf |
 
 Kvar att bestämma, men det blockerar inte bygget:

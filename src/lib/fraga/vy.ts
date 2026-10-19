@@ -5,6 +5,7 @@
 
 import { normalisera } from '../sok.ts';
 import type { Etiketter } from '../sokindex.ts';
+import { arInfrafraga } from './forfilter.ts';
 import type { Platsrad } from './kartgranssnitt.ts';
 import { MAX_TECKEN, type Kunskap, type Modellfelsort, type Svar } from './typer.ts';
 
@@ -13,6 +14,9 @@ export interface Lankar {
   orgbas: string;
   bidra: string;
   discord: string;
+  /** Systersajten AI-Infra och dess logga. */
+  infra: string;
+  infralogo: string;
 }
 
 /** Etiketterna som sidan har, med typernas ikoner när de finns. */
@@ -96,6 +100,21 @@ export function radHtml(o: Radpost, under: string, e: Vyetiketter): string {
   );
 }
 
+/**
+ * Raden till systersajten AI-Infra, som jämför leverantörer av GPU, hosting och inferens i detalj.
+ * Den står när frågan gäller infrastruktur, före organisationerna, som kortet i kartans lista.
+ */
+function infraradHtml(l: Lankar): string {
+  const adress = l.infra.replace(/^https?:\/\//, '').replace(/\/$/, '');
+  return (
+    `<a class="palett-rad palett-rad--infra" role="option" aria-selected="false" href="${esc(l.infra)}" rel="noopener" target="_blank" data-infrarad>` +
+    `<span class="palett-rad__ikon palett-rad__ikon--bild" aria-hidden="true"><img src="${esc(l.infralogo)}" alt="" width="30" height="30" loading="lazy" decoding="async"></span>` +
+    `<span class="palett-rad__text"><span class="palett-rad__namn">Jämför på AI-Infra ↗</span>` +
+    `<span class="palett-rad__under">GPU, hosting och inferens: pris, datacenter och ägande per leverantör</span></span>` +
+    `<span class="palett-rad__hoger"><span class="palett-rad__var">${esc(adress)}</span></span></a>`
+  );
+}
+
 /** Raden under namnet i ett svar: utdraget runt det som matchade, eller skälen när träffen inte står i texten. */
 function skalUnder(o: Radpost, skal: readonly string[]): string {
   const ord = skal.join(' ').match(/”([^”]+)”/)?.[1];
@@ -104,7 +123,7 @@ function skalUnder(o: Radpost, skal: readonly string[]): string {
 }
 
 /** Medan man skriver: Fråga AI överst, sedan organisationer och platser ur kartans egen sökning. */
-export function forslagHtml(q: string, org: readonly Radpost[], platser: readonly Platsrad[], e: Vyetiketter): string {
+export function forslagHtml(q: string, org: readonly Radpost[], platser: readonly Platsrad[], e: Vyetiketter, l: Lankar): string {
   const fraga = q.trim();
   const forLang = fraga.length > MAX_TECKEN;
   const forsta = fraga.split(/\s+/)[0] ?? '';
@@ -115,6 +134,7 @@ export function forslagHtml(q: string, org: readonly Radpost[], platser: readonl
       `<span class="palett-rad__under">${forLang ? 'Frågan är för lång. Korta den lite.' : 'Svarar med organisationer på kartan, med källor'}</span></span>` +
       `<kbd class="palett-rad__tangent" aria-hidden="true">↵</kbd></div>`,
   ];
+  if (arInfrafraga(fraga)) delar.push(infraradHtml(l));
   if (org.length) {
     delar.push(
       `<div role="group" aria-label="Organisationer"><p class="palett__rubrik" aria-hidden="true">Organisationer</p>` +
@@ -226,6 +246,7 @@ export function svarHtml(
   if (s.okandPlats) kropp.push(text(`Jag hittar ingen plats som heter ”${s.okandPlats}”, så jag sökte i hela Sverige.`));
   if (s.borttaget.length) kropp.push(text(`Ingen nämner ”${s.borttaget.join(' ')}”. Här är det som matchar resten av frågan.`));
   const discord = overlamnaHtml(fraga, s.kartlank, l);
+  const infra = s.filter.erbjuder.includes('infrastruktur') || s.filter.typ.includes('infrastruktur') || arInfrafraga(fraga) ? infraradHtml(l) : '';
   // data-kartlank: sidan byter urval på kartan själv i stället för att ladda om (svarets filter eller alla).
   const allaPaKartan = `<a class="palett__knapp" href="${esc(kartadress(l, '/'))}" data-kartlank="alla">Visa alla ${poster.size} på kartan →</a>`;
   let besked = '';
@@ -241,7 +262,7 @@ export function svarHtml(
         .map((id) => poster.get(id))
         .filter((o): o is Radpost => Boolean(o))
         .map((o) => radHtml(o, skalUnder(o, s.skal[o.id] ?? []), e));
-      kropp.push(`<div class="palett-rader" id="palett-lista" role="listbox" aria-label="Träffar på kartan">${rader.join('')}</div>`);
+      kropp.push(`<div class="palett-rader" id="palett-lista" role="listbox" aria-label="Träffar på kartan">${infra}${rader.join('')}</div>`);
       kropp.push(hurHtml(s, poster.size, e));
       vidare.push(`<a class="palett__knapp" href="${esc(kartadress(l, s.kartlank))}" data-kartlank="svar">Visa alla ${s.totalt} på kartan →</a>`);
       if (s.manniska) vidare.push(discord);
@@ -276,6 +297,7 @@ export function svarHtml(
     case 'tomt':
       besked = 'Jag hittar ingen på kartan som matchar det.';
       kropp.push(text(`${besked} Kartan har inte allt, så någon i communityn kan veta mer.`));
+      if (infra) kropp.push(`<div class="palett-rader" id="palett-lista" role="listbox" aria-label="AI-Infra">${infra}</div>`);
       vidare.push(discord, `<a class="palett__lank" href="${esc(l.bidra)}">Saknas någon? Föreslå den →</a>`);
       break;
     case 'utanfor':

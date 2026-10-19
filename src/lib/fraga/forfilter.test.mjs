@@ -3,7 +3,7 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { arManniska, faqUtanModell, forfilter } from './forfilter.ts';
+import { arManniska, faqUtanModell, forfilter, arInfrafraga } from './forfilter.ts';
 
 test('forfilter fångar ranking', () => {
   assert.equal(forfilter('Vilket är Sveriges bästa AI-bolag?'), 'ranking');
@@ -40,4 +40,13 @@ test('faqUtanModell träffar kostnad och medlemskap, annars standardfrågan', ()
 test('arManniska ser en människa att bolla med, inte en kartfråga', () => {
   assert.equal(arManniska('Jag behöver någon att bolla SIP med'), true);
   assert.equal(arManniska('Vilka bygger röstagenter?'), false);
+});
+
+test('arInfrafraga ser en fråga om GPU, hosting eller inferens', () => {
+  for (const fraga of ['Ja behöver hyra GPU', 'Jag behöver GPU-kapacitet i Sverige', 'Var kan vi hosta en modell?', 'Svensk molntjänst för inferens', 'Datacenter i Norrland', 'compute for training', 'Vem har H100?']) {
+    assert.equal(arInfrafraga(fraga), true, fraga);
+  }
+  for (const fraga of ['Vilka bygger röstagenter på svenska?', 'AI inom hälsa i Göteborg', 'Vad är OpenSverige?', 'Grupp som bolla idéer']) {
+    assert.equal(arInfrafraga(fraga), false, fraga);
+  }
 });
