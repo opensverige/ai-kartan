@@ -10,7 +10,8 @@
 # pausar AI-tolkningen (till exempel slut på kredit eller nått dagstak), när en lucka uppstår och
 # när körningen fallerar. Varje fel larmar högst en gång per dag.
 #
-# Kräver hemligheten VERCEL_TOKEN, en token med läsrätt i Vercel-teamet.
+# Kräver hemligheten VERCEL_TOKEN, en token för Vercel-teamet med utgångsdatum. Vercels token har
+# full åtkomst till teamet, så den finns bara som hemlighet och når aldrig pull requests.
 # Obs: GitHub stänger av schemalagda flöden i arkiv utan commits på 60 dagar. Då måste flödet startas om under Actions.
 name: Frågestatistik
 
@@ -64,13 +65,6 @@ jobs:
           mkdir -p .tillstand
           node scripts/fragestatistik.mjs --tillstand .tillstand/pagaende.json --publicering statistik/fragestatistik.json --github
 
-      - name: Spara dagens tillstånd
-        if: always() && hashFiles('.tillstand/pagaende.json') != ''
-        uses: actions/cache/save@v6
-        with:
-          path: .tillstand/pagaende.json
-          key: fragestatistik-${{ github.run_id }}-${{ github.run_attempt }}
-
       - name: Committa om något ändrats
         working-directory: statistik
         run: |
@@ -81,6 +75,14 @@ jobs:
           fi
           git commit -m "chore(statistik): publicera färdiga dagar"
           git push origin statistik
+
+      # Sparas först när en färdig dag är publicerad. Fallerar något före hit hämtar nästa körning
+      # det förra tillståndet, som fortfarande har dagen, och räknar om samma fönster.
+      - name: Spara dagens tillstånd
+        uses: actions/cache/save@v6
+        with:
+          path: .tillstand/pagaende.json
+          key: fragestatistik-${{ github.run_id }}-${{ github.run_attempt }}
 
       - name: Öppna eller uppdatera larmärendet
         if: steps.rakna.outputs.larm == 'true'
