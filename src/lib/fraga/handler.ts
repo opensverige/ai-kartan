@@ -1,6 +1,6 @@
 // Serverfunktionens hanterare, utan Vercel och utan nätverk, så att den går att pröva.
 // Den avvisar allt som inte är en fråga från sajtens egna adresser, och den loggar aldrig
-// frågans text: bara sort, tid och om modellen användes.
+// frågans text: bara sort, tid, om modellen användes och frågans ämne i kartans egna ord.
 
 import type { Filter } from '../filter.ts';
 import type { Etiketter } from '../sokindex.ts';
@@ -15,8 +15,14 @@ export interface Kropp {
   tidigare: Tidigare[];
 }
 
+/**
+ * Frågans ämne i kartans egna ord, till den öppna frågestatistiken. Bara värden ur taxonomins
+ * fasta listor och länskoder, aldrig sökord, okända platser eller annat som besökaren skrev.
+ */
+export type Amne = { omrade: string[]; typ: string[]; erbjuder: string[]; lan: string | null };
+
 /** Det enda som loggas. Aldrig frågan. modellfel säger till exempel när krediterna är slut. */
-export type Loggrad = { sort: string; ms: number; utanModell: boolean; modellfel: Modellfelsort | null };
+export type Loggrad = { sort: string; ms: number; utanModell: boolean; modellfel: Modellfelsort | null; amne: Amne | null };
 
 export interface Hanterardelar {
   /** Adresser som får fråga, till exempel https://karta.opensverige.se. */
@@ -60,6 +66,18 @@ function lasFilter(v: unknown, e: Etiketter): Filter | null {
   return { q, erbjuder: e1, typ: e2, omrade: e3, lan, kommun };
 }
 
+/** Ämnet ur svarets filter. En kommun räknas till sitt län, eftersom kommunkoden börjar med länets. */
+export function amneUr(f: Filter, e: Etiketter): Amne {
+  const kanda = (v: readonly string[], tabell: Record<string, string>): string[] => v.filter((x) => Object.hasOwn(tabell, x));
+  const lan = f.lan || (KOMMUN.test(f.kommun) ? f.kommun.slice(0, 2) : '');
+  return {
+    omrade: kanda(f.omrade, e.omraden),
+    typ: kanda(f.typ, e.typer),
+    erbjuder: kanda(f.erbjuder, e.erbjuder),
+    lan: LAN.test(lan) && Object.hasOwn(e.lan, lan) ? lan : null,
+  };
+}
+
 const giltigFraga = (v: unknown): v is string => typeof v === 'string' && v.trim().length > 0 && v.trim().length <= MAX_TECKEN;
 
 /** Kroppen som en fråga och dess historik, eller ett fel. */
@@ -99,7 +117,7 @@ export async function hanteraFraga(req: Request, d: Hanterardelar): Promise<Resp
   try {
     data = await d.hamtaData(req);
   } catch {
-    d.logga({ sort: 'data-saknas', ms: Date.now() - start, utanModell: true, modellfel: null });
+    d.logga({ sort: 'data-saknas', ms: Date.now() - start, utanModell: true, modellfel: null, amne: null });
     return json(503, { fel: 'Kartans data går inte att läsa just nu.' });
   }
 
@@ -112,9 +130,9 @@ export async function hanteraFraga(req: Request, d: Hanterardelar): Promise<Resp
   } catch {
     // Ett fel som ingen har förutsett. Webbläsaren går reservvägen, och loggen säger att det hände
     // utan att bära felets text, som kan innehålla frågan.
-    d.logga({ sort: 'motorfel', ms: Date.now() - start, utanModell: true, modellfel: null });
+    d.logga({ sort: 'motorfel', ms: Date.now() - start, utanModell: true, modellfel: null, amne: null });
     return json(503, { fel: 'Svaret gick inte att räkna fram just nu.' });
   }
-  d.logga({ sort: svar.sort, ms: Date.now() - start, utanModell: svar.utanModell, modellfel: svar.modellfel });
+  d.logga({ sort: svar.sort, ms: Date.now() - start, utanModell: svar.utanModell, modellfel: svar.modellfel, amne: amneUr(svar.filter, data.etiketter) });
   return json(200, svar);
 }
