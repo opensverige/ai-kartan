@@ -1,0 +1,90 @@
+---
+// Länets karta på länets sida: formen, kommungränserna och en prick per kommun med organisationer.
+// Ritas i bygget och fungerar utan skript. Varje prick leder till kommunens sida. Geometrin står i
+// src/lib/lankarta.ts och är densamma som i delningsbilden.
+import { url } from '../lib/data';
+import { antal } from '../lib/text';
+import type { Ritad } from '../lib/lankarta';
+
+interface Props {
+  karta: Ritad;
+  namn: string;
+}
+const { karta, namn } = Astro.props;
+const beskrivning = `Karta över ${namn}. ${karta.prickar.map((p) => `${p.namn} ${p.antal}`).join(', ')}.`;
+---
+
+<svg class="lankarta" viewBox={`0 0 ${karta.bredd} ${karta.hojd}`} role="group" aria-label={beskrivning}>
+  {/* Gränserna klipps mot länets form: förenklade var för sig hamnar de annars en aning utanför kanten. */}
+  <defs><clipPath id="lankarta-form"><path d={karta.land} /></clipPath></defs>
+  <path class="lankarta__land" d={karta.land} />
+  <path class="lankarta__granser" d={karta.granser} clip-path="url(#lankarta-form)" />
+  <path class="lankarta__kant" d={karta.land} />
+  {karta.prickar.map((p) => (
+    <a href={url(`/plats/${p.slug}`)} aria-label={`${p.namn}: ${antal(p.antal, 'organisation', 'organisationer')}`}>
+      <circle class="lankarta__prick" cx={p.x} cy={p.y} r={p.r} />
+    </a>
+  ))}
+  {/* Talen sist och minst först, så att en liten granne aldrig täcker talet i en stor prick. */}
+  <g aria-hidden="true">
+    {[...karta.prickar].reverse().filter((p) => p.antal > 1 && p.r >= 9).map((p) => (
+      <text class="lankarta__tal" x={p.x} y={p.y} font-size={Math.min(14, Math.round(p.r * 0.9))}>{p.antal}</text>
+    ))}
+  </g>
+</svg>
+
+<style>
+  .lankarta {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 460px;
+  }
+  .lankarta__land {
+    fill: hsl(var(--bg-soft));
+    fill-rule: evenodd;
+  }
+  .lankarta__kant {
+    fill: none;
+    stroke: hsl(var(--ink-mute));
+    stroke-width: 1.25;
+    stroke-linejoin: round;
+  }
+  .lankarta__granser {
+    fill: none;
+    stroke: hsl(var(--rule));
+    stroke-width: 0.75;
+    stroke-linejoin: round;
+  }
+  .lankarta__prick {
+    fill: hsl(var(--moss));
+    fill-opacity: 0.88;
+    stroke: hsl(var(--bg));
+    stroke-width: 1.5;
+    transition: fill 320ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  a:hover .lankarta__prick,
+  a:focus-visible .lankarta__prick {
+    fill: hsl(var(--moss-deep));
+    fill-opacity: 1;
+  }
+  a:focus-visible {
+    outline: none;
+  }
+  a:focus-visible .lankarta__prick {
+    stroke: hsl(var(--ink));
+    stroke-width: 2.5;
+  }
+  .lankarta__tal {
+    fill: #fff;
+    font-family: var(--font-mono);
+    font-weight: 500;
+    text-anchor: middle;
+    dominant-baseline: central;
+    /* En kontur i prickens färg håller talet läsbart när en liten granne ligger över. */
+    stroke: hsl(var(--moss));
+    stroke-width: 3px;
+    paint-order: stroke;
+    pointer-events: none;
+  }
+</style>
