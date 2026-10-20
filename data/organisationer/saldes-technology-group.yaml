@@ -1,0 +1,109 @@
+id: saldes-technology-group
+
+name:
+  value: Saldes Technology Group
+  status: claimed
+  source_url: https://gettabula.app/
+  source_type: own_site
+  verified_at: 2026-10-20
+  verified_by: agent
+  note: Namnet ur tipset i ärende 60. Produkten heter Tabula.
+
+legal_name:
+  value: Saldes Technology Group AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5593912776
+  source_type: third_party
+  verified_at: 2026-10-20
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5593912776
+  source_type: third_party
+  verified_at: 2026-10-20
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: aktiebolag."
+
+org_number:
+  value: "559391-2776"
+  status: confirmed
+  source_url: https://www.allabolag.se/5593912776
+  source_type: third_party
+  verified_at: 2026-10-20
+  verified_by: agent
+
+website: https://gettabula.app
+
+description:
+  value: Utvecklar Tabula, en digital whiteboard för team. AI-raden sammanfattar tavlan, grupperar lappar och föreslår idéer med en språkmodell, och via MCP kan AI-verktyg läsa, kommentera och redigera tavlor. Källkoden är publik under licensen FSL-1.1.
+  status: claimed
+  source_url: https://gettabula.app/docs/ai-bar
+  source_type: own_site
+  verified_at: 2026-10-20
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://gettabula.app/
+  source_type: own_site
+  verified_at: 2026-10-20
+  verified_by: agent
+  note: Källkoden är publik men under FSL-1.1, som blir Apache 2.0 först två år efter varje version. Därför inte öppen källkod.
+
+areas:
+  value: [agenter_automation]
+  status: claimed
+  source_url: https://gettabula.app/docs/ai-tools
+  source_type: own_site
+  verified_at: 2026-10-20
+  verified_by: agent
+
+kommun:
+  value: "0182"
+  status: confirmed
+  source_url: https://www.allabolag.se/5593912776
+  source_type: third_party
+  verified_at: 2026-10-20
+  verified_by: agent
+  note: Säte i Nacka enligt allabolag.se. Webbplatsen anger Malmö, utan besöksadress. Adressen i registret ligger i en annan kommun än sätet, så organisationen ritas på kommunnivå.
+
+founded:
+  value: 2022
+  status: confirmed
+  source_url: https://www.allabolag.se/5593912776
+  source_type: third_party
+  verified_at: 2026-10-20
+  verified_by: agent
+  note: Bolaget registrerades 2022-08-03.
+
+active:
+  value: true
+  status: claimed
+  source_url: https://github.com/gettabula-app/tabula
+  source_type: own_docs
+  verified_at: 2026-10-20
+  verified_by: agent
+  note: Kodförrådet uppdaterades 2026-10-19.
+
+evidence:
+  - url: https://gettabula.app/docs/ai-bar
+    kind: produkt
+    title: "AI-raden i Tabula: sammanfatta, gruppera och föreslå idéer på tavlan"
+    status: claimed
+    verified_at: 2026-10-20
+    verified_by: agent
+  - url: https://github.com/gettabula-app/tabula
+    kind: repo
+    title: Tabulas källkod, med stöd för AI-verktyg via MCP
+    status: claimed
+    verified_at: 2026-10-20
+    verified_by: agent
+
+links:
+  github: https://github.com/gettabula-app
+
+record_created_at: 2026-10-20
+record_updated_at: 2026-10-20
