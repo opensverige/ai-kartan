@@ -1,4 +1,5 @@
 [
+  { "datum": "2026-10-20", "text": "Kartan stannar i Norden: den går inte att dra eller zooma ut till resten av Europa, men når hela Norden inzoomad." },
   { "datum": "2026-10-19", "text": "Fråga kartan i dold beta: fråga med egna ord och få organisationerna ur kartan, med källa och status. En öppen modell hos Berget AI tolkar frågan, och koden väljer vilka som visas." },
   { "datum": "2026-10-13", "text": "Kartan visar exakt adress där den finns: fylld prick på adressen, kontur i kommunens yta för dem som saknar en. Rutan Plats säger när adressen saknas och har en länk till rättelse." },
   { "datum": "2026-10-13", "text": "Telefonens första skärm säger vad kartan är: rubrik, antal och fyra frågor att prova står i bottenbladet innan kartan har laddat." },

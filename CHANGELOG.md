@@ -2,6 +2,10 @@
 
 Kodens och funktionernas historik. Dataändringar loggas separat och automatiskt i `history/changelog.json` och på sajten under Ändringar. Samma rader som här finns maskinläsbart i `history/bygglogg.json`.
 
+## 2026-10-20
+
+- Kartan stannar i Norden. Den går inte längre att dra eller zooma ut till resten av Europa eller till Afrika. Utzoomningen stannar strax utanför hela Sverige, och golvet räknas om efter skärmen och panelerna, så att hela landet syns från start även på en liten telefon. Inzoomad når kartan hela Norden, från Island till Finland och ner till Malmö och Köpenhamn. Det är kartans mittpunkt som hålls inom Norden, inte kanterna, så att Sverige kan ritas ovanför bottenbladet på telefon.
+
 ## 2026-10-19
 
 - Fråga kartan, i dold beta på `/?fraga=1`. Kartsidan börjar med en första skärm och ett fält där man frågar med egna ord, till exempel ”Vilka bygger röstagenter på svenska?”. Fältet, sidhuvudets sökruta och ⌘K öppnar en sökpalett. Medan man skriver visas organisationer och platser direkt, och Fråga AI överst. Svaret står i samma lista: en rad om hur frågan tolkades, organisationerna med ett utdrag ur beskrivningen och sin status, och Visa alla på kartan, som byter kartans urval. En öppen språkmodell hos Berget AI gör om frågan till kartans filter. Koden väljer vilka som visas och i vilken ordning, och modellen ser aldrig organisationerna. Utan modellen svarar sökningen ändå, och svaret säger det. En fråga om GPU, hosting eller inferens leder också till systersajten AI-Infra. Frågan sparas inte, varken hos oss eller hos Berget. Reglerna ligger i `src/lib/fraga/`, och Personuppgifter säger vad som skickas.
