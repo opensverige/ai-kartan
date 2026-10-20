@@ -560,8 +560,6 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       const p = new URLSearchParams(filterTillSok(f));
       if (valdId) p.set('org', valdId);
       if (medlemslage) p.set('vy', 'medlemmar');
-      // Fråga kartan är en dold beta. Flaggan följer med, så att den finns kvar när sidan laddas om.
-      if (document.documentElement.dataset.fraga) p.set('fraga', '1');
       const qs = p.toString();
       // Hela sökvägen, inte bara frågedelen: räkneskriptet tolkar adressen mot sajtens rot och
       // skulle annars ta en ny post i historiken på en undersida för en ny sidvisning.

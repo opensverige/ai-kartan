@@ -17,8 +17,6 @@ export interface Lankar {
   /** Systersajten AI-Infra och dess logga. */
   infra: string;
   infralogo: string;
-  /** Sidan visas i betan, med ?fraga=1. Då bär länkarna till kartan flaggan. */
-  beta?: boolean;
 }
 
 /** Etiketterna som sidan har, med typernas ikoner när de finns. */
@@ -63,12 +61,11 @@ function kartadress(l: Lankar, kartlank: string): string {
 
 /**
  * Knappen Visa alla på kartan. Ett vanligt klick byter urval utan att ladda om, men en ny flik
- * läser adressen. I betan bär adressen därför flaggan, och utan urval också #karta, eftersom
- * betan annars börjar på första skärmen. Kopian till Discord får inte flaggan: betan är dold.
+ * läser adressen. Utan urval får adressen därför #karta, eftersom kartsidan annars börjar på
+ * första skärmen. Kopian till Discord är urvalets vanliga adress.
  */
 function kartknapp(l: Lankar, kartlank: string): string {
-  if (!l.beta) return kartadress(l, kartlank);
-  return kartadress(l, kartlank.includes('?') ? `${kartlank}&fraga=1` : `${kartlank}?fraga=1#karta`);
+  return kartadress(l, kartlank.includes('?') ? kartlank : `${kartlank}#karta`);
 }
 
 function initialer(namn: string): string {
