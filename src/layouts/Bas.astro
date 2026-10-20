@@ -73,12 +73,13 @@ const raknaBesok = process.env.VERCEL_ENV === 'production';
     <link rel="preload" href={url('/fonts/JetBrainsMono-latin.woff2')} as="font" type="font/woff2" crossorigin />
     <link rel="sitemap" href={url('/sitemap-index.xml')} />
     {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
-    {/* Fråga kartan är en dold beta: bara på kartsidan och bara med ?fraga=1. Läget sätts före första
-        ritningen, så att kartsidan inte hinner visas i fel läge. Övriga sidor är oförändrade. */}
+    {/* Fråga kartan finns på kartsidan. Läget sätts före första ritningen, så att kartsidan inte hinner
+        visas i fel läge. Övriga sidor har sidhuvudets vanliga sökruta, och utan JavaScript är kartan
+        som förut. */}
     <script is:inline define:vars={{ rot: import.meta.env.BASE_URL }}>
       (function () {
         var p = new URLSearchParams(location.search);
-        if (location.pathname.replace(/\/?$/, '/') !== rot.replace(/\/?$/, '/') || p.get('fraga') !== '1') return;
+        if (location.pathname.replace(/\/?$/, '/') !== rot.replace(/\/?$/, '/')) return;
         var d = document.documentElement;
         d.dataset.fraga = '1';
         // Pekar adressen på ett urval eller en organisation börjar besökaren i kartläget.

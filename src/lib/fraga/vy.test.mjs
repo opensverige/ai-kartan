@@ -98,18 +98,18 @@ test('bred fråga: fyra smalare frågor och alla på kartan', () => {
   assert.equal((v.kropp.match(/data-skicka=/g) ?? []).length, 4);
   assert.ok(v.kropp.includes('Alla 2 på kartan bygger AI'));
   assert.ok(v.vidare.includes('data-kartlank="alla"'));
-  assert.ok(v.vidare.includes('href="/" data-kartlank="alla"'));
+  assert.ok(v.vidare.includes('href="/#karta" data-kartlank="alla"'));
 });
 
-test('i betan bär Visa alla flaggan, men inte kopian till Discord', () => {
-  const B = { ...L, kartbas: 'https://karta.test/', beta: true };
+test('Visa alla bär urvalet, och utan urval öppnar den kartan i stället för första skärmen', () => {
+  const B = { ...L, kartbas: 'https://karta.test/' };
   const traffar = svarHtml(svar({ manniska: true }), 'server', POSTER, FAQ, E, B, 'röst');
-  assert.ok(traffar.vidare.includes('href="https://karta.test/?q=r%C3%B6st&amp;fraga=1" data-kartlank="svar"'));
+  assert.ok(traffar.vidare.includes('href="https://karta.test/?q=r%C3%B6st" data-kartlank="svar"'));
   assert.ok(traffar.vidare.includes('data-kopiera="röst\n(via https://karta.test/?q=r%C3%B6st)"'));
-  assert.equal((traffar.vidare.match(/fraga=1/g) ?? []).length, 1);
-  // Utan urval börjar betan på första skärmen. #karta öppnar kartan, som ett vanligt klick gör.
+  assert.ok(!allt(traffar).includes('fraga=1'));
+  // Utan urval börjar kartsidan på första skärmen. #karta öppnar kartan, som ett vanligt klick gör.
   const bred = svarHtml(svar({ sort: 'bred', ...TOMT }), 'server', POSTER, FAQ, E, B, 'AI');
-  assert.ok(bred.vidare.includes('href="https://karta.test/?fraga=1#karta" data-kartlank="alla"'));
+  assert.ok(bred.vidare.includes('href="https://karta.test/#karta" data-kartlank="alla"'));
 });
 
 test('ranking, kontakt och utanför ger fasta texter utan rader', () => {
