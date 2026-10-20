@@ -1,8 +1,20 @@
 {
-  "generated_at": "2026-10-14T11:48:06Z",
-  "antal": 514,
-  "senaste_andring": "2026-10-14",
+  "generated_at": "2026-10-20T20:30:07Z",
+  "antal": 515,
+  "senaste_andring": "2026-10-20",
   "rader": [
+    {
+      "datum": "2026-10-20",
+      "commit": "626afe47d5",
+      "id": "ai-gothenburg",
+      "namn": "AI Gothenburg",
+      "falt": "hela posten",
+      "andring": "tillagd",
+      "gammalt": null,
+      "nytt": null,
+      "status": null,
+      "kalla": "https://aigothenburg.com"
+    },
     {
       "datum": "2026-10-14",
       "commit": "d75ca6aefd",
