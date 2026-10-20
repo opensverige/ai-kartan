@@ -2,6 +2,10 @@
 
 Kodens och funktionernas historik. Dataändringar loggas separat och automatiskt i `history/changelog.json` och på sajten under Ändringar. Samma rader som här finns maskinläsbart i `history/bygglogg.json`.
 
+## 2026-10-20
+
+- Kartan stannar i Norden. Den går inte längre att dra eller zooma ut till resten av Europa eller till Afrika. Utzoomningen stannar strax utanför hela Sverige, och golvet räknas om efter skärmen och panelerna, så att hela landet syns från start även på en liten telefon. Inzoomad når kartan hela Norden, från Island till Finland och ner till Malmö och Köpenhamn. Det är kartans mittpunkt som hålls inom Norden, inte kanterna, så att Sverige kan ritas ovanför bottenbladet på telefon.
+
 ## 2026-10-19
 
 - Fråga kartan för alla. Kartsidan börjar med första skärmen och sökpaletten för varje besökare, och `?fraga=1` behövs inte längre. Gamla länkar med flaggan fungerar som förut. Övriga sidor har sidhuvudets vanliga sökruta, och utan JavaScript är kartan som innan.

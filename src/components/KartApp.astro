@@ -321,6 +321,14 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     const BLACK = '#1c1a17';
     const MOSS = '#2d492d';
     const SVERIGE: [[number, number], [number, number]] = [[10.6, 55.1], [24.4, 69.2]];
+    // Kartan stannar i Norden. Det är mittpunkten som hålls inom en ruta, inte kanterna, så att
+    // Sverige kan ritas ovanför panelerna på telefon. Utzoomad är rutan snäv, inzoomad omfattar
+    // den hela Norden så att Malmö och Köpenhamn går att nå. Utzoomningen stannar strax utanför
+    // hela Sverige, se sattZoomgolv, så att resten av Europa och Afrika aldrig kommer i bild.
+    const MITT_UTZOOMAD: [[number, number], [number, number]] = [[-15, 59.5], [26, 66.5]];
+    const MITT_INZOOMAD: [[number, number], [number, number]] = [[-25, 54.5], [32, 71]];
+    const STORSTA_ZOOM = 14;
+    let zoomgolv = 2;
     const FACETTER: FacettNamn[] = ['erbjuder', 'typ', 'omrade', 'lan'];
     const stdRubrik = rubrik?.textContent ?? '';
     const stdIngress = ingress?.innerHTML ?? '';
@@ -1268,12 +1276,20 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       (karta!.getSource('vald') as GeoJSONSource | undefined)?.setData(tillGeoJson(o ? [o] : [], utanfor ?? ensamma.lan, utanfor ?? ensamma.kommun));
     }
 
+    /** Golvet följer skärmen och panelerna: hela Sverige plus lite luft, aldrig längre ut. */
+    function sattZoomgolv() {
+      if (!karta) return;
+      const z = karta.cameraForBounds(SVERIGE, { padding: kartMarginal() })?.zoom;
+      zoomgolv = z === undefined ? 2 : z - 0.25;
+    }
+
     /**
      * Zoomar till urvalet om en plats är vald, annars till hela Sverige. Ligger urvalet i en
      * enda kommun går kartan ända in till organisationerna, annars stannar den på kommunnivån.
      */
     function passaKarta() {
       if (!karta) return;
+      sattZoomgolv();
       const f = lasFilter();
       const p = urval.filter((o) => o.lat !== null && o.lng !== null);
       if ((!f.lan && !f.kommun) || !p.length) {
@@ -1519,7 +1535,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
           return [typ, bild];
         }),
       );
-      const { Map: Karta, Popup: Tips, Marker: Nal, setWorkerUrl } = await import('maplibre-gl');
+      const { Map: Karta, Popup: Tips, Marker: Nal, LngLat: Plats, setWorkerUrl } = await import('maplibre-gl');
       // Workern serveras från sajten; se scripts/kopiera-maplibre-worker.mjs.
       if (app.dataset.worker) setWorkerUrl(new URL(app.dataset.worker, location.href).href);
       try {
@@ -1529,8 +1545,18 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
           // Hela Sverige i bild oavsett skärmstorlek.
           bounds: SVERIGE,
           fitBoundsOptions: { padding: kartMarginal() },
-          minZoom: 2,
-          maxZoom: 14,
+          renderWorldCopies: false,
+          maxZoom: STORSTA_ZOOM,
+          transformConstrain: (plats, zoom) => {
+            const z = Math.min(Math.max(zoom, zoomgolv), STORSTA_ZOOM);
+            // Rutan vidgas jämnt under de två första zoomstegen in från golvet.
+            const t = Math.min(Math.max((z - zoomgolv) / 2, 0), 1);
+            const kant = (i: 0 | 1, j: 0 | 1): number => MITT_UTZOOMAD[i][j] + (MITT_INZOOMAD[i][j] - MITT_UTZOOMAD[i][j]) * t;
+            return {
+              center: new Plats(Math.min(Math.max(plats.lng, kant(0, 0)), kant(1, 0)), Math.min(Math.max(plats.lat, kant(0, 1)), kant(1, 1))),
+              zoom: z,
+            };
+          },
           attributionControl: { compact: true },
         });
       } catch {
@@ -1539,6 +1565,8 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         return;
       }
       granssnitt.karta = karta;
+      sattZoomgolv();
+      karta.on('resize', sattZoomgolv);
       nyNal = (el, plats) => new Nal({ element: el }).setLngLat(plats).addTo(karta!);
       // Besökarens egna rörelser: dra, nypa, rulla och trycka. Kartans egna flygningar har ingen ursprungshändelse.
       karta.on('movestart', (e) => {
