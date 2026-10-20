@@ -1,8 +1,9 @@
 #!/usr/bin/env node
-// Frågestatistik. Hämtar Fråga kartans loggrader sedan förra körningen ur Vercel och räknar ihop
-// dem per dag i en öppen JSON-fil. Körs var femtonde minut av .github/workflows/fragestatistik.yml.
+// Frågestatistik. Hämtar Fråga kartans loggrader sedan förra körningen ur Vercel och räknar dem
+// per dag. Dagen som pågår ligger i tillståndet, som aldrig publiceras. Dagar som är slut flyttas
+// till den öppna filen. Körs var femtonde minut av .github/workflows/fragestatistik.yml.
 //
-//   VERCEL_TOKEN=… node scripts/fragestatistik.mjs --fil statistik/fragestatistik.json
+//   VERCEL_TOKEN=… node scripts/fragestatistik.mjs --tillstand pagaende.json --publicering statistik/fragestatistik.json
 //   Utan VERCEL_TOKEN används inloggningen i Vercels CLI, för att pröva lokalt.
 //   … --github    skriver larm=true/false och rapport till $GITHUB_OUTPUT
 //
@@ -11,7 +12,7 @@
 
 import fs from 'node:fs';
 import { execFileSync } from 'node:child_process';
-import { MAX_RADER, fonster, lasLoggar, laggTill, rapport, tomStatistik } from './lib/fragestatistik.mjs';
+import { MAX_RADER, fonster, forloratTillstand, forsegla, lasLoggar, laggTill, oppna, publicera, rapport, tomPublicering } from './lib/fragestatistik.mjs';
 
 const PROJEKT = process.env.VERCEL_PROJEKT ?? 'prj_TrQo0nemf38OYxmhiwkwKy3N4QSo';
 const TEAM = process.env.VERCEL_TEAM ?? 'team_joaSVLEv3jfSWBewCGoI5uhb';
@@ -19,21 +20,33 @@ const TEAM = process.env.VERCEL_TEAM ?? 'team_joaSVLEv3jfSWBewCGoI5uhb';
 const VERCEL_CLI = 'vercel@50.37.2';
 
 const argv = process.argv.slice(2);
-const filIndex = argv.indexOf('--fil');
-const fil = filIndex >= 0 ? argv[filIndex + 1] : null;
-if (!fil) {
-  console.error('Ange filen med --fil.');
+const flagga = (namn) => {
+  const i = argv.indexOf(namn);
+  return i >= 0 ? argv[i + 1] : null;
+};
+const tillstandsfil = flagga('--tillstand');
+const publiceringsfil = flagga('--publicering');
+if (!tillstandsfil || !publiceringsfil) {
+  console.error('Ange filerna med --tillstand och --publicering.');
   process.exit(2);
 }
+const las = (fil) => (fs.existsSync(fil) ? JSON.parse(fs.readFileSync(fil, 'utf8')) : null);
+const skriv = (fil, v) => fs.writeFileSync(fil, `${JSON.stringify(v, null, 2)}\n`);
 const token = process.env.VERCEL_TOKEN;
 if (!token && process.env.GITHUB_ACTIONS) {
   console.error('VERCEL_TOKEN saknas. Lägg till hemligheten i repots inställningar.');
   process.exit(2);
 }
 
-const statistik = fs.existsSync(fil) ? JSON.parse(fs.readFileSync(fil, 'utf8')) : tomStatistik();
 const nu = Date.now();
-const f = fonster(statistik.markor, nu);
+const publicering = las(publiceringsfil) ?? tomPublicering();
+// Lokalt, utan token, ligger tillståndet i klartext. I GitHub är det alltid förseglat.
+const lastTillstand = las(tillstandsfil);
+const sparat = lastTillstand && token ? oppna(lastTillstand, token) : lastTillstand;
+const forlorat = sparat ? null : forloratTillstand(publicering, nu);
+const tillstand = sparat ?? forlorat.tillstand;
+const f0 = fonster(tillstand.markor, nu);
+const f = forlorat?.lucka ? { ...f0, lucka: forlorat.lucka } : f0;
 if (f.till <= f.fran) {
   console.log('Inget nytt fönster att hämta.');
   process.exit(0);
@@ -54,10 +67,13 @@ try {
 }
 
 const { rader, kastade, totalt } = lasLoggar(text);
-const { statistik: ny, nyaLarm, nyaLuckor } = laggTill(statistik, rader, f, totalt);
-fs.writeFileSync(fil, `${JSON.stringify(ny, null, 2)}\n`);
+const lagd = laggTill(tillstand, rader, f, totalt);
+const { nyaLarm, nyaLuckor } = lagd;
+const ut = publicera(lagd.tillstand, publicering);
+skriv(tillstandsfil, token ? forsegla(ut.tillstand, token) : ut.tillstand);
+if (ut.andrad || !fs.existsSync(publiceringsfil)) skriv(publiceringsfil, ut.publicering);
 
-const utskrift = rapport(f, rader, kastade, nyaLarm, nyaLuckor);
+const utskrift = rapport(f, kastade, nyaLarm, nyaLuckor);
 console.log(utskrift);
 if (argv.includes('--github') && process.env.GITHUB_OUTPUT) {
   const larm = nyaLarm.length > 0;
