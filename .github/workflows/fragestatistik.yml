@@ -1,0 +1,114 @@
+# Frågestatistik, var femtonde minut. Räknar Fråga kartans loggrader sedan förra körningen till antal
+# per dag. Dagen som pågår ligger förseglad i GitHubs cache. När dagen är slut publiceras den öppet
+# i fragestatistik.json på grenen statistik, med sällsynta ämnen som övrigt. Vercels gratisplan
+# sparar loggen i en timme, så en körning som uteblir längre än så blir en lucka i filen.
+#
+# Statistiken ligger på en egen gren, eftersom Vercel deployar varje commit, även med [skip ci].
+# Grenens vercel.json stänger av deployer därifrån.
+#
+# Larmet blir ett GitHub-ärende med etiketten "fragestatistik" när modellen svarar med ett fel som
+# pausar AI-tolkningen (till exempel slut på kredit eller nått dagstak), när en lucka uppstår och
+# när körningen fallerar. Varje fel larmar högst en gång per dag.
+#
+# Kräver hemligheten VERCEL_TOKEN, en token för Vercel-teamet med utgångsdatum. Vercels token har
+# full åtkomst till teamet, så den finns bara som hemlighet och når aldrig pull requests.
+# Obs: GitHub stänger av schemalagda flöden i arkiv utan commits på 60 dagar. Då måste flödet startas om under Actions.
+name: Frågestatistik
+
+on:
+  schedule:
+    - cron: '7,22,37,52 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: fragestatistik
+  cancel-in-progress: false
+
+jobs:
+  fragestatistik:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: Hämta grenen statistik, eller skapa den
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git fetch --depth 1 origin statistik:statistik; then
+            git worktree add statistik statistik
+          else
+            git worktree add --orphan -b statistik statistik
+          fi
+          printf '%s\n' '{' '  "$schema": "https://openapi.vercel.sh/vercel.json",' '  "git": { "deploymentEnabled": false }' '}' > statistik/vercel.json
+
+      - name: Hämta dagens tillstånd
+        uses: actions/cache/restore@v6
+        with:
+          path: .tillstand/pagaende.json
+          key: fragestatistik-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: fragestatistik-
+
+      - name: Räkna nya frågor
+        id: rakna
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          mkdir -p .tillstand
+          node scripts/fragestatistik.mjs --tillstand .tillstand/pagaende.json --publicering statistik/fragestatistik.json --github
+
+      - name: Committa om något ändrats
+        working-directory: statistik
+        run: |
+          git add fragestatistik.json vercel.json
+          if git diff --cached --quiet; then
+            echo "Ingen ändring."
+            exit 0
+          fi
+          git commit -m "chore(statistik): publicera färdiga dagar"
+          git push origin statistik
+
+      # Sparas först när en färdig dag är publicerad. Fallerar något före hit hämtar nästa körning
+      # det förra tillståndet, som fortfarande har dagen, och räknar om samma fönster.
+      - name: Spara dagens tillstånd
+        uses: actions/cache/save@v6
+        with:
+          path: .tillstand/pagaende.json
+          key: fragestatistik-${{ github.run_id }}-${{ github.run_attempt }}
+
+      - name: Öppna eller uppdatera larmärendet
+        if: steps.rakna.outputs.larm == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RAPPORT: ${{ steps.rakna.outputs.rapport }}
+        run: |
+          gh label create "fragestatistik" --color "52667a" --description "Automatiskt larm från frågestatistiken" --force
+          befintligt=$(gh issue list --label "fragestatistik" --state open --json number --jq '.[0].number')
+          kropp=$(printf 'Automatiskt larm från frågestatistiken.\n\n```\n%s\n```\n\nslut och nyckel gäller krediten och nyckeln hos Berget AI eller Nebius, tak att dagstaket i `FRAGA_DAGSTAK` är nått, nere att leverantören inte svarar. En lucka betyder att frågor under den tiden inte är räknade. Stäng ärendet när det är åtgärdat.' "$RAPPORT")
+          if [ -n "$befintligt" ]; then
+            gh issue comment "$befintligt" --body "$kropp"
+          else
+            gh issue create --title "Frågestatistik: något behöver ses över" --label "fragestatistik" --body "$kropp"
+          fi
+
+      - name: Larma när körningen fallerar
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          KORNING: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh label create "fragestatistik" --color "52667a" --description "Automatiskt larm från frågestatistiken" --force
+          befintligt=$(gh issue list --label "fragestatistik" --state open --json number --jq '.[0].number')
+          # Ett fel som består fallerar var femtonde minut. Ärendet öppnas därför bara en gång.
+          if [ -z "$befintligt" ]; then
+            gh issue create --title "Frågestatistik: något behöver ses över" --label "fragestatistik" \
+              --body "Frågestatistiken fallerade: $KORNING. Är VERCEL_TOKEN satt och giltig?"
+          fi

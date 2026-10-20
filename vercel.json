@@ -4,6 +4,7 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "regions": ["arn1"],
+  "git": { "deploymentEnabled": { "statistik": false } },
   "functions": {
     "api/fraga.ts": { "maxDuration": 15, "includeFiles": "{src/lib/**/*.ts,scripts/lib/marknadsord.mjs}" }
   },

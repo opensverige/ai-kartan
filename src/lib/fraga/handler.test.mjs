@@ -5,7 +5,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { TOMT_FILTER } from '../filter.ts';
 import { tillSokpost } from '../sokindex.ts';
-import { hanteraFraga, lasKropp, MAX_KROPP } from './handler.ts';
+import { amneUr, hanteraFraga, lasKropp, MAX_KROPP } from './handler.ts';
 
 const ETIKETTER = {
   typer: { bolag: 'Bolag' },
@@ -115,7 +115,7 @@ test('frågans text loggas aldrig', async () => {
     assert.equal(fangat.length, 0);
     assert.ok(loggat.length >= 1);
     for (const rad of loggat) assert.ok(!JSON.stringify(rad).includes('Hemlig'), JSON.stringify(rad));
-    assert.deepEqual(Object.keys(loggat[0]).sort(), ['modellfel', 'ms', 'sort', 'utanModell']);
+    assert.deepEqual(Object.keys(loggat[0]).sort(), ['amne', 'modellfel', 'ms', 'sort', 'utanModell']);
   } finally {
     Object.assign(console, original);
   }
@@ -154,4 +154,33 @@ test('ett oväntat fel i motorn ger 503 och en loggrad, aldrig felets text', asy
   assert.equal(loggat.length, 1);
   assert.equal(loggat[0].sort, 'motorfel');
   assert.ok(!JSON.stringify(loggat).includes('hälsa'));
+});
+
+test('ämnet i loggen är bara taxonomins värden och länskoder', () => {
+  const filter = {
+    ...TOMT_FILTER,
+    q: 'Hemliga sökord',
+    omrade: ['halsa', 'Hemligt område'],
+    typ: ['bolag', 'hemlig'],
+    erbjuder: ['infrastruktur', '<script>'],
+    lan: 'Hemligt län',
+  };
+  const amne = amneUr(filter, ETIKETTER);
+  assert.deepEqual(amne, { omrade: ['halsa'], typ: ['bolag'], erbjuder: ['infrastruktur'], lan: null });
+  assert.ok(!JSON.stringify(amne).includes('Hemlig'));
+});
+
+test('en kommun räknas till sitt län, ett okänt län räknas inte', () => {
+  assert.equal(amneUr({ ...TOMT_FILTER, kommun: '1480' }, ETIKETTER).lan, '14');
+  assert.equal(amneUr({ ...TOMT_FILTER, lan: '14' }, ETIKETTER).lan, '14');
+  assert.equal(amneUr({ ...TOMT_FILTER, lan: '01' }, ETIKETTER).lan, null);
+  assert.equal(amneUr({ ...TOMT_FILTER, kommun: 'Göteborg' }, ETIKETTER).lan, null);
+});
+
+test('ett svar loggar sitt ämne, ett fel loggar inget ämne', async () => {
+  const { loggat, d } = delar();
+  const svar = await (await hanteraFraga(anrop(giltig()), d)).json();
+  assert.deepEqual(loggat.at(-1).amne, amneUr(svar.filter, ETIKETTER));
+  await hanteraFraga(anrop(giltig()), { ...d, hamtaData: async () => { throw new Error('nere'); } });
+  assert.equal(loggat.at(-1).amne, null);
 });
