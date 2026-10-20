@@ -6,8 +6,11 @@
 /** Vercels gratisplan sparar loggen i en timme. Marginalen tar höjd för att körningen startar sent. */
 export const LAGRING_MS = 55 * 60 * 1000;
 /** Loggen når Vercel med viss fördröjning. Det senaste fönstret väntar därför till nästa körning. */
-export const FORDROJNING_MS = 2 * 60 * 1000;
-/** Högst så många rader hämtas per körning. Fylls gränsen kan rader saknas, och det sägs som en lucka. */
+export const FORDROJNING_MS = 5 * 60 * 1000;
+/**
+ * Högst så många funktionsrader hämtas per körning. Fylls gränsen kan rader saknas, och det sägs
+ * som en lucka. Skulle Vercels CLI tyst ge färre rader än begärt syns det inte här.
+ */
 export const MAX_RADER = 1000;
 
 const SORTER = new Set(['traffar', 'bred', 'tomt', 'manniska', 'ranking', 'kontakt', 'opensverige', 'utanfor', 'data-saknas', 'motorfel']);
@@ -138,7 +141,17 @@ export function laggTill(statistik, rader, { fran, till, lucka }, antalHamtade) 
     }
   }
   s.markor = new Date(till).toISOString();
-  return { statistik: s, nyaLarm, nyaLuckor: s.luckor.slice(statistik.luckor.length) };
+  const nyaLuckor = s.luckor.slice(statistik.luckor.length);
+  // Schemat i GitHub är ofta försenat. Varje lucka sparas, men larmet kommer en gång per dag.
+  if (nyaLuckor.length > 0) {
+    const dagnamn = svenskDag(till);
+    const larmat = (s.larmat[dagnamn] ??= []);
+    if (!larmat.includes('lucka')) {
+      larmat.push('lucka');
+      nyaLarm.push({ dag: dagnamn, modellfel: null });
+    }
+  }
+  return { statistik: s, nyaLarm, nyaLuckor };
 }
 
 /** Rapporten i Actions-loggen och i larmärendet. Bara antal, aldrig rader ur loggen. */
@@ -148,7 +161,7 @@ export function rapport({ fran, till }, rader, kastade, nyaLarm, nyaLuckor) {
     `Frågor i fönstret: ${rader.filter((r) => r.tid >= fran && r.tid < till).length}`,
     `Kastade rader: ${kastade}`,
   ];
-  for (const l of nyaLarm) delar.push(`Modellfel ${l.modellfel} för första gången ${l.dag}`);
+  for (const l of nyaLarm) delar.push(l.modellfel ? `Modellfel ${l.modellfel} för första gången ${l.dag}` : `Lucka för första gången ${l.dag}`);
   for (const l of nyaLuckor) delar.push(`Lucka (${l.orsak}): ${l.fran} till ${l.till}`);
   return delar.join('\n');
 }

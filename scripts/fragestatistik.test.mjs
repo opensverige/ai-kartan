@@ -122,6 +122,16 @@ test('luckor sparas och syns som nya', () => {
   assert.deepEqual(nyaLuckor.map((l) => l.orsak), ['lagring', 'for-manga-rader']);
 });
 
+test('luckor larmar en gång per dag men sparas alla', () => {
+  const lucka = (h) => ({ fran: `2026-10-20T0${h}:00:00.000Z`, till: `2026-10-20T0${h}:30:00.000Z`, orsak: 'lagring' });
+  const forsta = laggTill(tomStatistik(), [], { fran: NU - 600000, till: NU, lucka: lucka(1) }, 0);
+  assert.equal(forsta.nyaLarm.length, 1);
+  const andra = laggTill(forsta.statistik, [], { fran: NU, till: NU + 600000, lucka: lucka(2) }, 0);
+  assert.deepEqual(andra.nyaLarm, []);
+  assert.equal(andra.statistik.luckor.length, 2);
+  assert.match(rapport({ fran: NU, till: NU + 600000 }, [], 0, forsta.nyaLarm, forsta.nyaLuckor), /Lucka för första gången 2026-10-20/);
+});
+
 test('rapporten bär bara antal och fel, aldrig ämnen', () => {
   const f = { fran: NU - 600000, till: NU, lucka: null };
   const rader = [lasLoggrad(logg(NU - 1000, svar({ modellfel: 'slut', utanModell: true })))];
