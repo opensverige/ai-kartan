@@ -1,8 +1,8 @@
 ---
 // Fråga kartan: första skärmen och sökpaletten (specen 3.1–3.8). Paletten är som Mobbins sökruta:
 // ett fält och en lista. Medan man skriver visas träffar direkt och "Fråga AI" överst, och svaret
-// står i samma lista. Varje fråga står för sig. Allt syns bara i betan, när Bas.astro har satt
-// html[data-fraga]. Utan flaggan är kartsidan som förut, och skriptet gör ingenting.
+// står i samma lista. Varje fråga står för sig. Allt syns bara på kartsidan, där Bas.astro sätter
+// html[data-fraga]. Utan flaggan, på andra sidor och utan JavaScript, gör skriptet ingenting.
 import { SAJT } from '../lib/data';
 ---
 
@@ -97,8 +97,6 @@ import { SAJT } from '../lib/data';
       discord: document.querySelector<HTMLElement>('.ingang')?.dataset.discord ?? '',
       infra: app.dataset.infra || 'https://infra.opensverige.se',
       infralogo: app.dataset.infralogo || `${kartbas}ai-infra.png`,
-      // Skriptet körs bara i betan. Flaggan följer med till länkarna, så att en ny flik också är i betan.
-      beta: Boolean(rot.dataset.fraga),
     };
     const stilla = window.matchMedia('(prefers-reduced-motion: reduce)');
     // Samma dag som servern räknar med, så att dagens urval blir detsamma i reservvägen.

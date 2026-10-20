@@ -4,6 +4,8 @@ Kodens och funktionernas historik. Dataändringar loggas separat och automatiskt
 
 ## 2026-10-19
 
+- Fråga kartan för alla. Kartsidan börjar med första skärmen och sökpaletten för varje besökare, och `?fraga=1` behövs inte längre. Gamla länkar med flaggan fungerar som förut. Övriga sidor har sidhuvudets vanliga sökruta, och utan JavaScript är kartan som innan.
+- Fråga kartan har ett tak: högst 500 frågor till modellen per dygn. Därefter svarar sökningen utan modell till midnatt. Svarar inte Berget AI tar Nebius frågan som reserv.
 - Fråga kartan, i dold beta på `/?fraga=1`. Kartsidan börjar med en första skärm och ett fält där man frågar med egna ord, till exempel ”Vilka bygger röstagenter på svenska?”. Fältet, sidhuvudets sökruta och ⌘K öppnar en sökpalett. Medan man skriver visas organisationer och platser direkt, och Fråga AI överst. Svaret står i samma lista: en rad om hur frågan tolkades, organisationerna med ett utdrag ur beskrivningen och sin status, och Visa alla på kartan, som byter kartans urval. En öppen språkmodell hos Berget AI gör om frågan till kartans filter. Koden väljer vilka som visas och i vilken ordning, och modellen ser aldrig organisationerna. Utan modellen svarar sökningen ändå, och svaret säger det. En fråga om GPU, hosting eller inferens leder också till systersajten AI-Infra. Frågan sparas inte, varken hos oss eller hos Berget. Reglerna ligger i `src/lib/fraga/`, och Personuppgifter säger vad som skickas.
 
 ## 2026-10-13

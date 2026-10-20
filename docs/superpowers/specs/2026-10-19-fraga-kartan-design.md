@@ -436,7 +436,7 @@ Gustaf har inte valt dessa uttryckligen:
 
 - **Fas 0:** allt ovan lokalt. Först reservvägen och gränssnittet, sedan provet mot leverantörerna, sist modellsteget.
 - **Fas 1:** dold beta bakom en adressparameter, till exempel `?fraga=1`, för folk från Discord. Utvärderingen körs och tummarna läses.
-- **Fas 2:** första skärmen blir standard. Brytaren och utgiftstaket är på.
+- **Fas 2:** första skärmen blir standard. Brytaren och utgiftstaket är på. Gjort 2026-10-19 på Gustafs beslut, med dagstaket (5.10) och brytaren i brandväggen. `?fraga=1` behövs inte längre, och gamla länkar med flaggan fungerar som förut.
 
 ## 11. Beslut efter byggarens granskning
 
