@@ -32,7 +32,8 @@ if (!tillstandsfil || !publiceringsfil) {
 }
 const las = (fil) => (fs.existsSync(fil) ? JSON.parse(fs.readFileSync(fil, 'utf8')) : null);
 const skriv = (fil, v) => fs.writeFileSync(fil, `${JSON.stringify(v, null, 2)}\n`);
-const token = process.env.VERCEL_TOKEN;
+// Mellanslag och radbrytningar följer lätt med när token klistras in som hemlighet.
+const token = process.env.VERCEL_TOKEN?.trim();
 if (!token && process.env.GITHUB_ACTIONS) {
   console.error('VERCEL_TOKEN saknas. Lägg till hemligheten i repots inställningar.');
   process.exit(2);
@@ -58,11 +59,19 @@ try {
     'npx',
     ['--yes', VERCEL_CLI, 'logs', '--project', PROJEKT, '--scope', TEAM, '--environment', 'production', '--source', 'serverless', '--no-branch', '--json',
       '--since', new Date(f.fran).toISOString(), '--until', new Date(f.till).toISOString(), '-n', String(MAX_RADER), ...(token ? ['--token', token] : [])],
-    { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], maxBuffer: 64 * 1024 * 1024, timeout: 5 * 60 * 1000 },
+    { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], maxBuffer: 64 * 1024 * 1024, timeout: 5 * 60 * 1000 },
   );
 } catch (fel) {
-  // Bara statuskoden. Felets text kan innehålla delar av svaret.
   console.error(`Loggarna gick inte att hämta (status ${fel.status ?? 'okänd'}).`);
+  // CLI:ns egna felrader, så att det går att se varför. Loggraderna går till stdout och skrivs aldrig
+  // ut. Bara rader som ser ut som fel visas, avkortade och utan token.
+  const felrader = String(fel.stderr ?? '')
+    .split('\n')
+    .map((rad) => rad.trim())
+    .filter((rad) => /error|fel|forbidden|unauthori|not found|invalid|token|scope|permission|denied/i.test(rad))
+    .slice(0, 5)
+    .map((rad) => (token ? rad.replaceAll(token, '***') : rad).slice(0, 200));
+  for (const rad of felrader) console.error(`  vercel: ${rad}`);
   process.exit(1);
 }
 
