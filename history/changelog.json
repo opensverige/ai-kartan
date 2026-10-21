@@ -1,8 +1,20 @@
 {
-  "generated_at": "2026-10-20T20:30:07Z",
-  "antal": 515,
+  "generated_at": "2026-10-21T22:02:52Z",
+  "antal": 516,
   "senaste_andring": "2026-10-20",
   "rader": [
+    {
+      "datum": "2026-10-20",
+      "commit": "3f8b8c39cd",
+      "id": "saldes-technology-group",
+      "namn": "Saldes Technology Group",
+      "falt": "hela posten",
+      "andring": "tillagd",
+      "gammalt": null,
+      "nytt": null,
+      "status": null,
+      "kalla": "https://gettabula.app"
+    },
     {
       "datum": "2026-10-20",
       "commit": "626afe47d5",
