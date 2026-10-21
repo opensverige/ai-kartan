@@ -3,6 +3,19 @@
   "metod": "https://karta.opensverige.se/integritet#fraga",
   "troskel": 3,
   "start": "2026-10-21T21:03:07.415Z",
-  "dagar": {},
+  "dagar": {
+    "2026-10-21": {
+      "fragor": 1,
+      "modellen_svarade": 1,
+      "svar": {
+        "opensverige": 1
+      },
+      "modellfel": {},
+      "omrade": {},
+      "typ": {},
+      "erbjuder": {},
+      "lan": {}
+    }
+  },
   "luckor": []
 }
