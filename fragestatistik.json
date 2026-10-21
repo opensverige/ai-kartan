@@ -1,0 +1,8 @@
+{
+  "beskrivning": "Fråga kartan på karta.opensverige.se, räknat per dag i svensk tid och publicerat när dagen är slut. Varje dimension räknas för sig, utan klockslag och utan kombinationer. Ett område, en typ, ett erbjudande eller ett län som förekom färre än tröskeln under dagen räknas som ovrigt. Frågornas text sparas aldrig.",
+  "metod": "https://karta.opensverige.se/integritet#fraga",
+  "troskel": 3,
+  "start": "2026-10-21T21:03:07.415Z",
+  "dagar": {},
+  "luckor": []
+}
