@@ -274,16 +274,29 @@ import { SAJT } from '../lib/data';
       };
       const vald = flikar[flik];
       bladval = vald.rader.map((r) => r.filter);
-      const piller = vald.rader.map((r, i) => `<button type="button" class="palett-chip" data-blad="${i}">${esc(r.text)} <small>${r.antal}</small></button>`).join('');
+      // Raderna läses uppifrån och ned i första kolumnen och sedan i den andra, så att ordningen följer antalet.
+      const listrader = vald.rader
+        .map(
+          (r, i) =>
+            `<li><button type="button" class="palett-post" data-blad="${i}"><span class="palett-post__namn">${esc(r.text)}</span>` +
+            `<span class="palett-post__antal">${r.antal}</span><span class="palett-post__pil" aria-hidden="true">→</span></button></li>`,
+        )
+        .join('');
       const nav = (Object.keys(flikar) as Flik[])
         .map((id) => `<button type="button" data-flik="${id}" aria-pressed="${id === flik}"><i aria-hidden="true">${flikar[id].tecken}</i>${flikar[id].namn}</button>`)
         .join('');
       kropp.innerHTML =
-        `<p class="palett__rubrik">Prova att fråga</p>${chipsHtml(EXEMPEL)}` +
+        // AI-frågorna och kartan gör olika saker, så de får var sin yta.
+        `<div class="palett-tom"><div class="palett-zon" role="group" aria-labelledby="palett-zon-rubrik">` +
+        `<div class="palett-zon__huvud"><span class="palett-zon__glyf" aria-hidden="true">✦</span>` +
+        `<p class="palett-zon__rubrik" id="palett-zon-rubrik">Fråga AI:n</p><p class="palett-zon__not">svarar med länkar till källorna</p></div>` +
+        `${chipsHtml(EXEMPEL)}</div>` +
+        `<div class="palett-karta"><p class="palett__rubrik">Visa på kartan</p>` +
         `<div class="palett-blad"><div class="palett-blad__nav" role="group" aria-label="Bläddra i kartan">${nav}</div>` +
-        `<div><p class="palett__rubrik">${vald.namn} på kartan</p>` +
-        (piller ? `<div class="palett-chips">${piller}</div>` : '<p class="palett__vantar"><span aria-hidden="true">✦</span>Kartan laddar …</p>') +
-        `</div></div>`;
+        (listrader
+          ? `<ul class="palett-lista" style="--rader: ${Math.ceil(vald.rader.length / 2)}" aria-label="${vald.namn} på kartan">${listrader}</ul>`
+          : '<p class="palett__vantar"><span aria-hidden="true">✦</span>Kartan laddar …</p>') +
+        `</div></div></div>`;
       vidare.hidden = true;
       vidare.replaceChildren();
       nyLista(false);
@@ -695,10 +708,15 @@ import { SAJT } from '../lib/data';
     background: hsl(45 17% 5% / 0.32);
     backdrop-filter: blur(2px);
   }
+  /* Gridet i tre lager: 4-punktsskalan, en kant med ett glyfspår och åtta kolumner om 75px på 760px innanför kanten. */
   .palett__ruta {
+    --inset: 24px;
+    --glyf: 20px;
+    --kol: 75px;
+    --ranna: 16px;
     display: flex;
     flex-direction: column;
-    width: min(760px, 100%);
+    width: min(762px, 100%);
     max-height: 100%;
     overflow: hidden;
     border: 1px solid hsl(var(--kant));
@@ -712,10 +730,14 @@ import { SAJT } from '../lib/data';
     display: flex;
     align-items: center;
     gap: 12px;
-    height: 66px;
+    height: 64px;
     margin: 0;
-    padding: 0 14px 0 20px;
+    /* Stängknappen har 4px luft, så att esc hamnar på kanten. */
+    padding: 0 calc(var(--inset) - 4px) 0 var(--inset);
     border-bottom: 1px solid hsl(var(--kant));
+  }
+  .palett__falt .fraga-glyf {
+    width: var(--glyf);
   }
   .palett__falt input {
     flex: 1;
@@ -774,10 +796,11 @@ import { SAJT } from '../lib/data';
     display: flex;
     justify-content: space-between;
     gap: 12px;
-    padding: 9px 18px;
+    /* Kantlinjen ovanför räknas in, så att texten får 11px luft på båda sidor. */
+    padding: 10px var(--inset) 11px;
     border-top: 1px solid hsl(var(--kant));
     color: hsl(var(--ink-mute));
-    font: 400 10.5px/1.4 var(--font-mono);
+    font: 400 10.5px/14px var(--font-mono);
   }
   .palett__fot kbd {
     padding: 1px 5px;
@@ -953,44 +976,165 @@ import { SAJT } from '../lib/data';
     color: hsl(var(--moss));
     font-size: 14px;
   }
-  .palett-chip small {
-    color: hsl(var(--ink-mute));
-    font: 400 11px/1 var(--font-mono);
+  /* Den tomma paletten har två ytor som sköter sina egna kanter. */
+  .palett__kropp:has(> .palett-tom) {
+    padding: 0;
+  }
+  .palett-zon {
+    padding: 24px var(--inset);
+    border-bottom: 1px solid hsl(var(--moss) / 0.16);
+    background: hsl(var(--moss) / 0.08);
+  }
+  .palett-zon__huvud {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 20px;
+    margin-bottom: 12px;
+  }
+  .palett-zon__glyf {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: var(--glyf);
+    color: hsl(var(--moss));
+    font-size: 15px;
+  }
+  .app .palett-zon__rubrik {
+    margin: 0;
+    color: hsl(var(--moss-deep));
+    font: 500 15px/20px var(--font-sans);
+  }
+  .app .palett-zon__not {
+    margin: 0 0 0 auto;
+    color: hsl(var(--moss));
+    font: 400 10.5px/12px var(--font-mono);
+  }
+  .palett-zon .palett-chips {
+    margin: 0;
+  }
+  .palett-zon .palett-chip {
+    height: 36px;
+    min-height: 0;
+    padding: 0 14px 0 12px;
+    border-color: hsl(var(--moss) / 0.2);
+    white-space: nowrap;
+  }
+  .palett-zon .palett-chip:hover,
+  .palett-zon .palett-chip:focus-visible {
+    border-color: hsl(var(--moss) / 0.45);
+  }
+  .palett-zon .palett-chip__glyf {
+    font-size: 13px;
+  }
+
+  /* Hover och val sticker ut 8px åt sidorna, så att texten står kvar på sin linje. */
+  .palett-karta {
+    padding: 24px var(--inset) 16px;
+  }
+  .app .palett-karta .palett__rubrik {
+    margin: 0 0 12px;
+    line-height: 12px;
   }
   .palett-blad {
     display: grid;
-    grid-template-columns: 180px minmax(0, 1fr);
-    gap: 18px;
+    grid-template-columns: calc(2 * var(--kol) + var(--ranna)) minmax(0, 1fr);
+    column-gap: var(--ranna);
   }
   .palett-blad__nav {
     display: flex;
     flex-direction: column;
-    gap: 2px;
   }
   .palett-blad__nav button {
     display: flex;
     flex: none;
     align-items: center;
-    gap: 10px;
-    height: 42px;
-    padding: 0 12px;
+    gap: 12px;
+    height: 32px;
+    margin: 0 -8px;
+    padding: 0 8px;
     border: 0;
-    border-radius: 12px;
+    border-radius: 8px;
     background: none;
     color: hsl(var(--ink-soft));
-    font: 500 15.5px/1 var(--font-sans);
+    font: 500 15px/20px var(--font-sans);
     text-align: left;
     cursor: pointer;
+    transition: background 320ms var(--fraga-ease), color 320ms var(--fraga-ease);
+  }
+  .palett-blad__nav button:hover {
+    color: hsl(var(--ink));
   }
   .palett-blad__nav button[aria-pressed='true'] {
     background: hsl(var(--yta-chip));
     color: hsl(var(--ink));
   }
   .palett-blad__nav i {
-    width: 18px;
+    width: var(--glyf);
     color: hsl(var(--ink-mute));
     font-style: normal;
     text-align: center;
+  }
+  .palett-lista {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-rows: repeat(var(--rader), 32px);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--ranna);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .palett-post {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto 12px;
+    align-items: center;
+    gap: 8px;
+    width: calc(100% + 16px);
+    height: 32px;
+    margin: 0 -8px;
+    padding: 0 8px;
+    border: 0;
+    border-radius: 8px;
+    background: none;
+    color: hsl(var(--ink));
+    font: 400 15px/20px var(--font-sans);
+    text-align: left;
+    cursor: pointer;
+    transition: background 320ms var(--fraga-ease);
+  }
+  .palett-post__namn {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .palett-post__antal {
+    color: hsl(var(--ink-mute));
+    font: 400 11.5px/12px var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    transition: color 320ms var(--fraga-ease);
+  }
+  .palett-post__pil {
+    color: transparent;
+    font-size: 13px;
+    transition: color 320ms var(--fraga-ease);
+  }
+  .palett-post:hover,
+  .palett-post:focus-visible {
+    background: hsl(var(--yta-chip));
+  }
+  .palett-post:focus-visible {
+    outline: 0;
+    box-shadow: inset 0 0 0 2px hsl(var(--moss) / 0.35);
+  }
+  .palett-post:hover .palett-post__antal,
+  .palett-post:focus-visible .palett-post__antal {
+    color: hsl(var(--ink));
+  }
+  .palett-post:hover .palett-post__pil,
+  .palett-post:focus-visible .palett-post__pil {
+    color: hsl(var(--ink-soft));
   }
 
   /* Svaret: en rad om tolkningen, raderna och vägen vidare. Inga bubblor. */
@@ -1157,12 +1301,15 @@ import { SAJT } from '../lib/data';
       border: 0;
       border-radius: 0;
     }
+    .palett__ruta {
+      --inset: 16px;
+    }
     .palett__falt {
-      height: 60px;
-      padding: 0 6px 0 16px;
+      height: 56px;
+      padding: 0 4px 0 var(--inset);
     }
     .palett__falt input {
-      font-size: 17px;
+      font-size: 16px;
     }
     .palett__stang,
     .palett__tangenter,
@@ -1172,7 +1319,7 @@ import { SAJT } from '../lib/data';
     .palett__avbryt {
       display: block;
       min-height: 44px;
-      padding: 0 10px;
+      padding: 0 12px;
       border: 0;
       background: none;
       color: hsl(var(--ink-soft));
@@ -1182,13 +1329,87 @@ import { SAJT } from '../lib/data';
     .palett__vidare {
       padding-bottom: calc(12px + env(safe-area-inset-bottom));
     }
+    .app .palett__fot {
+      padding-bottom: calc(11px + env(safe-area-inset-bottom));
+      text-wrap: balance;
+    }
+
+    /* AI-frågorna ligger på en rad som sveps i sidled. Nästa piller syns i kanten. */
+    .palett-zon {
+      padding: 16px var(--inset);
+    }
+    .palett-zon__not {
+      display: none;
+    }
+    .palett-zon .palett-chips {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      margin: 0 calc(-1 * var(--inset));
+      padding: 0 var(--inset);
+      scroll-padding-inline: var(--inset);
+      scrollbar-width: none;
+    }
+    .palett-zon .palett-chips::-webkit-scrollbar {
+      display: none;
+    }
+    .palett-zon .palett-chip {
+      position: relative;
+      flex: none;
+      height: 40px;
+    }
+    /* Pillret ser 40px högt ut men tar emot tryck på 44px. */
+    .palett-zon .palett-chip::before {
+      content: '';
+      position: absolute;
+      inset: -2px 0;
+    }
+
+    .palett-karta {
+      padding: 16px var(--inset) 0;
+    }
     .palett-blad {
       grid-template-columns: minmax(0, 1fr);
-      gap: 6px;
+      row-gap: 16px;
     }
     .palett-blad__nav {
-      flex-direction: row;
-      overflow-x: auto;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      padding: 2px;
+      border-radius: 10px;
+      background: hsl(var(--yta-chip));
+    }
+    .palett-blad__nav button {
+      justify-content: center;
+      gap: 8px;
+      margin: 0;
+      font-size: 14px;
+    }
+    .palett-blad__nav button[aria-pressed='true'] {
+      background: hsl(var(--bg));
+      box-shadow: 0 1px 2px hsl(var(--ink) / 0.1);
+    }
+    .palett-blad__nav i {
+      width: auto;
+    }
+    .palett-lista {
+      grid-auto-flow: row;
+      grid-template-rows: none;
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .palett-post {
+      grid-template-columns: minmax(0, 1fr) auto;
+      width: 100%;
+      height: 44px;
+      margin: 0;
+      padding: 0;
+      border-bottom: 1px solid hsl(var(--kant) / 0.7);
+      border-radius: 0;
+    }
+    .palett-post__pil {
+      display: none;
+    }
+    .palett-post:hover {
+      background: none;
     }
   }
 
