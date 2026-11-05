@@ -5,7 +5,7 @@ import type { Filter, Filterpost } from '../filter.ts';
 import { finnsI, normalisera, ORDSTART, type Tolkning } from '../sok.ts';
 import type { Etiketter } from '../sokindex.ts';
 
-export type Skalpost = Filterpost & { d: string | null; kn: string | null; ln: string | null };
+export type Skalpost = Omit<Filterpost, 'p'> & { d: string | null; kn: string | null; ln: string | null; p?: readonly { k: string; kn: string; l: string; ln: string | null }[] };
 
 
 const ORDTECKEN = /^[\p{L}\p{N}-]$/u;
@@ -84,8 +84,9 @@ export function matchskal(o: Skalpost, f: Filter, t: Tolkning, e: Etiketter): st
   if (f.typ.length && f.typ.includes(o.t)) lagg(ut, etikettSkal('t', o.t, e));
   for (const id of f.erbjuder) if (o.o.includes(id)) lagg(ut, etikettSkal('o', id, e));
   for (const id of f.omrade) if (o.a.includes(id)) lagg(ut, etikettSkal('a', id, e));
-  if (f.kommun && o.k === f.kommun) lagg(ut, o.kn);
-  else if (f.lan && o.l === f.lan) lagg(ut, o.ln);
+  // Sätet först. Finns organisationen där genom en plats utöver sätet är det platsen som förklarar träffen.
+  if (f.kommun) lagg(ut, o.k === f.kommun ? o.kn : o.p?.find((p) => p.k === f.kommun)?.kn ?? null);
+  else if (f.lan) lagg(ut, o.l === f.lan ? o.ln : o.p?.find((p) => p.l === f.lan)?.ln ?? null);
   if (f.q) {
     for (const grupp of t.grupper) {
       for (const alt of grupp) {

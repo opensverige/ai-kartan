@@ -28,3 +28,8 @@ test('tillSokpost behåller postens egna fält och klarar saknad plats och beskr
   assert.deepEqual(p.a, ['halsa']);
   assert.ok(!p.ns.includes('null'));
 });
+
+test('tillSokpost tar med orterna för platser utöver sätet', () => {
+  const p = tillSokpost({ ...POST, p: [{ kn: 'Trollhättan', ln: 'Västra Götalands län' }] }, ETIKETTER);
+  assert.match(p.ns, /trollhattan/);
+});

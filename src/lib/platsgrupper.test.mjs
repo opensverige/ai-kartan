@@ -3,7 +3,7 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { nivaForZoom, platsmitt, grupperaPerPlats, zoomgranser, platsEfterUtzoomning, ZOOM_KOMMUN, ZOOM_POSTER } from './platsgrupper.ts';
+import { nivaForZoom, nalar, platsmitt, grupperaPerPlats, zoomgranser, platsEfterUtzoomning, ZOOM_KOMMUN, ZOOM_POSTER } from './platsgrupper.ts';
 
 const post = (id, k, kn, lat = 59.3, lng = 18.0) => ({ id, k, kn, l: k ? k.slice(0, 2) : null, ln: k ? `Län ${k.slice(0, 2)}` : null, lat, lng });
 const STHLM = [post('a', '0180', 'Stockholm', 59.32, 18.06), post('b', '0180', 'Stockholm', 59.34, 18.08)];
@@ -98,4 +98,34 @@ test('utzoomning från en högre zoom lämnar platsen som förut', () => {
 test('en tät kommun får gå ner till strax över nivåbytet, så att den får plats i smal vy', () => {
   const [min] = zoomgranser(STHLM);
   assert.ok(min >= ZOOM_POSTER && min < ZOOM_POSTER + 0.1);
+});
+
+// Ett bolag med säte i Stockholm och kontor i Göteborg och Borås.
+const KONTOR = { ...post('k', '0180', 'Stockholm', 59.33, 18.07), p: [
+  { k: '1480', kn: 'Göteborg', l: '14', ln: 'Län 14', lat: 57.7, lng: 11.97 },
+  { k: '1490', kn: 'Borås', l: '14', ln: 'Län 14', lat: 57.72, lng: 12.94 },
+] };
+const GBG = post('g1', '1480', 'Göteborg', 57.71, 11.96);
+
+test('nålarna är sätet och en per plats, med egna nycklar', () => {
+  assert.deepEqual(nalar(KONTOR).map((n) => [n.nyckel, n.k, n.plats]), [['k', '0180', false], ['k@1480', '1480', true], ['k@1490', '1490', true]]);
+  assert.deepEqual(nalar(UMEA).map((n) => n.nyckel), ['d']);
+});
+
+test('en plats räknas i sin kommun, men gruppen räknar organisationer och inte nålar', () => {
+  const alla = [...STHLM, KONTOR, GBG];
+  const kommun = grupperaPerPlats(alla, 'kommun', platsmitt(alla, 'kommun'));
+  assert.deepEqual(kommun.grupper.map((g) => [g.kod, g.antal]), [['0180', 3], ['1480', 2]]);
+  // Ensam i Borås: den nålen ritas som sig själv, medan sätet ligger i Stockholms grupp.
+  assert.deepEqual([...kommun.ensamma], ['k@1490']);
+  const lan = grupperaPerPlats(alla, 'lan', platsmitt(alla, 'lan'));
+  // Två kontor i län 14 räknas som en organisation.
+  assert.deepEqual(lan.grupper.map((g) => [g.kod, g.antal]), [['01', 3], ['14', 2]]);
+});
+
+test('en organisation som är ensam i ett län med två platser ritas med båda nålarna', () => {
+  const alla = [...STHLM, KONTOR];
+  const { grupper, ensamma } = grupperaPerPlats(alla, 'lan', platsmitt(alla, 'lan'));
+  assert.deepEqual(grupper.map((g) => g.kod), ['01']);
+  assert.deepEqual([...ensamma].sort(), ['k@1480', 'k@1490']);
 });

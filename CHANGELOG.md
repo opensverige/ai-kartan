@@ -2,6 +2,14 @@
 
 Kodens och funktionernas historik. Dataändringar loggas separat och automatiskt i `history/changelog.json` och på sajten under Ändringar. Samma rader som här finns maskinläsbart i `history/bygglogg.json`.
 
+## 2026-11-05
+
+- Platserna utöver sätet syns på kartan. Varje plats ritas som en kontur på kommunnivå, i kommunens rutnät som alla andra utan adress, och öppnar organisationen. En organisation är med i varje kommun och varje län där den har sätet eller en plats: i kartans grupper, i filtren och sökningen, på kommun- och länssidorna, på länskartan och i Fråga kartan. Den räknas en gång i totalen och en gång per kommun och län, så ett bolag med två kontor i samma län ser inte ut som två. Detaljpanelen visar Även i. Exporterna har en punkt och en rad per organisation som förut, med platserna i attributet `platser` i GeoJSON och kolumnen `platser_kommun_kod` sist i CSV. Andra delen av ärende #75.
+
+## 2026-11-02
+
+- En organisation kan ha platser utöver sätet. Det nya fältet `platser` är en lista där varje plats är en uppgift med källa, datum och status, som alla andra fält, och anger bara en kommunkod. Egen webbplats ger egen uppgift, och ett register som listar arbetsställen kan ge bekräftad. Valideringen stoppar en kod som inte finns, sätets egen kommun och samma kommun två gånger. Platserna listas på organisationens sida. Kartan, kommun- och länssidorna och filtren visar än så länge bara sätet. Metoden, Personuppgifter, schemat och mallen säger den nya regeln. Knowit är första posten med platser. Förslaget kom i ärende #75.
+
 ## 2026-10-23
 
 - Sökpaletten skiljer på att fråga AI:n och att bläddra i kartan. Förut såg båda ut som samma piller, fast det ena skickar en fråga till modellen och det andra byter kartans urval. Nu står frågorna att prova på en egen grön yta under rubriken Fråga AI:n. Under den står Visa på kartan: områden, typer och län som en lista i två kolumner, med antalet i linje till höger, så att det syns vilka som är störst. Listan läses uppifrån och ned i första kolumnen och sedan i den andra, så att skärmläsare och tangentbord följer samma ordning som ögat. I telefon ligger frågorna på en rad som sveps i sidled, och listan har en rad per område. Måtten följer ett gemensamt rutnät: en skala i steg om 4 punkter, en kant 24 punkter in (16 i telefon) med text efter en glyf på samma linje, och åtta kolumner. Reglerna ligger i `src/components/Fraga.astro`.

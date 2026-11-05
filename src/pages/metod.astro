@@ -68,9 +68,17 @@ const s = d.statistik;
     <li>Webbplatsens besöksadress går före registrets. En registrerad adress säger var organisationen är registrerad, inte nödvändigtvis var folk arbetar.</li>
     <li>En adress som registret anger med c/o eller lägenhetsnummer används inte. Den är ofta en bostad.</li>
     <li>En enskild firmas adress är en personuppgift. Enskilda firmor får aldrig exakt position.</li>
-    <li>Ligger adressen i en annan kommun än sätet ritas organisationen på kommunnivå, i sätets kommun.</li>
+    <li>Ligger adressen i en annan kommun än sätet används den inte som position. Orten kan i stället stå som en plats, se nedan.</li>
   </ul>
   <p>Koordinaten räknas fram ur adressen med OpenStreetMaps Nominatim (© OpenStreetMaps bidragsgivare, ODbL). Länet härleds ur kommunkoden.</p>
+  <h3 id="platser">Fler platser än sätet</h3>
+  <p>En organisation med verksamhet på flera orter, till exempel kontor, kan ha platser utöver sätet. Varje plats är en egen uppgift med källa, datum och status, som alla andra fält. Organisationens egen webbplats ger <em>egen uppgift</em>. Ett register som listar arbetsställen, till exempel SCB:s företagsregister, kan ge <em>bekräftad</em>.</p>
+  <ul>
+    <li>En plats anges bara som kommun, aldrig som gatuadress eller koordinat.</li>
+    <li>Sätet står för sig och upprepas inte bland platserna. En kommun står bara en gång.</li>
+    <li>Varje plats ritas på kartan som en kontur på kommunnivå, i kommunens rutnät som alla andra utan adress. Den är aldrig en fylld prick.</li>
+    <li>Organisationen är med i varje kommun och varje län där den har sätet eller en plats, men räknas en gång i totalen. Antalet i en grupp på kartan räknar organisationer, inte platser.</li>
+  </ul>
 
   <h2 id="historik">Ändringshistoriken är vallgraven</h2>
   <p>Git-repot är sanningen. Varje ändring är en commit med datum, avsändare och diff. Nya poster och rättelser går via pull request. Den första datamängden lades direkt på huvudgrenen, och den automatiska historikfilen skrivs dit av en bot. Ur historiken byggs <a href={url('/andringar')}>ändringsloggen</a>: varje ändrat fält med gammalt och nytt värde. Den är append-only och går inte att kopiera i efterhand genom att skrapa om kartan i dag.</p>

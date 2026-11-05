@@ -23,6 +23,8 @@ export interface Filterpost extends Sokpost {
   n: string;
   k: string | null;
   l: string | null;
+  /** Platser utöver sätet. Organisationen är med i deras kommuner och län också. */
+  p?: readonly { k: string; l: string }[];
 }
 
 export const TOMT_FILTER: Filter = Object.freeze({ q: '', erbjuder: [], typ: [], omrade: [], lan: '', kommun: '' }) as Filter;
@@ -37,8 +39,8 @@ export function passarFilter(o: Filterpost, f: Filter, tolkning: Tolkning, utom?
   if (utom !== 'typ' && f.typ.length && !f.typ.includes(o.t)) return false;
   if (utom !== 'omrade' && f.omrade.length && !f.omrade.some((x) => o.a.includes(x))) return false;
   if (utom !== 'lan') {
-    if (f.lan && o.l !== f.lan) return false;
-    if (f.kommun && o.k !== f.kommun) return false;
+    if (f.lan && o.l !== f.lan && !o.p?.some((p) => p.l === f.lan)) return false;
+    if (f.kommun && o.k !== f.kommun && !o.p?.some((p) => p.k === f.kommun)) return false;
   }
   return true;
 }

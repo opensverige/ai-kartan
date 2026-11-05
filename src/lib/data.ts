@@ -49,6 +49,7 @@ export interface OrgData {
   areas: Fakta<string[]>;
   kommun: Fakta<string | null>;
   coordinates?: Fakta<{ lat: number; lng: number }>;
+  platser?: Fakta<{ kommun: string }>[];
   founded?: Fakta<number | null>;
   active?: Fakta<boolean | null>;
   evidence: Belagg[];
@@ -58,7 +59,19 @@ export interface OrgData {
   record_updated_at: string;
 }
 
+/** En plats utöver sätet, härledd ur `platser`. Positionen är en ruta i kommunens rutnät, aldrig en adress. */
+export interface AnnanPlats {
+  kommun_kod: string;
+  kommun_namn: string;
+  kommun_slug: string;
+  lan_kod: string;
+  lan_namn: string | null;
+  lan_slug: string | null;
+  position: { lat: number; lng: number };
+}
+
 export interface Harlett {
+  platser: AnnanPlats[];
   kommun_namn: string | null;
   kommun_slug: string | null;
   lan_kod: string | null;
@@ -197,12 +210,13 @@ export function hamtaData(): Dataset {
 
   const perKommun = new Map<string, Org[]>();
   const perLan = new Map<string, Org[]>();
+  // En organisation är med i varje kommun och varje län där den har sätet eller en plats, en gång per ställe.
   for (const o of organisationer) {
-    const k = o.kommun?.value;
-    if (k) {
+    for (const k of kommunkoder(o)) {
       if (!perKommun.has(k)) perKommun.set(k, []);
       perKommun.get(k)!.push(o);
-      const l = k.slice(0, 2);
+    }
+    for (const l of lankoder(o)) {
       if (!perLan.has(l)) perLan.set(l, []);
       perLan.get(l)!.push(o);
     }
@@ -261,7 +275,7 @@ export function hamtaData(): Dataset {
       per_typ: rakna((o) => [o.type.value]),
       per_erbjuder: rakna((o) => o.offers.value),
       per_omrade: rakna((o) => o.areas.value),
-      per_lan: rakna((o) => (o.h.lan_kod ? [o.h.lan_kod] : [])),
+      per_lan: rakna(lankoder),
       med_bekraftat: medBekraftat,
       andel_med_bekraftat: organisationer.length ? Math.round((medBekraftat / organisationer.length) * 1000) / 10 : 0,
       fakta_per_status: faktaPerStatus,
@@ -275,6 +289,16 @@ export function hamtaData(): Dataset {
   return cache;
 }
 
+/** Kommunerna där organisationen finns: sätet först, sedan platserna. Varje kod en gång. */
+export function kommunkoder(o: Org): string[] {
+  return [...new Set([o.kommun?.value, ...o.h.platser.map((p) => p.kommun_kod)].filter((k): k is string => !!k))];
+}
+
+/** Länen där organisationen finns, varje län en gång. */
+export function lankoder(o: Org): string[] {
+  return [...new Set(kommunkoder(o).map((k) => k.slice(0, 2)))];
+}
+
 /** Fälten i den ordning de visas på organisationssidan, med svenska etiketter. */
 export const FALT: { nyckel: keyof OrgData; etikett: string }[] = [
   { nyckel: 'name', etikett: 'Namn' },
@@ -286,15 +310,21 @@ export const FALT: { nyckel: keyof OrgData; etikett: string }[] = [
   { nyckel: 'areas', etikett: 'Områden' },
   { nyckel: 'kommun', etikett: 'Säte (kommun)' },
   { nyckel: 'coordinates', etikett: 'Position' },
+  { nyckel: 'platser', etikett: 'Plats (kommun)' },
   { nyckel: 'founded', etikett: 'Grundat' },
   { nyckel: 'active', etikett: 'Aktiv' },
 ];
 
-export function allaFakta(o: OrgData): { nyckel: keyof OrgData; etikett: string; fakta: Fakta }[] {
-  const ut: { nyckel: keyof OrgData; etikett: string; fakta: Fakta }[] = [];
+/** Varje plats blir en egen rad, med kommunkoden i ankaret. */
+export function allaFakta(o: OrgData): { nyckel: keyof OrgData; ankare: string; etikett: string; fakta: Fakta }[] {
+  const ut: { nyckel: keyof OrgData; ankare: string; etikett: string; fakta: Fakta }[] = [];
   for (const f of FALT) {
+    if (f.nyckel === 'platser') {
+      for (const p of o.platser ?? []) ut.push({ nyckel: f.nyckel, ankare: `plats-${p.value.kommun}`, etikett: f.etikett, fakta: p });
+      continue;
+    }
     const v = o[f.nyckel] as Fakta | undefined;
-    if (v && typeof v === 'object' && 'status' in v) ut.push({ nyckel: f.nyckel, etikett: f.etikett, fakta: v });
+    if (v && typeof v === 'object' && 'status' in v) ut.push({ nyckel: f.nyckel, ankare: f.nyckel, etikett: f.etikett, fakta: v });
   }
   return ut;
 }
@@ -312,6 +342,11 @@ export function visaVarde(d: Dataset, o: Org, nyckel: keyof OrgData, fakta: Fakt
       return (v as string[]).map((x) => d.etikett.omraden.get(x)?.label ?? x).join(', ');
     case 'kommun':
       return o.h.kommun_namn ? `${o.h.kommun_namn}, ${o.h.lan_namn}` : String(v);
+    case 'platser': {
+      const kod = (v as { kommun: string }).kommun;
+      const k = d.kommuner.find((x) => x.kod === kod);
+      return k ? `${k.namn}, ${k.lan_namn}` : kod;
+    }
     case 'coordinates': {
       const c = v as { lat: number; lng: number };
       return `${c.lat.toFixed(4)}, ${c.lng.toFixed(4)}`;
@@ -435,6 +470,8 @@ export function tillKartpost(o: Org) {
     lat: o.h.position?.lat ?? null,
     lng: o.h.position?.lng ?? null,
     pt: o.h.position_typ,
+    // Platserna utöver sätet: kommun, län och en ruta i kommunens rutnät.
+    p: o.h.platser.map((p) => ({ k: p.kommun_kod, kn: p.kommun_namn, l: p.lan_kod, ln: p.lan_namn, lat: p.position.lat, lng: p.position.lng })),
     d: o.description.value,
     s: o.h.senast_verifierad,
     c: o.h.antal_bekraftade,

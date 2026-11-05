@@ -6,6 +6,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import YAML from 'yaml';
+import { platsnyckel } from './landplatser.mjs';
 
 /** Projektroten: katalogen som innehåller data/taxonomi. Fungerar både från scripts/ och från Astros byggkatalog. */
 function hittaRot() {
@@ -92,11 +93,16 @@ export function lasOrganisationer(katalog = KATALOG_ORG) {
   });
 }
 
-/** Alla fakta i en post som [namn, fakta]-par, inklusive belägg. */
+/** Alla fakta i en post som [namn, fakta]-par. Varje plats är en egen uppgift, platser[0], platser[1] och så vidare. */
 export function faktaIPost(data) {
   const ut = [];
   for (const f of FAKTAFALT) {
     if (data && data[f] && typeof data[f] === 'object') ut.push([f, data[f]]);
+  }
+  if (Array.isArray(data?.platser)) {
+    data.platser.forEach((p, i) => {
+      if (p && typeof p === 'object') ut.push([`platser[${i}]`, p]);
+    });
   }
   return ut;
 }
@@ -146,6 +152,26 @@ export function forskjutning(id, lat, maxMeter = 1800) {
 }
 
 /**
+ * Platserna utöver sätet, med kommun, län och en position i kommunens rutnät. Positionen är aldrig
+ * en adress. En kod som inte finns i geodatan hoppas över; valideringen stoppar den ändå.
+ */
+function andraPlatser(data, geo, platser) {
+  if (!geo || !Array.isArray(data.platser)) return [];
+  return data.platser.flatMap((p) => {
+    const kod = p?.value?.kommun;
+    const kommun = kod ? geo.kommunPerKod.get(kod) : null;
+    if (!kommun) return [];
+    const lan = geo.lanPerKod.get(kod.slice(0, 2)) ?? null;
+    let position = platser?.get(platsnyckel(data.id, kod)) ?? null;
+    if (!position) {
+      const { dLat, dLng } = forskjutning(platsnyckel(data.id, kod), kommun.lat);
+      position = { lat: +(kommun.lat + dLat).toFixed(5), lng: +(kommun.lng + dLng).toFixed(5) };
+    }
+    return [{ kommun_kod: kod, kommun_namn: kommun.namn, kommun_slug: kommun.slug, lan_kod: kod.slice(0, 2), lan_namn: lan?.namn ?? null, lan_slug: lan?.slug ?? null, position: { lat: position.lat, lng: position.lng } }];
+  });
+}
+
+/**
  * Härleder fält som sajten behöver: län, kommunnamn, position, färskhet.
  * Positionen är en plats på land nära kommunens mittpunkt, om inte exakta koordinater finns.
  * `platser` kommer från `platserPaLand` och räknas på alla organisationer på en gång.
@@ -178,6 +204,7 @@ export function harled(data, geo, platser = null) {
   const senast = senastVerifierad(data);
   const statusar = faktaIPost(data).map(([, f]) => f.status);
   return {
+    platser: andraPlatser(data, geo, platser),
     kommun_namn: kommun?.namn ?? null,
     kommun_slug: kommun?.slug ?? null,
     lan_kod: lanKod,

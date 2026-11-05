@@ -21,6 +21,8 @@ interface Indexerbar {
   t: string;
   o: string[];
   a: string[];
+  /** Platser utöver sätet. Deras orter går att söka på som sätets. */
+  p?: readonly { kn: string; ln: string | null }[];
 }
 
 /** Posten med normaliserat namn (`nn`) och all sökbar text (`ns`). */
@@ -30,7 +32,7 @@ export function tillSokpost<T extends Indexerbar>(o: T, e: Etiketter): T & { nn:
     nn: normalisera(o.n),
     // Id:t är ofta förkortningen folk söker på: scb, foi, smhi.
     ns: normalisera(
-      [o.n, o.id.replace(/-/g, ' '), o.d ?? '', o.kn ?? '', o.ln ?? '', e.typer[o.t] ?? '', ...o.o.map((x) => e.erbjuder[x] ?? ''), ...o.a.map((x) => e.omraden[x] ?? '')].join(' '),
+      [o.n, o.id.replace(/-/g, ' '), o.d ?? '', o.kn ?? '', o.ln ?? '', ...(o.p ?? []).flatMap((p) => [p.kn, p.ln ?? '']), e.typer[o.t] ?? '', ...o.o.map((x) => e.erbjuder[x] ?? ''), ...o.a.map((x) => e.omraden[x] ?? '')].join(' '),
     ),
   };
 }

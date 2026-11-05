@@ -116,6 +116,19 @@ test('egna koordinater, okänd kommun och kommun utan landmask lämnas åt sidan
   assert.deepEqual([...platser.keys()], ['vanlig']);
 });
 
+test('en plats utöver sätet får en egen ruta i sin kommun, också när sätet har egna koordinater', () => {
+  const plats = (kod) => ({ value: { kommun: kod }, status: 'claimed', verified_at: '2026-11-05' });
+  const platser = platserPaLand(
+    [post('a', '0680'), post('kontor', '0180', { platser: [plats('0680')] }), post('exakt', '0180', { coordinates: { value: { lat: 59.3, lng: 18.0 } }, platser: [plats('0680')] })],
+    geo,
+  );
+  assert.deepEqual([...platser.keys()].sort(), ['a', 'exakt@0680', 'kontor@0680']);
+  assert.equal(new Set([...platser.values()].map((p) => `${p.lat},${p.lng}`)).size, 3);
+  // Härledningen ger platsen kommun, län och rutan. Sätet utan landmask påverkas inte.
+  const h = harled(post('kontor', '0180', { platser: [plats('0680')] }), geo, platser);
+  assert.deepEqual(h.platser.map((p) => [p.kommun_kod, p.lan_kod, p.position]), [['0680', '06', platser.get('kontor@0680')]]);
+});
+
 test('härledningen använder platsen på land när den finns', () => {
   const platser = new Map([['a', { lat: 57.79, lng: 14.15 }]]);
   assert.deepEqual(harled(post('a', '0680'), geo, platser).position, { lat: 57.79, lng: 14.15 });
