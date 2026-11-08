@@ -1,7 +1,8 @@
 ---
-// Andra steget: länken i mejlet öppnar den här sidan. Sidan byter länkens engångskod mot en
-// session på en timme, med ett POST-anrop. Själva länken ändrar ingenting, så ett
-// säkerhetsfilter som förhämtar länkar i mejl kan inte förbruka den.
+// Andra steget: länken i mejlet öppnar den här sidan. Engångskoden ligger efter #, så den når
+// aldrig en server eller en logg. Den byts mot en session på en timme först när medlemmen
+// klickar på Öppna min profil. Ett säkerhetsfilter i mejlen som öppnar länken, även ett som
+// kör JavaScript, förbrukar den därför inte.
 import Sida from '../../layouts/Sida.astro';
 import Uppdragsbas from '../../components/Uppdragsbas.astro';
 import { hamtaData, url } from '../../lib/data';
@@ -24,6 +25,11 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
 
   <div class="besked" id="r-laddar" role="status">
     <p>Öppnar din profil …</p>
+  </div>
+
+  <div class="besked" id="r-oppna" hidden>
+    <p>Länken är klar. Den fungerar en gång och öppnar din profil i en timme.</p>
+    <p class="mt-1"><button class="knapp" type="button" id="r-oppna-knapp">Öppna min profil →</button></p>
   </div>
 
   <div class="besked besked--fel" id="r-fel" role="alert" hidden>
@@ -157,6 +163,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
     margin: 0;
   }
   #r-laddar,
+  #r-oppna,
   #r-fel,
   #r-klar {
     max-width: 560px;
@@ -191,6 +198,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
   const etiketter = JSON.parse(document.getElementById('uppdrag-etiketter')?.textContent || '{}') as Etiketter;
   const hitta = <T extends HTMLElement>(id: string): T => document.getElementById(id) as T;
   const laddar = hitta('r-laddar');
+  const oppna = hitta('r-oppna');
   const felruta = hitta('r-fel');
   const klar = hitta('r-klar');
   const yta = hitta('r-yta');
@@ -221,8 +229,9 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
     }
   }
 
-  function visa(del: 'laddar' | 'fel' | 'yta' | 'klar', text = ''): void {
+  function visa(del: 'laddar' | 'oppna' | 'fel' | 'yta' | 'klar', text = ''): void {
     laddar.hidden = del !== 'laddar';
+    oppna.hidden = del !== 'oppna';
     felruta.hidden = del !== 'fel';
     yta.hidden = del !== 'yta';
     klar.hidden = del !== 'klar';
@@ -433,36 +442,45 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
     }
   });
 
-  async function starta(): Promise<void> {
-    const token = new URLSearchParams(location.search).get('t');
-    if (token) {
-      // Koden ska inte ligga kvar i adressfältet eller historiken när den är förbrukad.
-      history.replaceState(null, '', location.pathname);
-      try {
-        const svar = await fetch(`${api}/session`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token }),
-        });
-        const data = (await svar.json().catch(() => ({}))) as Partial<Lagrat> & { fel?: string };
-        if (!svar.ok || !data.session || !data.utgar_at) {
-          return visa('fel', data.fel ?? 'Länken fungerade inte. Be om en ny.');
-        }
-        lagrat = {
-          session: data.session,
-          utgar_at: data.utgar_at,
-          profil: data.profil ?? null,
-          forslag: data.forslag ?? { namn: '' },
-          klick30: data.klick30 ?? 0,
-        };
-        sparaLagrat(lagrat);
-      } catch {
-        return visa('fel', 'Det gick inte att nå servern. Öppna länken i mejlet igen om en stund.');
+  async function oppnaMedKod(token: string): Promise<void> {
+    visa('laddar');
+    try {
+      const svar = await fetch(`${api}/session`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token }),
+      });
+      const data = (await svar.json().catch(() => ({}))) as Partial<Lagrat> & { fel?: string };
+      if (!svar.ok || !data.session || !data.utgar_at) {
+        return visa('fel', data.fel ?? 'Länken fungerade inte. Be om en ny.');
       }
-    } else {
-      lagrat = lasLagrat();
-      if (!lagrat) return visa('fel', 'Den här sidan öppnas med länken i mejlet. Be om en ny om den har gått ut.');
+      lagrat = {
+        session: data.session,
+        utgar_at: data.utgar_at,
+        profil: data.profil ?? null,
+        forslag: data.forslag ?? { namn: '' },
+        klick30: data.klick30 ?? 0,
+      };
+      sparaLagrat(lagrat);
+      fyll(lagrat);
+      visa('yta');
+    } catch {
+      visa('fel', 'Det gick inte att nå servern. Öppna länken i mejlet igen om en stund.');
     }
+  }
+
+  function starta(): void {
+    const token = new URLSearchParams(location.hash.slice(1)).get('t');
+    if (token) {
+      // Koden ska inte ligga kvar i adressfältet eller historiken. Den finns bara i minnet
+      // tills medlemmen klickar, och en omladdning innan dess kräver länken igen.
+      history.replaceState(null, '', location.pathname);
+      hitta('r-oppna-knapp').addEventListener('click', () => oppnaMedKod(token), { once: true });
+      visa('oppna');
+      return;
+    }
+    lagrat = lasLagrat();
+    if (!lagrat) return visa('fel', 'Den här sidan öppnas med länken i mejlet. Be om en ny om den har gått ut.');
     fyll(lagrat);
     visa('yta');
   }
