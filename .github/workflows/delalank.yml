@@ -1,9 +1,12 @@
 # När en ny organisation har gått in i main skrivs en kommentar på pull requesten som förde in den:
 # länken till sidan, länken som öppnar delningsbladet i vi-form, och ett färdigt meddelande att
-# skicka till organisationen. Enskilda firmor hoppas över, se scripts/delalank.mjs.
+# skicka till organisationen. Tipsärendet som pull requesten stänger får samma länkar, eftersom den
+# som tipsade, ofta organisationen själv, finns där och inte på pull requesten.
+# Enskilda firmor hoppas över, se scripts/delalank.mjs.
 #
-# Flödet kör bara kod ur main och läser inget ur pull requesten. Kommentaren skrivs med
-# GITHUB_TOKEN och startar därför inga andra flöden, inte heller granskningslistan.
+# Flödet kör bara kod ur main. Ur pull requesten läses bara numren på ärendena den stänger.
+# Kommentarerna skrivs med GITHUB_TOKEN och startar därför inga andra flöden, inte heller
+# granskningslistan.
 name: Delalänk för nya organisationer
 
 on:
@@ -15,6 +18,7 @@ on:
 permissions:
   contents: read
   pull-requests: write
+  issues: write
 
 jobs:
   delalank:
@@ -32,13 +36,15 @@ jobs:
 
       - run: npm ci --ignore-scripts
 
-      - name: Skriv kommentaren
+      - name: Skriv kommentarerna
         env:
           FORE: ${{ github.event.before }}
           EFTER: ${{ github.sha }}
-        run: node scripts/delalank.mjs --nya "$FORE" "$EFTER" > kommentar.md
+        run: |
+          node scripts/delalank.mjs --nya "$FORE" "$EFTER" > kommentar.md
+          node scripts/delalank.mjs --nya "$FORE" "$EFTER" --arende > arende.md
 
-      - name: Kommentera pull requesten
+      - name: Kommentera pull requesten och tipsärendet
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
@@ -55,3 +61,8 @@ jobs:
             exit 0
           fi
           gh pr comment "$pr" --repo "$REPO" --body-file kommentar.md
+          # Ärendena som pull requesten stänger med Closes. De är redan stängda, men den som
+          # skrev dem får ändå besked om kommentaren.
+          for n in $(gh pr view "$pr" --repo "$REPO" --json closingIssuesReferences --jq '.closingIssuesReferences[].number'); do
+            gh issue comment "$n" --repo "$REPO" --body-file arende.md
+          done
