@@ -1,0 +1,99 @@
+---
+// Första steget: medlemmen skriver sin e-post och får en engångslänk. Svaret är detsamma för
+// alla adresser, så att sidan aldrig avslöjar vem som är medlem.
+import Sida from '../../layouts/Sida.astro';
+import Uppdragsbas from '../../components/Uppdragsbas.astro';
+import { url } from '../../lib/data';
+import { BLI_MEDLEM, UPPDRAG_API } from '../../lib/uppdrag';
+---
+
+<Sida
+  titel="Lägg upp dig"
+  kicker="Tar uppdrag"
+  ingress="Bara för medlemmar i föreningen OpenSverige. Inget konto och inget lösenord: du får en länk till den e-post du har i medlemsregistret."
+  beskrivning="Lägg upp dig under Tar uppdrag på AI-kartan. Bara för medlemmar i föreningen OpenSverige."
+  stig="/uppdrag/lagg-upp"
+  noindex
+>
+  <Uppdragsbas />
+
+  <form class="uppdragsform" id="lank-form" data-api={UPPDRAG_API} novalidate>
+    <div class="falt">
+      <label class="falt__etikett" for="epost">Din e-post</label>
+      <p class="falt__hjalp" id="epost-hjalp">Samma adress som när du blev medlem.</p>
+      <input id="epost" name="epost" type="email" autocomplete="email" required aria-describedby="epost-hjalp epost-fel" />
+      <p class="falt__fel" id="epost-fel" hidden></p>
+    </div>
+    <div class="honung" aria-hidden="true">
+      <label for="webbplats">Lämna tomt</label>
+      <input id="webbplats" name="webbplats" type="text" tabindex="-1" autocomplete="off" />
+    </div>
+    <div class="rad">
+      <button class="knapp" type="submit" id="lank-knapp">Skicka länken →</button>
+    </div>
+  </form>
+
+  <div class="besked" id="lank-skickad" role="status" tabindex="-1" hidden>
+    <p><strong>Kolla din inkorg.</strong> Är adressen medlem i föreningen kommer en länk inom några minuter.</p>
+    <p>Länken gäller i 30 minuter och fungerar en gång. Kolla skräpposten om inget kommer.</p>
+  </div>
+  <div class="besked besked--fel" id="lank-fel" role="alert" hidden></div>
+
+  <h2>Inte medlem än?</h2>
+  <p>Medlemskapet i föreningen OpenSverige är gratis och tar två minuter. <a href={BLI_MEDLEM} rel="noopener">Bli medlem →</a></p>
+  <p>Vill du se vilka som redan finns? <a href={url('/uppdrag')}>Till listan →</a></p>
+</Sida>
+
+<script>
+  const form = document.getElementById('lank-form') as HTMLFormElement;
+  const epost = document.getElementById('epost') as HTMLInputElement;
+  const epostFel = document.getElementById('epost-fel') as HTMLElement;
+  const knapp = document.getElementById('lank-knapp') as HTMLButtonElement;
+  const skickad = document.getElementById('lank-skickad') as HTMLElement;
+  const fel = document.getElementById('lank-fel') as HTMLElement;
+
+  function visaFaltfel(text: string): void {
+    epostFel.textContent = text;
+    epostFel.hidden = !text;
+    epost.setAttribute('aria-invalid', text ? 'true' : 'false');
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    fel.hidden = true;
+    const adress = epost.value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(adress)) {
+      visaFaltfel('Skriv en e-postadress, till exempel namn@exempel.se.');
+      epost.focus();
+      return;
+    }
+    visaFaltfel('');
+    knapp.disabled = true;
+    knapp.textContent = 'Skickar …';
+    try {
+      const svar = await fetch(`${form.dataset.api}/lank`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ epost: adress, webbplats: (form.elements.namedItem('webbplats') as HTMLInputElement).value }),
+      });
+      const data = (await svar.json().catch(() => ({}))) as { fel?: string };
+      if (svar.ok) {
+        form.hidden = true;
+        skickad.hidden = false;
+        skickad.focus();
+        return;
+      }
+      if (svar.status === 422) visaFaltfel(data.fel ?? 'Skriv en e-postadress.');
+      else {
+        fel.textContent = data.fel ?? 'Något gick fel. Försök igen om en stund.';
+        fel.hidden = false;
+      }
+    } catch {
+      fel.textContent = 'Det gick inte att nå servern. Kolla uppkopplingen och försök igen.';
+      fel.hidden = false;
+    } finally {
+      knapp.disabled = false;
+      knapp.textContent = 'Skicka länken →';
+    }
+  });
+</script>

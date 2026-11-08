@@ -218,6 +218,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
             ))}
           </ul>
           <p class="medlemskort__annan">Remote eller annan ort: <strong>{medlemmar.annanOrt}</strong></p>
+          <p class="medlemskort__uppdrag"><a href={url('/uppdrag')}>Medlemmar som tar uppdrag →</a></p>
           <p class="meta medlemskort__not">
             Regionen väljer var och en själv på vår Discord: en stad och tio mil runt den. Kartan får bara antalet, aldrig
             vem som har valt vad. Uppdaterat {formateraDatum(medlemmar.uppdaterad)}.
@@ -3496,6 +3497,11 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
   .app .medlemskort__annan {
     margin: 0;
     font-size: 14px;
+  }
+  .app .medlemskort__uppdrag {
+    margin: 8px 0 0;
+    font-size: 14px;
+    font-weight: 600;
   }
   .app .medlemskort__not {
     margin: 10px 0 14px;

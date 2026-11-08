@@ -1,0 +1,471 @@
+---
+// Andra steget: länken i mejlet öppnar den här sidan. Sidan byter länkens engångskod mot en
+// session på en timme, med ett POST-anrop. Själva länken ändrar ingenting, så ett
+// säkerhetsfilter som förhämtar länkar i mejl kan inte förbruka den.
+import Sida from '../../layouts/Sida.astro';
+import Uppdragsbas from '../../components/Uppdragsbas.astro';
+import { hamtaData, url } from '../../lib/data';
+import { UPPDRAG_API } from '../../lib/uppdrag';
+
+const d = hamtaData();
+const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv'));
+---
+
+<Sida
+  titel="Din profil"
+  kicker="Tar uppdrag"
+  ingress="Fyll i det du vill visa. Kortet visar hur det ser ut i listan."
+  beskrivning="Lägg upp eller ändra din profil under Tar uppdrag på AI-kartan."
+  stig="/uppdrag/redigera"
+  noindex
+  bred
+>
+  <Uppdragsbas />
+
+  <div class="besked" id="r-laddar" role="status">
+    <p>Öppnar din profil …</p>
+  </div>
+
+  <div class="besked besked--fel" id="r-fel" role="alert" hidden>
+    <p id="r-fel-text"></p>
+    <p><a href={url('/uppdrag/lagg-upp')}>Be om en ny länk →</a></p>
+  </div>
+
+  <div class="besked" id="r-klar" role="status" tabindex="-1" hidden>
+    <p id="r-klar-text"></p>
+    <p><a href={url('/uppdrag')}>Till listan →</a></p>
+  </div>
+
+  <div class="redigera" id="r-yta" hidden>
+    <form class="uppdragsform" id="profil-form" novalidate data-api={UPPDRAG_API}>
+      <div class="falt">
+        <label class="falt__etikett" for="f-namn">Namn</label>
+        <input id="f-namn" name="namn" type="text" maxlength="60" autocomplete="name" required aria-describedby="fel-namn" />
+        <p class="falt__fel" id="fel-namn" hidden></p>
+      </div>
+
+      <div class="falt">
+        <label class="falt__etikett" for="f-rubrik">Vad du gör, på en rad</label>
+        <p class="falt__hjalp" id="hjalp-rubrik">Till exempel: Bygger agenter och RAG åt mindre bolag.</p>
+        <input id="f-rubrik" name="rubrik" type="text" maxlength="90" required aria-describedby="hjalp-rubrik fel-rubrik" />
+        <p class="falt__fel" id="fel-rubrik" hidden></p>
+      </div>
+
+      <div class="falt">
+        <label class="falt__etikett" for="f-lank">Portfolio eller LinkedIn</label>
+        <p class="falt__hjalp" id="hjalp-lank">Länken som knappen på kortet leder till.</p>
+        <input id="f-lank" name="lank" type="url" maxlength="300" inputmode="url" placeholder="https://" required aria-describedby="hjalp-lank fel-lank" />
+        <p class="falt__fel" id="fel-lank" hidden></p>
+      </div>
+
+      <fieldset aria-describedby="fel-erbjuder">
+        <legend>Vad du erbjuder</legend>
+        <label class="val"><input type="radio" name="erbjuder" value="uppdrag" checked /> Tar uppdrag</label>
+        <label class="val"><input type="radio" name="erbjuder" value="tjanster" /> Säljer tjänster</label>
+        <label class="val"><input type="radio" name="erbjuder" value="bada" /> Båda</label>
+        <p class="falt__fel" id="fel-erbjuder" hidden></p>
+      </fieldset>
+
+      <div class="falt">
+        <label class="falt__etikett" for="f-kommun">Ort, frivilligt</label>
+        <p class="falt__hjalp" id="hjalp-kommun">Bara kommunen visas, aldrig en adress.</p>
+        <select id="f-kommun" name="kommun" aria-describedby="hjalp-kommun fel-kommun">
+          <option value="">Ingen ort</option>
+          {kommuner.map((k) => <option value={k.kod}>{k.namn}</option>)}
+        </select>
+        <p class="falt__fel" id="fel-kommun" hidden></p>
+        <label class="val"><input type="checkbox" name="distans" id="f-distans" /> Jag tar uppdrag på distans</label>
+      </div>
+
+      <fieldset aria-describedby="hjalp-omraden fel-omraden">
+        <legend>Områden, högst tre</legend>
+        <p class="falt__hjalp" id="hjalp-omraden">Samma områden som på kartan.</p>
+        <div class="valrutnat">
+          {d.taxonomi.omraden.map((o) => (
+            <label class="val"><input type="checkbox" name="omraden" value={o.id} /> {o.label}</label>
+          ))}
+        </div>
+        <p class="falt__fel" id="fel-omraden" hidden></p>
+      </fieldset>
+
+      <details class="dragspel" id="f-bolag-ruta">
+        <summary>Har du bolag? Frivilligt</summary>
+        <div class="dragspel__kropp uppdragsform">
+          <div class="falt">
+            <label class="falt__etikett" for="f-bolag-namn">Bolagets namn</label>
+            <p class="falt__hjalp" id="hjalp-bolag">Skriv aldrig ett organisationsnummer. För en enskild firma är det ditt personnummer.</p>
+            <input id="f-bolag-namn" name="bolag_namn" type="text" maxlength="80" aria-describedby="hjalp-bolag fel-bolag_namn" />
+            <p class="falt__fel" id="fel-bolag_namn" hidden></p>
+          </div>
+          <div class="falt">
+            <label class="falt__etikett" for="f-bolag-webb">Bolagets webbplats</label>
+            <input id="f-bolag-webb" name="bolag_webbplats" type="url" maxlength="300" inputmode="url" placeholder="https://" aria-describedby="fel-bolag_webbplats" />
+            <p class="falt__fel" id="fel-bolag_webbplats" hidden></p>
+          </div>
+        </div>
+      </details>
+
+      <div class="falt">
+        <label class="val">
+          <input type="checkbox" name="samtycke" id="f-samtycke" aria-describedby="fel-samtycke" />
+          <span>Jag vill synas under Tar uppdrag på AI-kartan med uppgifterna ovan. Kortet visar att jag är medlem i OpenSverige. Jag kan ta bort profilen när som helst, och då försvinner den direkt.</span>
+        </label>
+        <p class="falt__fel" id="fel-samtycke" hidden></p>
+      </div>
+
+      <div class="besked besked--fel" id="r-sparfel" role="alert" hidden></div>
+
+      <div class="rad">
+        <button class="knapp" type="submit" id="r-spara">Spara och visa →</button>
+        <button class="knapp knapp--fara" type="button" id="r-ta-bort" hidden>Ta bort min profil</button>
+      </div>
+      <div class="besked besked--fel" id="r-bekrafta" hidden>
+        <p><strong>Ta bort profilen?</strong> Den försvinner från listan direkt, och klicken raderas.</p>
+        <div class="rad mt-1">
+          <button class="knapp knapp--fara" type="button" id="r-ja-ta-bort">Ja, ta bort</button>
+          <button class="knapp knapp--ghost" type="button" id="r-avbryt">Avbryt</button>
+        </div>
+      </div>
+    </form>
+
+    <aside class="redigera__forhand" aria-labelledby="forhand-rubrik">
+      <p class="kicker" id="forhand-rubrik">Så här syns du</p>
+      <div id="forhand"></div>
+      <p class="meta" id="r-klick" hidden></p>
+      <p class="meta" id="r-session"></p>
+    </aside>
+  </div>
+</Sida>
+
+<style>
+  .redigera {
+    display: grid;
+    grid-template-columns: minmax(0, 560px) minmax(0, 360px);
+    gap: 40px;
+    align-items: start;
+  }
+  .redigera__forhand {
+    position: sticky;
+    top: calc(var(--huvud-h) + 20px);
+    display: grid;
+    gap: 10px;
+  }
+  .redigera__forhand .kicker {
+    margin: 0;
+  }
+  .redigera__forhand .meta {
+    margin: 0;
+  }
+  #r-laddar,
+  #r-fel,
+  #r-klar {
+    max-width: 560px;
+  }
+  @media (max-width: 900px) {
+    .redigera {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 28px;
+    }
+    .redigera__forhand {
+      position: static;
+      order: -1;
+    }
+  }
+</style>
+
+<script>
+  import { harPersonnummer, type Profil } from '../../lib/uppdrag';
+  import { ritaKort, type Etiketter } from '../../lib/uppdragkort';
+
+  type Lagrat = {
+    session: string;
+    utgar_at: string;
+    profil: Profil | null;
+    forslag: { namn: string };
+    klick30: number;
+  };
+
+  const NYCKEL = 'uppdrag-session';
+  const form = document.getElementById('profil-form') as HTMLFormElement;
+  const api = form.dataset.api ?? '';
+  const etiketter = JSON.parse(document.getElementById('uppdrag-etiketter')?.textContent || '{}') as Etiketter;
+  const hitta = <T extends HTMLElement>(id: string): T => document.getElementById(id) as T;
+  const laddar = hitta('r-laddar');
+  const felruta = hitta('r-fel');
+  const klar = hitta('r-klar');
+  const yta = hitta('r-yta');
+  const forhand = hitta('forhand');
+  const klick = hitta('r-klick');
+  const sessionText = hitta('r-session');
+  const spara = hitta<HTMLButtonElement>('r-spara');
+  const taBort = hitta<HTMLButtonElement>('r-ta-bort');
+  const bekrafta = hitta('r-bekrafta');
+  const sparfel = hitta('r-sparfel');
+
+  let lagrat: Lagrat | null = null;
+
+  function lasLagrat(): Lagrat | null {
+    try {
+      const l = JSON.parse(sessionStorage.getItem(NYCKEL) || 'null') as Lagrat | null;
+      return l && new Date(l.utgar_at).getTime() > Date.now() ? l : null;
+    } catch {
+      return null;
+    }
+  }
+  function sparaLagrat(l: Lagrat | null): void {
+    try {
+      if (l) sessionStorage.setItem(NYCKEL, JSON.stringify(l));
+      else sessionStorage.removeItem(NYCKEL);
+    } catch {
+      // Utan lagring fungerar sidan ändå, men en omladdning kräver en ny länk.
+    }
+  }
+
+  function visa(del: 'laddar' | 'fel' | 'yta' | 'klar', text = ''): void {
+    laddar.hidden = del !== 'laddar';
+    felruta.hidden = del !== 'fel';
+    yta.hidden = del !== 'yta';
+    klar.hidden = del !== 'klar';
+    if (del === 'fel') hitta('r-fel-text').textContent = text;
+    if (del === 'klar') {
+      hitta('r-klar-text').textContent = text;
+      klar.focus();
+    }
+  }
+
+  const falt = (namn: string): HTMLInputElement => form.elements.namedItem(namn) as HTMLInputElement;
+
+  function fyll(l: Lagrat): void {
+    const p = l.profil;
+    falt('namn').value = p?.namn ?? l.forslag.namn ?? '';
+    falt('rubrik').value = p?.rubrik ?? '';
+    falt('lank').value = p?.lank ?? '';
+    for (const r of form.querySelectorAll<HTMLInputElement>('input[name="erbjuder"]')) r.checked = r.value === (p?.erbjuder ?? 'uppdrag');
+    (form.elements.namedItem('kommun') as HTMLSelectElement).value = p?.kommun ?? '';
+    falt('distans').checked = p?.distans ?? false;
+    for (const c of form.querySelectorAll<HTMLInputElement>('input[name="omraden"]')) c.checked = p?.omraden.includes(c.value) ?? false;
+    falt('bolag_namn').value = p?.bolag_namn ?? '';
+    falt('bolag_webbplats').value = p?.bolag_webbplats ?? '';
+    if (p?.bolag_namn || p?.bolag_webbplats) (hitta('f-bolag-ruta') as HTMLDetailsElement).open = true;
+    falt('samtycke').checked = Boolean(p);
+    taBort.hidden = !p;
+    begransaOmraden();
+    visaStatus(l);
+    forhandsvisa();
+  }
+
+  function visaStatus(l: Lagrat): void {
+    const tid = new Intl.DateTimeFormat('sv-SE', { hour: '2-digit', minute: '2-digit' }).format(new Date(l.utgar_at));
+    sessionText.textContent = `Länken gäller till ${tid}. Sedan behövs en ny.`;
+    klick.hidden = !l.profil;
+    klick.textContent = `Din länk har klickats ${l.klick30} ${l.klick30 === 1 ? 'gång' : 'gånger'} de senaste 30 dagarna.`;
+  }
+
+  function lasForm(): Record<string, unknown> {
+    const erbjuder = form.querySelector<HTMLInputElement>('input[name="erbjuder"]:checked')?.value ?? 'uppdrag';
+    return {
+      namn: falt('namn').value.trim(),
+      rubrik: falt('rubrik').value.trim(),
+      lank: falt('lank').value.trim(),
+      erbjuder,
+      kommun: (form.elements.namedItem('kommun') as HTMLSelectElement).value,
+      distans: falt('distans').checked,
+      omraden: [...form.querySelectorAll<HTMLInputElement>('input[name="omraden"]:checked')].map((c) => c.value),
+      bolag_namn: falt('bolag_namn').value.trim(),
+      bolag_webbplats: falt('bolag_webbplats').value.trim(),
+      samtycke: falt('samtycke').checked,
+    };
+  }
+
+  function forhandsvisa(): void {
+    const f = lasForm();
+    const profil: Profil = {
+      slug: lagrat?.profil?.slug ?? 'forhandsvisning',
+      namn: String(f.namn),
+      rubrik: String(f.rubrik),
+      lank: String(f.lank) || 'https://',
+      erbjuder: f.erbjuder as Profil['erbjuder'],
+      kommun: String(f.kommun) || null,
+      distans: Boolean(f.distans),
+      omraden: f.omraden as string[],
+      bolag_namn: String(f.bolag_namn) || null,
+      bolag_webbplats: String(f.bolag_webbplats) || null,
+      uppdaterad_at: lagrat?.profil?.uppdaterad_at ?? new Date().toISOString(),
+    };
+    forhand.replaceChildren(ritaKort(profil, etiketter, true));
+  }
+
+  function begransaOmraden(): void {
+    const rutor = [...form.querySelectorAll<HTMLInputElement>('input[name="omraden"]')];
+    const fulla = rutor.filter((c) => c.checked).length >= 3;
+    for (const c of rutor) c.disabled = fulla && !c.checked;
+  }
+
+  const FELTEXT: Record<string, string> = {
+    namn: 'Skriv ditt namn, högst 60 tecken, utan @ och utan siffror i följd.',
+    rubrik: 'Skriv en rad, högst 90 tecken. Inga länkar och inget personnummer.',
+    lank: 'Länken ska börja med https://.',
+    erbjuder: 'Välj vad du erbjuder.',
+    kommun: 'Välj en kommun ur listan.',
+    distans: 'Något gick fel med valet Distans. Ladda om sidan.',
+    omraden: 'Välj högst tre områden.',
+    bolag_namn: 'Högst 80 tecken. Inget organisationsnummer.',
+    bolag_webbplats: 'Länken ska börja med https://.',
+    samtycke: 'Kryssa i rutan för att synas i listan.',
+  };
+
+  function visaFel(namn: string[]): void {
+    for (const id of Object.keys(FELTEXT)) {
+      const p = document.getElementById(`fel-${id}`);
+      if (!p) continue;
+      const fel = namn.includes(id);
+      p.textContent = fel ? FELTEXT[id] : '';
+      p.hidden = !fel;
+      const input = form.elements.namedItem(id);
+      if (input instanceof HTMLInputElement || input instanceof HTMLSelectElement) input.setAttribute('aria-invalid', String(fel));
+    }
+    const forsta = namn[0];
+    if (forsta) {
+      if (forsta.startsWith('bolag')) (hitta('f-bolag-ruta') as HTMLDetailsElement).open = true;
+      const input = form.elements.namedItem(forsta);
+      if (input instanceof HTMLElement) input.focus();
+      else form.querySelector<HTMLInputElement>(`input[name="${forsta}"]`)?.focus();
+    }
+  }
+
+  /** Samma regler som funktionen, så att de vanliga felen syns innan något skickas. */
+  function provaLokalt(f: Record<string, unknown>): string[] {
+    const fel: string[] = [];
+    const https = (s: string): boolean => {
+      try {
+        const u = new URL(s);
+        return u.protocol === 'https:' && u.hostname.includes('.');
+      } catch {
+        return false;
+      }
+    };
+    const namn = String(f.namn);
+    const rubrik = String(f.rubrik);
+    if (!namn || namn.includes('@') || harPersonnummer(namn)) fel.push('namn');
+    if (!rubrik || /[<>]|:\/\//.test(rubrik) || harPersonnummer(rubrik)) fel.push('rubrik');
+    if (!https(String(f.lank))) fel.push('lank');
+    if ((f.omraden as string[]).length > 3) fel.push('omraden');
+    if (harPersonnummer(String(f.bolag_namn))) fel.push('bolag_namn');
+    if (f.bolag_webbplats && !https(String(f.bolag_webbplats))) fel.push('bolag_webbplats');
+    if (!f.samtycke) fel.push('samtycke');
+    return fel;
+  }
+
+  async function anrop(metod: 'PUT' | 'DELETE', kropp?: unknown): Promise<Response> {
+    return fetch(`${api}/profil`, {
+      method: metod,
+      headers: { 'Content-Type': 'application/json', 'x-uppdrag-session': lagrat?.session ?? '' },
+      body: kropp === undefined ? undefined : JSON.stringify(kropp),
+    });
+  }
+
+  function sessionSlut(): void {
+    sparaLagrat(null);
+    lagrat = null;
+    visa('fel', 'Länken har gått ut. Be om en ny, så kan du fortsätta där du var.');
+  }
+
+  form.addEventListener('input', () => {
+    begransaOmraden();
+    forhandsvisa();
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    sparfel.hidden = true;
+    const f = lasForm();
+    const lokala = provaLokalt(f);
+    visaFel(lokala);
+    if (lokala.length) return;
+    spara.disabled = true;
+    spara.textContent = 'Sparar …';
+    try {
+      const svar = await anrop('PUT', f);
+      const data = (await svar.json().catch(() => ({}))) as { profil?: Profil; klick30?: number; fel?: string; falt?: string[] };
+      if (svar.status === 401) return sessionSlut();
+      if (svar.status === 422) return visaFel(data.falt ?? []);
+      if (!svar.ok || !data.profil || !lagrat) throw new Error(data.fel ?? 'Kunde inte spara.');
+      lagrat = { ...lagrat, profil: data.profil, klick30: data.klick30 ?? lagrat.klick30 };
+      sparaLagrat(lagrat);
+      taBort.hidden = false;
+      visaStatus(lagrat);
+      forhandsvisa();
+      sparfel.hidden = true;
+      hitta('r-klar-text').textContent = 'Sparat. Du syns nu i listan.';
+      klar.hidden = false;
+      klar.focus();
+    } catch (err) {
+      sparfel.textContent = err instanceof Error && err.message ? err.message : 'Kunde inte spara. Försök igen.';
+      sparfel.hidden = false;
+    } finally {
+      spara.disabled = false;
+      spara.textContent = 'Spara och visa →';
+    }
+  });
+
+  taBort.addEventListener('click', () => {
+    bekrafta.hidden = false;
+    hitta<HTMLButtonElement>('r-avbryt').focus();
+  });
+  hitta('r-avbryt').addEventListener('click', () => {
+    bekrafta.hidden = true;
+    taBort.focus();
+  });
+  hitta('r-ja-ta-bort').addEventListener('click', async () => {
+    try {
+      const svar = await anrop('DELETE');
+      if (svar.status === 401) return sessionSlut();
+      if (!svar.ok) throw new Error();
+      if (lagrat) {
+        lagrat = { ...lagrat, profil: null, klick30: 0 };
+        sparaLagrat(lagrat);
+      }
+      visa('klar', 'Profilen är borttagen. Den syns inte längre i listan.');
+    } catch {
+      bekrafta.hidden = true;
+      sparfel.textContent = 'Kunde inte ta bort profilen. Försök igen.';
+      sparfel.hidden = false;
+    }
+  });
+
+  async function starta(): Promise<void> {
+    const token = new URLSearchParams(location.search).get('t');
+    if (token) {
+      // Koden ska inte ligga kvar i adressfältet eller historiken när den är förbrukad.
+      history.replaceState(null, '', location.pathname);
+      try {
+        const svar = await fetch(`${api}/session`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token }),
+        });
+        const data = (await svar.json().catch(() => ({}))) as Partial<Lagrat> & { fel?: string };
+        if (!svar.ok || !data.session || !data.utgar_at) {
+          return visa('fel', data.fel ?? 'Länken fungerade inte. Be om en ny.');
+        }
+        lagrat = {
+          session: data.session,
+          utgar_at: data.utgar_at,
+          profil: data.profil ?? null,
+          forslag: data.forslag ?? { namn: '' },
+          klick30: data.klick30 ?? 0,
+        };
+        sparaLagrat(lagrat);
+      } catch {
+        return visa('fel', 'Det gick inte att nå servern. Öppna länken i mejlet igen om en stund.');
+      }
+    } else {
+      lagrat = lasLagrat();
+      if (!lagrat) return visa('fel', 'Den här sidan öppnas med länken i mejlet. Be om en ny om den har gått ut.');
+    }
+    fyll(lagrat);
+    visa('yta');
+  }
+
+  starta();
+</script>

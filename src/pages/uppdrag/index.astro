@@ -1,0 +1,181 @@
+---
+// Tar uppdrag: föreningsmedlemmar som visar att de tar uppdrag eller säljer tjänster.
+// Korten hämtas från medlemsdatabasen när sidan öppnas och bakas aldrig in i bygget,
+// så att en borttagen profil inte ligger kvar i en gammal deploy. Se src/lib/uppdrag.ts.
+import Sida from '../../layouts/Sida.astro';
+import Uppdragsbas from '../../components/Uppdragsbas.astro';
+import { hamtaData, url } from '../../lib/data';
+import { BLI_MEDLEM, UPPDRAG_API } from '../../lib/uppdrag';
+
+const d = hamtaData();
+---
+
+<Sida
+  titel="Medlemmar som tar uppdrag"
+  kicker="Tar uppdrag"
+  ingress="Föreningsmedlemmar som bygger med AI och tar uppdrag eller säljer tjänster. Var och en har lagt upp sig själv."
+  beskrivning="Medlemmar i föreningen OpenSverige som bygger med AI och tar uppdrag eller säljer tjänster. Var och en har lagt upp sig själv."
+  stig="/uppdrag"
+  bred
+>
+  <Uppdragsbas />
+
+  <div class="uppdrag__topp">
+    <p class="uppdrag__antal" id="uppdrag-antal" role="status">Hämtar medlemmarna …</p>
+    <div class="rad">
+      <a class="knapp" href={url('/uppdrag/lagg-upp')}>Lägg upp dig →</a>
+      <a class="knapp knapp--ghost" href={BLI_MEDLEM} rel="noopener">Bli medlem →</a>
+    </div>
+  </div>
+
+  <form class="uppdrag__filter" id="uppdrag-filter" aria-label="Filtrera" hidden>
+    <fieldset class="rad">
+      <legend class="visuellt-dold">Vad de erbjuder</legend>
+      <label class="filterval"><input type="radio" name="erbjuder" value="alla" checked /> Alla</label>
+      <label class="filterval"><input type="radio" name="erbjuder" value="uppdrag" /> Tar uppdrag</label>
+      <label class="filterval"><input type="radio" name="erbjuder" value="tjanster" /> Säljer tjänster</label>
+      <label class="filterval"><input type="checkbox" name="distans" /> Distans</label>
+    </fieldset>
+    <label class="uppdrag__omrade">
+      <span class="visuellt-dold">Område</span>
+      <select name="omrade" id="uppdrag-omrade">
+        <option value="">Alla områden</option>
+        {d.taxonomi.omraden.map((o) => <option value={o.id}>{o.label}</option>)}
+      </select>
+    </label>
+  </form>
+
+  <ul class="profiler" id="uppdrag-lista" data-api={UPPDRAG_API}></ul>
+  <div class="besked" id="uppdrag-tomt" hidden>
+    <p><strong>Ingen här än.</strong> Är du medlem och tar uppdrag? Bli först.</p>
+    <p><a href={url('/uppdrag/lagg-upp')}>Lägg upp dig →</a></p>
+  </div>
+  <noscript><p class="besked">Listan hämtas med JavaScript. Slå på det för att se medlemmarna.</p></noscript>
+
+  <section class="uppdrag__om lasbredd" aria-labelledby="om-listan">
+    <h2 id="om-listan">Om listan</h2>
+    <ul>
+      <li>Bara medlemmar i föreningen OpenSverige kan lägga upp sig. Medlemskapet är gratis och tar två minuter.</li>
+      <li>Uppgifterna är medlemmarnas egna. Föreningen förmedlar inga uppdrag och går inte i god för någon.</li>
+      <li>Ordningen byts varje dag, så att ingen alltid står först. Ingen kan köpa en plats.</li>
+      <li>Klick på en medlems länk räknas per dag, så att medlemmen ser om profilen ger något. Inget sparas om den som klickar. <a href={url('/integritet#uppdrag')}>Mer om det</a>.</li>
+    </ul>
+  </section>
+</Sida>
+
+<style>
+  .uppdrag__topp {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 24px;
+    margin-bottom: 20px;
+  }
+  .uppdrag__antal {
+    margin: 0;
+    color: hsl(var(--ink));
+    font-weight: 600;
+  }
+  .uppdrag__filter {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .uppdrag__filter fieldset {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .filterval {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 40px;
+    padding: 0 14px;
+    border: 1px solid hsl(var(--kant));
+    border-radius: var(--r-pill);
+    background: hsl(var(--yta-kort));
+    color: hsl(var(--ink-soft));
+    font-size: 14.5px;
+    cursor: pointer;
+  }
+  .filterval:has(input:checked) {
+    border-color: hsl(var(--moss));
+    background: hsl(var(--moss) / 0.08);
+    color: hsl(var(--moss));
+    font-weight: 600;
+  }
+  .filterval:has(input:focus-visible) {
+    outline: 2px solid hsl(var(--moss));
+    outline-offset: 2px;
+  }
+  .filterval input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .uppdrag__omrade select {
+    min-height: 40px;
+    padding: 0 12px;
+    border: 1px solid hsl(var(--kant));
+    border-radius: var(--r-pill);
+    background: hsl(var(--yta-kort));
+    color: hsl(var(--ink));
+    font: 400 14.5px/1 var(--font-sans);
+  }
+  .uppdrag__om {
+    margin-top: 40px;
+  }
+</style>
+
+<script>
+  import { dagensOrdning, passar, type Profil } from '../../lib/uppdrag';
+  import { ritaKort, type Etiketter } from '../../lib/uppdragkort';
+
+  const lista = document.getElementById('uppdrag-lista') as HTMLUListElement;
+  const antal = document.getElementById('uppdrag-antal') as HTMLElement;
+  const tomt = document.getElementById('uppdrag-tomt') as HTMLElement;
+  const filter = document.getElementById('uppdrag-filter') as HTMLFormElement;
+  const etiketter = JSON.parse(document.getElementById('uppdrag-etiketter')?.textContent || '{}') as Etiketter;
+  const idag = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Stockholm' }).format(new Date());
+
+  let alla: Profil[] = [];
+
+  function rita(): void {
+    const data = new FormData(filter);
+    const val = {
+      erbjuder: (data.get('erbjuder') as 'alla' | 'uppdrag' | 'tjanster') ?? 'alla',
+      distans: data.get('distans') === 'on',
+      omrade: String(data.get('omrade') ?? ''),
+    };
+    const visade = alla.filter((p) => passar(p, val));
+    lista.replaceChildren(...visade.map((p) => ritaKort(p, etiketter)));
+    const n = alla.length;
+    antal.textContent =
+      visade.length === n
+        ? `${n} ${n === 1 ? 'medlem' : 'medlemmar'}`
+        : `${visade.length} av ${n} medlemmar`;
+    tomt.hidden = n > 0;
+    filter.hidden = n < 2;
+  }
+
+  filter.addEventListener('change', rita);
+  filter.addEventListener('submit', (e) => e.preventDefault());
+
+  fetch(lista.dataset.api || '')
+    .then((r) => {
+      if (!r.ok) throw new Error(String(r.status));
+      return r.json() as Promise<{ profiler: Profil[] }>;
+    })
+    .then((svar) => {
+      alla = dagensOrdning(svar.profiler, idag);
+      rita();
+    })
+    .catch(() => {
+      antal.textContent = 'Listan gick inte att hämta just nu. Ladda om sidan om en stund.';
+    });
+</script>
