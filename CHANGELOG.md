@@ -6,6 +6,15 @@ Kodens och funktionernas historik. Dataändringar loggas separat och automatiskt
 
 - Regeln om c/o-adresser säger nu det vi gör. En adress som hämtas ur registret används inte om den har c/o eller lägenhetsnummer. Anger organisationen själv adressen på sin webbplats används den, också när registret har samma adress med c/o. Så har regeln tillämpats sedan 13 oktober: 20 av 142 exakta positioner kommer från en webbplats där registret har c/o eller lägenhetsnummer. Texten på Metod och Personuppgifter, i schemat och i agentreglerna sa det inte tydligt.
 - Organisationer som delar adress får var sin prick på kartan. Förut ritades de som en enda prick med ett antal i, och man fick trycka flera gånger på den för att nå de andra. Nu står prickarna tätt ihop runt adressen. Var och en visar sitt eget namn när man pekar på den och öppnar sin egen sida när man trycker. Två på samma adress skrivs med båda namnen över prickarna, fler än två med antalet. I dag gäller det elva adresser, alla med två organisationer. Reglerna ligger i `src/lib/sammaadress.ts`.
+## 2026-11-08
+
+- Första skärmen säger vad kartan är igen. Sedan 19 oktober stod där bara rubriken och frågefältet, eftersom bottenbladet med antalet döljs i första läget. Nu står antalet organisationer och raden om källa och datum under rubriken. Antalet räknas i bygget. I telefonen står namnet OpenSverige i sidhuvudet på första skärmen, där sökrutan ändå är dold.
+- Lägg till syns i telefonen, som en ikon i sidhuvudet. Förut doldes knappen under 900 punkters bredd, där de flesta besöken finns.
+- Bidra visar bara vägar som finns. Korten E-post och Formulär, som båda stod som Kommer snart, är borttagna.
+- Organisationssidan har raden Är det ni? Dela att ni finns på kartan. Den öppnar delningsbladet i vi-form, samma blad som länken som skickas till nya organisationer. Nu hittar också de som fanns innan lanseringen sin länk.
+- Delalänken når den som tipsade. Flödet kommenterade bara på pull requesten, så inget tipsärende hade fått länken. Nu får också ärendet som pull requesten stänger en kommentar med sidan och delalänken.
+- Färskhetslarmet läser det publicerade. Det räknade på git i sin egen körning och märkte därför inte att historiken på sajten stått still sedan 20 oktober. Nu jämförs sajtens `/api/status.json` med main, och larmet går när sajten släpar mer än en dag eller inte går att läsa. Regeln ligger i `scripts/lib/farskhet.mjs`.
+- Sidhuvudet och sidfoten har `data-nosnippet`, så att sökmotorernas utdrag visar uppgifterna i stället för sidans ram.
 
 ## 2026-11-05
 
