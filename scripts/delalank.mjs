@@ -80,7 +80,7 @@ for (const id of onskade) {
 if (stycken.length) {
   if (tillArende) {
     const fot = `Stämmer något inte? Svara här, eller rätta via ${SAJT}/bidra#ratta.`;
-    console.log(`Nu på kartan. Tack för tipset.\n\n${stycken.join('\n\n')}\n\n${fot}`);
+    console.log(`Nu på kartan.\n\n${stycken.join('\n\n')}\n\n${fot}`);
   } else {
     const rubrik = iNyaLage ? 'Nu på kartan. Länken öppnar organisationens sida med delningsbladet framme, i vi-form.\n\n' : '';
     console.log(`${rubrik}${stycken.join('\n\n')}`);

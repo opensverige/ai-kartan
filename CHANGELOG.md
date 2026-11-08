@@ -12,7 +12,7 @@ Kodens och funktionernas historik. Dataändringar loggas separat och automatiskt
 - Lägg till syns i telefonen, som en ikon i sidhuvudet. Förut doldes knappen under 900 punkters bredd, där de flesta besöken finns.
 - Bidra visar bara vägar som finns. Korten E-post och Formulär, som båda stod som Kommer snart, är borttagna.
 - Organisationssidan har raden Är det ni? Dela att ni finns på kartan. Den öppnar delningsbladet i vi-form, samma blad som länken som skickas till nya organisationer. Nu hittar också de som fanns innan lanseringen sin länk.
-- Delalänken når den som tipsade. Flödet kommenterade bara på pull requesten, så inget tipsärende hade fått länken. Nu får också ärendet som pull requesten stänger en kommentar med sidan och delalänken.
+- Delalänken når den som tipsade. Flödet kommenterade bara på pull requesten, så inget tipsärende hade fått länken. Nu får också ärendet som pull requesten stänger, oftast tipsärendet, en kommentar med sidan och delalänken.
 - Färskhetslarmet läser det publicerade. Det räknade på git i sin egen körning och märkte därför inte att historiken på sajten stått still sedan 20 oktober. Nu jämförs sajtens `/api/status.json` med main, och larmet går när sajten släpar mer än en dag eller inte går att läsa. Regeln ligger i `scripts/lib/farskhet.mjs`.
 - Sidhuvudet och sidfoten har `data-nosnippet`, så att sökmotorernas utdrag visar uppgifterna i stället för sidans ram.
 
