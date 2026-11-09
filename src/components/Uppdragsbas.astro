@@ -102,6 +102,14 @@ const etiketter: Etiketter = {
     height: 100%;
     object-fit: cover;
   }
+  /* Innan bilden finns står handen på samma rutmönster som kortens baksida. */
+  .samlarkort__bild--utan {
+    background:
+      radial-gradient(ellipse at 50% 55%, transparent 0 30%, rgb(0 0 0 / 0.45) 90%),
+      repeating-linear-gradient(45deg, hsl(40 55% 72% / 0.08) 0 1px, transparent 1px 9px),
+      repeating-linear-gradient(-45deg, hsl(40 55% 72% / 0.08) 0 1px, transparent 1px 9px),
+      #1f1c17;
+  }
   .samlarkort__bild-hand {
     position: absolute;
     left: 50%;
