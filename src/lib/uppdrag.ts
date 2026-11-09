@@ -13,7 +13,7 @@ export const UPPDRAG_API = 'https://kmkttmasoemqcyzkjuyv.supabase.co/functions/v
 export const BLI_MEDLEM = 'https://opensverige.se/bli-medlem';
 
 /** Versionen av samtyckestexten. Funktionen sparar sin egen, och de två ska vara samma. */
-export const SAMTYCKE_VERSION = '2';
+export const SAMTYCKE_VERSION = '3';
 
 export type Erbjuder = 'uppdrag' | 'tjanster' | 'bada';
 
@@ -29,8 +29,8 @@ export type Profil = {
   bolag_namn: string | null;
   bolag_webbplats: string | null;
   uppdaterad_at: string;
-  /** Figuren som medlemmen valt, f01 och så vidare. Null betyder att kartan väljer, se figurer.ts. */
-  figur: string | null;
+  /** Bildens namn i föreningens lagring. Null för en profil från innan bilden fanns. */
+  bild: string | null;
 };
 
 export const ERBJUDER_TEXT: Record<Erbjuder, string> = {
@@ -38,6 +38,16 @@ export const ERBJUDER_TEXT: Record<Erbjuder, string> = {
   tjanster: 'Säljer tjänster',
   bada: 'Uppdrag och tjänster',
 };
+
+/**
+ * Adressen till profilens bild. Funktionen lämnar ut den bara så länge profilen syns i listan.
+ * Bildens namn står i adressen, så en ny bild får en ny adress och den gamla kan cachas. Ett namn
+ * i fel form ger ingen adress alls.
+ */
+export function bildUrl(p: { slug: string; bild: string | null }): string | null {
+  if (!p.bild || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.(webp|jpg)$/.test(p.bild)) return null;
+  return `${UPPDRAG_API}/b/${encodeURIComponent(p.slug)}?v=${p.bild}`;
+}
 
 /** Profilens länk går via funktionen, som räknar klicket och skickar vidare. */
 export function klickUrl(slug: string): string {

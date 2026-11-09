@@ -558,25 +558,32 @@ details {
   align-items: center;
   min-width: 0;
 }
+/* Bilden i en rundad ruta. Handen i hörnet sticker ut, så bilden rundas själv i stället för att
+   rutan klipper. Utan bild står pixelhanden på mörk botten. */
 .profil__bild {
   position: relative;
-  flex: none;
-}
-/* Figuren i en färgad ruta. Handen i hörnet sticker ut, så bilden rundas själv i stället för
-   att rutan klipper. */
-.profil__figur {
-  position: relative;
   display: block;
+  flex: none;
   width: 52px;
   height: 52px;
   border-radius: 14px;
-  background: var(--figur-farg, hsl(var(--yta-chip)));
+  background: #1e1d19;
 }
-.profil__figur-bild {
+.profil__bild-foto {
   display: block;
   width: 100%;
   height: 100%;
   border-radius: inherit;
+  object-fit: cover;
+}
+.profil__bild-hand {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: contain;
+  object-position: 50% 100%;
+  padding: 4px 2px 0;
 }
 .profil__hand {
   position: absolute;

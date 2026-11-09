@@ -4,19 +4,15 @@
 // så att en borttagen profil inte ligger kvar i en gammal deploy. Se src/lib/uppdrag.ts.
 //
 // Sidan är mörk med flit och bryter mot resten av kartan. Varje medlem står som ett samlarkort
-// med sin figur. Lediga platser står som figurer i skugga, så att sidan ser ut som en trupp som
-// fylls på även när få har lagt upp sig. Skuggorna är utsmyckning och döljs för skärmläsare.
+// med sin egen bild. Lediga platser står med föreningens pixelhand, så att sidan ser ut som en
+// trupp som fylls på även när få har lagt upp sig. De är utsmyckning och döljs för skärmläsare.
 import Bas from '../../layouts/Bas.astro';
 import Uppdragsbas from '../../components/Uppdragsbas.astro';
 import { hamtaData, url } from '../../lib/data';
 import { BLI_MEDLEM, UPPDRAG_API } from '../../lib/uppdrag';
-import { figurMedId, figurSrc } from '../../lib/figurer';
 
 const d = hamtaData();
-const skuggor = ['f16', 'f09', 'f13', 'f06', 'f11'].flatMap((id) => {
-  const f = figurMedId(id);
-  return f ? [figurSrc(f, import.meta.env.BASE_URL)] : [];
-});
+const pixelhand = url('/pixelhand.webp');
 ---
 
 <Bas
@@ -29,7 +25,8 @@ const skuggor = ['f16', 'f09', 'f13', 'f06', 'f11'].flatMap((id) => {
   <section class="morka" aria-labelledby="morka-rubrik">
     <div class="ram ram--bred">
       <header class="morka__topp">
-        <div>
+        <img class="morka__hand" src={pixelhand} alt="" width="680" height="720" decoding="async" fetchpriority="high" />
+        <div class="morka__text">
           <p class="morka__kicker">Tar uppdrag · OpenSverige</p>
           <h1 id="morka-rubrik">Mörka hästar.</h1>
           <p class="morka__ingress">
@@ -62,14 +59,13 @@ const skuggor = ['f16', 'f09', 'f13', 'f06', 'f11'].flatMap((id) => {
         <p class="morka__antal" id="uppdrag-antal" role="status">Hämtar medlemmarna …</p>
       </div>
 
-      <ul class="profiler" id="uppdrag-lista" data-api={UPPDRAG_API} data-skuggor={JSON.stringify(skuggor)}></ul>
+      <ul class="profiler" id="uppdrag-lista" data-api={UPPDRAG_API}></ul>
       <noscript><p class="morka__ingress">Listan hämtas med JavaScript. Slå på det för att se medlemmarna.</p></noscript>
 
       <template id="uppdrag-skugga">
         <li class="samlarkort samlarkort--skugga" aria-hidden="true">
-          <span class="samlarkort__figur">
-            <img class="samlarkort__figur-bild" src="" alt="" width="240" height="240" decoding="async" />
-            <span class="samlarkort__fraga">?</span>
+          <span class="samlarkort__bild samlarkort__bild--utan">
+            <img class="samlarkort__bild-hand" src={pixelhand} alt="" decoding="async" loading="lazy" />
           </span>
           <span class="samlarkort__text">
             <span class="samlarkort__namn">Ledig plats</span>
@@ -85,7 +81,7 @@ const skuggor = ['f16', 'f09', 'f13', 'f06', 'f11'].flatMap((id) => {
           <li>Bara medlemmar i föreningen OpenSverige kan lägga upp sig. Medlemskapet är gratis och tar två minuter.</li>
           <li>Uppgifterna är medlemmarnas egna. Föreningen förmedlar inga uppdrag och går inte i god för någon.</li>
           <li>Ordningen byts varje dag, så att ingen alltid står först. Ingen kan köpa en plats.</li>
-          <li>Figuren väljer medlemmen själv. Ingen bild på någon sparas.</li>
+          <li>Bilden lägger medlemmen upp själv. Den som inte visar personen, eller bryter mot föreningens regler, tas bort.</li>
           <li>
             Klick på en medlems länk räknas per dag, så att medlemmen ser om profilen ger något. Inget sparas om den som
             klickar. <a href={url('/integritet#uppdrag')}>Mer om det</a>.
@@ -105,12 +101,35 @@ const skuggor = ['f16', 'f09', 'f13', 'f06', 'f11'].flatMap((id) => {
   .morka :global(:focus-visible) {
     outline-color: #f6f2e8;
   }
+  /* Pixelhanden står till höger i sidhuvudet och sticker ner mot korten. Texten och knapparna
+     står till vänster. */
+  .morka {
+    overflow: hidden;
+  }
   .morka__topp {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    justify-content: space-between;
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
     gap: 24px 40px;
+    min-height: 300px;
+  }
+  .morka__text {
+    position: relative;
+    z-index: 1;
+  }
+  .morka__hand {
+    position: absolute;
+    right: -10px;
+    bottom: -18px;
+    width: min(340px, 32vw);
+    height: auto;
+    pointer-events: none;
+  }
+  .morka__knappar {
+    position: relative;
+    z-index: 1;
+    grid-column: 1;
   }
   .morka__kicker {
     margin: 0;
@@ -136,6 +155,7 @@ const skuggor = ['f16', 'f09', 'f13', 'f06', 'f11'].flatMap((id) => {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
+    margin-top: 6px;
   }
   .morka__knapp {
     border-color: #f6f2e8;
@@ -164,7 +184,7 @@ const skuggor = ['f16', 'f09', 'f13', 'f06', 'f11'].flatMap((id) => {
     align-items: center;
     justify-content: space-between;
     gap: 12px 24px;
-    margin: 34px 0 22px;
+    margin: 48px 0 22px;
   }
   .morka__antal {
     margin: 0 0 0 auto;
@@ -243,20 +263,17 @@ const skuggor = ['f16', 'f09', 'f13', 'f06', 'f11'].flatMap((id) => {
     border: 1.5px dashed #3a3832;
     background: transparent;
   }
-  .morka :global(.samlarkort--skugga .samlarkort__figur) {
+  .morka :global(.samlarkort--skugga .samlarkort__bild) {
     background: transparent;
   }
-  .morka :global(.samlarkort--skugga .samlarkort__figur-bild) {
-    filter: brightness(0) invert(1);
-    opacity: 0.07;
+  .morka :global(.samlarkort--skugga .samlarkort__bild-hand) {
+    filter: grayscale(1) brightness(0.55);
+    opacity: 0.32;
   }
-  .morka :global(.samlarkort__fraga) {
-    position: absolute;
-    left: 50%;
-    top: 44%;
-    transform: translate(-50%, -50%);
-    color: #4a473f;
-    font: 650 64px/1 var(--font-sans);
+  /* Den första platsen när ingen har lagt upp sig: handen i färg. */
+  .morka :global(.samlarkort--forst .samlarkort__bild-hand) {
+    filter: none;
+    opacity: 1;
   }
   .morka :global(.samlarkort--skugga .samlarkort__namn) {
     color: #f6f2e8;
@@ -295,6 +312,19 @@ const skuggor = ['f16', 'f09', 'f13', 'f06', 'f11'].flatMap((id) => {
     .morka {
       padding: 32px 0 44px;
     }
+    .morka__topp {
+      min-height: 0;
+    }
+    .morka__hand {
+      top: -40px;
+      right: -36px;
+      bottom: auto;
+      width: 150px;
+      opacity: 0.9;
+    }
+    .morka h1 {
+      max-width: 7.5ch;
+    }
     .morka__ingress {
       font-size: 16px;
     }
@@ -315,7 +345,6 @@ const skuggor = ['f16', 'f09', 'f13', 'f06', 'f11'].flatMap((id) => {
   const antal = document.getElementById('uppdrag-antal') as HTMLElement;
   const filter = document.getElementById('uppdrag-filter') as HTMLFormElement;
   const mall = document.getElementById('uppdrag-skugga') as HTMLTemplateElement;
-  const skuggbilder = JSON.parse(lista.dataset.skuggor || '[]') as string[];
   const etiketter = JSON.parse(document.getElementById('uppdrag-etiketter')?.textContent || '{}') as Etiketter;
   const idag = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Stockholm' }).format(new Date());
 
@@ -329,11 +358,10 @@ const skuggor = ['f16', 'f09', 'f13', 'f06', 'f11'].flatMap((id) => {
   }
 
   /** En ledig plats. Den första säger Bli först när ingen har lagt upp sig än. */
-  function skugga(i: number, forst: boolean): HTMLElement {
+  function skugga(forst: boolean): HTMLElement {
     const li = (mall.content.firstElementChild as HTMLElement).cloneNode(true) as HTMLElement;
-    const bild = li.querySelector('img');
-    if (bild && skuggbilder.length) bild.src = skuggbilder[i % skuggbilder.length];
     if (forst) {
+      li.classList.add('samlarkort--forst');
       const namn = li.querySelector('.samlarkort__namn');
       const rad = li.querySelector('.samlarkort__rubrik');
       if (namn) namn.textContent = 'Bli först';
@@ -357,7 +385,7 @@ const skuggor = ['f16', 'f09', 'f13', 'f06', 'f11'].flatMap((id) => {
     const k = kolumner();
     senasteKolumner = k;
     const antalSkuggor = filtrerat ? 0 : n === 0 ? k : (k - (n % k)) % k;
-    const skuggkort = Array.from({ length: antalSkuggor }, (_, i) => skugga(i, n === 0 && i === 0));
+    const skuggkort = Array.from({ length: antalSkuggor }, (_, i) => skugga(n === 0 && i === 0));
     lista.replaceChildren(...visade.map((p) => ritaKort(p, etiketter, { form: 'samlarkort' })), ...skuggkort);
     antal.textContent =
       n === 0

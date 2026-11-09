@@ -7,7 +7,6 @@ import Sida from '../../layouts/Sida.astro';
 import Uppdragsbas from '../../components/Uppdragsbas.astro';
 import { hamtaData, url } from '../../lib/data';
 import { UPPDRAG_API } from '../../lib/uppdrag';
-import { FIGURER, figurSrc } from '../../lib/figurer';
 
 const d = hamtaData();
 const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv'));
@@ -51,18 +50,25 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
         <p class="falt__fel" id="fel-namn" hidden></p>
       </div>
 
-      <fieldset aria-describedby="hjalp-figur fel-figur">
-        <legend>Din figur</legend>
-        <p class="falt__hjalp" id="hjalp-figur">Ingen bild på dig. Välj en figur som får stå för dig.</p>
-        <div class="figurval">
-          {FIGURER.map((f, i) => (
-            <label class="figurval__val" style={`--figur-farg: ${f.farg}`}>
-              <input type="radio" name="figur" value={f.id} aria-label={`Figur ${i + 1} av ${FIGURER.length}`} />
-              <img src={figurSrc(f, import.meta.env.BASE_URL)} alt="" width="62" height="62" loading="lazy" decoding="async" />
-            </label>
-          ))}
+      <fieldset aria-describedby="hjalp-bild fel-bild">
+        <legend>Din bild</legend>
+        <p class="falt__hjalp" id="hjalp-bild">En bild där man ser dig. Den beskärs till en kvadrat i din webbläsare, och platsuppgifter i filen följer inte med.</p>
+        <div class="bildval">
+          <span class="bildval__visning"><img id="bild-visning" src={url('/pixelhand.webp')} alt="" class="bildval__hand" /></span>
+          <div class="bildval__vagar">
+            <div>
+              <input class="bildval__fil" type="file" id="f-bildfil" accept="image/jpeg,image/png,image/webp" />
+              <label class="knapp knapp--ghost knapp--liten" for="f-bildfil">Ladda upp en bild →</label>
+            </div>
+            <div class="bildval__x">
+              <label class="visuellt-dold" for="f-xnamn">Ditt användarnamn på X</label>
+              <input id="f-xnamn" type="text" maxlength="16" placeholder="@användarnamn på X" autocomplete="off" spellcheck="false" />
+              <button class="knapp knapp--ghost knapp--liten" type="button" id="f-xhamta">Hämta från X →</button>
+            </div>
+          </div>
         </div>
-        <p class="falt__fel" id="fel-figur" hidden></p>
+        <p class="falt__hjalp" id="bild-status" role="status"></p>
+        <p class="falt__fel" id="fel-bild" hidden></p>
       </fieldset>
 
       <div class="falt">
@@ -129,7 +135,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
       <div class="falt">
         <label class="val">
           <input type="checkbox" name="samtycke" id="f-samtycke" aria-describedby="fel-samtycke" />
-          <span>Jag vill synas under Tar uppdrag på AI-kartan med uppgifterna ovan: i listan, och som en hand i min kommuns mitt på kartan. Kortet visar att jag är medlem i OpenSverige. Jag kan ta bort profilen när som helst, och då försvinner den direkt.</span>
+          <span>Jag vill synas under Tar uppdrag på AI-kartan med uppgifterna och bilden ovan: i listan, och som en hand i min kommuns mitt på kartan. Kortet visar att jag är medlem i OpenSverige. Jag kan ta bort profilen när som helst, och då försvinner den och bilden direkt.</span>
         </label>
         <p class="falt__fel" id="fel-samtycke" hidden></p>
       </div>
@@ -201,9 +207,8 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
 </style>
 
 <script>
-  import { harPersonnummer, type Profil } from '../../lib/uppdrag';
-  import { ritaKort, type Etiketter } from '../../lib/uppdragkort';
-  import { FIGURER, figurFor } from '../../lib/figurer';
+  import { bildUrl, harPersonnummer, type Profil } from '../../lib/uppdrag';
+  import { pixelhandSrc, ritaKort, type Etiketter } from '../../lib/uppdragkort';
 
   type Lagrat = {
     session: string;
@@ -232,6 +237,13 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
   const sparfel = hitta('r-sparfel');
 
   let lagrat: Lagrat | null = null;
+  /** En ny bild, beskuren och omkodad, som en data-adress. Skickas med när profilen sparas. */
+  let nyBild: string | null = null;
+  const bildVisning = hitta<HTMLImageElement>('bild-visning');
+  const bildStatus = hitta('bild-status');
+  const BILD_SIDA = 512;
+  const BILD_MIN = 160;
+  const BILD_MAX_BYTES = 300 * 1024;
 
   function lasLagrat(): Lagrat | null {
     try {
@@ -278,10 +290,8 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
     falt('bolag_webbplats').value = p?.bolag_webbplats ?? '';
     if (p?.bolag_namn || p?.bolag_webbplats) (hitta('f-bolag-ruta') as HTMLDetailsElement).open = true;
     falt('samtycke').checked = Boolean(p);
-    // Den sparade figuren, eller den kartan visar för profilen nu. En ny profil får en slumpad,
-    // så att inte alla börjar med samma.
-    const figur = p ? figurFor(p).id : FIGURER[Math.floor(Math.random() * FIGURER.length)].id;
-    for (const r of form.querySelectorAll<HTMLInputElement>('input[name="figur"]')) r.checked = r.value === figur;
+    nyBild = null;
+    visaBild();
     taBort.hidden = !p;
     begransaOmraden();
     visaStatus(l);
@@ -308,7 +318,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
       bolag_namn: falt('bolag_namn').value.trim(),
       bolag_webbplats: falt('bolag_webbplats').value.trim(),
       samtycke: falt('samtycke').checked,
-      figur: form.querySelector<HTMLInputElement>('input[name="figur"]:checked')?.value ?? '',
+      bild: nyBild ?? undefined,
     };
   }
 
@@ -326,9 +336,9 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
       bolag_namn: String(f.bolag_namn) || null,
       bolag_webbplats: String(f.bolag_webbplats) || null,
       uppdaterad_at: lagrat?.profil?.uppdaterad_at ?? new Date().toISOString(),
-      figur: String(f.figur) || null,
+      bild: lagrat?.profil?.bild ?? null,
     };
-    forhand.replaceChildren(ritaKort(profil, etiketter, { forhandsvisning: true, form: 'samlarkort' }));
+    forhand.replaceChildren(ritaKort(profil, etiketter, { forhandsvisning: true, form: 'samlarkort', bildSrc: nyBild ?? undefined }));
   }
 
   function begransaOmraden(): void {
@@ -348,7 +358,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
     bolag_namn: 'Högst 80 tecken. Inget organisationsnummer.',
     bolag_webbplats: 'Länken ska börja med https://.',
     samtycke: 'Kryssa i rutan för att synas i listan.',
-    figur: 'Välj en av figurerna.',
+    bild: 'Lägg till en bild: ladda upp en, eller hämta din från X.',
   };
 
   function visaFel(namn: string[]): void {
@@ -390,8 +400,120 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
     if (harPersonnummer(String(f.bolag_namn))) fel.push('bolag_namn');
     if (f.bolag_webbplats && !https(String(f.bolag_webbplats))) fel.push('bolag_webbplats');
     if (!f.samtycke) fel.push('samtycke');
+    if (!f.bild && !lagrat?.profil?.bild) fel.push('bild');
     return fel;
   }
+
+  /* ---------- Bilden ---------- */
+
+  function visaBild(): void {
+    const sparad = lagrat?.profil ? bildUrl(lagrat.profil) : null;
+    const src = nyBild ?? sparad;
+    bildVisning.src = src ?? pixelhandSrc();
+    bildVisning.classList.toggle('bildval__hand', !src);
+  }
+
+  /** WebP med ett enda bildblock. Funktionen godtar inte det utökade formatet, som kan bära metadata. */
+  function enkelWebp(data: string): boolean {
+    const start = data.indexOf(',') + 1;
+    const b = atob(data.slice(start, start + 24));
+    return b.slice(0, 4) === 'RIFF' && b.slice(8, 12) === 'WEBP' && (b.slice(12, 16) === 'VP8 ' || b.slice(12, 16) === 'VP8L');
+  }
+
+  /**
+   * Beskär till en kvadrat i mitten och kodar om. Omkodningen tar bort all metadata, som plats.
+   * WebP där webbläsaren kan, annars JPEG.
+   */
+  async function kodaOm(kalla: Blob): Promise<string> {
+    const bitmap = await createImageBitmap(kalla);
+    const sida = Math.min(bitmap.width, bitmap.height);
+    if (sida < BILD_MIN) {
+      bitmap.close();
+      throw new Error('liten');
+    }
+    const ut = Math.min(BILD_SIDA, sida);
+    const duk = document.createElement('canvas');
+    duk.width = ut;
+    duk.height = ut;
+    // Utan alfakanal blir WebP det enkla formatet, och en genomskinlig bild får mörk botten.
+    const ctx = duk.getContext('2d', { alpha: false });
+    if (!ctx) throw new Error('duk');
+    ctx.fillStyle = '#141310';
+    ctx.fillRect(0, 0, ut, ut);
+    ctx.drawImage(bitmap, (bitmap.width - sida) / 2, (bitmap.height - sida) / 2, sida, sida, 0, 0, ut, ut);
+    bitmap.close();
+    const forsok: [string, number][] = [['image/webp', 0.86], ['image/jpeg', 0.88], ['image/jpeg', 0.72]];
+    for (const [typ, kvalitet] of forsok) {
+      const data = duk.toDataURL(typ, kvalitet);
+      if (!data.startsWith(`data:${typ};base64,`)) continue;
+      if (typ === 'image/webp' && !enkelWebp(data)) continue;
+      if ((data.length - data.indexOf(',') - 1) * 0.75 <= BILD_MAX_BYTES) return data;
+    }
+    throw new Error('stor');
+  }
+
+  async function taIn(kalla: Blob, klar: string): Promise<void> {
+    bildStatus.textContent = 'Beskär bilden …';
+    try {
+      nyBild = await kodaOm(kalla);
+      bildStatus.textContent = klar;
+      const fel = hitta('fel-bild');
+      fel.hidden = true;
+      fel.textContent = '';
+      visaBild();
+      forhandsvisa();
+    } catch (e) {
+      const skal = e instanceof Error ? e.message : '';
+      bildStatus.textContent =
+        skal === 'liten'
+          ? `Bilden är för liten. Välj en som är minst ${BILD_MIN} punkter på bredden och höjden.`
+          : skal === 'stor'
+            ? 'Bilden blev för stor. Prova en annan.'
+            : 'Kunde inte läsa bilden. Prova en JPG eller PNG.';
+    }
+  }
+
+  const bildfil = hitta<HTMLInputElement>('f-bildfil');
+  bildfil.addEventListener('change', () => {
+    const fil = bildfil.files?.[0];
+    bildfil.value = '';
+    if (fil) void taIn(fil, 'Bilden är klar. Den sparas när du sparar profilen.');
+  });
+
+  // Bilden från X hämtas av din webbläsare via unavatar.io, som slår upp profilbilden. Bara
+  // användarnamnet skickas, och bilden kodas om här som en uppladdad bild.
+  const xnamn = hitta<HTMLInputElement>('f-xnamn');
+  const xhamta = hitta<HTMLButtonElement>('f-xhamta');
+  async function hamtaFranX(): Promise<void> {
+    const namn = xnamn.value.trim().replace(/^@/, '');
+    if (!/^[A-Za-z0-9_]{1,15}$/.test(namn)) {
+      bildStatus.textContent = 'Skriv ditt användarnamn på X, med eller utan @.';
+      return;
+    }
+    bildStatus.textContent = 'Hämtar bilden från X …';
+    xhamta.disabled = true;
+    try {
+      const r = await fetch(`https://unavatar.io/x/${encodeURIComponent(namn)}?fallback=false`, {
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer',
+      });
+      if (!r.ok) throw new Error(String(r.status));
+      const blob = await r.blob();
+      if (!blob.type.startsWith('image/')) throw new Error('typ');
+      await taIn(blob, `Bilden från @${namn} är klar. Den sparas när du sparar profilen.`);
+    } catch {
+      bildStatus.textContent = 'Hittade ingen bild för det namnet på X just nu. Ladda upp en bild i stället.';
+    } finally {
+      xhamta.disabled = false;
+    }
+  }
+  xhamta.addEventListener('click', () => void hamtaFranX());
+  // Enter i namnfältet hämtar bilden i stället för att skicka hela formuläret.
+  xnamn.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    void hamtaFranX();
+  });
 
   async function anrop(metod: 'PUT' | 'DELETE', kropp?: unknown): Promise<Response> {
     return fetch(`${api}/profil`, {
@@ -429,6 +551,9 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
       if (!svar.ok || !data.profil || !lagrat) throw new Error(data.fel ?? 'Kunde inte spara.');
       lagrat = { ...lagrat, profil: data.profil, klick30: data.klick30 ?? lagrat.klick30 };
       sparaLagrat(lagrat);
+      nyBild = null;
+      bildStatus.textContent = '';
+      visaBild();
       taBort.hidden = false;
       visaStatus(lagrat);
       forhandsvisa();
