@@ -3,7 +3,7 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { bildUrl, dagensOrdning, harPersonnummer, klickUrl, lankEtikett, ortrad, passar, perKommun, UPPDRAG_API } from './uppdrag.ts';
+import { bildUrl, dagensOrdning, harPersonnummer, klickUrl, kortnummer, lankEtikett, ortrad, passar, perKommun, UPPDRAG_API } from './uppdrag.ts';
 
 const profil = (slug, erbjuder = 'uppdrag', distans = false, omraden = []) => ({
   slug,
@@ -83,4 +83,12 @@ test('bildens adress går via funktionen och bara för ett giltigt namn', () => 
   assert.equal(bildUrl({ slug: 'kim-e-3f9a', bild: null }), null);
   assert.equal(bildUrl({ slug: 'kim-e-3f9a', bild: '../hemlig.webp' }), null);
   assert.equal(bildUrl({ slug: 'kim-e-3f9a', bild: 'f09' }), null);
+});
+
+test('kortnumret är de fyra slumpade tecknen sist i adressen', () => {
+  assert.equal(kortnummer('kim-e-3f9a'), '3F9A');
+  assert.equal(kortnummer('anna-karin-l-00c1'), '00C1');
+  assert.equal(kortnummer(''), null);
+  assert.equal(kortnummer('kim-e'), null);
+  assert.equal(kortnummer('kim-e-3F9A'), null);
 });

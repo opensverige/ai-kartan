@@ -49,6 +49,15 @@ export function bildUrl(p: { slug: string; bild: string | null }): string | null
   return `${UPPDRAG_API}/b/${encodeURIComponent(p.slug)}?v=${p.bild}`;
 }
 
+/**
+ * Kortets nummer: de fyra slumpade tecknen som funktionen sätter sist i adressen när profilen
+ * skapas. Det följer kortet och säger inget om när någon lade upp sig eller i vilken ordning.
+ */
+export function kortnummer(slug: string): string | null {
+  const m = /-([0-9a-f]{4})$/.exec(slug);
+  return m ? m[1].toUpperCase() : null;
+}
+
 /** Profilens länk går via funktionen, som räknar klicket och skickar vidare. */
 export function klickUrl(slug: string): string {
   return `${UPPDRAG_API}/k/${encodeURIComponent(slug)}`;

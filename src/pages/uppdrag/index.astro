@@ -4,8 +4,9 @@
 // så att en borttagen profil inte ligger kvar i en gammal deploy. Se src/lib/uppdrag.ts.
 //
 // Sidan är mörk med flit och bryter mot resten av kartan. Varje medlem står som ett samlarkort
-// med sin egen bild. Lediga platser står med föreningens pixelhand, så att sidan ser ut som en
-// trupp som fylls på även när få har lagt upp sig. De är utsmyckning och döljs för skärmläsare.
+// med sin egen bild, och korten delas ut på bordet när listan har hämtats. Lediga platser står som
+// kort med baksidan upp, så att raden är full även när få har lagt upp sig. De är utsmyckning och
+// döljs för skärmläsare.
 import Bas from '../../layouts/Bas.astro';
 import Uppdragsbas from '../../components/Uppdragsbas.astro';
 import { hamtaData, url } from '../../lib/data';
@@ -28,7 +29,7 @@ const pixelhand = url('/pixelhand.webp');
         <img class="morka__hand" src={pixelhand} alt="" width="680" height="720" decoding="async" fetchpriority="high" />
         <div class="morka__text">
           <p class="morka__kicker">Tar uppdrag · OpenSverige</p>
-          <h1 id="morka-rubrik">Mörka hästar.</h1>
+          <h1 id="morka-rubrik">Anlita en byggare.</h1>
           <p class="morka__ingress">
             Medlemmar i OpenSverige som bygger med AI och tar uppdrag. Var och en har lagt upp sig själv.
           </p>
@@ -63,15 +64,17 @@ const pixelhand = url('/pixelhand.webp');
       <noscript><p class="morka__ingress">Listan hämtas med JavaScript. Slå på det för att se medlemmarna.</p></noscript>
 
       <template id="uppdrag-skugga">
-        <li class="samlarkort samlarkort--skugga" aria-hidden="true">
-          <span class="samlarkort__bild samlarkort__bild--utan">
-            <img class="samlarkort__bild-hand" src={pixelhand} alt="" decoding="async" loading="lazy" />
-          </span>
-          <span class="samlarkort__text">
-            <span class="samlarkort__namn">Ledig plats</span>
-            <span class="samlarkort__rubrik">Bygger du och tar uppdrag?</span>
-            <span class="samlarkort__fot"><a class="samlarkort__lank" href={url('/uppdrag/lagg-upp')} tabindex="-1">Lägg upp dig →</a></span>
-          </span>
+        <li class="kortbak" aria-hidden="true">
+          <a class="kortbak__yta" href={url('/uppdrag/lagg-upp')} tabindex="-1">
+            <span class="kortbak__ord">OpenSverige</span>
+            <span class="kortbak__medaljong">
+              <img class="kortbak__hand" src={pixelhand} alt="" decoding="async" loading="lazy" />
+            </span>
+            <span class="kortbak__fot">
+              <span class="kortbak__etikett">Ledig plats</span>
+              <span class="kortbak__lank">Lägg upp dig →</span>
+            </span>
+          </a>
         </li>
       </template>
 
@@ -246,9 +249,6 @@ const pixelhand = url('/pixelhand.webp');
   }
 
   /* Korten ligger lite snett, som utlagda på ett bord. Inte på telefon, där de står tätt. */
-  .morka :global(.samlarkort) {
-    border-color: transparent;
-  }
   @media (min-width: 561px) {
     .morka :global(.profiler > :nth-child(3n + 2)) {
       transform: rotate(0.5deg);
@@ -257,32 +257,130 @@ const pixelhand = url('/pixelhand.webp');
       transform: rotate(-0.6deg);
     }
   }
+  /* Korten delas ut ett i taget när listan har hämtats, och igen när filtret ändras. */
+  @media (prefers-reduced-motion: no-preference) {
+    .morka :global(.profiler > li) {
+      animation: kortdelning 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation-delay: calc(var(--i, 0) * 55ms);
+    }
+  }
+  @keyframes kortdelning {
+    from {
+      opacity: 0;
+      transform: translateY(26px) rotate(-2deg) scale(0.97);
+    }
+  }
 
-  /* Skuggkorten: lediga platser. */
-  .morka :global(.samlarkort--skugga) {
-    border: 1.5px dashed #3a3832;
-    background: transparent;
+  /* Baksidan: lediga platser. Ett rutmönster, föreningens hand i en medaljong och ingen text som
+     låtsas vara en person. Det första kortet säger vart man går för att lägga upp sig. */
+  .morka :global(.kortbak) {
+    display: flex;
+    min-width: 0;
+    perspective: 900px;
   }
-  .morka :global(.samlarkort--skugga .samlarkort__bild) {
-    background: transparent;
+  .morka :global(.kortbak__yta) {
+    position: relative;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    /* Höjden följer kortformatet när raden bara har baksidor, men bredden får aldrig växa ur
+       kolumnen när raden är högre än så. */
+    min-width: 0;
+    aspect-ratio: 63 / 88;
+    padding: 22px 14px 20px;
+    border: 1.5px solid transparent;
+    border-radius: 16px;
+    background:
+      radial-gradient(ellipse at 50% 46%, transparent 0 28%, rgb(0 0 0 / 0.5) 88%) padding-box,
+      repeating-linear-gradient(45deg, hsl(40 55% 72% / 0.075) 0 1px, transparent 1px 9px) padding-box,
+      repeating-linear-gradient(-45deg, hsl(40 55% 72% / 0.075) 0 1px, transparent 1px 9px) padding-box,
+      linear-gradient(#1b1915, #1b1915) padding-box,
+      linear-gradient(var(--folievinkel, 125deg), #4b3d29, #a88b5b 30%, #5b4931 50%, #cbb07a 70%, #4b3d29)
+        border-box;
+    box-shadow: 0 18px 34px -18px rgb(0 0 0 / 0.75);
+    color: #b9a57c;
+    text-decoration: none;
+    transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+    transition: transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
   }
-  .morka :global(.samlarkort--skugga .samlarkort__bild-hand) {
-    filter: grayscale(1) brightness(0.55);
-    opacity: 0.32;
+  .morka :global(.kortbak__yta::before) {
+    content: '';
+    position: absolute;
+    inset: 7px;
+    border: 1px solid hsl(40 50% 70% / 0.2);
+    border-radius: 10px;
+    pointer-events: none;
   }
-  /* Den första platsen när ingen har lagt upp sig: handen i färg. */
-  .morka :global(.samlarkort--forst .samlarkort__bild-hand) {
-    filter: none;
-    opacity: 1;
+  .morka :global(.kortbak__ord) {
+    font: 600 9.5px/1 var(--font-mono);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
   }
-  .morka :global(.samlarkort--skugga .samlarkort__namn) {
+  .morka :global(.kortbak__medaljong) {
+    position: relative;
+    width: 58%;
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: 50%;
+    background: radial-gradient(circle at 38% 32%, #f5eedf, #d9cdb4 75%);
+    box-shadow:
+      0 0 0 1.5px #b8975e,
+      0 0 0 7px hsl(40 45% 70% / 0.07),
+      0 12px 26px rgb(0 0 0 / 0.55);
+  }
+  .morka :global(.kortbak__hand) {
+    position: absolute;
+    left: 50%;
+    bottom: -4%;
+    width: 86%;
+    height: auto;
+    transform: translateX(-47%);
+  }
+  /* Foten har plats för två rader på alla baksidor, så att medaljongen står lika högt i raden. */
+  .morka :global(.kortbak__fot) {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+  }
+  .morka :global(.kortbak__etikett) {
+    color: #8f8a7c;
+    font: 600 10px/1 var(--font-mono);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .morka :global(.kortbak__lank) {
+    display: none;
     color: #f6f2e8;
+    font: 650 14.5px/1.2 var(--font-sans);
   }
-  .morka :global(.samlarkort--skugga .samlarkort__rubrik) {
-    color: #a39f92;
+  .morka :global(.kortbak--forst .kortbak__yta) {
+    background:
+      radial-gradient(ellipse at 50% 46%, transparent 0 28%, rgb(0 0 0 / 0.45) 88%) padding-box,
+      repeating-linear-gradient(45deg, hsl(40 55% 72% / 0.1) 0 1px, transparent 1px 9px) padding-box,
+      repeating-linear-gradient(-45deg, hsl(40 55% 72% / 0.1) 0 1px, transparent 1px 9px) padding-box,
+      linear-gradient(#1f1c17, #1f1c17) padding-box,
+      linear-gradient(var(--folievinkel, 125deg), #6e5634, #f1dca2 22%, #9a7646 40%, #fff1c8 58%, #8a6a3e 76%, #e6c88a)
+        border-box;
   }
-  .morka :global(.samlarkort--skugga .samlarkort__lank) {
-    color: #f6f2e8;
+  .morka :global(.kortbak--forst .kortbak__etikett) {
+    color: #dcc28c;
+  }
+  .morka :global(.kortbak--forst .kortbak__lank) {
+    display: block;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .morka :global(.kortbak__yta:hover .kortbak__lank) {
+      display: block;
+    }
+    .morka :global(.kortbak__yta:hover .kortbak__etikett) {
+      color: #dcc28c;
+    }
   }
 
   .morka__om {
@@ -334,12 +432,26 @@ const pixelhand = url('/pixelhand.webp');
     .morka__antal {
       margin-left: 0;
     }
+    .morka :global(.kortbak__yta) {
+      padding: 16px 10px 14px;
+      border-radius: 13px;
+    }
+    .morka :global(.kortbak__ord) {
+      font-size: 8px;
+      letter-spacing: 0.22em;
+    }
+    .morka :global(.kortbak__etikett) {
+      font-size: 8.5px;
+    }
+    .morka :global(.kortbak__lank) {
+      font-size: 13px;
+    }
   }
 </style>
 
 <script>
   import { dagensOrdning, passar, type Profil } from '../../lib/uppdrag';
-  import { ritaKort, type Etiketter } from '../../lib/uppdragkort';
+  import { folie, ritaKort, type Etiketter } from '../../lib/uppdragkort';
 
   const lista = document.getElementById('uppdrag-lista') as HTMLUListElement;
   const antal = document.getElementById('uppdrag-antal') as HTMLElement;
@@ -357,16 +469,15 @@ const pixelhand = url('/pixelhand.webp');
     return Math.max(1, getComputedStyle(lista).gridTemplateColumns.split(' ').filter(Boolean).length);
   }
 
-  /** En ledig plats. Den första säger Bli först när ingen har lagt upp sig än. */
-  function skugga(forst: boolean): HTMLElement {
+  /**
+   * En ledig plats, med baksidan upp. Den första säger vart man går, och Bli först när ingen har
+   * lagt upp sig än.
+   */
+  function skugga(forst: boolean, tom: boolean): HTMLElement {
     const li = (mall.content.firstElementChild as HTMLElement).cloneNode(true) as HTMLElement;
-    if (forst) {
-      li.classList.add('samlarkort--forst');
-      const namn = li.querySelector('.samlarkort__namn');
-      const rad = li.querySelector('.samlarkort__rubrik');
-      if (namn) namn.textContent = 'Bli först';
-      if (rad) rad.textContent = 'Ingen har lagt upp sig än.';
-    }
+    if (forst) li.classList.add('kortbak--forst');
+    const etikett = li.querySelector('.kortbak__etikett');
+    if (forst && tom && etikett) etikett.textContent = 'Bli först';
     return li;
   }
 
@@ -385,18 +496,23 @@ const pixelhand = url('/pixelhand.webp');
     const k = kolumner();
     senasteKolumner = k;
     const antalSkuggor = filtrerat ? 0 : n === 0 ? k : (k - (n % k)) % k;
-    const skuggkort = Array.from({ length: antalSkuggor }, (_, i) => skugga(n === 0 && i === 0));
-    lista.replaceChildren(...visade.map((p) => ritaKort(p, etiketter, { form: 'samlarkort' })), ...skuggkort);
+    const skuggkort = Array.from({ length: antalSkuggor }, (_, i) => skugga(i === 0, n === 0));
+    const kort = [...visade.map((p) => ritaKort(p, etiketter, { form: 'samlarkort' })), ...skuggkort];
+    kort.forEach((k, i) => k.style.setProperty('--i', String(i)));
+    lista.replaceChildren(...kort);
     antal.textContent =
       n === 0
         ? 'Ingen har lagt upp sig än'
         : filtrerat
-          ? `${visade.length} av ${n} medlemmar`
+          ? visade.length === 0
+            ? `Ingen av ${n} medlemmar passar filtret`
+            : `${visade.length} av ${n} medlemmar`
           : `${n} ${n === 1 ? 'medlem' : 'medlemmar'} · ny ordning varje dag`;
     filter.hidden = n < 2;
   }
 
   filter.addEventListener('change', rita);
+  folie(lista);
   filter.addEventListener('submit', (e) => e.preventDefault());
   // Fönstret byter bredd, och då kan antalet kort i bredd ändras. Skuggorna följer med.
   addEventListener('resize', () => {

@@ -208,7 +208,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
 
 <script>
   import { bildUrl, harPersonnummer, type Profil } from '../../lib/uppdrag';
-  import { pixelhandSrc, ritaKort, type Etiketter } from '../../lib/uppdragkort';
+  import { folie, pixelhandSrc, ritaKort, type Etiketter } from '../../lib/uppdragkort';
 
   type Lagrat = {
     session: string;
@@ -229,6 +229,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
   const klar = hitta('r-klar');
   const yta = hitta('r-yta');
   const forhand = hitta('forhand');
+  folie(forhand);
   const klick = hitta('r-klick');
   const sessionText = hitta('r-session');
   const spara = hitta<HTMLButtonElement>('r-spara');
