@@ -357,6 +357,11 @@ const medlemsdatum = medlemmar
     const MITT_INZOOMAD: [[number, number], [number, number]] = [[-25, 54.5], [32, 71]];
     const STORSTA_ZOOM = 14;
     let zoomgolv = 2;
+    // Medlemsvyn behöver ibland mer än rutan ovan tillåter. När kortet ligger som ett blad över en
+    // låg skärm hamnar mittpunkten söder om Sverige, annars ritas Göteborg och Malmö under kortet.
+    // Medlemsvyn sätter då en egen sydgräns och ett eget zoomgolv, och de släpps när kartan har
+    // flugit tillbaka.
+    let medlemsram: { syd: number; zoom: number } | null = null;
     const FACETTER: FacettNamn[] = ['erbjuder', 'typ', 'omrade', 'lan'];
     const stdRubrik = rubrik?.textContent ?? '';
     const stdIngress = ingress?.innerHTML ?? '';
@@ -1585,7 +1590,13 @@ const medlemsdatum = medlemmar
       const padding = blad
         ? { top: 28, bottom: yta.bottom - kort.top + 52, left: 84, right: 32 }
         : { top: 48, bottom: 48, left: kort.right - yta.left + 40, right: smal.matches ? 72 : 80 };
-      karta.fitBounds([[Math.min(...lng), Math.min(...lat)], [Math.max(...lng), Math.max(...lat)]], { padding }, AV_KOD);
+      const ram: [[number, number], [number, number]] = [[Math.min(...lng), Math.min(...lat)], [Math.max(...lng), Math.max(...lat)]];
+      const kamera = karta.cameraForBounds(ram, { padding });
+      if (kamera?.center !== undefined && kamera.zoom !== undefined) {
+        const c = kamera.center;
+        medlemsram = { syd: (Array.isArray(c) ? c[1] : c.lat) - 0.5, zoom: kamera.zoom - 0.1 };
+      }
+      karta.fitBounds(ram, { padding }, AV_KOD);
     }
 
     /**
@@ -1638,6 +1649,11 @@ const medlemsdatum = medlemmar
           if (kameraFore) karta.flyTo(kameraFore, AV_KOD);
           else passaKarta();
         }
+        // Medlemsvyns egna gränser släpps först när nästa förflyttning är klar, så att flygningen
+        // tillbaka, eller till en plats, inte hoppar i första bildrutan.
+        karta.once('moveend', () => {
+          if (!medlemslage) medlemsram = null;
+        });
         kameraFore = null;
         forstaVyVisad = true;
       }
@@ -1692,12 +1708,13 @@ const medlemsdatum = medlemmar
           renderWorldCopies: false,
           maxZoom: STORSTA_ZOOM,
           transformConstrain: (plats, zoom) => {
-            const z = Math.min(Math.max(zoom, zoomgolv), STORSTA_ZOOM);
+            const z = Math.min(Math.max(zoom, medlemsram ? Math.min(zoomgolv, medlemsram.zoom) : zoomgolv), STORSTA_ZOOM);
             // Rutan vidgas jämnt under de två första zoomstegen in från golvet.
             const t = Math.min(Math.max((z - zoomgolv) / 2, 0), 1);
             const kant = (i: 0 | 1, j: 0 | 1): number => MITT_UTZOOMAD[i][j] + (MITT_INZOOMAD[i][j] - MITT_UTZOOMAD[i][j]) * t;
+            const syd = medlemsram ? Math.min(kant(0, 1), medlemsram.syd) : kant(0, 1);
             return {
-              center: new Plats(Math.min(Math.max(plats.lng, kant(0, 0)), kant(1, 0)), Math.min(Math.max(plats.lat, kant(0, 1)), kant(1, 1))),
+              center: new Plats(Math.min(Math.max(plats.lng, kant(0, 0)), kant(1, 0)), Math.min(Math.max(plats.lat, syd), kant(1, 1))),
               zoom: z,
             };
           },
