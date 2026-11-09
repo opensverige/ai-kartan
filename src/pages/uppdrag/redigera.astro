@@ -74,7 +74,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
 
       <div class="falt">
         <label class="falt__etikett" for="f-kommun">Ort, frivilligt</label>
-        <p class="falt__hjalp" id="hjalp-kommun">Bara kommunen visas, aldrig en adress.</p>
+        <p class="falt__hjalp" id="hjalp-kommun">Bara kommunen visas, aldrig en adress. Väljer du en kommun står din hand i dess mitt på kartan.</p>
         <select id="f-kommun" name="kommun" aria-describedby="hjalp-kommun fel-kommun">
           <option value="">Ingen ort</option>
           {kommuner.map((k) => <option value={k.kod}>{k.namn}</option>)}
@@ -85,7 +85,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
 
       <fieldset aria-describedby="hjalp-omraden fel-omraden">
         <legend>Områden, högst tre</legend>
-        <p class="falt__hjalp" id="hjalp-omraden">Samma områden som på kartan.</p>
+        <p class="falt__hjalp" id="hjalp-omraden">Samma områden som på kartan. De styr filtret i listan och står inte på kortet.</p>
         <div class="valrutnat">
           {d.taxonomi.omraden.map((o) => (
             <label class="val"><input type="checkbox" name="omraden" value={o.id} /> {o.label}</label>
@@ -114,7 +114,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
       <div class="falt">
         <label class="val">
           <input type="checkbox" name="samtycke" id="f-samtycke" aria-describedby="fel-samtycke" />
-          <span>Jag vill synas under Tar uppdrag på AI-kartan med uppgifterna ovan. Kortet visar att jag är medlem i OpenSverige. Jag kan ta bort profilen när som helst, och då försvinner den direkt.</span>
+          <span>Jag vill synas under Tar uppdrag på AI-kartan med uppgifterna ovan: i listan, och som en hand i min kommuns mitt på kartan. Kortet visar att jag är medlem i OpenSverige. Jag kan ta bort profilen när som helst, och då försvinner den direkt.</span>
         </label>
         <p class="falt__fel" id="fel-samtycke" hidden></p>
       </div>
@@ -303,7 +303,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
       bolag_webbplats: String(f.bolag_webbplats) || null,
       uppdaterad_at: lagrat?.profil?.uppdaterad_at ?? new Date().toISOString(),
     };
-    forhand.replaceChildren(ritaKort(profil, etiketter, true));
+    forhand.replaceChildren(ritaKort(profil, etiketter, { forhandsvisning: true }));
   }
 
   function begransaOmraden(): void {

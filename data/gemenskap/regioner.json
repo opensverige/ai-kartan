@@ -9,5 +9,9 @@
     { "namn": "Jönköping", "kommun": "0680", "antal": 10 },
     { "namn": "Umeå", "kommun": "2480", "antal": 0 }
   ],
-  "annan_ort": 112
+  "annan_ort": 112,
+  "discord": {
+    "konton": 788,
+    "uppdaterad": "2026-11-09"
+  }
 }
