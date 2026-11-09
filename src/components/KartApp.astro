@@ -1527,19 +1527,31 @@ const medlemsdatum = medlemmar
     /** Korten för en kommun, i en ruta vid handen. Samma kort som i listan. */
     function oppnaHandtips(profiler: Profil[], plats: [number, number], ort: string) {
       if (!karta || !nyttTips) return;
+      // Numret räknas upp innan den gamla rutan stängs, så att dess stängning inte ramar in kartan.
+      const nr = ++handtipsNr;
       handtips?.remove();
       const lista = document.createElement('ul');
       lista.className = 'handtips__lista';
       lista.setAttribute('aria-label', `Tar uppdrag i ${ort}`);
       const etiketter = { kommuner: { [profiler[0].kommun ?? '']: ort }, omraden: {} };
       lista.append(...profiler.map((p) => ritaKort(p, etiketter, { rubrik: 'h3' })));
-      const nr = ++handtipsNr;
-      const oppna = (anchor?: PopupOptions['anchor']): void => {
+      const oppna = (anchor?: PopupOptions['anchor'], flyttad = false): void => {
         if (!karta || !nyttTips || nr !== handtipsNr) return;
-        handtips = nyttTips({ closeButton: true, closeOnClick: true, offset: 22, maxWidth: '300px', className: 'handtips', focusAfterOpen: true, anchor })
+        const tips = nyttTips({ closeButton: true, closeOnClick: true, offset: 22, maxWidth: '300px', className: 'handtips', focusAfterOpen: true, anchor })
           .setLngLat(plats)
           .setDOMContent(lista)
           .addTo(karta);
+        handtips = tips;
+        if (!flyttad) return;
+        // Kartan flyttades för rutans skull. Står den kvar där när rutan stängs, ramas regionerna in
+        // igen, så att ingen hamnar under kortet. Har besökaren själv dragit eller zoomat får kartan stå.
+        const mitt = karta.getCenter();
+        const zoom = karta.getZoom();
+        tips.on('close', () => {
+          if (!karta || nr !== handtipsNr || !medlemslage) return;
+          const nu = karta.getCenter();
+          if (Math.abs(karta.getZoom() - zoom) < 0.01 && Math.abs(nu.lng - mitt.lng) < 1e-6 && Math.abs(nu.lat - mitt.lat) < 1e-6) passaMedlemmar();
+        });
       };
       // Kortet och knapparna ligger ovanpå kartan, och rutan kan aldrig hamna över dem. När kortet
       // ligger som ett blad i botten flyttas kartan därför så att handen står strax ovanför kortet,
@@ -1561,7 +1573,7 @@ const medlemsdatum = medlemmar
         oppna('bottom');
         return;
       }
-      karta.once('moveend', () => oppna('bottom'));
+      karta.once('moveend', () => oppna('bottom', true));
       karta.panBy([x - malX, y - malY], { duration: matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 320 }, AV_KOD);
     }
 
@@ -1599,9 +1611,9 @@ const medlemsdatum = medlemmar
     }
 
     function gomHander() {
+      handtipsNr++;
       handtips?.remove();
       handtips = null;
-      handtipsNr++;
       for (const n of handnalar) n.remove();
       handnalar = [];
     }
