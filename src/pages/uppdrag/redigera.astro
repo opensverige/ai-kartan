@@ -168,6 +168,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
   #r-klar {
     max-width: 560px;
     margin-bottom: 24px;
+    scroll-margin-top: calc(var(--huvud-h) + 16px);
   }
   @media (max-width: 900px) {
     .redigera {
@@ -408,7 +409,9 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
       sparfel.hidden = true;
       hitta('r-klar-text').textContent = 'Sparat. Du syns nu i listan.';
       klar.hidden = false;
-      klar.focus();
+      // Knappen ligger längst ner och kvittot högst upp. Utan att rulla dit syns inget hända.
+      klar.focus({ preventScroll: true });
+      klar.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
     } catch (err) {
       sparfel.textContent = err instanceof Error && err.message ? err.message : 'Kunde inte spara. Försök igen.';
       sparfel.hidden = false;
