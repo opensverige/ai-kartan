@@ -540,8 +540,8 @@ details {
   overflow-x: auto;
 }
 
-/* Kortet för en profil under Tar uppdrag: i listan, i förhandsvisningen och vid en hand på
-   kartan. Ritas i webbläsaren av src/lib/uppdragkort.ts. */
+/* Det kompakta kortet för en profil under Tar uppdrag, vid en hand på kartan. Ritas i
+   webbläsaren av src/lib/uppdragkort.ts. Samlarkortet i listan står i Uppdragsbas.astro. */
 .profil {
   display: grid;
   gap: 10px;
@@ -562,15 +562,21 @@ details {
   position: relative;
   flex: none;
 }
-.profil__glyf {
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: hsl(var(--moss) / 0.14);
-  color: hsl(var(--moss-deep));
-  font: 650 17px/1 var(--font-sans);
+/* Figuren i en färgad ruta. Handen i hörnet sticker ut, så bilden rundas själv i stället för
+   att rutan klipper. */
+.profil__figur {
+  position: relative;
+  display: block;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: var(--figur-farg, hsl(var(--yta-chip)));
+}
+.profil__figur-bild {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
 }
 .profil__hand {
   position: absolute;

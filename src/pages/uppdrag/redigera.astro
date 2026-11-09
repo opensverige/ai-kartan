@@ -7,6 +7,7 @@ import Sida from '../../layouts/Sida.astro';
 import Uppdragsbas from '../../components/Uppdragsbas.astro';
 import { hamtaData, url } from '../../lib/data';
 import { UPPDRAG_API } from '../../lib/uppdrag';
+import { FIGURER, figurSrc } from '../../lib/figurer';
 
 const d = hamtaData();
 const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv'));
@@ -49,6 +50,20 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
         <input id="f-namn" name="namn" type="text" maxlength="60" autocomplete="name" required aria-describedby="fel-namn" />
         <p class="falt__fel" id="fel-namn" hidden></p>
       </div>
+
+      <fieldset aria-describedby="hjalp-figur fel-figur">
+        <legend>Din figur</legend>
+        <p class="falt__hjalp" id="hjalp-figur">Ingen bild på dig. Välj en figur som får stå för dig.</p>
+        <div class="figurval">
+          {FIGURER.map((f, i) => (
+            <label class="figurval__val" style={`--figur-farg: ${f.farg}`}>
+              <input type="radio" name="figur" value={f.id} aria-label={`Figur ${i + 1} av ${FIGURER.length}`} />
+              <img src={figurSrc(f, import.meta.env.BASE_URL)} alt="" width="62" height="62" loading="lazy" decoding="async" />
+            </label>
+          ))}
+        </div>
+        <p class="falt__fel" id="fel-figur" hidden></p>
+      </fieldset>
 
       <div class="falt">
         <label class="falt__etikett" for="f-rubrik">Vad du gör, på en rad</label>
@@ -159,6 +174,9 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
   .redigera__forhand .kicker {
     margin: 0;
   }
+  #forhand {
+    max-width: 250px;
+  }
   .redigera__forhand .meta {
     margin: 0;
   }
@@ -185,6 +203,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
 <script>
   import { harPersonnummer, type Profil } from '../../lib/uppdrag';
   import { ritaKort, type Etiketter } from '../../lib/uppdragkort';
+  import { FIGURER, figurFor } from '../../lib/figurer';
 
   type Lagrat = {
     session: string;
@@ -259,6 +278,10 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
     falt('bolag_webbplats').value = p?.bolag_webbplats ?? '';
     if (p?.bolag_namn || p?.bolag_webbplats) (hitta('f-bolag-ruta') as HTMLDetailsElement).open = true;
     falt('samtycke').checked = Boolean(p);
+    // Den sparade figuren, eller den kartan visar för profilen nu. En ny profil får en slumpad,
+    // så att inte alla börjar med samma.
+    const figur = p ? figurFor(p).id : FIGURER[Math.floor(Math.random() * FIGURER.length)].id;
+    for (const r of form.querySelectorAll<HTMLInputElement>('input[name="figur"]')) r.checked = r.value === figur;
     taBort.hidden = !p;
     begransaOmraden();
     visaStatus(l);
@@ -285,6 +308,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
       bolag_namn: falt('bolag_namn').value.trim(),
       bolag_webbplats: falt('bolag_webbplats').value.trim(),
       samtycke: falt('samtycke').checked,
+      figur: form.querySelector<HTMLInputElement>('input[name="figur"]:checked')?.value ?? '',
     };
   }
 
@@ -302,8 +326,9 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
       bolag_namn: String(f.bolag_namn) || null,
       bolag_webbplats: String(f.bolag_webbplats) || null,
       uppdaterad_at: lagrat?.profil?.uppdaterad_at ?? new Date().toISOString(),
+      figur: String(f.figur) || null,
     };
-    forhand.replaceChildren(ritaKort(profil, etiketter, { forhandsvisning: true }));
+    forhand.replaceChildren(ritaKort(profil, etiketter, { forhandsvisning: true, form: 'samlarkort' }));
   }
 
   function begransaOmraden(): void {
@@ -323,6 +348,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
     bolag_namn: 'Högst 80 tecken. Inget organisationsnummer.',
     bolag_webbplats: 'Länken ska börja med https://.',
     samtycke: 'Kryssa i rutan för att synas i listan.',
+    figur: 'Välj en av figurerna.',
   };
 
   function visaFel(namn: string[]): void {
