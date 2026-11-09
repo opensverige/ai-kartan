@@ -3,7 +3,7 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { dagensOrdning, harPersonnummer, klickUrl, lankEtikett, ortrad, passar, perKommun, UPPDRAG_API } from './uppdrag.ts';
+import { bildUrl, dagensOrdning, harPersonnummer, klickUrl, lankEtikett, ortrad, passar, perKommun, UPPDRAG_API } from './uppdrag.ts';
 
 const profil = (slug, erbjuder = 'uppdrag', distans = false, omraden = []) => ({
   slug,
@@ -76,3 +76,11 @@ test('raden under namnet säger ort och distans, eller ingenting', () => {
   assert.equal(ortrad({ kommun: '9999', distans: false }, kommuner), '');
 });
 
+
+test('bildens adress går via funktionen och bara för ett giltigt namn', () => {
+  const namn = '3f1c2a9e-1b2c-4d5e-8f90-0a1b2c3d4e5f.webp';
+  assert.equal(bildUrl({ slug: 'kim-e-3f9a', bild: namn }), `${UPPDRAG_API}/b/kim-e-3f9a?v=${namn}`);
+  assert.equal(bildUrl({ slug: 'kim-e-3f9a', bild: null }), null);
+  assert.equal(bildUrl({ slug: 'kim-e-3f9a', bild: '../hemlig.webp' }), null);
+  assert.equal(bildUrl({ slug: 'kim-e-3f9a', bild: 'f09' }), null);
+});

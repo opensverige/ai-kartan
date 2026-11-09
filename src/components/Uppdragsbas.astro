@@ -33,8 +33,8 @@ const etiketter: Etiketter = {
     }
   }
 
-  /* Samlarkortet: figuren stor i en färgad ruta, namnet och en rad under. Ritas av
-     src/lib/uppdragkort.ts. Det kompakta kortet vid handen på kartan står i global.css. */
+  /* Samlarkortet: bilden stor, namnet och en rad under. Ritas av src/lib/uppdragkort.ts. Det
+     kompakta kortet vid handen på kartan står i global.css. Utan bild står pixelhanden. */
   .samlarkort {
     display: flex;
     flex-direction: column;
@@ -45,26 +45,32 @@ const etiketter: Etiketter = {
     background: #fbf8f1;
     color: hsl(var(--ink));
   }
-  .samlarkort__figur {
+  .samlarkort__bild {
     position: relative;
     display: block;
-    aspect-ratio: 1 / 0.96;
+    aspect-ratio: 1 / 1;
     overflow: hidden;
-    background: var(--figur-farg, hsl(var(--yta-chip)));
+    background: #1e1d19;
   }
-  .samlarkort__figur-bild {
+  .samlarkort__bild-foto {
     position: absolute;
-    left: 50%;
-    bottom: -3%;
+    inset: 0;
     width: 100%;
-    height: auto;
-    transform: translateX(-50%);
-    transition: transform 400ms cubic-bezier(0.16, 1, 0.3, 1);
+    height: 100%;
+    object-fit: cover;
+    transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
   }
   @media (hover: hover) and (prefers-reduced-motion: no-preference) {
-    .samlarkort:hover .samlarkort__figur-bild {
-      transform: translateX(-50%) translateY(-3%);
+    .samlarkort:hover .samlarkort__bild-foto {
+      transform: scale(1.04);
     }
+  }
+  .samlarkort__bild-hand {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 76%;
+    transform: translateX(-50%);
   }
   .samlarkort__ort {
     position: absolute;
@@ -154,54 +160,53 @@ const etiketter: Etiketter = {
   }
 
   /* Figurväljaren i formuläret. Valet är en vanlig radioknapp, så att tangentbordet fungerar. */
-  /* Sexton figurer: två jämna rader om åtta, fyra om fyra på en smal telefon. */
-  .figurval {
+  /* Bildvalet i formuläret: bilden som den syns, och två vägar att få in en. */
+  .bildval {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px 18px;
+  }
+  .bildval__visning {
+    position: relative;
+    flex: none;
+    width: 96px;
+    height: 96px;
+    overflow: hidden;
+    border-radius: 18px;
+    background: #1e1d19;
+  }
+  .bildval__visning img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .bildval__visning img.bildval__hand {
+    object-fit: contain;
+    object-position: 50% 100%;
+    padding: 8px 4px 0;
+  }
+  .bildval__vagar {
     display: grid;
-    grid-template-columns: repeat(8, minmax(0, 1fr));
+    flex: 1;
+    gap: 10px;
+    min-width: 220px;
+  }
+  .bildval__x {
+    display: flex;
     gap: 8px;
   }
-  @media (max-width: 440px) {
-    .figurval {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
+  .bildval__x input {
+    flex: 1;
+    min-width: 0;
   }
-  .figurval__val {
-    position: relative;
-    display: block;
-    aspect-ratio: 1;
-    border: 2px solid transparent;
-    border-radius: 14px;
-    background: var(--figur-farg, hsl(var(--yta-chip)));
-    cursor: pointer;
-  }
-  .figurval__val img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    border-radius: 12px;
-  }
-  .figurval__val input {
+  .bildval__fil {
     position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    margin: 0;
+    width: 1px;
+    height: 1px;
     opacity: 0;
-    cursor: pointer;
   }
-  .figurval__val:has(input:checked) {
-    border-color: hsl(var(--moss));
-    box-shadow: 0 0 0 3px hsl(var(--moss) / 0.2);
-  }
-  .figurval__val:has(input:checked)::after {
-    content: '✓';
-    position: absolute;
-    top: 3px;
-    right: 6px;
-    color: hsl(var(--moss));
-    font: 700 13px/1 var(--font-sans);
-  }
-  .figurval__val:has(input:focus-visible) {
+  .bildval__fil:focus-visible + .knapp {
     outline: 2px solid hsl(var(--moss));
     outline-offset: 2px;
   }
