@@ -29,6 +29,8 @@ export type Profil = {
   bolag_namn: string | null;
   bolag_webbplats: string | null;
   uppdaterad_at: string;
+  /** Figuren som medlemmen valt, f01 och så vidare. Null betyder att kartan väljer, se figurer.ts. */
+  figur: string | null;
 };
 
 export const ERBJUDER_TEXT: Record<Erbjuder, string> = {
@@ -73,11 +75,6 @@ export function dagensOrdning<T extends { slug: string }>(profiler: readonly T[]
     return h;
   };
   return [...profiler].sort((a, b) => vikt(a.slug) - vikt(b.slug));
-}
-
-/** Första bokstaven i namnet, stor. Står i cirkeln på kortet och i raden i medlemsvyn. */
-export function initial(namn: string): string {
-  return (namn.trim()[0] ?? '·').toUpperCase();
 }
 
 /** Raden under namnet: kommunen och om personen tar uppdrag på distans. Tom när inget av det finns. */

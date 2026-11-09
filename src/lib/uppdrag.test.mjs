@@ -3,7 +3,7 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { dagensOrdning, harPersonnummer, initial, klickUrl, lankEtikett, ortrad, passar, perKommun, UPPDRAG_API } from './uppdrag.ts';
+import { dagensOrdning, harPersonnummer, klickUrl, lankEtikett, ortrad, passar, perKommun, UPPDRAG_API } from './uppdrag.ts';
 
 const profil = (slug, erbjuder = 'uppdrag', distans = false, omraden = []) => ({
   slug,
@@ -76,7 +76,3 @@ test('raden under namnet säger ort och distans, eller ingenting', () => {
   assert.equal(ortrad({ kommun: '9999', distans: false }, kommuner), '');
 });
 
-test('initialen är första bokstaven, stor', () => {
-  assert.equal(initial(' åsa öberg'), 'Å');
-  assert.equal(initial(''), '·');
-});

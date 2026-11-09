@@ -262,7 +262,8 @@ const medlemsdatum = medlemmar
   import { urvalSomCsv } from '../lib/csv';
   import { grupperaPerPlats, platsEfterUtzoomning, platsmitt, zoomgranser, ZOOM_KOMMUN, ZOOM_POSTER, type Platsgrupp } from '../lib/platsgrupper';
   import { arPaskagg, cirkel, type Medlemsvy } from '../lib/medlemmar';
-  import { UPPDRAG_API, dagensOrdning, initial, perKommun, type Profil } from '../lib/uppdrag';
+  import { UPPDRAG_API, dagensOrdning, perKommun, type Profil } from '../lib/uppdrag';
+  import { figurFor, figurSrc } from '../lib/figurer';
   import { ritaKort } from '../lib/uppdragkort';
   import { kommunytor } from '../lib/kommunyta';
   import { normalisera, tolka, traffar, tomtSvar, finnsI, type Tolkning } from '../lib/sok';
@@ -1454,6 +1455,9 @@ const medlemsdatum = medlemmar
     let handlage: Promise<Handlage | null> | null = null;
     let handnalar: Marker[] = [];
     let handtips: Popup | null = null;
+    // Räknas upp för varje ruta som öppnas. En ruta som väntar på att kartan flyttat sig öppnas
+    // bara om ingen annan har öppnats eller stängts under tiden.
+    let handtipsNr = 0;
     const handrad = medlemskort?.querySelector<HTMLAnchorElement>('#handrad') ?? null;
 
     function hamtaHander(): Promise<Handlage | null> {
@@ -1503,10 +1507,18 @@ const medlemsdatum = medlemmar
       stark.textContent = `${n} i föreningen`;
       text.replaceChildren(stark, ' tar uppdrag');
       pil.textContent = '→';
+      // Upp till fyra figurer. Raden har redan ett namn för skärmläsare, så bilderna är tysta.
       folk.replaceChildren(
         ...profiler.slice(0, 4).map((p) => {
+          const f = figurFor(p);
           const s = document.createElement('span');
-          s.textContent = initial(p.namn);
+          s.style.setProperty('--figur-farg', f.farg);
+          const bild = document.createElement('img');
+          bild.src = figurSrc(f, import.meta.env.BASE_URL);
+          bild.alt = '';
+          bild.width = 26;
+          bild.height = 26;
+          s.append(bild);
           return s;
         }),
       );
@@ -1521,10 +1533,36 @@ const medlemsdatum = medlemmar
       lista.setAttribute('aria-label', `Tar uppdrag i ${ort}`);
       const etiketter = { kommuner: { [profiler[0].kommun ?? '']: ort }, omraden: {} };
       lista.append(...profiler.map((p) => ritaKort(p, etiketter, { rubrik: 'h3' })));
-      handtips = nyttTips({ closeButton: true, closeOnClick: true, offset: 22, maxWidth: '300px', className: 'handtips', focusAfterOpen: true })
-        .setLngLat(plats)
-        .setDOMContent(lista)
-        .addTo(karta);
+      const nr = ++handtipsNr;
+      const oppna = (anchor?: PopupOptions['anchor']): void => {
+        if (!karta || !nyttTips || nr !== handtipsNr) return;
+        handtips = nyttTips({ closeButton: true, closeOnClick: true, offset: 22, maxWidth: '300px', className: 'handtips', focusAfterOpen: true, anchor })
+          .setLngLat(plats)
+          .setDOMContent(lista)
+          .addTo(karta);
+      };
+      // Kortet och knapparna ligger ovanpå kartan, och rutan kan aldrig hamna över dem. När kortet
+      // ligger som ett blad i botten flyttas kartan därför så att handen står strax ovanför kortet,
+      // där rutan får plats i sidled bredvid knapparna. Rutan öppnas sedan ovanför handen. Annars
+      // väljer kartan själv var rutan står.
+      const yta = karta.getContainer().getBoundingClientRect();
+      const kort = medlemskort?.getBoundingClientRect();
+      if (!kort || kort.width <= yta.width * 0.6) {
+        oppna();
+        return;
+      }
+      const bredd = Math.min(300, yta.width - 24);
+      const { x, y } = karta.project(plats);
+      const lagst = bredd / 2 + 8;
+      const malX = Math.min(Math.max(x, lagst), Math.max(lagst, yta.width - 72 - bredd / 2));
+      const malY = kort.top - yta.top - 20;
+      lista.style.maxHeight = `${Math.max(140, Math.min(420, malY - 22 - 12))}px`;
+      if (Math.abs(x - malX) < 2 && Math.abs(y - malY) < 2) {
+        oppna('bottom');
+        return;
+      }
+      karta.once('moveend', () => oppna('bottom'));
+      karta.panBy([x - malX, y - malY], { duration: matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 320 }, AV_KOD);
     }
 
     /**
@@ -1563,6 +1601,7 @@ const medlemsdatum = medlemmar
     function gomHander() {
       handtips?.remove();
       handtips = null;
+      handtipsNr++;
       for (const n of handnalar) n.remove();
       handnalar = [];
     }
@@ -3464,16 +3503,18 @@ const medlemsdatum = medlemmar
     display: none;
   }
   .handrad__folk span {
-    display: grid;
-    place-items: center;
-    width: 24px;
-    height: 24px;
-    margin-left: -7px;
+    width: 30px;
+    height: 30px;
+    margin-left: -8px;
+    overflow: hidden;
     border: 2px solid hsl(var(--yta-kort));
     border-radius: 50%;
-    background: hsl(var(--moss) / 0.16);
-    color: hsl(var(--moss-deep));
-    font: 650 11px/1 var(--font-sans);
+    background: var(--figur-farg, hsl(var(--yta-chip)));
+  }
+  .handrad__folk img {
+    display: block;
+    width: 100%;
+    height: 100%;
   }
   .handrad__pil {
     margin-left: auto;

@@ -20,13 +20,191 @@ const etiketter: Etiketter = {
   }
   .profiler {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
-    gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 1fr));
+    gap: 22px 18px;
     margin: 0;
     padding: 0;
     list-style: none;
   }
-  /* Själva kortet står i src/styles/global.css, eftersom det också ritas vid händerna på kartan. */
+  @media (max-width: 560px) {
+    .profiler {
+      grid-template-columns: 1fr 1fr;
+      gap: 14px 12px;
+    }
+  }
+
+  /* Samlarkortet: figuren stor i en färgad ruta, namnet och en rad under. Ritas av
+     src/lib/uppdragkort.ts. Det kompakta kortet vid handen på kartan står i global.css. */
+  .samlarkort {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid hsl(var(--kant));
+    border-radius: 20px;
+    background: #fbf8f1;
+    color: hsl(var(--ink));
+  }
+  .samlarkort__figur {
+    position: relative;
+    display: block;
+    aspect-ratio: 1 / 0.96;
+    overflow: hidden;
+    background: var(--figur-farg, hsl(var(--yta-chip)));
+  }
+  .samlarkort__figur-bild {
+    position: absolute;
+    left: 50%;
+    bottom: -3%;
+    width: 100%;
+    height: auto;
+    transform: translateX(-50%);
+    transition: transform 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .samlarkort:hover .samlarkort__figur-bild {
+      transform: translateX(-50%) translateY(-3%);
+    }
+  }
+  .samlarkort__ort {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    max-width: calc(100% - 20px);
+    padding: 5px 8px;
+    border-radius: var(--r-pill);
+    background: hsl(0 0% 100% / 0.9);
+    color: hsl(var(--ink));
+    font: 500 11px/1.2 var(--font-mono);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .samlarkort__text {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 14px 14px;
+  }
+  .samlarkort__namn {
+    margin: 0;
+    color: hsl(var(--ink));
+    font: 650 18px/1.2 var(--font-sans);
+    letter-spacing: -0.01em;
+    overflow-wrap: anywhere;
+  }
+  .samlarkort__rubrik {
+    margin: 0;
+    color: hsl(var(--ink-soft));
+    font-size: 14.5px;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+  }
+  .samlarkort__fot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 12px;
+    margin: auto 0 0;
+    padding-top: 8px;
+  }
+  .samlarkort__lank {
+    color: hsl(var(--moss));
+    font: 650 14.5px/1.3 var(--font-sans);
+    text-decoration: none;
+  }
+  .samlarkort__lank:hover {
+    text-decoration: underline;
+  }
+  .samlarkort__lank[aria-disabled='true'] {
+    cursor: default;
+    text-decoration: none;
+  }
+  .samlarkort__bolag {
+    color: hsl(var(--ink-mute));
+    font: 400 11.5px/1.3 var(--font-mono);
+    overflow-wrap: anywhere;
+  }
+  a.samlarkort__bolag:hover {
+    color: hsl(var(--ink));
+  }
+  @media (max-width: 560px) {
+    .samlarkort {
+      border-radius: 16px;
+    }
+    .samlarkort__ort {
+      top: 8px;
+      left: 8px;
+      padding: 4px 6px;
+      font-size: 10px;
+    }
+    .samlarkort__text {
+      padding: 10px 11px 12px;
+    }
+    .samlarkort__namn {
+      font-size: 16px;
+    }
+    .samlarkort__rubrik {
+      font-size: 13.5px;
+    }
+    .samlarkort__bolag {
+      display: none;
+    }
+  }
+
+  /* Figurväljaren i formuläret. Valet är en vanlig radioknapp, så att tangentbordet fungerar. */
+  /* Sexton figurer: två jämna rader om åtta, fyra om fyra på en smal telefon. */
+  .figurval {
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    gap: 8px;
+  }
+  @media (max-width: 440px) {
+    .figurval {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  .figurval__val {
+    position: relative;
+    display: block;
+    aspect-ratio: 1;
+    border: 2px solid transparent;
+    border-radius: 14px;
+    background: var(--figur-farg, hsl(var(--yta-chip)));
+    cursor: pointer;
+  }
+  .figurval__val img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+  }
+  .figurval__val input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .figurval__val:has(input:checked) {
+    border-color: hsl(var(--moss));
+    box-shadow: 0 0 0 3px hsl(var(--moss) / 0.2);
+  }
+  .figurval__val:has(input:checked)::after {
+    content: '✓';
+    position: absolute;
+    top: 3px;
+    right: 6px;
+    color: hsl(var(--moss));
+    font: 700 13px/1 var(--font-sans);
+  }
+  .figurval__val:has(input:focus-visible) {
+    outline: 2px solid hsl(var(--moss));
+    outline-offset: 2px;
+  }
 
   /* Formulären */
   .uppdragsform {

@@ -2,115 +2,212 @@
 // Tar uppdrag: föreningsmedlemmar som visar att de tar uppdrag eller säljer tjänster.
 // Korten hämtas från medlemsdatabasen när sidan öppnas och bakas aldrig in i bygget,
 // så att en borttagen profil inte ligger kvar i en gammal deploy. Se src/lib/uppdrag.ts.
-import Sida from '../../layouts/Sida.astro';
+//
+// Sidan är mörk med flit och bryter mot resten av kartan. Varje medlem står som ett samlarkort
+// med sin figur. Lediga platser står som figurer i skugga, så att sidan ser ut som en trupp som
+// fylls på även när få har lagt upp sig. Skuggorna är utsmyckning och döljs för skärmläsare.
+import Bas from '../../layouts/Bas.astro';
 import Uppdragsbas from '../../components/Uppdragsbas.astro';
 import { hamtaData, url } from '../../lib/data';
 import { BLI_MEDLEM, UPPDRAG_API } from '../../lib/uppdrag';
+import { figurMedId, figurSrc } from '../../lib/figurer';
 
 const d = hamtaData();
+const skuggor = ['f16', 'f09', 'f13', 'f06', 'f11'].flatMap((id) => {
+  const f = figurMedId(id);
+  return f ? [figurSrc(f, import.meta.env.BASE_URL)] : [];
+});
 ---
 
-<Sida
+<Bas
   titel="Medlemmar som tar uppdrag"
-  kicker="Tar uppdrag"
-  ingress="Föreningsmedlemmar som bygger med AI och tar uppdrag eller säljer tjänster. Var och en har lagt upp sig själv."
   beskrivning="Medlemmar i föreningen OpenSverige som bygger med AI och tar uppdrag eller säljer tjänster. Var och en har lagt upp sig själv."
   stig="/uppdrag"
-  bred
 >
   <Uppdragsbas />
 
-  <div class="uppdrag__topp">
-    <p class="uppdrag__antal" id="uppdrag-antal" role="status">Hämtar medlemmarna …</p>
-    <div class="rad">
-      <a class="knapp" href={url('/uppdrag/lagg-upp')}>Lägg upp dig →</a>
-      <a class="knapp knapp--ghost" href={BLI_MEDLEM} rel="noopener">Bli medlem →</a>
+  <section class="morka" aria-labelledby="morka-rubrik">
+    <div class="ram ram--bred">
+      <header class="morka__topp">
+        <div>
+          <p class="morka__kicker">Tar uppdrag · OpenSverige</p>
+          <h1 id="morka-rubrik">Mörka hästar.</h1>
+          <p class="morka__ingress">
+            Medlemmar i OpenSverige som bygger med AI och tar uppdrag. Var och en har lagt upp sig själv.
+          </p>
+        </div>
+        <div class="morka__knappar">
+          <a class="knapp morka__knapp" href={url('/uppdrag/lagg-upp')}>Lägg upp dig →</a>
+          <a class="knapp morka__knapp morka__knapp--ghost" href={BLI_MEDLEM} rel="noopener">Bli medlem →</a>
+        </div>
+      </header>
+
+      <div class="morka__rad">
+        <form class="uppdrag__filter" id="uppdrag-filter" aria-label="Filtrera" hidden>
+          <fieldset>
+            <legend class="visuellt-dold">Vad de erbjuder</legend>
+            <label class="filterval"><input type="radio" name="erbjuder" value="alla" checked /> Alla</label>
+            <label class="filterval"><input type="radio" name="erbjuder" value="uppdrag" /> Tar uppdrag</label>
+            <label class="filterval"><input type="radio" name="erbjuder" value="tjanster" /> Säljer tjänster</label>
+            <label class="filterval"><input type="checkbox" name="distans" /> Distans</label>
+          </fieldset>
+          <label class="uppdrag__omrade">
+            <span class="visuellt-dold">Område</span>
+            <select name="omrade" id="uppdrag-omrade">
+              <option value="">Alla områden</option>
+              {d.taxonomi.omraden.map((o) => <option value={o.id}>{o.label}</option>)}
+            </select>
+          </label>
+        </form>
+        <p class="morka__antal" id="uppdrag-antal" role="status">Hämtar medlemmarna …</p>
+      </div>
+
+      <ul class="profiler" id="uppdrag-lista" data-api={UPPDRAG_API} data-skuggor={JSON.stringify(skuggor)}></ul>
+      <noscript><p class="morka__ingress">Listan hämtas med JavaScript. Slå på det för att se medlemmarna.</p></noscript>
+
+      <template id="uppdrag-skugga">
+        <li class="samlarkort samlarkort--skugga" aria-hidden="true">
+          <span class="samlarkort__figur">
+            <img class="samlarkort__figur-bild" src="" alt="" width="240" height="240" decoding="async" />
+            <span class="samlarkort__fraga">?</span>
+          </span>
+          <span class="samlarkort__text">
+            <span class="samlarkort__namn">Ledig plats</span>
+            <span class="samlarkort__rubrik">Bygger du och tar uppdrag?</span>
+            <span class="samlarkort__fot"><a class="samlarkort__lank" href={url('/uppdrag/lagg-upp')} tabindex="-1">Lägg upp dig →</a></span>
+          </span>
+        </li>
+      </template>
+
+      <details class="morka__om">
+        <summary>Bara föreningsmedlemmar · Föreningen förmedlar inget · Ingen kan köpa en plats · <span>Om listan</span></summary>
+        <ul>
+          <li>Bara medlemmar i föreningen OpenSverige kan lägga upp sig. Medlemskapet är gratis och tar två minuter.</li>
+          <li>Uppgifterna är medlemmarnas egna. Föreningen förmedlar inga uppdrag och går inte i god för någon.</li>
+          <li>Ordningen byts varje dag, så att ingen alltid står först. Ingen kan köpa en plats.</li>
+          <li>Figuren väljer medlemmen själv. Ingen bild på någon sparas.</li>
+          <li>
+            Klick på en medlems länk räknas per dag, så att medlemmen ser om profilen ger något. Inget sparas om den som
+            klickar. <a href={url('/integritet#uppdrag')}>Mer om det</a>.
+          </li>
+        </ul>
+      </details>
     </div>
-  </div>
-
-  <form class="uppdrag__filter" id="uppdrag-filter" aria-label="Filtrera" hidden>
-    <fieldset class="rad">
-      <legend class="visuellt-dold">Vad de erbjuder</legend>
-      <label class="filterval"><input type="radio" name="erbjuder" value="alla" checked /> Alla</label>
-      <label class="filterval"><input type="radio" name="erbjuder" value="uppdrag" /> Tar uppdrag</label>
-      <label class="filterval"><input type="radio" name="erbjuder" value="tjanster" /> Säljer tjänster</label>
-      <label class="filterval"><input type="checkbox" name="distans" /> Distans</label>
-    </fieldset>
-    <label class="uppdrag__omrade">
-      <span class="visuellt-dold">Område</span>
-      <select name="omrade" id="uppdrag-omrade">
-        <option value="">Alla områden</option>
-        {d.taxonomi.omraden.map((o) => <option value={o.id}>{o.label}</option>)}
-      </select>
-    </label>
-  </form>
-
-  <ul class="profiler" id="uppdrag-lista" data-api={UPPDRAG_API}></ul>
-  <div class="besked" id="uppdrag-tomt" hidden>
-    <p><strong>Ingen här än.</strong> Är du medlem och tar uppdrag? Bli först.</p>
-    <p><a href={url('/uppdrag/lagg-upp')}>Lägg upp dig →</a></p>
-  </div>
-  <noscript><p class="besked">Listan hämtas med JavaScript. Slå på det för att se medlemmarna.</p></noscript>
-
-  <section class="uppdrag__om lasbredd" aria-labelledby="om-listan">
-    <h2 id="om-listan">Om listan</h2>
-    <ul>
-      <li>Bara medlemmar i föreningen OpenSverige kan lägga upp sig. Medlemskapet är gratis och tar två minuter.</li>
-      <li>Uppgifterna är medlemmarnas egna. Föreningen förmedlar inga uppdrag och går inte i god för någon.</li>
-      <li>Ordningen byts varje dag, så att ingen alltid står först. Ingen kan köpa en plats.</li>
-      <li>Klick på en medlems länk räknas per dag, så att medlemmen ser om profilen ger något. Inget sparas om den som klickar. <a href={url('/integritet#uppdrag')}>Mer om det</a>.</li>
-    </ul>
   </section>
-</Sida>
+</Bas>
 
 <style>
-  .uppdrag__topp {
+  .morka {
+    padding: 52px 0 60px;
+    background: #141310;
+    color: #e9e5da;
+  }
+  .morka :global(:focus-visible) {
+    outline-color: #f6f2e8;
+  }
+  .morka__topp {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px 40px;
+  }
+  .morka__kicker {
+    margin: 0;
+    color: #a39f92;
+    font: 500 12px/1.2 var(--font-mono);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .morka h1 {
+    margin: 14px 0 0;
+    color: #f6f2e8;
+    font: 650 clamp(46px, 7vw, 84px) / 0.95 var(--font-sans);
+    letter-spacing: -0.035em;
+  }
+  .morka__ingress {
+    max-width: 54ch;
+    margin: 16px 0 0;
+    color: #c9c4b6;
+    font-size: 18px;
+    line-height: 1.5;
+  }
+  .morka__knappar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .morka__knapp {
+    border-color: #f6f2e8;
+    background: #f6f2e8;
+    color: #141310;
+  }
+  .morka__knapp:hover {
+    border-color: #ffffff;
+    background: #ffffff;
+    color: #141310;
+  }
+  .morka__knapp--ghost {
+    border-color: #4a473f;
+    background: transparent;
+    color: #f6f2e8;
+  }
+  .morka__knapp--ghost:hover {
+    border-color: #f6f2e8;
+    background: transparent;
+    color: #f6f2e8;
+  }
+
+  .morka__rad {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     gap: 12px 24px;
-    margin-bottom: 20px;
+    margin: 34px 0 22px;
   }
-  .uppdrag__antal {
-    margin: 0;
-    color: hsl(var(--ink));
-    font-weight: 600;
+  .morka__antal {
+    margin: 0 0 0 auto;
+    color: #a39f92;
+    font: 500 12px/1.4 var(--font-mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
   }
   .uppdrag__filter {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 16px;
+    gap: 8px;
   }
   .uppdrag__filter fieldset {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
     margin: 0;
     padding: 0;
     border: 0;
   }
   .filterval {
+    position: relative;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    min-height: 40px;
+    min-height: 38px;
     padding: 0 14px;
-    border: 1px solid hsl(var(--kant));
+    border: 1px solid #3a3832;
     border-radius: var(--r-pill);
-    background: hsl(var(--yta-kort));
-    color: hsl(var(--ink-soft));
+    background: #1e1d19;
+    color: #c9c4b6;
     font-size: 14.5px;
     cursor: pointer;
   }
   .filterval:has(input:checked) {
-    border-color: hsl(var(--moss));
-    background: hsl(var(--moss) / 0.08);
-    color: hsl(var(--moss));
+    border-color: #f6f2e8;
+    background: #f6f2e8;
+    color: #141310;
     font-weight: 600;
   }
   .filterval:has(input:focus-visible) {
-    outline: 2px solid hsl(var(--moss));
+    outline: 2px solid #f6f2e8;
     outline-offset: 2px;
   }
   .filterval input {
@@ -119,16 +216,94 @@ const d = hamtaData();
     pointer-events: none;
   }
   .uppdrag__omrade select {
-    min-height: 40px;
+    min-height: 38px;
     padding: 0 12px;
-    border: 1px solid hsl(var(--kant));
+    border: 1px solid #3a3832;
     border-radius: var(--r-pill);
-    background: hsl(var(--yta-kort));
-    color: hsl(var(--ink));
+    background: #1e1d19;
+    color: #e9e5da;
     font: 400 14.5px/1 var(--font-sans);
   }
-  .uppdrag__om {
-    margin-top: 40px;
+
+  /* Korten ligger lite snett, som utlagda på ett bord. Inte på telefon, där de står tätt. */
+  .morka :global(.samlarkort) {
+    border-color: transparent;
+  }
+  @media (min-width: 561px) {
+    .morka :global(.profiler > :nth-child(3n + 2)) {
+      transform: rotate(0.5deg);
+    }
+    .morka :global(.profiler > :nth-child(3n)) {
+      transform: rotate(-0.6deg);
+    }
+  }
+
+  /* Skuggkorten: lediga platser. */
+  .morka :global(.samlarkort--skugga) {
+    border: 1.5px dashed #3a3832;
+    background: transparent;
+  }
+  .morka :global(.samlarkort--skugga .samlarkort__figur) {
+    background: transparent;
+  }
+  .morka :global(.samlarkort--skugga .samlarkort__figur-bild) {
+    filter: brightness(0) invert(1);
+    opacity: 0.07;
+  }
+  .morka :global(.samlarkort__fraga) {
+    position: absolute;
+    left: 50%;
+    top: 44%;
+    transform: translate(-50%, -50%);
+    color: #4a473f;
+    font: 650 64px/1 var(--font-sans);
+  }
+  .morka :global(.samlarkort--skugga .samlarkort__namn) {
+    color: #f6f2e8;
+  }
+  .morka :global(.samlarkort--skugga .samlarkort__rubrik) {
+    color: #a39f92;
+  }
+  .morka :global(.samlarkort--skugga .samlarkort__lank) {
+    color: #f6f2e8;
+  }
+
+  .morka__om {
+    margin-top: 36px;
+    color: #a39f92;
+    font: 400 12.5px/1.6 var(--font-mono);
+  }
+  .morka__om summary {
+    cursor: pointer;
+  }
+  .morka__om summary span {
+    color: #f6f2e8;
+    text-decoration: underline;
+  }
+  .morka__om ul {
+    max-width: 70ch;
+    margin: 14px 0 0;
+    padding-left: 18px;
+    color: #c9c4b6;
+    font: 400 15px/1.55 var(--font-sans);
+  }
+  .morka__om a {
+    color: #e9b38f;
+  }
+
+  @media (max-width: 560px) {
+    .morka {
+      padding: 32px 0 44px;
+    }
+    .morka__ingress {
+      font-size: 16px;
+    }
+    .morka__rad {
+      margin: 24px 0 16px;
+    }
+    .morka__antal {
+      margin-left: 0;
+    }
   }
 </style>
 
@@ -138,12 +313,34 @@ const d = hamtaData();
 
   const lista = document.getElementById('uppdrag-lista') as HTMLUListElement;
   const antal = document.getElementById('uppdrag-antal') as HTMLElement;
-  const tomt = document.getElementById('uppdrag-tomt') as HTMLElement;
   const filter = document.getElementById('uppdrag-filter') as HTMLFormElement;
+  const mall = document.getElementById('uppdrag-skugga') as HTMLTemplateElement;
+  const skuggbilder = JSON.parse(lista.dataset.skuggor || '[]') as string[];
   const etiketter = JSON.parse(document.getElementById('uppdrag-etiketter')?.textContent || '{}') as Etiketter;
   const idag = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Stockholm' }).format(new Date());
 
   let alla: Profil[] = [];
+  let hamtad = false;
+  let senasteKolumner = 0;
+
+  /** Hur många kort som står i bredd just nu. Rutnätet fyller raden själv, så det räknas ur det. */
+  function kolumner(): number {
+    return Math.max(1, getComputedStyle(lista).gridTemplateColumns.split(' ').filter(Boolean).length);
+  }
+
+  /** En ledig plats. Den första säger Bli först när ingen har lagt upp sig än. */
+  function skugga(i: number, forst: boolean): HTMLElement {
+    const li = (mall.content.firstElementChild as HTMLElement).cloneNode(true) as HTMLElement;
+    const bild = li.querySelector('img');
+    if (bild && skuggbilder.length) bild.src = skuggbilder[i % skuggbilder.length];
+    if (forst) {
+      const namn = li.querySelector('.samlarkort__namn');
+      const rad = li.querySelector('.samlarkort__rubrik');
+      if (namn) namn.textContent = 'Bli först';
+      if (rad) rad.textContent = 'Ingen har lagt upp sig än.';
+    }
+    return li;
+  }
 
   function rita(): void {
     const data = new FormData(filter);
@@ -152,19 +349,31 @@ const d = hamtaData();
       distans: data.get('distans') === 'on',
       omrade: String(data.get('omrade') ?? ''),
     };
+    const filtrerat = val.erbjuder !== 'alla' || val.distans || val.omrade !== '';
     const visade = alla.filter((p) => passar(p, val));
-    lista.replaceChildren(...visade.map((p) => ritaKort(p, etiketter)));
     const n = alla.length;
+    // Med ett filter visas bara de som passar. Annars fyller lediga platser ut raden som
+    // pågår, och när ingen har lagt upp sig än en hel rad.
+    const k = kolumner();
+    senasteKolumner = k;
+    const antalSkuggor = filtrerat ? 0 : n === 0 ? k : (k - (n % k)) % k;
+    const skuggkort = Array.from({ length: antalSkuggor }, (_, i) => skugga(i, n === 0 && i === 0));
+    lista.replaceChildren(...visade.map((p) => ritaKort(p, etiketter, { form: 'samlarkort' })), ...skuggkort);
     antal.textContent =
-      visade.length === n
-        ? `${n} ${n === 1 ? 'medlem' : 'medlemmar'}`
-        : `${visade.length} av ${n} medlemmar`;
-    tomt.hidden = n > 0;
+      n === 0
+        ? 'Ingen har lagt upp sig än'
+        : filtrerat
+          ? `${visade.length} av ${n} medlemmar`
+          : `${n} ${n === 1 ? 'medlem' : 'medlemmar'} · ny ordning varje dag`;
     filter.hidden = n < 2;
   }
 
   filter.addEventListener('change', rita);
   filter.addEventListener('submit', (e) => e.preventDefault());
+  // Fönstret byter bredd, och då kan antalet kort i bredd ändras. Skuggorna följer med.
+  addEventListener('resize', () => {
+    if (hamtad && kolumner() !== senasteKolumner) rita();
+  });
 
   fetch(lista.dataset.api || '')
     .then((r) => {
@@ -173,6 +382,7 @@ const d = hamtaData();
     })
     .then((svar) => {
       alla = dagensOrdning(svar.profiler, idag);
+      hamtad = true;
       rita();
     })
     .catch(() => {
