@@ -13,7 +13,7 @@ export const UPPDRAG_API = 'https://kmkttmasoemqcyzkjuyv.supabase.co/functions/v
 export const BLI_MEDLEM = 'https://opensverige.se/bli-medlem';
 
 /** Versionen av samtyckestexten. Funktionen sparar sin egen, och de två ska vara samma. */
-export const SAMTYCKE_VERSION = '1';
+export const SAMTYCKE_VERSION = '2';
 
 export type Erbjuder = 'uppdrag' | 'tjanster' | 'bada';
 
@@ -75,6 +75,33 @@ export function dagensOrdning<T extends { slug: string }>(profiler: readonly T[]
   return [...profiler].sort((a, b) => vikt(a.slug) - vikt(b.slug));
 }
 
+/** Första bokstaven i namnet, stor. Står i cirkeln på kortet och i raden i medlemsvyn. */
+export function initial(namn: string): string {
+  return (namn.trim()[0] ?? '·').toUpperCase();
+}
+
+/** Raden under namnet: kommunen och om personen tar uppdrag på distans. Tom när inget av det finns. */
+export function ortrad(p: { kommun: string | null; distans: boolean }, kommuner: Record<string, string>): string {
+  const ort = p.kommun ? kommuner[p.kommun] : undefined;
+  if (ort) return p.distans ? `${ort} · distans` : ort;
+  return p.distans ? 'Distans' : '';
+}
+
+/**
+ * Profilerna per kommun, för händerna på kartan. Ordningen inom en kommun följer listan. Den som
+ * bara arbetar på distans har ingen kommun och syns i listan men inte på kartan.
+ */
+export function perKommun<T extends { kommun: string | null }>(profiler: readonly T[]): Map<string, T[]> {
+  const ut = new Map<string, T[]>();
+  for (const p of profiler) {
+    if (!p.kommun) continue;
+    const lista = ut.get(p.kommun);
+    if (lista) lista.push(p);
+    else ut.set(p.kommun, [p]);
+  }
+  return ut;
+}
+
 /** Filtret på sidan: vad profilen erbjuder, och om den tar uppdrag på distans. */
 export function passar(p: Profil, f: { erbjuder: 'alla' | 'uppdrag' | 'tjanster'; distans: boolean; omrade: string }): boolean {
   if (f.erbjuder === 'uppdrag' && p.erbjuder === 'tjanster') return false;
@@ -82,13 +109,4 @@ export function passar(p: Profil, f: { erbjuder: 'alla' | 'uppdrag' | 'tjanster'
   if (f.distans && !p.distans) return false;
   if (f.omrade && !p.omraden.includes(f.omrade)) return false;
   return true;
-}
-
-/** Datum som "3 nov 2026", som på resten av kartan. */
-export function kortDatum(iso: string): string {
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return '';
-  return new Intl.DateTimeFormat('sv-SE', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Europe/Stockholm' })
-    .format(d)
-    .replace('.', '');
 }

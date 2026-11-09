@@ -3,7 +3,7 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { dagensOrdning, harPersonnummer, klickUrl, lankEtikett, passar, UPPDRAG_API } from './uppdrag.ts';
+import { dagensOrdning, harPersonnummer, initial, klickUrl, lankEtikett, ortrad, passar, perKommun, UPPDRAG_API } from './uppdrag.ts';
 
 const profil = (slug, erbjuder = 'uppdrag', distans = false, omraden = []) => ({
   slug,
@@ -58,4 +58,25 @@ test('personnummer fångas, vanliga tal gör det inte', () => {
 test('klicket går via funktionen och slugen kodas', () => {
   assert.equal(klickUrl('kim-e-3f9a'), `${UPPDRAG_API}/k/kim-e-3f9a`);
   assert.equal(klickUrl('a/b'), `${UPPDRAG_API}/k/a%2Fb`);
+});
+
+test('en hand per kommun, och den som bara arbetar på distans syns inte på kartan', () => {
+  const p = (slug, kommun) => ({ ...profil(slug), kommun });
+  const grupper = perKommun([p('a', '0180'), p('b', null), p('c', '1480'), p('d', '0180')]);
+  assert.deepEqual([...grupper.keys()], ['0180', '1480']);
+  assert.deepEqual(grupper.get('0180').map((x) => x.slug), ['a', 'd']);
+});
+
+test('raden under namnet säger ort och distans, eller ingenting', () => {
+  const kommuner = { 1480: 'Göteborg' };
+  assert.equal(ortrad({ kommun: '1480', distans: true }, kommuner), 'Göteborg · distans');
+  assert.equal(ortrad({ kommun: '1480', distans: false }, kommuner), 'Göteborg');
+  assert.equal(ortrad({ kommun: null, distans: true }, kommuner), 'Distans');
+  // En kommunkod kartan inte känner hoppas över.
+  assert.equal(ortrad({ kommun: '9999', distans: false }, kommuner), '');
+});
+
+test('initialen är första bokstaven, stor', () => {
+  assert.equal(initial(' åsa öberg'), 'Å');
+  assert.equal(initial(''), '·');
 });

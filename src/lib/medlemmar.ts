@@ -20,14 +20,23 @@ export interface Medlemsdata {
   radie_km: number;
   regioner: Region[];
   annan_ort: Antal;
+  /**
+   * Alla konton på Discord, ur approximate_member_count i föreningens inbjudan. Botarna räknas
+   * med, och därför heter det konton och inte medlemmar. Ska hämtas samma dag som rollerna.
+   */
+  discord: { konton: number; uppdaterad: string };
 }
 
 export interface Regionvy {
   namn: string;
+  /** Kommunkoden för staden. En hand i samma kommun ritas vid regionens bricka. */
+  kommun: string;
   lat: number;
   lng: number;
   /** Antalet som text, eller en omskrivning när det är litet. */
   visat: string;
+  /** Det som står i brickan på kartan: talet, "<5" eller "0". */
+  kort: string;
   /** Ikonens storlek, 0,5 till 1. */
   storlek: number;
   /** Sant när ingen har valt regionen än. */
@@ -36,14 +45,34 @@ export interface Regionvy {
   sida: 'under' | 'vanster';
 }
 
+/**
+ * En rektangel av prickar i rutnätet, räknat i rutor. Varje grupp ritas som högst tre
+ * rektanglar: resten av en påbörjad rad, hela rader och början på en sista rad.
+ */
+export interface Prickyta {
+  /** 0 på kartan, 1 annan ort, 2 har inte valt region. */
+  grupp: number;
+  x: number;
+  y: number;
+  b: number;
+  h: number;
+}
+
 /** Det webbläsaren får. */
 export interface Medlemsvy {
   regioner: Regionvy[];
   /** Hur många som har valt en region. De som har valt annan ort räknas inte hit. */
   iRegioner: string;
   annanOrt: string;
+  /** Alla konton på Discord. */
+  paDiscord: string;
+  /** De som inte har valt någon region alls. "högst" när ett litet antal är dolt och ingår här. */
+  ejValt: string;
+  /** Mängden: en prick per konto, i rader. Hög för kortet på datorn, låg för bladet i telefon. */
+  prickar: { hog: Prickar; lag: Prickar };
   radieKm: number;
   uppdaterad: string;
+  discordUppdaterad: string;
 }
 
 /** Färre än så här i en region skrivs inte ut: i en liten grupp går enskilda att peka ut. */
@@ -71,6 +100,54 @@ export function summa(antal: Antal[]): string {
   const kand = antal.reduce<number>((a, b) => a + kant(b), 0);
   if (!antal.includes('<5')) return String(kand);
   return kand === 0 ? `färre än ${MINSTA_ANTAL}` : `drygt ${kand}`;
+}
+
+/**
+ * Lägger grupperna efter varandra i ett rutnät med `kolumner` rutor per rad och ger tillbaka
+ * rektanglarna. Hela sidan ritas då med en handfull rektanglar i stället för en prick per konto.
+ */
+export function prickytor(antal: number[], kolumner: number): Prickyta[] {
+  const ytor: Prickyta[] = [];
+  let i = 0;
+  antal.forEach((n, grupp) => {
+    let kvar = n;
+    while (kvar > 0) {
+      const y = Math.floor(i / kolumner);
+      const x = i % kolumner;
+      if (x === 0 && kvar >= kolumner) {
+        const h = Math.floor(kvar / kolumner);
+        ytor.push({ grupp, x: 0, y, b: kolumner, h });
+        i += h * kolumner;
+        kvar -= h * kolumner;
+      } else {
+        const b = Math.min(kolumner - x, kvar);
+        ytor.push({ grupp, x, y, b, h: 1 });
+        i += b;
+        kvar -= b;
+      }
+    }
+  });
+  return ytor;
+}
+
+/**
+ * Antal prickar per rad, så att mängden blir `forhallande` gånger så bred som hög. Då får den
+ * plats i kortet hur stor den än blir: två till ett i kortet på datorn, fem till ett i bladet i telefon.
+ */
+export function prickkolumner(totalt: number, forhallande = 2): number {
+  return Math.max(10, Math.ceil(Math.sqrt(totalt * forhallande)));
+}
+
+export interface Prickar {
+  kolumner: number;
+  rader: number;
+  ytor: Prickyta[];
+}
+
+function rutnat(antal: number[], forhallande: number): Prickar {
+  const totalt = antal.reduce((a, b) => a + b, 0);
+  const kolumner = prickkolumner(totalt, forhallande);
+  return { kolumner, rader: Math.ceil(totalt / kolumner), ytor: prickytor(antal, kolumner) };
 }
 
 const JORDRADIE_KM = 6371;
@@ -130,18 +207,36 @@ export function medlemsvy(data: Medlemsdata, kommuner: { kod: string; lat: numbe
     const grannar = platser.filter((p, j) => j !== i && kmMellan(platser[i], p) < data.radie_km * 1.6);
     return grannar.length && grannar.every((p) => p.lng > platser[i].lng) ? 'vanster' : 'under';
   };
+  // Mängden: alla konton på Discord, uppdelade på de som syns på kartan, de som har valt annan
+  // ort och resten. Ett dolt litet antal kan inte räknas till sin grupp och hamnar i resten,
+  // som då står som "högst".
+  const kanda = data.regioner.reduce((a, r) => a + kant(r.antal), 0);
+  const annan = kant(data.annan_ort);
+  const { konton } = data.discord;
+  if (!Number.isInteger(konton) || konton < kanda + annan) {
+    throw new Error(`Discord har ${konton} konton men regionerna och annan ort ${kanda + annan}. Hämta båda samma dag.`);
+  }
+  const ejValt = konton - kanda - annan;
+  const dolt = data.regioner.some((r) => r.antal === '<5') || data.annan_ort === '<5';
+  const grupper = [kanda, annan, ejValt];
   return {
     regioner: data.regioner.map((r, i) => ({
       namn: r.namn,
+      kommun: r.kommun,
       ...platser[i],
       visat: visaAntal(r.antal),
+      kort: r.antal === '<5' ? '<5' : String(kant(r.antal)),
       storlek: ikonstorlek(kant(r.antal), storst),
       tom: r.antal === 0,
       sida: sida(i),
     })),
     iRegioner: summa(data.regioner.map((r) => r.antal)),
     annanOrt: visaAntal(data.annan_ort),
+    paDiscord: String(konton),
+    ejValt: dolt ? `högst ${ejValt}` : String(ejValt),
+    prickar: { hog: rutnat(grupper, 2), lag: rutnat(grupper, 5) },
     radieKm: data.radie_km,
     uppdaterad: data.uppdaterad,
+    discordUppdaterad: data.discord.uppdaterad,
   };
 }

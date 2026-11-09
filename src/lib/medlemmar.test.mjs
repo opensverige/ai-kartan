@@ -4,7 +4,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { visaAntal, summa, cirkel, ikonstorlek, arPaskagg, medlemsvy, MINSTA_ANTAL } from './medlemmar.ts';
+import { visaAntal, summa, cirkel, ikonstorlek, arPaskagg, medlemsvy, prickytor, prickkolumner, MINSTA_ANTAL } from './medlemmar.ts';
 
 const kmMellan = ([lng1, lat1], [lng2, lat2]) => {
   const rad = (g) => (g * Math.PI) / 180;
@@ -70,7 +70,7 @@ const KOMMUNER = [
   { kod: '2480', lat: 63.8258, lng: 20.2597 },
   { kod: '0680', lat: 57.7826, lng: 14.1618 },
 ];
-const data = (regioner, annanOrt = 112) => ({ kalla: 'Discord', uppdaterad: '2026-10-06', radie_km: 100, regioner, annan_ort: annanOrt });
+const data = (regioner, annanOrt = 112, konton = 1000) => ({ kalla: 'Discord', uppdaterad: '2026-10-06', radie_km: 100, regioner, annan_ort: annanOrt, discord: { konton, uppdaterad: '2026-11-09' } });
 
 test('vyn som går till webbläsaren har plats, text och storlek per region', () => {
   const vy = medlemsvy(data([{ namn: 'Stockholm', kommun: '0180', antal: 191 }, { namn: 'Umeå', kommun: '2480', antal: 0 }]), KOMMUNER);
@@ -128,4 +128,63 @@ test('regionfilen i datan går att rita och har bara antal', () => {
     assert.ok(tillatet(r.antal), `${r.namn}: skriv "<5" i stället för ${r.antal}`);
   }
   assert.ok(tillatet(underlag.annan_ort), `annan_ort: skriv "<5" i stället för ${underlag.annan_ort}`);
+  // Antalet på Discord är ett enda tal och ett datum, inget annat.
+  assert.deepEqual(Object.keys(underlag.discord).sort(), ['konton', 'uppdaterad']);
+  assert.match(underlag.discord.uppdaterad, /^\d{4}-\d{2}-\d{2}$/);
+});
+
+test('prickarna läggs rad för rad, och varje ruta används en gång', () => {
+  assert.deepEqual(prickytor([5, 3], 4), [
+    { grupp: 0, x: 0, y: 0, b: 4, h: 1 },
+    { grupp: 0, x: 0, y: 1, b: 1, h: 1 },
+    { grupp: 1, x: 1, y: 1, b: 3, h: 1 },
+  ]);
+  const antal = [323, 112, 353];
+  const k = prickkolumner(788);
+  const ytor = prickytor(antal, k);
+  const sedda = new Set();
+  for (const y of ytor) {
+    for (let r = y.y; r < y.y + y.h; r++) {
+      for (let c = y.x; c < y.x + y.b; c++) {
+        const ruta = r * k + c;
+        assert.ok(!sedda.has(ruta), `rutan ${ruta} används två gånger`);
+        sedda.add(ruta);
+      }
+    }
+  }
+  assert.equal(sedda.size, 788);
+  // Högst tre rektanglar per grupp, så att sidan inte får en prick per konto.
+  for (const g of [0, 1, 2]) assert.ok(ytor.filter((y) => y.grupp === g).length <= 3);
+  assert.deepEqual(antal.map((_, g) => ytor.filter((y) => y.grupp === g).reduce((a, y) => a + y.b * y.h, 0)), antal);
+});
+
+test('mängden är ungefär dubbelt så bred som hög', () => {
+  assert.equal(prickkolumner(788), 40);
+  assert.equal(prickkolumner(788, 5), 63);
+  assert.equal(prickkolumner(0), 10);
+  assert.ok(prickkolumner(5000) / Math.ceil(5000 / prickkolumner(5000)) <= 2.1);
+});
+
+test('de som inte har valt region är resten av kontona på Discord', () => {
+  const vy = medlemsvy(data([{ namn: 'Stockholm', kommun: '0180', antal: 191 }, { namn: 'Umeå', kommun: '2480', antal: 0 }], 112, 788), KOMMUNER);
+  assert.deepEqual([vy.paDiscord, vy.iRegioner, vy.annanOrt, vy.ejValt], ['788', '191', '112', '485']);
+  assert.equal(vy.discordUppdaterad, '2026-11-09');
+  assert.deepEqual(vy.regioner.map((r) => [r.kommun, r.kort]), [['0180', '191'], ['2480', '0']]);
+  for (const r of [vy.prickar.hog, vy.prickar.lag]) {
+    assert.ok(r.kolumner * r.rader >= 788 && r.kolumner * (r.rader - 1) < 788);
+    assert.equal(r.ytor.reduce((a, y) => a + y.b * y.h, 0), 788);
+  }
+  assert.ok(vy.prickar.lag.rader < vy.prickar.hog.rader);
+});
+
+test('ett dolt litet antal hamnar bland dem som inte har valt, som då står som högst', () => {
+  const vy = medlemsvy(data([{ namn: 'Stockholm', kommun: '0180', antal: 191 }, { namn: 'Jönköping', kommun: '0680', antal: '<5' }], 112, 788), KOMMUNER);
+  assert.equal(vy.ejValt, 'högst 485');
+  assert.equal(vy.regioner[1].kort, '<5');
+  // Varken summan eller prickarna avslöjar det dolda antalet.
+  assert.equal(vy.prickar.hog.ytor.filter((y) => y.grupp === 0).reduce((a, y) => a + y.b * y.h, 0), 191);
+});
+
+test('färre konton på Discord än i regionerna stoppar bygget', () => {
+  assert.throws(() => medlemsvy(data([{ namn: 'Stockholm', kommun: '0180', antal: 191 }], 112, 250), KOMMUNER), /samma dag/);
 });

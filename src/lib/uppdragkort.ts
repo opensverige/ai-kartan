@@ -1,9 +1,20 @@
-// Kortet för en profil under Tar uppdrag, ritat i webbläsaren. Samma kort i listan och som
-// förhandsvisning när medlemmen fyller i sin profil. Allt sätts som text, aldrig som HTML,
-// så att det en medlem skriver aldrig kan bli en länk eller ett skript.
-import { ERBJUDER_TEXT, klickUrl, kortDatum, lankEtikett, type Profil } from './uppdrag';
+// Kortet för en profil under Tar uppdrag, ritat i webbläsaren. Samma kort i listan, som
+// förhandsvisning när medlemmen fyller i sin profil och vid en hand på kartan. Allt medlemmen
+// skriver sätts som text, aldrig som HTML, så att det aldrig kan bli en länk eller ett skript.
+//
+// Kortet är smalt med flit: namn, ort, en rad och en knapp. Områden och vad man erbjuder styr
+// filtren i listan och står inte på kortet.
+import { ikon } from './ikoner';
+import { initial, klickUrl, lankEtikett, ortrad, type Profil } from './uppdrag';
 
 export type Etiketter = { kommuner: Record<string, string>; omraden: Record<string, string> };
+
+export type Kortval = {
+  /** I förhandsvisningen leder länkarna ingenstans, så att medlemmen inte räknar sina egna klick. */
+  forhandsvisning?: boolean;
+  /** Rubriknivån för namnet. h3 när kortet ligger under en annan rubrik, som vid en hand på kartan. */
+  rubrik?: 'h2' | 'h3';
+};
 
 function el<K extends keyof HTMLElementTagNameMap>(tagg: K, klass: string, text?: string): HTMLElementTagNameMap[K] {
   const e = document.createElement(tagg);
@@ -12,44 +23,27 @@ function el<K extends keyof HTMLElementTagNameMap>(tagg: K, klass: string, text?
   return e;
 }
 
-/** Ett kort. I förhandsvisningen leder länkarna ingenstans, så att medlemmen inte räknar sina egna klick. */
-export function ritaKort(p: Profil, etiketter: Etiketter, forhandsvisning = false): HTMLElement {
+export function ritaKort(p: Profil, etiketter: Etiketter, val: Kortval = {}): HTMLElement {
+  const forhandsvisning = val.forhandsvisning ?? false;
   const kort = el(forhandsvisning ? 'div' : 'li', 'profil');
 
   const topp = el('div', 'profil__topp');
-  topp.append(el('span', 'profil__glyf', (p.namn.trim()[0] ?? '·').toUpperCase()));
-  const namn = el('div', 'profil__namnblock');
-  namn.append(el(forhandsvisning ? 'p' : 'h2', 'profil__namn', p.namn || 'Ditt namn'));
-  namn.append(el('p', 'profil__medlem', 'Medlem i OpenSverige'));
-  topp.append(namn);
+  const bild = el('span', 'profil__bild');
+  bild.append(el('span', 'profil__glyf', initial(p.namn)));
+  // Handen säger att personen är medlem och tar uppdrag. Ikonen är fast markup, aldrig medlemmens text.
+  const hand = el('span', 'profil__hand');
+  hand.innerHTML = ikon('hand', 11);
+  bild.append(hand);
+  topp.append(bild);
+
+  const namnblock = el('div', 'profil__namnblock');
+  namnblock.append(el(forhandsvisning ? 'p' : (val.rubrik ?? 'h2'), 'profil__namn', p.namn || 'Ditt namn'));
+  const ort = ortrad(p, etiketter.kommuner);
+  if (ort) namnblock.append(el('p', 'profil__ort', ort));
+  topp.append(namnblock);
   kort.append(topp);
 
   kort.append(el('p', 'profil__rubrik', p.rubrik || 'En rad om vad du gör.'));
-
-  const taggar = el('div', 'profil__taggar');
-  taggar.append(el('span', 'tagg profil__erbjuder', ERBJUDER_TEXT[p.erbjuder] ?? ERBJUDER_TEXT.uppdrag));
-  const ort = p.kommun ? etiketter.kommuner[p.kommun] : undefined;
-  if (ort) taggar.append(el('span', 'tagg', ort));
-  if (p.distans) taggar.append(el('span', 'tagg', 'Distans'));
-  for (const o of p.omraden) {
-    const etikett = etiketter.omraden[o];
-    if (etikett) taggar.append(el('span', 'tagg', etikett));
-  }
-  kort.append(taggar);
-
-  if (p.bolag_namn) {
-    const bolag = el('p', 'profil__bolag meta');
-    bolag.append('Bolag: ');
-    if (p.bolag_webbplats && !forhandsvisning) {
-      const a = el('a', '', p.bolag_namn);
-      a.href = p.bolag_webbplats;
-      a.rel = 'nofollow noopener';
-      bolag.append(a);
-    } else {
-      bolag.append(p.bolag_namn);
-    }
-    kort.append(bolag);
-  }
 
   const fot = el('div', 'profil__fot');
   const knapp = el('a', 'knapp knapp--liten profil__knapp', `${lankEtikett(p.lank)} →`);
@@ -61,7 +55,16 @@ export function ritaKort(p: Profil, etiketter: Etiketter, forhandsvisning = fals
     knapp.rel = 'nofollow noopener';
   }
   fot.append(knapp);
-  if (p.uppdaterad_at) fot.append(el('span', 'meta', `Uppdaterad ${kortDatum(p.uppdaterad_at)}`));
+  if (p.bolag_namn) {
+    if (p.bolag_webbplats && !forhandsvisning) {
+      const a = el('a', 'profil__bolag', p.bolag_namn);
+      a.href = p.bolag_webbplats;
+      a.rel = 'nofollow noopener';
+      fot.append(a);
+    } else {
+      fot.append(el('span', 'profil__bolag', p.bolag_namn));
+    }
+  }
   kort.append(fot);
   return kort;
 }
