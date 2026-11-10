@@ -3,7 +3,7 @@ id: bitnomad
 name:
   value: BitNomad
   status: claimed
-  source_url: https://bitnomad.se/sv/
+  source_url: https://bitnomad.se
   source_type: own_site
   verified_at: 2026-11-01
   verified_by: agent
@@ -37,26 +37,26 @@ org_number:
 website: https://bitnomad.se
 
 description:
-  value: Konsultbolag inom systemutveckling som bygger AI-lösningar som automatiserar arbetsflöden och integreras med befintliga system. Utvecklar Tralala, en självhostad kanban där AI-agenter arbetar via API, och publicerar publika AI-skills som låter kodassistenter granska arkitektur, affärsidé och risker.
+  value: Konsultbolag som bygger AI-agenter och automatiserade arbetsflöden. Utvecklar Tralala, en självhostad kanban där människor och AI-agenter arbetar via MCP och A2A utan cloud, samt Skills, öppna AI-skills som låter en kodassistent granska arkitektur, affärsmodell, konkurrenter och risker.
   status: claimed
-  source_url: https://bitnomad.se/sv/
+  source_url: https://bitnomad.se
   source_type: own_site
-  verified_at: 2026-11-05
+  verified_at: 2026-11-09
   verified_by: agent
 
 offers:
-  value: [utveckling]
+  value: [utveckling, oppen_kallkod]
   status: claimed
-  source_url: https://bitnomad.se/sv/
+  source_url: https://bitnomad.se
   source_type: own_site
-  verified_at: 2026-11-05
+  verified_at: 2026-11-09
   verified_by: agent
-  note: Webbplatsen märker Skills som open source och Tralala som source-available. Tralala ligger under PolyForm Noncommercial 1.0.0 och Skills saknar licens. Ingen av dem är öppen källkod enligt OSI, så koden räknas som publik, inte öppen.
+  note: "Webbplatsen märker Skills som open source och Tralala som source-available. Skills ligger under Apache-2.0 enligt LICENSE i repot (kontrollerad 2026-11-09). Tralala ligger under PolyForm Noncommercial 1.0.0, som inte är öppen källkod enligt OSI."
 
 areas:
   value: [agenter_automation]
   status: claimed
-  source_url: https://bitnomad.se/sv/
+  source_url: https://bitnomad.se
   source_type: own_site
   verified_at: 2026-11-01
   verified_by: agent
@@ -68,7 +68,16 @@ kommun:
   source_type: third_party
   verified_at: 2026-11-01
   verified_by: agent
-  note: "Kommunsäte enligt allabolag.se: Stockholm. Postadressen i registret är en c/o-adress, så ingen exakt position."
+  note: "Kommunsäte enligt allabolag.se: Stockholm. Postadressen i registret är en c/o-adress och används inte för position. Den exakta positionen kommer från adressen på webbplatsen, se coordinates."
+
+coordinates:
+  value: { lat: 59.26133, lng: 18.03882 }
+  status: claimed
+  source_url: https://bitnomad.se
+  source_type: own_site
+  verified_at: 2026-11-09
+  verified_by: agent
+  note: "Adress enligt webbplatsens integritetstext under Personuppgiftsansvarig, utan c/o. Geokodad med OpenStreetMap Nominatim (ODbL)."
 
 founded:
   value: 2020
@@ -91,21 +100,21 @@ active:
 evidence:
   - url: https://github.com/BitNomadAB/Tralala
     kind: repo
-    title: "Tralala: självhostad kanban för människor och AI-agenter"
+    title: "Tralala: självhostad kanban för människor och AI-agenter via MCP, WebMCP och A2A"
     status: claimed
-    verified_at: 2026-11-01
+    verified_at: 2026-11-09
     verified_by: agent
-    note: README beskriver agenter med egna OpenAI-kompatibla eller A2A-ändpunkter och ett REST-API som agenterna arbetar genom.
+    note: "README: agenter ansluts via A2A eller OpenAI-kompatibelt och arbetar genom en MCP-verktygskatalog med llms.txt för uppstart. Rollagenter diskuterar ärenden i rundor, men bara en inloggad person godkänner planer. SQLite per tavla, inget cloud eller extern AI-leverantör. PolyForm Noncommercial 1.0.0."
   - url: https://github.com/BitNomadAB/Skills
     kind: repo
-    title: "Skills: publika AI-skills för kodassistenter"
+    title: "Skills: öppna AI-skills för kodassistenter inom arkitektur, affärsanalys och risk (Apache-2.0)"
     status: claimed
-    verified_at: 2026-11-05
+    verified_at: 2026-11-09
     verified_by: agent
-    note: Skills som låter en kodassistent analysera affärsidé, konkurrenter, arkitektur och risker.
+    note: "README listar ATAM, Cynefin, Business Model Canvas, Lean Canvas, Porter's Five Forces, FMEA, Analysis Summary och Anti-Reverse-Engineering. Fungerar med kompatibla kodagenter. Licens Apache-2.0 enligt LICENSE."
 
 links:
   github: https://github.com/BitNomadAB
 
 record_created_at: 2026-11-01
-record_updated_at: 2026-11-05
+record_updated_at: 2026-11-09
