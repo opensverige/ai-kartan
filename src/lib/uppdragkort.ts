@@ -5,7 +5,7 @@
 // och orten, vad medlemmen gör och kan, och länken ut. Allt som behövs för att avgöra om personen
 // passar står på raden, och hela raden är länken, så att vägen dit är ett klick. Det kompakta
 // kortet står vid en hand på kartan, så att det inte täcker kartan på en telefon. En profil utan
-// bild visar föreningens pixelhand.
+// bild visar föreningens hammarhand.
 import { ikon, logga } from './ikoner';
 import { bildUrl, klickUrl, lankEtikett, lanktyp, ortrad, type Profil, type Uppslag } from './uppdrag';
 
@@ -25,10 +25,10 @@ export type Kortval = {
 /** Profilen som kortet behöver. */
 export type Kortprofil = Omit<Profil, 'bild' | 'kunskaper'> & { bild?: string | null; kunskaper?: string[] };
 
-/** Föreningens pixelhand, när en profil saknar bild. */
-export function pixelhandSrc(): string {
+/** Föreningens hammarhand, när en profil saknar bild. */
+export function hammarhandSrc(): string {
   const bas = import.meta.env.BASE_URL;
-  return `${bas.endsWith('/') ? bas : `${bas}/`}pixelhand.webp`;
+  return `${bas.endsWith('/') ? bas : `${bas}/`}hammarhand.webp`;
 }
 
 function el<K extends keyof HTMLElementTagNameMap>(tagg: K, klass: string, text?: string): HTMLElementTagNameMap[K] {
@@ -39,14 +39,14 @@ function el<K extends keyof HTMLElementTagNameMap>(tagg: K, klass: string, text?
 }
 
 /**
- * Bilden i sin ruta, eller pixelhanden när profilen saknar bild. Namnet står bredvid, så bilden
+ * Bilden i sin ruta, eller hammarhanden när profilen saknar bild. Namnet står bredvid, så bilden
  * har tom alt-text.
  */
 function bildruta(p: Kortprofil, klass: string, bildSrc?: string): HTMLElement {
   const src = bildSrc ?? bildUrl({ slug: p.slug, bild: p.bild ?? null });
   const ruta = el('span', src ? klass : `${klass} ${klass}--utan`);
   const bild = el('img', src ? `${klass}-foto` : `${klass}-hand`);
-  bild.src = src ?? pixelhandSrc();
+  bild.src = src ?? hammarhandSrc();
   bild.alt = '';
   bild.decoding = 'async';
   bild.loading = 'lazy';

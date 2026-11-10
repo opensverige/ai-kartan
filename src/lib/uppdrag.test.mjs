@@ -6,6 +6,7 @@ import assert from 'node:assert/strict';
 import {
   bildUrl,
   dagensOrdning,
+  epostforslag,
   forslagFranGithub,
   giltigKunskap,
   harPersonnummer,
@@ -146,8 +147,21 @@ test('en länk utan https får det, och det som inte är en adress lämnas orör
   assert.equal(normaliseraLank('kim'), 'kim');
   assert.equal(normaliseraLank('min sida'), 'min sida');
   assert.equal(normaliseraLank('mailto:kim@kim.se'), 'mailto:kim@kim.se');
+  assert.equal(normaliseraLank('kim@gmail.com'), 'kim@gmail.com');
+  assert.equal(normaliseraLank('kim.se/@kim'), 'https://kim.se/@kim');
   assert.equal(normaliseraLank(''), '');
   assert.deepEqual(lanktyp(normaliseraLank('linkedin.com/in/kim')), { typ: 'linkedin' });
+});
+
+test('en felskriven e-postdomän får ett förslag, en riktig adress lämnas i fred', () => {
+  assert.equal(epostforslag('kim@gmial.com'), 'kim@gmail.com');
+  assert.equal(epostforslag('Kim.E@Hotmial.com'), 'Kim.E@hotmail.com');
+  assert.equal(epostforslag('kim@bolaget.con'), 'kim@bolaget.com');
+  assert.equal(epostforslag('kim@gmail.com'), null);
+  assert.equal(epostforslag('kim@hotmail.se'), null);
+  assert.equal(epostforslag('kim@kim.se'), null);
+  assert.equal(epostforslag('kim'), null);
+  assert.equal(epostforslag('@gmial.com'), null);
 });
 
 test('förslagen från GitHub är språk och ämnesord ur egna förråd, vanligast först', () => {

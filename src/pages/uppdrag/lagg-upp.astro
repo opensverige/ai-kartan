@@ -42,6 +42,11 @@ import { BLI_MEDLEM, UPPDRAG_API } from '../../lib/uppdrag';
             <button class="knapp" type="submit" id="lank-knapp">Skicka länken →</button>
           </div>
           <p class="falt__fel" id="epost-fel" hidden></p>
+          <div class="epostforslag" id="epost-forslag" role="status" hidden>
+            <p class="faltnot">Menade du <strong id="epost-forslag-adress"></strong>?</p>
+            <button class="knapp knapp--liten" type="button" id="epost-ratta">Ja, rätta →</button>
+            <button class="lankknapp" type="button" id="epost-behall">Nej, skicka som det står</button>
+          </div>
         </div>
         <div class="honung" aria-hidden="true">
           <label for="webbplats">Lämna tomt</label>
@@ -50,8 +55,13 @@ import { BLI_MEDLEM, UPPDRAG_API } from '../../lib/uppdrag';
       </form>
 
       <div class="besked" id="lank-skickad" role="status" tabindex="-1" hidden>
-        <p><strong>Kolla din inkorg.</strong> Är adressen medlem kommer länken inom några minuter.</p>
-        <p>Den gäller i 30 minuter och fungerar en gång. Titta i skräpposten om inget kommer.</p>
+        <p><strong>Kolla din inkorg.</strong> Länken går till <strong id="skickad-adress"></strong>, om adressen finns i medlemsregistret.</p>
+        <p>Den gäller i 30 minuter och fungerar en gång.</p>
+        <p><strong>Kom inget på några minuter?</strong> Titta i skräpposten. Du kan också ha gått med med en annan adress.</p>
+        <p class="skickad__knappar">
+          <button class="knapp knapp--ghost knapp--liten" type="button" id="lank-igen">Prova en annan adress →</button>
+          <a class="knapp knapp--ghost knapp--liten" href={BLI_MEDLEM} rel="noopener">Bli medlem →</a>
+        </p>
       </div>
       <div class="besked besked--fel" id="lank-fel" role="alert" hidden></div>
 
@@ -92,6 +102,32 @@ import { BLI_MEDLEM, UPPDRAG_API } from '../../lib/uppdrag';
   #lank-skickad,
   #lank-fel {
     margin-top: 30px;
+  }
+  .epostforslag {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 14px;
+  }
+  .epostforslag[hidden] {
+    display: none;
+  }
+  .lankform .epostforslag .knapp {
+    min-height: 40px;
+    padding: 0 14px;
+    font-size: 14px;
+  }
+  .epostforslag strong {
+    color: #f6f2e8;
+    overflow-wrap: anywhere;
+  }
+  #skickad-adress {
+    overflow-wrap: anywhere;
+  }
+  .skickad__knappar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
   }
   .vagar {
     display: grid;
@@ -139,12 +175,19 @@ import { BLI_MEDLEM, UPPDRAG_API } from '../../lib/uppdrag';
 </style>
 
 <script>
+  import { epostforslag } from '../../lib/uppdrag';
+
   const form = document.getElementById('lank-form') as HTMLFormElement;
   const epost = document.getElementById('epost') as HTMLInputElement;
   const epostFel = document.getElementById('epost-fel') as HTMLElement;
   const knapp = document.getElementById('lank-knapp') as HTMLButtonElement;
   const skickad = document.getElementById('lank-skickad') as HTMLElement;
   const fel = document.getElementById('lank-fel') as HTMLElement;
+
+  const forslag = document.getElementById('epost-forslag') as HTMLElement;
+  const forslagAdress = document.getElementById('epost-forslag-adress') as HTMLElement;
+  /** Adressen som medlemmen har sagt ska skickas som den står, trots att den ser felskriven ut. */
+  let behallen = '';
 
   function visaFaltfel(text: string): void {
     epostFel.textContent = text;
@@ -162,6 +205,15 @@ import { BLI_MEDLEM, UPPDRAG_API } from '../../lib/uppdrag';
       return;
     }
     visaFaltfel('');
+    // Sidan säger samma sak oavsett adress, så en felskriven adress märks aldrig i svaret.
+    // Den fångas här i stället, innan något skickas.
+    const rattad = epostforslag(adress);
+    if (rattad && behallen !== adress) {
+      forslagAdress.textContent = rattad;
+      forslag.hidden = false;
+      return;
+    }
+    forslag.hidden = true;
     knapp.disabled = true;
     knapp.textContent = 'Skickar …';
     try {
@@ -172,6 +224,7 @@ import { BLI_MEDLEM, UPPDRAG_API } from '../../lib/uppdrag';
       });
       const data = (await svar.json().catch(() => ({}))) as { fel?: string };
       if (svar.ok) {
+        (document.getElementById('skickad-adress') as HTMLElement).textContent = adress;
         form.hidden = true;
         skickad.hidden = false;
         skickad.focus();
@@ -189,5 +242,26 @@ import { BLI_MEDLEM, UPPDRAG_API } from '../../lib/uppdrag';
       knapp.disabled = false;
       knapp.textContent = 'Skicka länken →';
     }
+  });
+
+  document.getElementById('epost-ratta')?.addEventListener('click', () => {
+    epost.value = forslagAdress.textContent ?? epost.value;
+    forslag.hidden = true;
+    form.requestSubmit();
+  });
+  document.getElementById('epost-behall')?.addEventListener('click', () => {
+    behallen = epost.value.trim();
+    forslag.hidden = true;
+    form.requestSubmit();
+  });
+  epost.addEventListener('input', () => {
+    forslag.hidden = true;
+  });
+  // Tillbaka till fältet, med adressen kvar och markerad, så att den går att rätta eller byta.
+  document.getElementById('lank-igen')?.addEventListener('click', () => {
+    skickad.hidden = true;
+    form.hidden = false;
+    epost.focus();
+    epost.select();
   });
 </script>

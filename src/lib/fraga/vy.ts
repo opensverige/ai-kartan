@@ -19,7 +19,7 @@ export interface Lankar {
   infralogo: string;
   /** Listan över medlemmar som tar uppdrag, och föreningens hand som står framför raden dit. */
   uppdrag: string;
-  pixelhand: string;
+  hammarhand: string;
 }
 
 /** Etiketterna som sidan har, med typernas ikoner när de finns. */
@@ -136,7 +136,7 @@ function uppdragsradHtml(u: Uppdragsrad, l: Lankar): string {
   return (
     `<div role="group" aria-label="Tar uppdrag"><p class="palett__rubrik" aria-hidden="true">Tar uppdrag</p>` +
     `<a class="palett-rad palett-rad--uppdrag" role="option" aria-selected="false" tabindex="-1" href="${esc(href)}" data-uppdragsrad>` +
-    `<span class="palett-rad__ikon palett-rad__ikon--hand" aria-hidden="true"><img src="${esc(l.pixelhand)}" alt="" width="40" height="42" loading="lazy" decoding="async"></span>` +
+    `<span class="palett-rad__ikon palett-rad__ikon--hand" aria-hidden="true"><img src="${esc(l.hammarhand)}" alt="" width="40" height="42" loading="lazy" decoding="async"></span>` +
     `<span class="palett-rad__text"><span class="palett-rad__namn">${u.antal} ${u.antal === 1 ? 'medlem' : 'medlemmar'} som tar uppdrag →</span>` +
     `<span class="palett-rad__under">${u.q ? `Matchar ”${esc(u.q)}” · visa dem i listan` : 'Föreningsmedlemmar som går att anlita · visa listan'}</span></span></a></div>`
   );

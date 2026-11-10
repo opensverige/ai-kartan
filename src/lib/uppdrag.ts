@@ -273,7 +273,31 @@ export function normaliseraLank(text: string): string {
   if (/^https:\/\//i.test(s)) return s;
   if (/^http:\/\//i.test(s)) return `https://${s.slice(7)}`;
   if (/^[a-z][a-z0-9+.-]*:/i.test(s)) return s;
+  // En e-postadress är ingen länk. Den lämnas som den är, så att felet syns för vad det är.
+  if (/^[^/]*@/.test(s)) return s;
   return /^[^/]+\.[^/]+/.test(s) ? `https://${s}` : s;
+}
+
+// Vanliga felskrivningar av de stora e-postdomänerna. Bara sådant som aldrig är en riktig adress
+// står här, så att ingen rätt adress blir ifrågasatt.
+const EPOSTFEL: Record<string, string> = {
+  'gmial.com': 'gmail.com', 'gmai.com': 'gmail.com', 'gmal.com': 'gmail.com', 'gnail.com': 'gmail.com', 'gmail.co': 'gmail.com',
+  'hotmial.com': 'hotmail.com', 'hotmai.com': 'hotmail.com', 'hotnail.com': 'hotmail.com',
+  'outlok.com': 'outlook.com', 'outloo.com': 'outlook.com', 'iclod.com': 'icloud.com', 'icoud.com': 'icloud.com',
+  'yaho.com': 'yahoo.com',
+};
+
+/**
+ * Adressen med rättad domän, när den ser felskriven ut, annars null. Länken skickas bara till
+ * adressen i medlemsregistret och sidan säger samma sak oavsett adress. Den som skriver fel får
+ * därför aldrig veta det av svaret, så felet fångas innan något skickas.
+ */
+export function epostforslag(adress: string): string | null {
+  const snabela = adress.lastIndexOf('@');
+  if (snabela < 1) return null;
+  const doman = adress.slice(snabela + 1).toLowerCase();
+  const ratt = EPOSTFEL[doman] ?? (doman.endsWith('.con') ? `${doman.slice(0, -4)}.com` : null);
+  return ratt ? `${adress.slice(0, snabela + 1)}${ratt}` : null;
 }
 
 /** Det som läses ur GitHubs lista över ett kontos öppna kodförråd. */

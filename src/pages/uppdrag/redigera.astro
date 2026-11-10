@@ -54,8 +54,16 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
 
       <div class="redigera" id="r-yta" hidden>
         <div class="redigera__forhand" role="group" aria-labelledby="forhand-rubrik">
-          <p class="redigera__etikett" id="forhand-rubrik">Så här syns du</p>
+          <div class="redigera__huvud">
+            <p class="redigera__etikett" id="forhand-rubrik">Så här syns du</p>
+            <p class="lage" id="r-lage" role="status"></p>
+          </div>
           <div class="medlemslista" id="forhand"></div>
+        </div>
+
+        <div class="besked" id="r-utkast" hidden>
+          <p><strong>Det du skrev förra gången är tillbaka.</strong> Det är inte sparat än.</p>
+          <p><button class="lankknapp" type="button" id="r-utkast-bort">Börja om från början →</button></p>
         </div>
 
         <div class="redigera__spalter">
@@ -77,7 +85,10 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
               />
               <div class="lanknot">
                 <p class="faltnot" id="lank-not" role="status">Hit leder hela din rad.</p>
-                <button class="knapp knapp--ghost knapp--liten" type="button" id="f-lankhamta" hidden></button>
+                <span class="lanknot__val">
+                  <a class="lankknapp" id="f-lankprova" target="_blank" rel="noopener noreferrer nofollow" hidden>Prova länken ↗</a>
+                  <button class="knapp knapp--ghost knapp--liten" type="button" id="f-lankhamta" hidden></button>
+                </span>
               </div>
               <p class="falt__fel" id="fel-lank" hidden></p>
             </div>
@@ -120,7 +131,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
             <fieldset aria-describedby="bild-status fel-bild">
               <legend>Bild <span class="falt__vid">frivillig</span></legend>
               <div class="bildval__rad">
-                <span class="bildval__visning bildval__visning--utan" id="bild-ruta"><img id="bild-visning" src={url('/pixelhand.webp')} alt="" /></span>
+                <span class="bildval__visning bildval__visning--utan" id="bild-ruta"><img id="bild-visning" src={url('/hammarhand.webp')} alt="" /></span>
                 <input class="bildval__fil" type="file" id="f-bildfil" accept="image/jpeg,image/png,image/webp" />
                 <label class="knapp knapp--ghost knapp--liten" for="f-bildfil">Ladda upp</label>
                 <button class="knapp knapp--ghost knapp--liten" type="button" id="f-xvisa" aria-expanded="false" aria-controls="f-xrad">Hämta från X</button>
@@ -203,6 +214,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
             <div class="sparrad">
               <button class="knapp" type="submit" id="r-spara">Spara och visa →</button>
               <p class="sparrad__kvitto" id="r-kvitto" role="status"></p>
+              <p class="sparrad__varning" id="r-tid" role="status"></p>
               <div class="besked besked--fel" id="r-sparfel" role="alert" hidden></div>
             </div>
           </form>
@@ -259,8 +271,64 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
     border-bottom: 1px solid #2b2924;
     background: #141310;
   }
+  .redigera__huvud {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px 14px;
+    margin-bottom: 9px;
+  }
+  /* Läget ska inte gå att missa: om raden syns i listan, och om det som står här är sparat. */
+  .lage {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin: 0;
+    color: #a39f92;
+    font: 500 11.5px/1.2 var(--font-mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .lage::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+  }
+  .lage[data-lage='publicerad'] {
+    color: #b9d8a8;
+  }
+  .lage[data-lage='publicerad']::before {
+    background: currentColor;
+  }
+  .lage[data-lage='osparat'] {
+    color: #f3a683;
+  }
+  .lage[data-lage='osparat']::before {
+    background: currentColor;
+  }
+  .lanknot__val {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 14px;
+  }
+  a.lankknapp {
+    display: inline-block;
+  }
+  .sparrad__varning {
+    flex-basis: 100%;
+    margin: 0;
+    color: #f3a683;
+    font-size: 13.5px;
+  }
+  .sparrad__varning:empty {
+    display: none;
+  }
   .redigera__etikett {
-    margin: 0 0 9px;
+    margin: 0;
     color: #a39f92;
     font: 500 11.5px/1.2 var(--font-mono);
     letter-spacing: 0.08em;
@@ -338,7 +406,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
     type GithubForrad,
     type Profil,
   } from '../../lib/uppdrag';
-  import { pixelhandSrc, ritaKort, type Etiketter } from '../../lib/uppdragkort';
+  import { hammarhandSrc, ritaKort, type Etiketter } from '../../lib/uppdragkort';
 
   type Lagrat = {
     session: string;
@@ -349,7 +417,25 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
     klick30: number;
   };
 
+  /** Det som står i fälten, i samma form som det sparas. */
+  type Varden = {
+    rubrik: string;
+    lank: string;
+    erbjuder: string;
+    kommun: string;
+    distans: boolean;
+    omraden: string[];
+    kunskaper: string[];
+    bolag_namn: string;
+    bolag_webbplats: string;
+    samtycke: boolean;
+  };
+  /** Osparade ändringar, sparade i webbläsaren så att en utgången länk inte kostar medlemmen arbetet. */
+  type Utkast = { at: number; vem: string; varden: Varden; bild: string | null; bildBort: boolean };
+
   const NYCKEL = 'uppdrag-session';
+  const UTKAST = 'uppdrag-utkast';
+  const UTKAST_SPARAS_MS = 24 * 3600 * 1000;
   const form = document.getElementById('profil-form') as HTMLFormElement;
   const api = form.dataset.api ?? '';
   const etiketter = JSON.parse(document.getElementById('uppdrag-etiketter')?.textContent || '{}') as Etiketter;
@@ -375,6 +461,10 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
   /** Kunskaperna som de står i formuläret, och förslagen som hämtats från medlemmens GitHub. */
   let kunskaper: string[] = [];
   let hamtade: string[] = [];
+  /** Fälten som de såg ut när de senast var sparade, eller när sidan öppnades. Skiljer sig det som står nu är det osparat. */
+  let sparatLage = '';
+  /** Sant när sidan lämnas med flit, så att frågan om osparade ändringar inte ställs. */
+  let lamnar = false;
   const BILD_SIDA = 512;
   const BILD_MIN = 160;
   const BILD_MAX_BYTES = 300 * 1024;
@@ -413,29 +503,74 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
   const lankFalt = hitta<HTMLInputElement>('f-lank');
   const rubrikFalt = hitta<HTMLInputElement>('f-rubrik');
 
-  function fyll(l: Lagrat): void {
-    const p = l.profil;
-    lankFalt.value = p?.lank ?? '';
-    rubrikFalt.value = p?.rubrik ?? '';
-    for (const r of form.querySelectorAll<HTMLInputElement>('input[name="erbjuder"]')) r.checked = r.value === (p?.erbjuder ?? 'uppdrag');
-    (form.elements.namedItem('kommun') as HTMLSelectElement).value = p?.kommun ?? '';
-    falt('distans').checked = p?.distans ?? false;
-    for (const c of form.querySelectorAll<HTMLInputElement>('input[name="omraden"]')) c.checked = p?.omraden.includes(c.value) ?? false;
-    falt('bolag_namn').value = p?.bolag_namn ?? '';
-    falt('bolag_webbplats').value = p?.bolag_webbplats ?? '';
+  function franProfil(p: Profil | null): Varden {
+    return {
+      rubrik: p?.rubrik ?? '',
+      lank: p?.lank ?? '',
+      erbjuder: p?.erbjuder ?? 'uppdrag',
+      kommun: p?.kommun ?? '',
+      distans: p?.distans ?? false,
+      omraden: [...(p?.omraden ?? [])],
+      kunskaper: [...(p?.kunskaper ?? [])],
+      bolag_namn: p?.bolag_namn ?? '',
+      bolag_webbplats: p?.bolag_webbplats ?? '',
+      samtycke: Boolean(p),
+    };
+  }
+
+  function sattVarden(v: Varden): void {
+    lankFalt.value = v.lank;
+    rubrikFalt.value = v.rubrik;
+    for (const r of form.querySelectorAll<HTMLInputElement>('input[name="erbjuder"]')) r.checked = r.value === v.erbjuder;
+    (form.elements.namedItem('kommun') as HTMLSelectElement).value = v.kommun;
+    falt('distans').checked = v.distans;
+    for (const c of form.querySelectorAll<HTMLInputElement>('input[name="omraden"]')) c.checked = v.omraden.includes(c.value);
+    falt('bolag_namn').value = v.bolag_namn;
+    falt('bolag_webbplats').value = v.bolag_webbplats;
+    falt('samtycke').checked = v.samtycke;
+    kunskaper = [...v.kunskaper];
     // Det hopfällda öppnas när det redan står något där.
-    mer.open = Boolean(p && (p.omraden.length || p.bolag_namn || p.bolag_webbplats || p.erbjuder !== 'uppdrag'));
-    falt('samtycke').checked = Boolean(p);
-    kunskaper = [...(p?.kunskaper ?? [])];
+    mer.open = Boolean(v.omraden.length || v.bolag_namn || v.bolag_webbplats || v.erbjuder !== 'uppdrag');
+  }
+
+  function lasVarden(): Varden {
+    return {
+      rubrik: rubrikFalt.value.trim(),
+      lank: normaliseraLank(lankFalt.value),
+      erbjuder: form.querySelector<HTMLInputElement>('input[name="erbjuder"]:checked')?.value ?? 'uppdrag',
+      kommun: (form.elements.namedItem('kommun') as HTMLSelectElement).value,
+      distans: falt('distans').checked,
+      omraden: [...form.querySelectorAll<HTMLInputElement>('input[name="omraden"]:checked')].map((c) => c.value),
+      kunskaper,
+      bolag_namn: falt('bolag_namn').value.trim(),
+      bolag_webbplats: normaliseraLank(falt('bolag_webbplats').value),
+      samtycke: falt('samtycke').checked,
+    };
+  }
+
+  const lagesnyckel = (): string => JSON.stringify({ ...lasVarden(), bild: nyBild, bort: taBortBild });
+
+  function fyll(l: Lagrat): void {
+    sattVarden(franProfil(l.profil));
     hamtade = [];
-    visaKunskaper();
     nyBild = null;
     taBortBild = false;
+    sparatLage = lagesnyckel();
+    // Osparade ändringar från förra gången läggs tillbaka, till exempel efter en länk som gick ut.
+    const utkast = lasUtkast(l.forslag.namn);
+    if (utkast) {
+      sattVarden(utkast.varden);
+      nyBild = utkast.bild;
+      taBortBild = utkast.bildBort;
+    }
+    hitta('r-utkast').hidden = !utkast;
+    visaKunskaper();
     visaBild();
     visaRubrikKvar();
     visaLankhjalp();
     begransaOmraden();
     visaNoter(l);
+    visaTid();
     forhandsvisa();
   }
 
@@ -450,21 +585,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
   }
 
   function lasForm(): Record<string, unknown> {
-    const erbjuder = form.querySelector<HTMLInputElement>('input[name="erbjuder"]:checked')?.value ?? 'uppdrag';
-    return {
-      rubrik: rubrikFalt.value.trim(),
-      lank: normaliseraLank(lankFalt.value),
-      erbjuder,
-      kommun: (form.elements.namedItem('kommun') as HTMLSelectElement).value,
-      distans: falt('distans').checked,
-      omraden: [...form.querySelectorAll<HTMLInputElement>('input[name="omraden"]:checked')].map((c) => c.value),
-      kunskaper,
-      bolag_namn: falt('bolag_namn').value.trim(),
-      bolag_webbplats: normaliseraLank(falt('bolag_webbplats').value),
-      samtycke: falt('samtycke').checked,
-      bild: nyBild ?? undefined,
-      bild_bort: taBortBild || undefined,
-    };
+    return { ...lasVarden(), bild: nyBild ?? undefined, bild_bort: taBortBild || undefined };
   }
 
   function forhandsvisa(): void {
@@ -485,7 +606,97 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
       bild: taBortBild ? null : (lagrat?.profil?.bild ?? null),
     };
     forhand.replaceChildren(ritaKort(profil, etiketter, { forhandsvisning: true, form: 'rad', bildSrc: nyBild ?? undefined }));
+    visaLage();
   }
+
+  /* ---------- Läget och utkastet ---------- */
+
+  const lage = hitta('r-lage');
+  const tidnot = hitta('r-tid');
+
+  function lasUtkast(vem: string): Utkast | null {
+    try {
+      const u = JSON.parse(localStorage.getItem(UTKAST) || 'null') as Utkast | null;
+      if (u && u.vem === vem && Date.now() - u.at < UTKAST_SPARAS_MS && u.varden && Array.isArray(u.varden.kunskaper)) return u;
+      localStorage.removeItem(UTKAST);
+    } catch {
+      // Utan lagring finns inget utkast. Formuläret fungerar ändå.
+    }
+    return null;
+  }
+
+  function sparaUtkast(): void {
+    if (!lagrat) return;
+    const utkast: Utkast = { at: Date.now(), vem: lagrat.forslag.namn, varden: lasVarden(), bild: nyBild, bildBort: taBortBild };
+    try {
+      localStorage.setItem(UTKAST, JSON.stringify(utkast));
+    } catch {
+      // Lagringen kan vara full av bilden. Texten är det viktiga, så den sparas utan.
+      try {
+        localStorage.setItem(UTKAST, JSON.stringify({ ...utkast, bild: null }));
+      } catch {
+        // Utan lagring finns inget utkast. Formuläret fungerar ändå.
+      }
+    }
+  }
+
+  function rensaUtkast(): void {
+    try {
+      localStorage.removeItem(UTKAST);
+    } catch {
+      // Inget att ta bort.
+    }
+  }
+
+  const arAndrad = (): boolean => Boolean(lagrat) && lagesnyckel() !== sparatLage;
+
+  /**
+   * Säger om raden syns i listan och om det som står i fälten är sparat. Osparade ändringar
+   * läggs också undan i webbläsaren, så att de finns kvar om länken hinner gå ut.
+   */
+  function visaLage(): void {
+    if (!lagrat) return;
+    const andrad = arAndrad();
+    const nytt = andrad && lagrat.profil ? 'osparat' : lagrat.profil ? 'publicerad' : 'utkast';
+    if (lage.dataset.lage !== nytt) {
+      lage.dataset.lage = nytt;
+      lage.textContent = nytt === 'osparat' ? 'Osparade ändringar' : nytt === 'publicerad' ? 'Syns i listan' : 'Syns inte än';
+    }
+    if (andrad) {
+      // Kvittot gäller det som sparades. Efter en ändring stämmer det inte längre.
+      kvitto.replaceChildren();
+      sparaUtkast();
+    } else {
+      rensaUtkast();
+    }
+  }
+
+  /** Varnar när länken snart går ut, i stället för att låta medlemmen upptäcka det vid Spara. */
+  function visaTid(): void {
+    if (!lagrat) return;
+    const slut = new Date(lagrat.utgar_at);
+    const kvar = slut.getTime() - Date.now();
+    const tid = new Intl.DateTimeFormat('sv-SE', { hour: '2-digit', minute: '2-digit' }).format(slut);
+    tidnot.textContent =
+      kvar <= 0
+        ? 'Länken har gått ut. Be om en ny, så finns det du har skrivit kvar.'
+        : kvar < 10 * 60 * 1000
+          ? `Länken går ut ${tid}. Spara innan dess.`
+          : '';
+  }
+  setInterval(visaTid, 30 * 1000);
+
+  hitta('r-utkast-bort').addEventListener('click', () => {
+    rensaUtkast();
+    if (lagrat) fyll(lagrat);
+    lankFalt.focus();
+  });
+
+  // Den som går härifrån med osparade ändringar får en fråga först. Ändringarna ligger kvar
+  // som utkast, men raden i listan ändras inte förrän någon sparar.
+  addEventListener('beforeunload', (e) => {
+    if (!lamnar && arAndrad()) e.preventDefault();
+  });
 
   function begransaOmraden(): void {
     const rutor = [...form.querySelectorAll<HTMLInputElement>('input[name="omraden"]')];
@@ -495,7 +706,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
 
   const FELTEXT: Record<string, string> = {
     rubrik: 'Skriv en rad, högst 90 tecken. Inga länkar och inget personnummer.',
-    lank: 'Skriv en adress, till exempel github.com/dig.',
+    lank: 'Skriv en länk, till exempel github.com/dig. En e-postadress går inte.',
     erbjuder: 'Välj vad du erbjuder.',
     kommun: 'Välj en kommun ur listan.',
     distans: 'Något gick fel med valet Distans. Ladda om sidan.',
@@ -535,7 +746,8 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
     const https = (s: string): boolean => {
       try {
         const u = new URL(s);
-        return u.protocol === 'https:' && u.hostname.includes('.');
+        // En e-postadress tolkas som en adress med inloggning. Den är ingen länk.
+        return u.protocol === 'https:' && u.hostname.includes('.') && !u.username && !u.password;
       } catch {
         return false;
       }
@@ -571,7 +783,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
   function visaBild(): void {
     const sparad = lagrat?.profil && !taBortBild ? bildUrl(lagrat.profil) : null;
     const src = nyBild ?? sparad;
-    bildVisning.src = src ?? pixelhandSrc();
+    bildVisning.src = src ?? hammarhandSrc();
     bildRuta.classList.toggle('bildval__visning--utan', !src);
     bildBort.hidden = !src;
     if (!src && !taBortBild) bildStatus.textContent = UTAN_BILD;
@@ -810,6 +1022,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
   // skickas, och först när medlemmen trycker. Inget sparas förrän medlemmen sparar.
   const lankNot = hitta('lank-not');
   const lankHamta = hitta<HTMLButtonElement>('f-lankhamta');
+  const lankProva = hitta<HTMLAnchorElement>('f-lankprova');
   const LANKNOT = 'Hit leder hela din rad.';
 
   /** Det som står under länkfältet: vad som går att hämta från just den här länken. */
@@ -820,6 +1033,11 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
     else if (typ?.typ === 'x') lankHamta.textContent = 'Hämta din bild från X →';
     else if (typ?.typ === 'sida') lankHamta.textContent = `Hämta loggan från ${typ.host} →`;
     lankNot.textContent = typ?.typ === 'linkedin' ? 'LinkedIn släpper inte ut bild eller text, så här fyller du i själv.' : LANKNOT;
+    // En felskriven länk är det vanligaste felet, och det enda som inte syns på raden. Den går att prova.
+    const adress = normaliseraLank(lankFalt.value);
+    lankProva.hidden = !typ;
+    if (typ) lankProva.href = adress;
+    else lankProva.removeAttribute('href');
   }
   lankFalt.addEventListener('input', visaLankhjalp);
   // Den som skrev utan https får det när fältet lämnas, så att det som sparas syns.
@@ -903,16 +1121,16 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
   }
 
   function sessionSlut(): void {
+    // Det som står i fälten ligger redan som utkast och kommer tillbaka med nästa länk.
+    lamnar = true;
     sparaLagrat(null);
     lagrat = null;
-    visa('fel', 'Länken har gått ut. Be om en ny, så kan du fortsätta där du var.');
+    visa('fel', 'Länken har gått ut. Be om en ny, så finns det du har skrivit kvar.');
   }
 
   form.addEventListener('input', () => {
     begransaOmraden();
     forhandsvisa();
-    // Kvittot gäller det som sparades. Efter en ändring stämmer det inte längre.
-    kvitto.replaceChildren();
   });
 
   form.addEventListener('submit', async (e) => {
@@ -939,6 +1157,8 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
       nyBild = null;
       taBortBild = false;
       bildStatus.textContent = '';
+      sparatLage = lagesnyckel();
+      hitta('r-utkast').hidden = true;
       visaBild();
       visaNoter(lagrat);
       forhandsvisa();
@@ -973,6 +1193,8 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
         lagrat = { ...lagrat, profil: null, klick30: 0 };
         sparaLagrat(lagrat);
       }
+      rensaUtkast();
+      lamnar = true;
       visa('klar', 'Raden är borttagen. Den syns inte längre i listan.');
     } catch {
       bekrafta.hidden = true;

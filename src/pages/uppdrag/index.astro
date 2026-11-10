@@ -13,7 +13,7 @@ import { url } from '../../lib/data';
 import { ikon } from '../../lib/ikoner';
 import { BLI_MEDLEM, UPPDRAG_API } from '../../lib/uppdrag';
 
-const pixelhand = url('/pixelhand.webp');
+const hammarhand = url('/hammarhand.webp');
 ---
 
 <Bas
@@ -34,7 +34,7 @@ const pixelhand = url('/pixelhand.webp');
             <a class="morka__lagg" href={url('/uppdrag/lagg-upp')}>Lägg upp dig →</a>
           </p>
         </div>
-        <img class="morka__hand" src={pixelhand} alt="" width="680" height="720" decoding="async" fetchpriority="high" />
+        <img class="morka__hand" src={hammarhand} alt="" width="680" height="720" decoding="async" fetchpriority="high" />
       </header>
 
       <div class="uppdrag__sok" id="uppdrag-sokyta" hidden>
@@ -66,7 +66,7 @@ const pixelhand = url('/pixelhand.webp');
       <template id="uppdrag-ledig">
         <li class="medlemsrad medlemsrad--ledig">
           <span class="medlemsrad__bild medlemsrad__bild--utan">
-            <img class="medlemsrad__bild-hand" src={pixelhand} alt="" decoding="async" loading="lazy" />
+            <img class="medlemsrad__bild-hand" src={hammarhand} alt="" decoding="async" loading="lazy" />
           </span>
           <div class="medlemsrad__vem">
             <p class="medlemsrad__namn" data-roll="namn">Din plats</p>

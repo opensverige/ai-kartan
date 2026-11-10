@@ -269,7 +269,7 @@ const medlemsdatum = medlemmar
   import { grupperaPerPlats, platsEfterUtzoomning, platsmitt, zoomgranser, ZOOM_KOMMUN, ZOOM_POSTER, type Platsgrupp } from '../lib/platsgrupper';
   import { arPaskagg, cirkel, type Medlemsvy } from '../lib/medlemmar';
   import { UPPDRAG_API, bildUrl, dagensOrdning, perKommun, uppdragstraff, type Profil, type Uppslag } from '../lib/uppdrag';
-  import { pixelhandSrc, ritaKort } from '../lib/uppdragkort';
+  import { hammarhandSrc, ritaKort } from '../lib/uppdragkort';
   import { kommunytor } from '../lib/kommunyta';
   import { delaAdresser, type Adressplats } from '../lib/sammaadress';
   import { normalisera, tolka, traffar, tomtSvar, finnsI, type Tolkning } from '../lib/sok';
@@ -1169,7 +1169,7 @@ const medlemsdatum = medlemmar
       // sist, med vägen till listan. Namnen står aldrig här.
       const u = uppdragslage ? uppdragstraff(uppdragslage.profiler, q, uppdragslage.uppslag) : null;
       if (u) {
-        const bild = `<span class="logo logo--liten logo--ikon logo--hand" aria-hidden="true"><img src="${esc(pixelhandSrc())}" alt=""></span>`;
+        const bild = `<span class="logo logo--liten logo--ikon logo--hand" aria-hidden="true"><img src="${esc(hammarhandSrc())}" alt=""></span>`;
         const under = u.q ? `Matchar ”${esc(u.q)}” · visa dem i listan` : 'Föreningsmedlemmar som går att anlita · visa listan';
         html += '<div role="group" aria-label="Tar uppdrag"><p class="sokgrupp">Tar uppdrag</p>';
         html += rad({ typ: 'uppdrag', q: u.q }, bild, `${u.antal} ${u.antal === 1 ? 'medlem' : 'medlemmar'} som tar uppdrag`, under);
@@ -1660,7 +1660,7 @@ const medlemsdatum = medlemmar
       stark.textContent = `${n} i föreningen`;
       text.replaceChildren(stark, ' tar uppdrag');
       pil.textContent = '→';
-      // Upp till fyra bilder, eller pixelhanden för en profil utan bild. Raden har redan ett namn
+      // Upp till fyra bilder, eller hammarhanden för en profil utan bild. Raden har redan ett namn
       // för skärmläsare, så bilderna är tysta.
       folk.replaceChildren(
         ...profiler.slice(0, 4).map((p) => {
@@ -1668,7 +1668,7 @@ const medlemsdatum = medlemmar
           const s = document.createElement('span');
           s.classList.toggle('handrad__utan', !src);
           const bild = document.createElement('img');
-          bild.src = src ?? pixelhandSrc();
+          bild.src = src ?? hammarhandSrc();
           bild.alt = '';
           bild.width = 26;
           bild.height = 26;

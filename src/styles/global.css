@@ -559,7 +559,7 @@ details {
   min-width: 0;
 }
 /* Bilden i en rundad ruta. Handen i hörnet sticker ut, så bilden rundas själv i stället för att
-   rutan klipper. Utan bild står pixelhanden på mörk botten. */
+   rutan klipper. Utan bild står hammarhanden på mörk botten. */
 .profil__bild {
   position: relative;
   display: block;

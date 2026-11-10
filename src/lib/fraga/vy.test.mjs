@@ -14,7 +14,7 @@ const E = {
   lan: { '14': 'Västra Götalands län' },
   typikoner: { myndighet: '/ikoner/myndighet.png' },
 };
-const L = { kartbas: '/', orgbas: '/organisation/', bidra: '/bidra', discord: 'https://discord.gg/test', infra: 'https://infra.test', infralogo: '/ai-infra.png', uppdrag: '/uppdrag', pixelhand: '/pixelhand.webp' };
+const L = { kartbas: '/', orgbas: '/organisation/', bidra: '/bidra', discord: 'https://discord.gg/test', infra: 'https://infra.test', infralogo: '/ai-infra.png', uppdrag: '/uppdrag', hammarhand: '/hammarhand.webp' };
 const POST = { id: 'sinch', n: 'Sinch', t: 'bolag', kn: 'Stockholm', d: 'Utvecklar API:er för röst och meddelanden.', ds: 'claimed', dv: '2026-10-04' };
 const MYNDIGHET = { id: 'myndigheten', n: 'Myndigheten', t: 'myndighet', kn: null, d: 'Handlägger.', ds: 'confirmed', dv: '2026-10-01' };
 const POSTER = new Map([['sinch', POST], ['myndigheten', MYNDIGHET]]);
