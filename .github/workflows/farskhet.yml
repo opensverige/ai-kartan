@@ -1,5 +1,6 @@
-# Färskhetslarm, varje dag. Larmar när ändringsloggen stått still i 10 dagar
-# eller när någon post gått 180 dagar utan omkontroll. Tyst inaktuell data är den största risken.
+# Färskhetslarm, varje dag. Larmar när ändringsloggen stått still i 10 dagar, när någon post
+# gått 180 dagar utan omkontroll, eller när sajten visar en äldre dataändring än main i mer än en
+# dag. Tyst inaktuell data är den största risken.
 #
 # Larmet blir ett GitHub-ärende med etiketten "färskhet" (uppdateras om det redan finns).
 # Finns hemligheten DISCORD_WEBHOOK_URL skickas larmet även till Discord.
@@ -60,7 +61,7 @@ jobs:
         run: |
           gh label create "färskhet" --color "926516" --description "Automatiskt färskhetslarm" --force
           befintligt=$(gh issue list --label "färskhet" --state open --json number --jq '.[0].number')
-          kropp=$(printf 'Automatiskt larm från färskhetskontrollen.\n\n```\n%s\n```\n\nRegler: ändringsloggen får inte stå still mer än 10 dagar, ingen post får gå 180 dagar utan omkontroll. Se [metoden](https://karta.opensverige.se/metod).' "$RAPPORT")
+          kropp=$(printf 'Automatiskt larm från färskhetskontrollen.\n\n```\n%s\n```\n\nRegler: ändringsloggen får inte stå still mer än 10 dagar, ingen post får gå 180 dagar utan omkontroll, och sajten får inte släpa efter main mer än en dag. Se [metoden](https://karta.opensverige.se/metod).' "$RAPPORT")
           if [ -n "$befintligt" ]; then
             gh issue comment "$befintligt" --body "$kropp"
           else

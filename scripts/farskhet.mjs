@@ -1,7 +1,10 @@
 #!/usr/bin/env node
-// Färskhetslarm. Två regler ur kravlistan:
+// Färskhetslarm. Två regler ur kravlistan och en om det publicerade:
 //   1. Ändringsloggen får inte stå still mer än 10 dagar.
 //   2. Ingen post får gå mer än 180 dagar utan omkontroll (senaste verified_at i posten).
+//   3. Sajten får inte visa en äldre dataändring än main i mer än en dag. Regel 1 räknar på git
+//      i den här körningen, så den märker inte när historiken eller bygget har fastnat.
+//      Därför läses också sajtens /api/status.json. Regeln står i scripts/lib/farskhet.mjs.
 //
 //   node scripts/farskhet.mjs             # rapport i terminalen, exit 1 vid larm
 //   node scripts/farskhet.mjs --json      # maskinläsbar
@@ -12,7 +15,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { ROT, lasGeo, lasOrganisationer, harled } from './lib/organisationer.mjs';
+import { GRANS_PUBLICERAT_DAGAR, publiceratSlapar } from './lib/farskhet.mjs';
 
+const SAJT = (process.env.SITE_URL || 'https://karta.opensverige.se').replace(/\/$/, '');
 const GRANS_LOGG_DAGAR = 10;
 const GRANS_KONTROLL_DAGAR = 180;
 const argv = process.argv.slice(2);
@@ -30,6 +35,18 @@ function senasteDataandring() {
   }
 }
 
+/** Senaste dataändringen som sajten själv visar, eller null med skälet när den inte går att läsa. */
+async function publiceradAndring() {
+  try {
+    const svar = await fetch(`${SAJT}/api/status.json`, { cache: 'no-store', signal: AbortSignal.timeout(30000) });
+    if (!svar.ok) return { datum: null, fel: `svarade ${svar.status}` };
+    const status = await svar.json();
+    return { datum: status.senaste_dataandring ?? null, fel: status.senaste_dataandring ? null : 'saknar senaste_dataandring' };
+  } catch (e) {
+    return { datum: null, fel: e.message };
+  }
+}
+
 function dagar(datum) {
   if (!datum) return null;
   return Math.floor((Date.now() - new Date(`${datum}T00:00:00Z`).getTime()) / 86400000);
@@ -44,20 +61,45 @@ const gamla = poster
   .filter((p) => p.dagar_sedan_kontroll === null || p.dagar_sedan_kontroll > GRANS_KONTROLL_DAGAR)
   .sort((a, b) => (b.dagar_sedan_kontroll ?? 9999) - (a.dagar_sedan_kontroll ?? 9999));
 
+const publicerad = await publiceradAndring();
+const { slapar: larmPublicerat } = publiceratSlapar({ publicerad: publicerad.datum, lokal: senaste, nu: Date.now() });
+
 const larmLogg = loggDagar === null || loggDagar > GRANS_LOGG_DAGAR;
 const larmPoster = gamla.length > 0;
-const larm = larmLogg || larmPoster;
+const larm = larmLogg || larmPoster || larmPublicerat;
 
 const rader = [];
 rader.push(`Färskhetsrapport ${new Date().toISOString().slice(0, 10)}`);
 rader.push(`Senaste dataändring: ${senaste ?? 'okänd'} (${loggDagar ?? '?'} dagar sedan). Gräns ${GRANS_LOGG_DAGAR} dagar: ${larmLogg ? 'LARM' : 'ok'}.`);
 rader.push(`Poster utan omkontroll på ${GRANS_KONTROLL_DAGAR} dagar: ${gamla.length} av ${poster.length}. ${larmPoster ? 'LARM' : 'ok'}.`);
+rader.push(
+  publicerad.fel
+    ? `Sajtens status gick inte att läsa (${publicerad.fel}). LARM.`
+    : `Sajten visar senaste dataändring ${publicerad.datum}, main ${senaste ?? 'okänd'}. Gräns ${GRANS_PUBLICERAT_DAGAR} dag: ${larmPublicerat ? 'LARM, historiken eller bygget har fastnat' : 'ok'}.`,
+);
 for (const p of gamla.slice(0, 50)) rader.push(`  - ${p.namn} (${p.id}): ${p.dagar_sedan_kontroll ?? 'aldrig kontrollerad'} dagar`);
 if (gamla.length > 50) rader.push(`  … och ${gamla.length - 50} till`);
 const rapport = rader.join('\n');
 
 if (argv.includes('--json')) {
-  console.log(JSON.stringify({ larm, larm_logg: larmLogg, larm_poster: larmPoster, senaste_andring: senaste, dagar_sedan_andring: loggDagar, antal_poster: poster.length, gamla }, null, 2));
+  console.log(
+    JSON.stringify(
+      {
+        larm,
+        larm_logg: larmLogg,
+        larm_poster: larmPoster,
+        larm_publicerat: larmPublicerat,
+        senaste_andring: senaste,
+        publicerad_andring: publicerad.datum,
+        publicerad_fel: publicerad.fel,
+        dagar_sedan_andring: loggDagar,
+        antal_poster: poster.length,
+        gamla,
+      },
+      null,
+      2,
+    ),
+  );
 } else {
   console.log(rapport);
 }
