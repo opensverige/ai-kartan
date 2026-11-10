@@ -5,6 +5,7 @@ Kodens och funktionernas historik. Dataändringar loggas separat och automatiskt
 ## 2026-11-10
 
 - Regeln om c/o-adresser säger nu det vi gör. En adress som hämtas ur registret används inte om den har c/o eller lägenhetsnummer. Anger organisationen själv adressen på sin webbplats används den, också när registret har samma adress med c/o. Så har regeln tillämpats sedan 13 oktober: 20 av 142 exakta positioner kommer från en webbplats där registret har c/o eller lägenhetsnummer. Texten på Metod och Personuppgifter, i schemat och i agentreglerna sa det inte tydligt.
+- Organisationer som delar adress får var sin prick på kartan. Förut ritades de som en enda prick med ett antal i, och man fick trycka flera gånger på den för att nå de andra. Nu står prickarna tätt ihop runt adressen. Var och en visar sitt eget namn när man pekar på den och öppnar sin egen sida när man trycker. Två på samma adress skrivs med båda namnen över prickarna, fler än två med antalet. I dag gäller det elva adresser, alla med två organisationer. Reglerna ligger i `src/lib/sammaadress.ts`.
 
 ## 2026-11-05
 
