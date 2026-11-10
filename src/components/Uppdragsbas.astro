@@ -210,19 +210,11 @@ const etiketter: Etiketter = {
     font: 500 12px/1.2 var(--font-mono);
   }
   .medlemsrad__omrade {
-    color: #a39f92;
-    font: 400 13px/1.3 var(--font-sans);
-  }
-  .medlemsrad__omrade::before {
-    content: '·';
-    margin-right: 6px;
-    color: #7a766b;
-  }
-  .medlemsrad__omrade:first-child::before {
-    content: none;
-  }
-  .medlemsrad__kunskap + .medlemsrad__omrade {
-    margin-left: 2px;
+    padding: 3px 8px;
+    border: 1px solid #3d3a33;
+    border-radius: 6px;
+    color: #b5b0a2;
+    font: 500 12px/1.2 var(--font-mono);
   }
   .medlemsrad__ut {
     grid-column: 3;
@@ -288,19 +280,6 @@ const etiketter: Etiketter = {
       color: #141310;
     }
   }
-  .medlemsrad__bolag {
-    position: relative;
-    z-index: 1;
-    max-width: 100%;
-    overflow: hidden;
-    color: #a39f92;
-    font-size: 12.5px;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  a.medlemsrad__bolag:hover {
-    color: #f6f2e8;
-  }
   /* Platsen sist i listan, för den som själv tar uppdrag. */
   .medlemsrad--ledig {
     border-style: dashed;
@@ -309,7 +288,7 @@ const etiketter: Etiketter = {
   }
   @container (min-width: 760px) {
     .medlemsrad {
-      grid-template-columns: 48px minmax(0, 190px) minmax(0, 1fr) auto;
+      grid-template-columns: 48px minmax(0, 230px) minmax(0, 1fr) auto;
       gap: 20px;
       padding: 14px 18px 14px 16px;
     }
@@ -327,9 +306,6 @@ const etiketter: Etiketter = {
       min-height: 40px;
       padding: 0 16px;
       font-size: 14.5px;
-    }
-    .medlemsrad__bolag {
-      font-size: 13px;
     }
   }
 

@@ -2,7 +2,7 @@
 // text, aldrig som HTML, så att det aldrig kan bli en länk eller ett skript.
 //
 // Kortet finns i två former. Raden står i listan och i förhandsvisningen: en liten bild, namnet
-// och orten, vad medlemmen gör och kan, och länken ut. Allt som behövs för att avgöra om personen
+// med ort och bolag, vad medlemmen gör, taggarna och länken ut. Allt som behövs för att avgöra om personen
 // passar står på raden, och hela raden är länken, så att vägen dit är ett klick. Det kompakta
 // kortet står vid en hand på kartan, så att det inte täcker kartan på en telefon. En profil utan
 // bild visar föreningens hammarhand.
@@ -89,15 +89,16 @@ function rad(p: Kortprofil, etiketter: Etiketter, forhandsvisning: boolean, rubr
 
   const vem = el('div', 'medlemsrad__vem');
   vem.append(el(forhandsvisning ? 'p' : rubrik, 'medlemsrad__namn', p.namn || 'Ditt namn'));
-  const ort = ortrad(p, etiketter.kommuner);
-  if (ort) vem.append(el('p', 'medlemsrad__ort', ort));
+  // Under namnet: orten, distans och bolaget, som en enda rad att läsa.
+  const under = [ortrad(p, etiketter.kommuner), p.bolag_namn ?? ''].filter(Boolean).join(' · ');
+  if (under) vem.append(el('p', 'medlemsrad__ort', under));
   kort.append(vem);
 
   const vad = el('div', 'medlemsrad__vad');
   vad.append(el('p', 'medlemsrad__rubrik', p.rubrik || 'En rad om vad du gör.'));
-  // Kunskaperna är medlemmens egna ord och står som brickor. Områdena är kartans, och står som text efter.
+  // Taggarna är det ögat letar efter. Kunskaperna är medlemmens egna ord och står först, fyllda.
+  // Områdena är kartans och står efter, i kontur. Ett område som också är en kunskap står en gång.
   const kunskaper = p.kunskaper ?? [];
-  // Ett område som medlemmen också har skrivit som kunskap står bara en gång.
   const skrivna = new Set(kunskaper.map((k) => k.toLowerCase()));
   const omraden = (p.omraden ?? []).map((id) => etiketter.omraden[id]).filter((o) => o && !skrivna.has(o.toLowerCase()));
   if (kunskaper.length || omraden.length) {
@@ -109,6 +110,7 @@ function rad(p: Kortprofil, etiketter: Etiketter, forhandsvisning: boolean, rubr
   }
   kort.append(vad);
 
+  // En länk per rad: medlemmens egen. Hela raden är den.
   const ut = el('div', 'medlemsrad__ut');
   const a = lank(p, 'medlemsrad__lank', forhandsvisning);
   const etikett = lankEtikett(p.lank);
@@ -119,8 +121,6 @@ function rad(p: Kortprofil, etiketter: Etiketter, forhandsvisning: boolean, rubr
   // Flera rader har samma länktext. Namnet efter den skiljer dem åt för den som hör länkarna uppräknade.
   if (p.namn) a.setAttribute('aria-label', `${etikett}, ${p.namn}`);
   ut.append(a);
-  const b = bolag(p, 'medlemsrad__bolag', forhandsvisning);
-  if (b) ut.append(b);
   kort.append(ut);
   return kort;
 }

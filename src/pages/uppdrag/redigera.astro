@@ -29,7 +29,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
     <div class="ram morka__ram">
       <p class="morka__kicker"><a class="tillbaka" href={url('/uppdrag')}>← Tar uppdrag</a></p>
       <h1 id="r-rubrik">Din rad.</h1>
-      <p class="morka__ingress">Länken och en rad om vad du gör räcker. Resten är frivilligt.</p>
+      <p class="morka__ingress">Länk och en rad räcker. Resten är frivilligt.</p>
 
       <div class="lagen">
         <div class="besked" id="r-laddar" role="status">
@@ -84,7 +84,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
                 aria-describedby="lank-not fel-lank"
               />
               <div class="lanknot">
-                <p class="faltnot" id="lank-not" role="status">Hit leder hela din rad.</p>
+                <p class="faltnot" id="lank-not" role="status">Hit leder din rad.</p>
                 <span class="lanknot__val">
                   <a class="lankknapp" id="f-lankprova" target="_blank" rel="noopener noreferrer nofollow" hidden>Prova länken ↗</a>
                   <button class="knapp knapp--ghost knapp--liten" type="button" id="f-lankhamta" hidden></button>
@@ -120,11 +120,10 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
                   spellcheck="false"
                   enterkeyhint="done"
                   placeholder="Skriv ett ord, tryck Enter"
-                  aria-describedby="kunskaper-not fel-kunskaper"
+                  aria-describedby="fel-kunskaper"
                 />
               </div>
               <div class="ordval ordval--forslag" id="kunskaper-forslag" role="group" aria-label="Förslag på kunskaper"></div>
-              <p class="faltnot" id="kunskaper-not">De här orden står på din rad, och det är dem folk söker på.</p>
               <p class="falt__fel" id="fel-kunskaper" role="status" hidden></p>
             </div>
 
@@ -155,7 +154,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
                 </select>
                 <label class="val val--rad"><input type="checkbox" name="distans" id="f-distans" /> Tar uppdrag på distans</label>
               </div>
-              <p class="faltnot" id="kommun-not">Bara kommunen visas, aldrig en adress. Med en kommun står du också som en hand på kartan.</p>
+              <p class="faltnot" id="kommun-not">Bara kommunen visas. Du får också en hand på kartan.</p>
               <p class="falt__fel" id="fel-kommun" hidden></p>
             </div>
 
@@ -219,22 +218,21 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
             </div>
           </form>
 
-          <aside class="veta" aria-label="Bra att veta">
-            <ul>
-              <li id="r-vem"></li>
-              <li>Ändra eller ta bort när du vill. Du ber om en ny länk på samma sätt som nu.</li>
-              <li id="r-klick" hidden></li>
-              <li id="r-session"></li>
-            </ul>
+          <div class="redigera__fot">
+            <p class="redigera__not">
+              Namnet kommer ur medlemsregistret. Ändra när du vill, med en ny länk.
+              <span id="r-klick" hidden></span>
+              <span id="r-session"></span>
+            </p>
             <p><button class="lankknapp lankknapp--fara" type="button" id="r-ta-bort" hidden>Ta bort min rad</button></p>
             <div class="besked besked--fel" id="r-bekrafta" hidden>
-              <p><strong>Ta bort raden?</strong> Den försvinner från listan direkt, med bilden och klicken.</p>
-              <p class="veta__knappar">
+              <p><strong>Ta bort raden?</strong> Den försvinner från listan direkt.</p>
+              <p class="redigera__knappar">
                 <button class="knapp knapp--fara knapp--liten" type="button" id="r-ja-ta-bort">Ja, ta bort</button>
                 <button class="knapp knapp--ghost knapp--liten" type="button" id="r-avbryt">Avbryt</button>
               </p>
             </div>
-          </aside>
+          </div>
         </div>
       </div>
     </div>
@@ -336,10 +334,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
   }
   .redigera__spalter {
     display: grid;
-    grid-template-columns: minmax(0, 600px) minmax(0, 300px);
-    justify-content: space-between;
-    gap: 40px 56px;
-    align-items: start;
+    gap: 22px;
   }
   .lanknot {
     display: flex;
@@ -348,38 +343,20 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
     justify-content: space-between;
     gap: 8px 14px;
   }
-  .veta {
-    padding-top: 4px;
+  /* Det som är bra att veta men inte behövs för att bli klar står sist, i en rad. */
+  .redigera__fot {
+    max-width: 600px;
     color: #a39f92;
     font-size: 13.5px;
     line-height: 1.5;
   }
-  .veta ul {
-    display: grid;
-    gap: 10px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
+  .redigera__fot p {
+    margin: 0 0 10px;
   }
-  .veta li {
-    padding-left: 14px;
-    border-left: 1px solid #3a3832;
-  }
-  .veta p {
-    margin: 18px 0 0;
-  }
-  .veta__knappar {
+  .redigera__knappar {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-  }
-  .veta .besked {
-    margin-top: 12px;
-  }
-  @media (max-width: 960px) {
-    .redigera__spalter {
-      grid-template-columns: minmax(0, 1fr);
-    }
   }
   @media (max-width: 760px) {
     .redigera__forhand {
@@ -576,11 +553,10 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
 
   function visaNoter(l: Lagrat): void {
     const tid = new Intl.DateTimeFormat('sv-SE', { hour: '2-digit', minute: '2-digit' }).format(new Date(l.utgar_at));
-    hitta('r-vem').textContent = `Namnet, ${l.forslag.namn}, kommer ur medlemsregistret och går inte att ändra här.`;
-    hitta('r-session').textContent = `Den här länken gäller till ${tid}.`;
+    hitta('r-session').textContent = `Länken gäller till ${tid}.`;
     const klick = hitta('r-klick');
     klick.hidden = !l.profil;
-    klick.textContent = `Din rad har klickats ${l.klick30} ${l.klick30 === 1 ? 'gång' : 'gånger'} de senaste 30 dagarna.`;
+    klick.textContent = `${l.klick30} klick på din rad de senaste 30 dagarna.`;
     taBort.hidden = !l.profil;
   }
 
@@ -778,7 +754,6 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
   const bildRuta = hitta('bild-ruta');
   const bildStatus = hitta('bild-status');
   const bildBort = hitta<HTMLButtonElement>('f-bildbort');
-  const UTAN_BILD = 'Utan bild står föreningens hand på din rad.';
 
   function visaBild(): void {
     const sparad = lagrat?.profil && !taBortBild ? bildUrl(lagrat.profil) : null;
@@ -786,7 +761,6 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
     bildVisning.src = src ?? hammarhandSrc();
     bildRuta.classList.toggle('bildval__visning--utan', !src);
     bildBort.hidden = !src;
-    if (!src && !taBortBild) bildStatus.textContent = UTAN_BILD;
   }
 
   /** WebP med ett enda bildblock. Funktionen godtar inte det utökade formatet, som kan bära metadata. */
@@ -863,7 +837,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
   bildBort.addEventListener('click', () => {
     nyBild = null;
     taBortBild = Boolean(lagrat?.profil?.bild);
-    bildStatus.textContent = taBortBild ? 'Bilden tas bort när du sparar.' : UTAN_BILD;
+    bildStatus.textContent = taBortBild ? 'Bilden tas bort när du sparar.' : '';
     visaBild();
     forhandsvisa();
   });
@@ -1023,7 +997,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
   const lankNot = hitta('lank-not');
   const lankHamta = hitta<HTMLButtonElement>('f-lankhamta');
   const lankProva = hitta<HTMLAnchorElement>('f-lankprova');
-  const LANKNOT = 'Hit leder hela din rad.';
+  const LANKNOT = 'Hit leder din rad.';
 
   /** Det som står under länkfältet: vad som går att hämta från just den här länken. */
   function visaLankhjalp(): void {

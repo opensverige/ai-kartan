@@ -21,7 +21,7 @@ import { BLI_MEDLEM, UPPDRAG_API } from '../../lib/uppdrag';
     <div class="ram morka__ram morka__ram--smal">
       <p class="morka__kicker"><a class="tillbaka" href={url('/uppdrag')}>← Tar uppdrag</a></p>
       <h1 id="lagg-rubrik">Lägg upp dig.</h1>
-      <p class="morka__ingress">Skriv din e-post, så mejlar vi en länk till din rad. Inget konto och inget lösenord.</p>
+      <p class="morka__ingress">Vi mejlar en länk till din rad. Inget konto, inget lösenord.</p>
 
       <form class="uppdragsform lankform" id="lank-form" data-api={UPPDRAG_API} novalidate>
         <div class="falt">
@@ -55,9 +55,8 @@ import { BLI_MEDLEM, UPPDRAG_API } from '../../lib/uppdrag';
       </form>
 
       <div class="besked" id="lank-skickad" role="status" tabindex="-1" hidden>
-        <p><strong>Kolla din inkorg.</strong> Länken går till <strong id="skickad-adress"></strong>, om adressen finns i medlemsregistret.</p>
-        <p>Den gäller i 30 minuter och fungerar en gång.</p>
-        <p><strong>Kom inget på några minuter?</strong> Titta i skräpposten. Du kan också ha gått med med en annan adress.</p>
+        <p><strong>Kolla din inkorg.</strong> Länken går till <strong id="skickad-adress"></strong>, om adressen är medlem. Den gäller i 30 minuter.</p>
+        <p>Kom inget? Titta i skräpposten, eller prova adressen du gick med med.</p>
         <p class="skickad__knappar">
           <button class="knapp knapp--ghost knapp--liten" type="button" id="lank-igen">Prova en annan adress →</button>
           <a class="knapp knapp--ghost knapp--liten" href={BLI_MEDLEM} rel="noopener">Bli medlem →</a>
@@ -68,15 +67,15 @@ import { BLI_MEDLEM, UPPDRAG_API } from '../../lib/uppdrag';
       <ul class="vagar">
         <li>
           <span class="vagar__ikon" set:html={ikon('las', 16)} />
-          <p><strong>Bara för medlemmar.</strong> Länken går till adressen i medlemsregistret, så ingen annan kan lägga upp dig.</p>
+          <p><strong>Bara medlemmar.</strong> Länken går till adressen i registret.</p>
         </li>
         <li>
           <span class="vagar__ikon" set:html={ikon('brev', 16)} />
-          <p><strong>Har du redan en rad?</strong> Samma väg. Länken öppnar den, så att du kan ändra eller ta bort.</p>
+          <p><strong>Har du redan en rad?</strong> Samma väg, för att ändra eller ta bort.</p>
         </li>
         <li>
           <span class="vagar__ikon vagar__ikon--tal" aria-hidden="true">0 kr</span>
-          <p><strong>Inte medlem än?</strong> Det är gratis och tar två minuter. <a href={BLI_MEDLEM} rel="noopener">Bli medlem →</a></p>
+          <p><strong>Inte medlem?</strong> Gratis, två minuter. <a href={BLI_MEDLEM} rel="noopener">Bli medlem →</a></p>
         </li>
       </ul>
     </div>

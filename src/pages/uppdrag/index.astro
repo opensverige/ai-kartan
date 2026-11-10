@@ -27,10 +27,9 @@ const hammarhand = url('/hammarhand.webp');
     <div class="ram morka__ram">
       <header class="morka__topp">
         <div class="morka__text">
-          <p class="morka__kicker">Tar uppdrag · OpenSverige</p>
           <h1 id="morka-rubrik">Anlita en byggare.</h1>
           <p class="morka__ingress">
-            Medlemmar i OpenSverige som bygger med AI och tar uppdrag. Var och en har lagt upp sig själv.
+            Medlemmar i OpenSverige som bygger med AI.
             <a class="morka__lagg" href={url('/uppdrag/lagg-upp')}>Lägg upp dig →</a>
           </p>
         </div>
@@ -70,14 +69,13 @@ const hammarhand = url('/hammarhand.webp');
           </span>
           <div class="medlemsrad__vem">
             <p class="medlemsrad__namn" data-roll="namn">Din plats</p>
-            <p class="medlemsrad__ort">Bara för medlemmar</p>
+            <p class="medlemsrad__ort">För medlemmar</p>
           </div>
           <div class="medlemsrad__vad">
-            <p class="medlemsrad__rubrik" data-roll="rubrik">Tar du uppdrag eller säljer tjänster? Lägg upp dig själv.</p>
+            <p class="medlemsrad__rubrik" data-roll="rubrik">Tar du uppdrag?</p>
           </div>
           <div class="medlemsrad__ut">
             <a class="medlemsrad__lank" href={url('/uppdrag/lagg-upp')}>Lägg upp dig →</a>
-            <a class="medlemsrad__bolag" href={BLI_MEDLEM} rel="noopener">Bli medlem först →</a>
           </div>
         </li>
       </template>
@@ -87,21 +85,21 @@ const hammarhand = url('/hammarhand.webp');
           <span class="lofte__ikon" set:html={ikon('las', 18)} />
           <div>
             <p class="lofte__rubrik">Bara medlemmar</p>
-            <p class="lofte__text">Listan är låst för andra. Namnet på varje rad kommer ur föreningens medlemsregister.</p>
+            <p class="lofte__text">Namnen kommer ur medlemsregistret.</p>
           </div>
         </li>
         <li class="lofte__punkt">
           <span class="lofte__ikon lofte__ikon--tal" aria-hidden="true">0 kr</span>
           <div>
-            <p class="lofte__rubrik">Gratis att bli medlem</p>
-            <p class="lofte__text">Det tar två minuter. <a href={BLI_MEDLEM} rel="noopener">Bli medlem →</a></p>
+            <p class="lofte__rubrik">Gratis att gå med</p>
+            <p class="lofte__text"><a href={BLI_MEDLEM} rel="noopener">Bli medlem →</a></p>
           </div>
         </li>
         <li class="lofte__punkt">
           <span class="lofte__ikon" set:html={ikon('bock', 18)} />
           <div>
             <p class="lofte__rubrik">Ingen köpt plats</p>
-            <p class="lofte__text">Ordningen byts varje dag. Föreningen förmedlar inget, kontakten tar ni direkt.</p>
+            <p class="lofte__text">Ny ordning varje dag.</p>
           </div>
         </li>
       </ul>
@@ -110,7 +108,8 @@ const hammarhand = url('/hammarhand.webp');
         <summary><span>Mer om listan</span></summary>
         <ul>
           <li>Var och en lägger upp sig själv, och ändrar eller tar bort sin rad med en ny länk till sin e-post.</li>
-          <li>Uppgifterna är medlemmarnas egna. Föreningen går inte i god för någon.</li>
+          <li>Uppgifterna är medlemmarnas egna. Föreningen förmedlar inget och går inte i god för någon.</li>
+          <li>Ordningen byts varje dag, så att ingen alltid står först. Ingen kan köpa en plats.</li>
           <li>Bilden väljer medlemmen själv. En bild som bryter mot föreningens regler tas bort.</li>
           <li>
             Klick på en medlems länk räknas per dag, så att medlemmen ser om raden ger något. Inget sparas om den som
@@ -216,6 +215,9 @@ const hammarhand = url('/hammarhand.webp');
     font-weight: 600;
   }
 
+  .morka__antal:empty {
+    display: none;
+  }
   .morka__antal {
     margin: 18px 0 10px;
     color: #a39f92;
@@ -252,9 +254,9 @@ const hammarhand = url('/hammarhand.webp');
   }
   .lofte__punkt {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: 13px;
-    padding: 16px;
+    padding: 14px 16px;
     border: 1px solid #2b2924;
     border-radius: 14px;
   }
@@ -278,7 +280,7 @@ const hammarhand = url('/hammarhand.webp');
     font: 650 15.5px/1.25 var(--font-sans);
   }
   .lofte__text {
-    margin: 4px 0 0;
+    margin: 2px 0 0;
     color: #a39f92;
     font-size: 13.5px;
     line-height: 1.45;
@@ -367,12 +369,11 @@ const hammarhand = url('/hammarhand.webp');
       const namn = li.querySelector('[data-roll="namn"]');
       const rubrik = li.querySelector('[data-roll="rubrik"]');
       if (namn) namn.textContent = 'Bli först';
-      if (rubrik) rubrik.textContent = 'Ingen har lagt upp sig än. Tar du uppdrag eller säljer tjänster?';
+      if (rubrik) rubrik.textContent = 'Ingen har lagt upp sig än.';
     }
     return li;
   }
 
-  const medlemmar = (n: number): string => `${n} ${n === 1 ? 'medlem' : 'medlemmar'}`;
 
   function rita(forsta = false): void {
     const q = sok.value.trim();
@@ -385,14 +386,8 @@ const hammarhand = url('/hammarhand.webp');
     rader.forEach((r, i) => r.style.setProperty('--i', String(i)));
     lista.classList.toggle('medlemslista--in', forsta);
     lista.replaceChildren(...rader);
-    antal.textContent =
-      n === 0
-        ? 'Ingen har lagt upp sig än'
-        : !q
-          ? `${medlemmar(n)} · ny ordning varje dag`
-          : visade.length
-            ? `${visade.length} av ${medlemmar(n)}`
-            : `Ingen av ${medlemmar(n)} matchar ”${q}”`;
+    // Antalet säger hur mycket det finns att välja på. Vid noll säger raden under det som behövs.
+    antal.textContent = n === 0 ? '' : !q ? `${n} byggare` : visade.length ? `${visade.length} av ${n}` : `Ingen träff på ”${q}”`;
     tomt.hidden = !(q && n > 0 && visade.length === 0);
     const nq = normalisera(q);
     for (const val of valrad.querySelectorAll<HTMLButtonElement>('button')) {
