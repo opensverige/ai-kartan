@@ -14,7 +14,7 @@ const E = {
   lan: { '14': 'Västra Götalands län' },
   typikoner: { myndighet: '/ikoner/myndighet.png' },
 };
-const L = { kartbas: '/', orgbas: '/organisation/', bidra: '/bidra', discord: 'https://discord.gg/test', infra: 'https://infra.test', infralogo: '/ai-infra.png' };
+const L = { kartbas: '/', orgbas: '/organisation/', bidra: '/bidra', discord: 'https://discord.gg/test', infra: 'https://infra.test', infralogo: '/ai-infra.png', uppdrag: '/uppdrag', pixelhand: '/pixelhand.webp' };
 const POST = { id: 'sinch', n: 'Sinch', t: 'bolag', kn: 'Stockholm', d: 'Utvecklar API:er för röst och meddelanden.', ds: 'claimed', dv: '2026-10-04' };
 const MYNDIGHET = { id: 'myndigheten', n: 'Myndigheten', t: 'myndighet', kn: null, d: 'Handlägger.', ds: 'confirmed', dv: '2026-10-01' };
 const POSTER = new Map([['sinch', POST], ['myndigheten', MYNDIGHET]]);
@@ -66,6 +66,19 @@ test('förslagen: Fråga AI först, sedan organisationer och platser', () => {
   assert.ok(h.includes('data-plats="lan:14"'));
   assert.ok(h.includes('Län · 1 organisation<'));
   assert.ok(!h.includes('aria-disabled'));
+});
+
+test('förslagen: raden till dem som tar uppdrag står sist och bär bara antalet och sökningen', () => {
+  const h = forslagHtml('rag & sök', [POST], [], E, L, { antal: 2, q: 'rag & sök' });
+  assert.ok(h.indexOf('Sinch') < h.indexOf('data-uppdragsrad'));
+  assert.ok(h.includes('href="/uppdrag?q=rag%20%26%20s%C3%B6k"'));
+  assert.ok(h.includes('2 medlemmar som tar uppdrag'));
+  assert.ok(h.includes('Matchar ”rag &amp; sök”'));
+  const alla = forslagHtml('frilansare', [], [], E, L, { antal: 1, q: '' });
+  assert.ok(alla.includes('href="/uppdrag"'));
+  assert.ok(alla.includes('1 medlem som tar uppdrag'));
+  assert.ok(!forslagHtml('röst', [POST], [], E, L).includes('data-uppdragsrad'));
+  assert.ok(!forslagHtml('röst', [POST], [], E, L, null).includes('Tar uppdrag'));
 });
 
 test('en för lång fråga kan inte väljas', () => {
