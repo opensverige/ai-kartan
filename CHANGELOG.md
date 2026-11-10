@@ -2,6 +2,10 @@
 
 Kodens och funktionernas historik. Dataändringar loggas separat och automatiskt i `history/changelog.json` och på sajten under Ändringar. Samma rader som här finns maskinläsbart i `history/bygglogg.json`.
 
+## 2026-11-10
+
+- Regeln om c/o-adresser säger nu det vi gör. En adress som hämtas ur registret används inte om den har c/o eller lägenhetsnummer. Anger organisationen själv adressen på sin webbplats används den, också när registret har samma adress med c/o. Så har regeln tillämpats sedan 13 oktober: 20 av 142 exakta positioner kommer från en webbplats där registret har c/o eller lägenhetsnummer. Texten på Metod och Personuppgifter, i schemat och i agentreglerna sa det inte tydligt.
+
 ## 2026-11-05
 
 - Frågestatistiken tappar inte längre större delen av dygnet. Jobbet hos GitHub är schemalagt var femtonde minut, men GitHub startade det bara var andra till sjunde timme. Skriptet hämtade ändå bara loggens senaste timme, som om sajten låg på Vercels gratisplan. Allt äldre blev en lucka, mellan 21 oktober och 4 november ungefär 82 procent av tiden, fast loggen fanns kvar. Sajten ligger på Pro, där Vercel sparar loggen ett dygn. Nu läser skriptet teamets plan och hämtar så långt bak som loggen sparas. Går planen inte att läsa räknas en timme, och tiden före blir en lucka som förut. Personuppgifter säger nu att loggen sparas ett dygn. Frågor i de gamla luckorna går inte att räkna i efterhand.
