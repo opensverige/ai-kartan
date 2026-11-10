@@ -3,6 +3,7 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import {
   bildUrl,
   dagensOrdning,
@@ -17,6 +18,8 @@ import {
   normaliseraLank,
   ortrad,
   perKommun,
+  SAMTYCKE_TEXT,
+  SAMTYCKE_VERSION,
   snabbval,
   sokProfiler,
   somRubrik,
@@ -37,6 +40,19 @@ const profil = (slug, erbjuder = 'uppdrag', distans = false, omraden = []) => ({
   bolag_namn: null,
   bolag_webbplats: null,
   uppdaterad_at: '2026-11-08T10:00:00Z',
+});
+
+const AVTRYCK_V4 = '6f7a34d5df3e72ba';
+
+test('samtyckestexten och dess version hör ihop', () => {
+  // Ändrar du texten: höj SAMTYCKE_VERSION här och i funktionen uppdrag, arkivera den gamla
+  // texten i webbplatsens supabase/samtycken-uppdrag.md, och skriv sedan in det nya avtrycket här.
+  const avtryck = createHash('sha256').update(SAMTYCKE_TEXT).digest('hex').slice(0, 16);
+  assert.deepEqual([SAMTYCKE_VERSION, avtryck], ['4', AVTRYCK_V4]);
+  // Det som måste stå i ett samtycke: vem som behandlar, att det syns öppet, och hur det tas tillbaka.
+  for (const ord of ['föreningen OpenSverige', 'öppet för alla', 'medlemsregistret', 'ta tillbaka samtycket']) {
+    assert.ok(SAMTYCKE_TEXT.includes(ord), ord);
+  }
 });
 
 test('ordningen är densamma samma dag och skiljer sig mellan dagar', () => {

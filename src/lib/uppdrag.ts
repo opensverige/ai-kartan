@@ -13,8 +13,18 @@ export const UPPDRAG_API = 'https://kmkttmasoemqcyzkjuyv.supabase.co/functions/v
 /** Där man blir medlem. Bara medlemmar kan lägga upp sig. */
 export const BLI_MEDLEM = 'https://opensverige.se/bli-medlem';
 
-/** Versionen av samtyckestexten. Funktionen sparar sin egen, och de två ska vara samma. */
-export const SAMTYCKE_VERSION = '3';
+/**
+ * Samtycket som medlemmen kryssar i, och dess version. Funktionen har samma version, och den
+ * godtar inget samtycke till en annan. Texten säger vem som visar uppgifterna, vilka de är, var de
+ * syns och hur samtycket tas tillbaka. Ändras ett enda ord höjs versionen här och i funktionen,
+ * och den gamla texten arkiveras i webbplatsens supabase/samtycken-uppdrag.md. Ett test håller
+ * ihop texten och versionen.
+ */
+export const SAMTYCKE_VERSION = '4';
+export const SAMTYCKE_TEXT =
+  'Jag samtycker till att föreningen OpenSverige visar mitt namn ur medlemsregistret och det jag har fyllt i här, ' +
+  'öppet för alla på AI-kartan: i listan Tar uppdrag och, om jag har valt kommun, som en hand på kartan. ' +
+  'Raden visar att jag är medlem. Jag kan ta tillbaka samtycket när jag vill genom att ta bort raden.';
 
 export type Erbjuder = 'uppdrag' | 'tjanster' | 'bada';
 
@@ -34,6 +44,8 @@ export type Profil = {
   uppdaterad_at: string;
   /** Bildens namn i föreningens lagring. Null för en profil utan bild, som visar föreningens hand. */
   bild: string | null;
+  /** Versionen av samtycket som medlemmen har godkänt. Följer bara med medlemmens egen profil, aldrig listan. */
+  samtycke_version?: string;
 };
 
 export const ERBJUDER_TEXT: Record<Erbjuder, string> = {

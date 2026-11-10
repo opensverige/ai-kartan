@@ -11,7 +11,7 @@
 import Bas from '../../layouts/Bas.astro';
 import Uppdragsbas from '../../components/Uppdragsbas.astro';
 import { hamtaData, url } from '../../lib/data';
-import { UPPDRAG_API } from '../../lib/uppdrag';
+import { SAMTYCKE_TEXT, UPPDRAG_API } from '../../lib/uppdrag';
 
 const d = hamtaData();
 const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv'));
@@ -203,10 +203,15 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
             </details>
 
             <div class="falt">
+              <p class="falt__fel" id="samtycke-nytt" hidden>Texten har ändrats sedan du sparade sist. Läs den och kryssa i igen.</p>
               <label class="val">
-                <input type="checkbox" name="samtycke" id="f-samtycke" aria-describedby="fel-samtycke" />
-                <span>Jag vill synas under Tar uppdrag på AI-kartan med uppgifterna och bilden ovan: i listan, och som en hand i min kommuns mitt på kartan. Kortet visar att jag är medlem i OpenSverige. Jag kan ta bort profilen när som helst, och då försvinner den och bilden direkt.</span>
+                <input type="checkbox" name="samtycke" id="f-samtycke" aria-describedby="samtycke-info fel-samtycke" />
+                <span>{SAMTYCKE_TEXT}</span>
               </label>
+              <p class="faltnot" id="samtycke-info">
+                Föreningen OpenSverige ansvarar för uppgifterna.
+                <a href={url('/integritet#uppdrag')} target="_blank" rel="noopener">Så behandlas de ↗</a>
+              </p>
               <p class="falt__fel" id="fel-samtycke" hidden></p>
             </div>
 
@@ -377,6 +382,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
     lankEtikett,
     lanktyp,
     MAX_KUNSKAPER,
+    SAMTYCKE_VERSION,
     medKunskap,
     normaliseraLank,
     somRubrik,
@@ -408,7 +414,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
     samtycke: boolean;
   };
   /** Osparade ändringar, sparade i webbläsaren så att en utgången länk inte kostar medlemmen arbetet. */
-  type Utkast = { at: number; vem: string; varden: Varden; bild: string | null; bildBort: boolean };
+  type Utkast = { at: number; vem: string; version: string; varden: Varden; bild: string | null; bildBort: boolean };
 
   const NYCKEL = 'uppdrag-session';
   const UTKAST = 'uppdrag-utkast';
@@ -491,7 +497,8 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
       kunskaper: [...(p?.kunskaper ?? [])],
       bolag_namn: p?.bolag_namn ?? '',
       bolag_webbplats: p?.bolag_webbplats ?? '',
-      samtycke: Boolean(p),
+      // Rutan är bara ikryssad för den text medlemmen redan har godkänt, aldrig för en ny.
+      samtycke: p?.samtycke_version === SAMTYCKE_VERSION,
     };
   }
 
@@ -536,11 +543,13 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
     // Osparade ändringar från förra gången läggs tillbaka, till exempel efter en länk som gick ut.
     const utkast = lasUtkast(l.forslag.namn);
     if (utkast) {
-      sattVarden(utkast.varden);
+      // Ett kryss i utkastet gäller bara om det sattes för samma text som står här nu.
+      sattVarden({ ...utkast.varden, samtycke: utkast.varden.samtycke && utkast.version === SAMTYCKE_VERSION });
       nyBild = utkast.bild;
       taBortBild = utkast.bildBort;
     }
     hitta('r-utkast').hidden = !utkast;
+    hitta('samtycke-nytt').hidden = !l.profil || l.profil.samtycke_version === SAMTYCKE_VERSION;
     visaKunskaper();
     visaBild();
     visaRubrikKvar();
@@ -561,7 +570,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
   }
 
   function lasForm(): Record<string, unknown> {
-    return { ...lasVarden(), bild: nyBild ?? undefined, bild_bort: taBortBild || undefined };
+    return { ...lasVarden(), samtycke_version: SAMTYCKE_VERSION, bild: nyBild ?? undefined, bild_bort: taBortBild || undefined };
   }
 
   function forhandsvisa(): void {
@@ -603,7 +612,14 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
 
   function sparaUtkast(): void {
     if (!lagrat) return;
-    const utkast: Utkast = { at: Date.now(), vem: lagrat.forslag.namn, varden: lasVarden(), bild: nyBild, bildBort: taBortBild };
+    const utkast: Utkast = {
+      at: Date.now(),
+      vem: lagrat.forslag.namn,
+      version: SAMTYCKE_VERSION,
+      varden: lasVarden(),
+      bild: nyBild,
+      bildBort: taBortBild,
+    };
     try {
       localStorage.setItem(UTKAST, JSON.stringify(utkast));
     } catch {
@@ -1133,6 +1149,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
       bildStatus.textContent = '';
       sparatLage = lagesnyckel();
       hitta('r-utkast').hidden = true;
+      hitta('samtycke-nytt').hidden = true;
       visaBild();
       visaNoter(lagrat);
       forhandsvisa();
