@@ -265,6 +265,7 @@ const medlemsdatum = medlemmar
   import { UPPDRAG_API, bildUrl, dagensOrdning, perKommun, uppdragstraff, type Profil, type Uppslag } from '../lib/uppdrag';
   import { pixelhandSrc, ritaKort } from '../lib/uppdragkort';
   import { kommunytor } from '../lib/kommunyta';
+  import { delaAdresser, type Adressplats } from '../lib/sammaadress';
   import { normalisera, tolka, traffar, tomtSvar, finnsI, type Tolkning } from '../lib/sok';
   import { passarFilter, filterTillSok, type Filter, type FacettNamn } from '../lib/filter';
   import { tillSokpost, type Etiketter } from '../lib/sokindex';
@@ -392,6 +393,8 @@ const medlemsdatum = medlemmar
     const AV_KOD = { avKod: true };
     // Organisationer som är ensamma på sin plats i urvalet och därför ritas som sig själva.
     let ensamma = { lan: new Set<string>(), kommun: new Set<string>() };
+    // Var varje organisation i urvalet ritas i förhållande till sin adress. De som delar hus står bredvid varandra.
+    let adressplats = new Map<string, Adressplats>();
     let tips: Popup | null = null;
     let sokVal: SokVal[] = [];
     let sokAktiv = -1;
@@ -1252,32 +1255,57 @@ const medlemsdatum = medlemmar
     /** `el` och `ek` säger om organisationen är ensam i sitt län respektive sin kommun och då ritas som sig själv. */
     function tillGeoJson(poster: Post[], ensamILan?: Set<string>, ensamIKommun?: Set<string>): GeoJSON.FeatureCollection {
       const medPlats = poster.filter((o) => o.lat !== null && o.lng !== null);
-      // Organisationer med besöksadress i samma hus ligger på samma punkt. De ritas som en nål med
-      // antal, och den första i bokstavsordning bär nålen och namnen.
-      const perPunkt = new Map<string, Post[]>();
-      for (const o of medPlats) {
-        if (o.pt !== 'exakt') continue;
-        const punkt = `${o.lat},${o.lng}`;
-        perPunkt.set(punkt, [...(perPunkt.get(punkt) ?? []), o]);
-      }
+      // Organisationer med besöksadress i samma hus ligger på samma punkt. Var och en får sin egen
+      // prick, tätt ihop runt adressen. Reglerna står i src/lib/sammaadress.ts.
+      const platser = adressplatser(poster);
       return {
         type: 'FeatureCollection',
         features: medPlats.map((o) => {
-          const grannar = (perPunkt.get(`${o.lat},${o.lng}`) ?? [o]).slice().sort((a, b) => a.n.localeCompare(b.n, 'sv'));
-          const forst = grannar[0].id === o.id;
+          const p = platser.get(o.id);
           return {
             type: 'Feature',
             geometry: { type: 'Point', coordinates: [o.lng as number, o.lat as number] },
             properties: {
               id: o.id, n: o.n, t: o.t, k: o.k ?? '', pt: o.pt ?? '', el: ensamILan?.has(o.id) ?? false, ek: ensamIKommun?.has(o.id) ?? false,
-              dn: grannar.length, df: forst, dids: grannar.map((g) => g.id).join(','),
-              // Namnet under nålen. Bara den första i huset skriver ut det, med de andra efter sig.
-              etikett: !forst ? '' : grannar.length > 1 ? `${o.n} + ${grannar.length - 1} till` : o.n,
-              tips: grannar.length > 1 ? `Samma adress: ${grannar.map((g) => g.n).join(', ')}` : o.n,
+              // dn är antalet på adressen och flytt prickens plats räknat från den, i bildpunkter.
+              dn: p?.antal ?? 1, flytt: [p?.dx ?? 0, p?.dy ?? 0], topp: p?.topp ?? 0, botten: p?.botten ?? 0,
+              // Namnet vid pricken. Delar flera hus skriver den första ut allas, och de andra inget.
+              etikett: p?.etikett ?? o.n,
             },
           };
         }),
       };
+    }
+
+    /** En typ med ikon är bredare än en prick, och då får gruppen mer luft. */
+    function adressplatser(poster: Post[]): Map<string, Adressplats> {
+      return delaAdresser(poster, (typ) => typ in typikoner);
+    }
+
+    /**
+     * Pricken som bild, en per typ, med samma mått som cirkeln i lagret exakta-bas: radie 11 och
+     * en vit kant på 2,5. Svarar om bilderna finns.
+     */
+    function ritaPrickbilder(): boolean {
+      const RADIE = 11;
+      const KANT = 2.5;
+      const BREDD = 28;
+      const tathet = Math.max(2, Math.min(4, Math.ceil(window.devicePixelRatio || 1)));
+      for (const [typ, farg] of Object.entries(FARG)) {
+        const duk = document.createElement('canvas');
+        duk.width = duk.height = BREDD * tathet;
+        const penna = duk.getContext('2d');
+        if (!penna) return false;
+        const mitten = duk.width / 2;
+        for (const [radie, fyllning] of [[RADIE + KANT, '#fdfbf7'], [RADIE, farg]] as const) {
+          penna.beginPath();
+          penna.arc(mitten, mitten, radie * tathet, 0, Math.PI * 2);
+          penna.fillStyle = fyllning;
+          penna.fill();
+        }
+        karta!.addImage(`prick-${typ}`, penna.getImageData(0, 0, duk.width, duk.height), { pixelRatio: tathet });
+      }
+      return true;
     }
 
     function grupperSomGeoJson(grupper: Platsgrupp[]): GeoJSON.FeatureCollection {
@@ -1308,6 +1336,7 @@ const medlemsdatum = medlemmar
       const lan = grupperaPerPlats(urval, 'lan', mitt.lan);
       const kommuner = grupperaPerPlats(urval, 'kommun', mitt.kommun);
       ensamma = { lan: lan.ensamma, kommun: kommuner.ensamma };
+      adressplats = adressplatser(urval);
       (karta!.getSource('orgs') as GeoJSONSource | undefined)?.setData(tillGeoJson(urval, lan.ensamma, kommuner.ensamma));
       (karta!.getSource('lan-grupper') as GeoJSONSource | undefined)?.setData(grupperSomGeoJson(lan.grupper));
       (karta!.getSource('kommun-grupper') as GeoJSONSource | undefined)?.setData(grupperSomGeoJson(kommuner.grupper));
@@ -1322,6 +1351,11 @@ const medlemsdatum = medlemmar
       const o = valdId ? alla.find((x) => x.id === valdId) : undefined;
       const utanfor = o && !urval.includes(o) ? new Set([o.id]) : undefined;
       (karta!.getSource('vald') as GeoJSONSource | undefined)?.setData(tillGeoJson(o ? [o] : [], utanfor ?? ensamma.lan, utanfor ?? ensamma.kommun));
+      // Delar den valda hus med andra står dess prick en bit från adressen. Ringen och namnet följer med dit.
+      const p = o && !utanfor ? adressplats.get(o.id) : undefined;
+      const flytt: [number, number] = [p?.dx ?? 0, p?.dy ?? 0];
+      const lager = [['vald-ring', 'circle-translate'], ['vald-punkt', 'circle-translate'], ['vald-namn', 'text-translate'], ['vald-ikon', 'icon-translate']] as const;
+      for (const [id, egenskap] of lager) if (karta!.getLayer(id)) karta!.setPaintProperty(id, egenskap, flytt);
     }
 
     /** Golvet följer skärmen och panelerna: hela Sverige plus lite luft, aldrig längre ut. */
@@ -1968,9 +2002,15 @@ const medlemsdatum = medlemmar
         GRUPPNIVAER.forEach(ritaCirklar);
         // Vilka organisationer som ritas på varje nivå: alla närmast, annars bara de som är ensamma på sin plats.
         const synlig = ['case', ['>=', ['zoom'], ZOOM_POSTER], true, ['>=', ['zoom'], ZOOM_KOMMUN], ['get', 'ek'], ['get', 'el']] as unknown as ExpressionSpecification;
-        // Den som bär nålen på en punkt med besöksadress. De som delar hus med den ritas inte en gång till.
-        const MED_BESOKSADRESS = ['all', ['==', ['get', 'pt'], 'exakt'], ['get', 'df']] as unknown as ExpressionSpecification;
         const UTAN_BESOKSADRESS = ['!=', ['get', 'pt'], 'exakt'] as unknown as ExpressionSpecification;
+        // De som delar hus får var sin prick en bit från adressen. En cirkel går inte att flytta per
+        // organisation, så de ritas som bilder av samma prick. Går bilderna inte att rita ligger
+        // prickarna kvar på varandra.
+        const prickbilder = ritaPrickbilder();
+        const delarHus = ['>', ['get', 'dn'], 1];
+        const ENSAM_I_HUSET = ['all', ['==', ['get', 'pt'], 'exakt'], prickbilder ? ['!', delarHus] : true] as unknown as ExpressionSpecification;
+        const DELAR_HUS = ['all', ['==', ['get', 'pt'], 'exakt'], delarHus] as unknown as ExpressionSpecification;
+        const FLYTT = ['array', 'number', 2, ['get', 'flytt']] as unknown as ExpressionSpecification;
         const TYPFARG = ['match', ['get', 't'], ...Object.entries(FARG).flat(), FARG.bolag] as unknown as ExpressionSpecification;
         // En organisation utan känd adress ritas som en kontur, som en markör för något man vet finns
         // men inte var. Den står i kommunens rutnät och svävar en aning. Färgen på konturen är typens.
@@ -1985,19 +2025,29 @@ const medlemsdatum = medlemmar
         });
         // En organisation med exakt adress är en fylld prick på sin plats, och den står still.
         karta!.addLayer({
-          id: 'exakta-bas', type: 'circle', source: 'orgs', filter: ['all', synlig, ['==', ['get', 'pt'], 'exakt']],
+          id: 'exakta-bas', type: 'circle', source: 'orgs', filter: ['all', synlig, ENSAM_I_HUSET],
           paint: { 'circle-color': TYPFARG, 'circle-radius': ['interpolate', ['linear'], ['zoom'], 4, 6, 9, 8, 13, 11], 'circle-stroke-width': 2.5, 'circle-stroke-color': '#fdfbf7' },
         });
+        // Prickarna i ett delat hus. De syns bara närmast: längre ut räknas huset in i sin kommun.
+        // Bilderna tar ingen plats från namnen, precis som cirklarna.
+        if (prickbilder) {
+          karta!.addLayer({
+            id: 'exakta-delade', type: 'symbol', source: 'orgs', filter: ['all', synlig, DELAR_HUS],
+            layout: {
+              'icon-image': ['match', ['get', 't'], Object.keys(FARG), ['concat', 'prick-', ['get', 't']], 'prick-bolag'] as unknown as ExpressionSpecification,
+              'icon-offset': FLYTT, 'icon-allow-overlap': true, 'icon-ignore-placement': true,
+            },
+          });
+        }
         karta!.addLayer({
           id: 'namn', type: 'symbol', source: 'orgs', filter: synlig, minzoom: 7,
-          layout: { 'text-field': ['get', 'etikett'], 'text-font': ['Noto Sans Bold'], 'text-size': 12, 'text-anchor': 'bottom', 'text-offset': [0, -1.1], 'text-max-width': 9, 'text-optional': true },
+          layout: {
+            'text-field': ['get', 'etikett'], 'text-font': ['Noto Sans Bold'], 'text-size': 12, 'text-anchor': 'bottom', 'text-optional': true,
+            // Namnet står över pricken. Delar flera hus står det över den översta av dem, och får mer bredd för två namn.
+            'text-offset': ['interpolate', ['linear'], ['get', 'topp'], -120, ['literal', [0, -11.1]], 0, ['literal', [0, -1.1]]] as unknown as ExpressionSpecification,
+            'text-max-width': ['case', delarHus, 15, 9] as unknown as ExpressionSpecification,
+          },
           paint: { 'text-color': BLACK, 'text-halo-color': '#fdfbf7', 'text-halo-width': 1.8 },
-        });
-        // Delar flera organisationer hus ritas en prick, med antalet i.
-        karta!.addLayer({
-          id: 'exakta-antal', type: 'symbol', source: 'orgs', minzoom: ZOOM_KOMMUN, filter: ['all', synlig, MED_BESOKSADRESS, ['>', ['get', 'dn'], 1]],
-          layout: { 'text-field': ['to-string', ['get', 'dn']], 'text-font': ['Noto Sans Bold'], 'text-size': ['interpolate', ['linear'], ['zoom'], 9, 8.5, 13, 11], 'text-allow-overlap': true, 'text-ignore-placement': true },
-          paint: { 'text-color': '#fdfbf7' },
         });
         GRUPPNIVAER.forEach(ritaText);
 
@@ -2016,23 +2066,30 @@ const medlemsdatum = medlemmar
           id: 'ensam-yta', type: 'symbol', source: 'orgs', maxzoom: ZOOM_POSTER, filter: synlig,
           layout: { 'icon-image': 'tom', 'icon-size': 18, 'icon-allow-overlap': true, 'icon-padding': 0 },
         });
+        // Den valda kan stå en bit från sin adress, se uppdateraVald. Den flyttas som prickarna, i
+        // skärmens riktning, och utan övergång: ringen ska sitta på pricken direkt.
+        const VALD_FLYTT = {
+          circle: { 'circle-translate-anchor': 'viewport', 'circle-translate-transition': { duration: 0 } },
+          text: { 'text-translate-anchor': 'viewport', 'text-translate-transition': { duration: 0 } },
+          icon: { 'icon-translate-anchor': 'viewport', 'icon-translate-transition': { duration: 0 } },
+        } as const;
         karta!.addLayer({
           id: 'vald-ring', type: 'circle', source: 'vald', filter: synlig,
-          paint: { 'circle-color': '#fdfbf7', 'circle-radius': 15, 'circle-stroke-width': 3, 'circle-stroke-color': BLACK },
+          paint: { 'circle-color': '#fdfbf7', 'circle-radius': 15, 'circle-stroke-width': 3, 'circle-stroke-color': BLACK, ...VALD_FLYTT.circle },
         });
         karta!.addLayer({
           id: 'vald-punkt', type: 'circle', source: 'vald', filter: synlig,
-          paint: { 'circle-color': ['match', ['get', 't'], ...Object.entries(FARG).flat(), FARG.bolag] as unknown as ExpressionSpecification, 'circle-radius': 9 },
+          paint: { 'circle-color': ['match', ['get', 't'], ...Object.entries(FARG).flat(), FARG.bolag] as unknown as ExpressionSpecification, 'circle-radius': 9, ...VALD_FLYTT.circle },
         });
         karta!.addLayer({
           id: 'vald-namn', type: 'symbol', source: 'vald', filter: synlig,
           layout: { 'text-field': ['get', 'n'], 'text-font': ['Noto Sans Bold'], 'text-size': 13, 'text-anchor': 'bottom', 'text-offset': [0, -1.6], 'text-max-width': 10, 'text-allow-overlap': true },
-          paint: { 'text-color': BLACK, 'text-halo-color': '#fdfbf7', 'text-halo-width': 2 },
+          paint: { 'text-color': BLACK, 'text-halo-color': '#fdfbf7', 'text-halo-width': 2, ...VALD_FLYTT.text },
         });
 
         const grupplager = ['lan-grupp', 'kommun-grupp'];
         // Landmärkeslagret läggs till senare; lager som saknas hoppas över tills dess.
-        const punktlager = ['punkter', 'exakta-bas', 'landmarken'];
+        const punktlager = ['punkter', 'exakta-bas', 'exakta-delade', 'landmarken'];
         // En organisation som ritas som sig själv ligger ovanpå gruppernas cirklar. Pekar besökaren
         // på den är det den som gäller, inte gruppen under.
         const prickUnder = (e: MapLayerMouseEvent) => {
@@ -2054,10 +2111,14 @@ const medlemsdatum = medlemmar
           if (id === tipsFor) return;
           tipsFor = id;
           tips?.remove();
+          // Den som delar hus med andra står en bit från adressen. Tipset pekar på pricken, inte på adressen.
+          const adress = (f.geometry as GeoJSON.Point).coordinates as [number, number];
+          const p = antal ? undefined : adressplats.get(id);
+          const punkt = karta!.project(adress);
           // Ett landmärke eller en grupp är högre än en prick, så tipset får mer luft.
           tips = new Tips({ closeButton: false, closeOnClick: false, offset: antal ? 34 : f.layer.id === 'landmarken' ? 24 : 14, className: 'tips' })
-            .setLngLat((f.geometry as GeoJSON.Point).coordinates as [number, number])
-            .setText(antal ? `${f.properties?.n} · ${antal} organisationer` : String(f.properties?.tips ?? f.properties?.n ?? ''))
+            .setLngLat(p && (p.dx || p.dy) ? karta!.unproject([punkt.x + p.dx, punkt.y + p.dy]) : adress)
+            .setText(antal ? `${f.properties?.n} · ${antal} organisationer` : String(f.properties?.n ?? ''))
             .addTo(karta!);
         };
         const doljTips = () => {
@@ -2098,9 +2159,7 @@ const medlemsdatum = medlemmar
         karta!.on('click', punktlager, (e) => {
           // Andra klicket i ett dubbelklick på en grupp: det som nu ligger under pekaren var inte målet.
           if (nyssGrupp()) return;
-          // Delar flera organisationer hus går varje tryck vidare till nästa av dem.
-          const iHuset = String(e.features?.[0]?.properties?.dids ?? '').split(',').filter(Boolean);
-          const id = iHuset.length > 1 ? iHuset[(iHuset.indexOf(valdId ?? '') + 1) % iHuset.length] : e.features?.[0]?.properties?.id;
+          const id = e.features?.[0]?.properties?.id;
           const o = id ? alla.find((x) => x.id === String(id)) : undefined;
           if (!o) return;
           handelser.orgOppnad('karta');
@@ -2145,7 +2204,8 @@ const medlemsdatum = medlemmar
             {
               id: 'landmarken', type: 'symbol', source: 'orgs', minzoom: ZOOM_POSTER, filter: ['all', synlig, arLandmarke],
               // Ikonen stannar vid 40 px, samma storlek som den valda ikonen och dess ring är ritade för.
-              layout: { 'icon-image': ikon, 'icon-allow-overlap': true },
+              // Delar den hus med andra står den en bit från adressen, som prickarna.
+              layout: { 'icon-image': ikon, 'icon-allow-overlap': true, 'icon-offset': FLYTT },
             },
             'lan-grupp-namn',
           );
@@ -2154,7 +2214,12 @@ const medlemsdatum = medlemmar
           karta!.addLayer(
             {
               id: 'landmarken-namn', type: 'symbol', source: 'orgs', minzoom: ZOOM_POSTER, filter: ['all', synlig, arLandmarke],
-              layout: { 'text-field': ['get', 'n'], 'text-font': ['Noto Sans Bold'], 'text-size': 12, 'text-anchor': 'top', 'text-offset': [0, 1.85], 'text-max-width': 9 },
+              layout: {
+                'text-field': ['get', 'etikett'], 'text-font': ['Noto Sans Bold'], 'text-size': 12, 'text-anchor': 'top',
+                // Namnet står under ikonen. Delar flera hus står det under den nedersta av dem.
+                'text-offset': ['interpolate', ['linear'], ['get', 'botten'], 0, ['literal', [0, 1.85]], 120, ['literal', [0, 11.85]]] as unknown as ExpressionSpecification,
+                'text-max-width': ['case', delarHus, 15, 9] as unknown as ExpressionSpecification,
+              },
               paint: { 'text-color': BLACK, 'text-halo-color': '#fdfbf7', 'text-halo-width': 1.8 },
             },
             'lan-grupp-namn',
@@ -2162,16 +2227,18 @@ const medlemsdatum = medlemmar
           // Pricken och dess namn gäller alla typer längre ut, och bara typer utan ikon närmast.
           const somPrick = ['all', synlig, ['any', ['<', ['zoom'], ZOOM_POSTER], ['!', arLandmarke]]] as unknown as ExpressionSpecification;
           karta!.setFilter('punkter', ['all', somPrick, UTAN_BESOKSADRESS]);
-          karta!.setFilter('exakta-bas', ['all', somPrick, ['==', ['get', 'pt'], 'exakt']]);
+          karta!.setFilter('exakta-bas', ['all', somPrick, ENSAM_I_HUSET]);
           karta!.setFilter('namn', somPrick);
-          karta!.setFilter('exakta-antal', ['all', somPrick, MED_BESOKSADRESS, ['>', ['get', 'dn'], 1]]);
+          if (karta!.getLayer('exakta-delade')) karta!.setFilter('exakta-delade', ['all', somPrick, DELAR_HUS]);
           // Den valda organisationen på närmaste nivån: större ring bakom, och ikonen i stället för pricken.
           karta!.setPaintProperty('vald-ring', 'circle-radius', ['step', ['zoom'], 15, ZOOM_POSTER, ['case', arLandmarke, 24, 15]]);
           karta!.setFilter('vald-punkt', somPrick);
           karta!.addLayer(
-            { id: 'vald-ikon', type: 'symbol', source: 'vald', minzoom: ZOOM_POSTER, filter: ['all', synlig, arLandmarke], layout: { 'icon-image': ikon, 'icon-allow-overlap': true } },
+            { id: 'vald-ikon', type: 'symbol', source: 'vald', minzoom: ZOOM_POSTER, filter: ['all', synlig, arLandmarke], layout: { 'icon-image': ikon, 'icon-allow-overlap': true }, paint: VALD_FLYTT.icon },
             'vald-namn',
           );
+          // Lagret fanns inte när den valda senast ritades. Nu får det dess plats.
+          uppdateraVald();
           karta!.setLayoutProperty('vald-namn', 'text-offset', [
             'step', ['zoom'], ['literal', [0, -1.6]],
             ZOOM_POSTER, ['case', arLandmarke, ['literal', [0, -2.3]], ['literal', [0, -1.6]]],
