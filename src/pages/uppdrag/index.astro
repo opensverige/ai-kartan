@@ -59,7 +59,7 @@ const pixelhand = url('/pixelhand.webp');
 
       <ul class="medlemslista" id="uppdrag-lista" data-api={UPPDRAG_API}></ul>
       <p class="morka__tomt" id="uppdrag-tomt" hidden>
-        <button class="knapp morka__knapp" type="button" id="uppdrag-rensa">Visa alla →</button>
+        <button class="knapp" type="button" id="uppdrag-rensa">Visa alla →</button>
       </p>
       <noscript><p class="morka__ingress">Listan hämtas med JavaScript. Slå på det för att se medlemmarna.</p></noscript>
 
@@ -82,16 +82,38 @@ const pixelhand = url('/pixelhand.webp');
         </li>
       </template>
 
+      <ul class="lofte" aria-label="Så fungerar listan">
+        <li class="lofte__punkt">
+          <span class="lofte__ikon" set:html={ikon('las', 18)} />
+          <div>
+            <p class="lofte__rubrik">Bara medlemmar</p>
+            <p class="lofte__text">Listan är låst för andra. Namnet på varje rad kommer ur föreningens medlemsregister.</p>
+          </div>
+        </li>
+        <li class="lofte__punkt">
+          <span class="lofte__ikon lofte__ikon--tal" aria-hidden="true">0 kr</span>
+          <div>
+            <p class="lofte__rubrik">Gratis att bli medlem</p>
+            <p class="lofte__text">Det tar två minuter. <a href={BLI_MEDLEM} rel="noopener">Bli medlem →</a></p>
+          </div>
+        </li>
+        <li class="lofte__punkt">
+          <span class="lofte__ikon" set:html={ikon('bock', 18)} />
+          <div>
+            <p class="lofte__rubrik">Ingen köpt plats</p>
+            <p class="lofte__text">Ordningen byts varje dag. Föreningen förmedlar inget, kontakten tar ni direkt.</p>
+          </div>
+        </li>
+      </ul>
+
       <details class="morka__om">
-        <summary>Bara föreningsmedlemmar · Föreningen förmedlar inget · Ingen kan köpa en plats · <span>Om listan</span></summary>
+        <summary><span>Mer om listan</span></summary>
         <ul>
-          <li>Bara medlemmar i föreningen OpenSverige kan lägga upp sig. Medlemskapet är gratis och tar två minuter.</li>
-          <li>Uppgifterna är medlemmarnas egna. Föreningen förmedlar inga uppdrag och går inte i god för någon.</li>
-          <li>Ordningen byts varje dag, så att ingen alltid står först. Ingen kan köpa en plats.</li>
-          <li>Raden leder till medlemmens egen länk. Kontakten tar ni där, föreningen är inte med.</li>
+          <li>Var och en lägger upp sig själv, och ändrar eller tar bort sin rad med en ny länk till sin e-post.</li>
+          <li>Uppgifterna är medlemmarnas egna. Föreningen går inte i god för någon.</li>
           <li>Bilden väljer medlemmen själv. En bild som bryter mot föreningens regler tas bort.</li>
           <li>
-            Klick på en medlems länk räknas per dag, så att medlemmen ser om profilen ger något. Inget sparas om den som
+            Klick på en medlems länk räknas per dag, så att medlemmen ser om raden ger något. Inget sparas om den som
             klickar. <a href={url('/integritet#uppdrag')}>Mer om det</a>.
           </li>
         </ul>
@@ -101,19 +123,6 @@ const pixelhand = url('/pixelhand.webp');
 </Bas>
 
 <style>
-  .morka {
-    padding: 34px 0 60px;
-    overflow: hidden;
-    background: #141310;
-    color: #e9e5da;
-  }
-  .morka :global(:focus-visible) {
-    outline-color: #f6f2e8;
-  }
-  /* Raderna läses lättast i en spalt som inte är bredare än en rad text orkar. */
-  .morka__ram {
-    max-width: 1080px;
-  }
   /* Sidhuvudet är lågt, så att de första medlemmarna syns utan att rulla. Handen står till höger. */
   .morka__topp {
     position: relative;
@@ -128,39 +137,8 @@ const pixelhand = url('/pixelhand.webp');
     margin-bottom: -38px;
     pointer-events: none;
   }
-  .morka__kicker {
-    margin: 0;
-    color: #a39f92;
-    font: 500 12px/1.2 var(--font-mono);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-  }
-  .morka h1 {
-    margin: 12px 0 0;
-    color: #f6f2e8;
-    font: 650 clamp(36px, 4.6vw, 54px) / 1 var(--font-sans);
-    letter-spacing: -0.035em;
-  }
-  .morka__ingress {
-    max-width: 54ch;
-    margin: 12px 0 0;
-    color: #c9c4b6;
-    font-size: 16.5px;
-    line-height: 1.5;
-  }
   .morka__lagg {
-    color: #f6f2e8;
     white-space: nowrap;
-  }
-  .morka__knapp {
-    border-color: #f6f2e8;
-    background: #f6f2e8;
-    color: #141310;
-  }
-  .morka__knapp:hover {
-    border-color: #ffffff;
-    background: #ffffff;
-    color: #141310;
   }
 
   /* Sökfältet är sidans enda stora reglage. Valen under det skriver i samma fält. */
@@ -262,8 +240,51 @@ const pixelhand = url('/pixelhand.webp');
     }
   }
 
+  /* Det som gör listan värd att lita på, sagt så att det syns: låst för andra än medlemmar, gratis
+     att gå med, och ingen köpt plats. */
+  .lofte {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+    gap: 8px;
+    margin: 28px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .lofte__punkt {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+    padding: 16px;
+    border: 1px solid #2b2924;
+    border-radius: 14px;
+  }
+  .lofte__ikon {
+    display: inline-grid;
+    flex: none;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #26241f;
+    color: #f6f2e8;
+  }
+  .lofte__ikon--tal {
+    font: 600 11.5px/1 var(--font-mono);
+    letter-spacing: -0.01em;
+  }
+  .lofte__rubrik {
+    margin: 1px 0 0;
+    color: #f6f2e8;
+    font: 650 15.5px/1.25 var(--font-sans);
+  }
+  .lofte__text {
+    margin: 4px 0 0;
+    color: #a39f92;
+    font-size: 13.5px;
+    line-height: 1.45;
+  }
   .morka__om {
-    margin-top: 32px;
+    margin-top: 16px;
     color: #a39f92;
     font: 400 12.5px/1.6 var(--font-mono);
   }
@@ -280,9 +301,6 @@ const pixelhand = url('/pixelhand.webp');
     padding-left: 18px;
     color: #c9c4b6;
     font: 400 15px/1.55 var(--font-sans);
-  }
-  .morka__om a {
-    color: #e9b38f;
   }
 
   @media (max-width: 560px) {

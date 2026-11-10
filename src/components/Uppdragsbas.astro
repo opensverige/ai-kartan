@@ -15,8 +15,99 @@ const etiketter: Etiketter = {
 
 <style is:global>
   /* En regel med display får inte vinna över hidden, som sidornas skript sätter. */
-  :is(.uppdrag__sok, .redigera, .uppdragsform, .besked, .knapp, .falt)[hidden] {
+  :is(.uppdrag__sok, .redigera, .uppdragsform, .besked, .knapp, .falt, .bildval__x, .lankknapp, .ordval)[hidden] {
     display: none !important;
+  }
+
+  /* Den mörka sidan som listan, länksteget och formuläret delar. Den bryter med flit mot resten
+     av kartan. color-scheme gör att webbläsarens egna reglage, som listan i en select, också blir
+     mörka. Klippningen i sidled skapar ingen rullyta, så att det som ska stå kvar när man rullar gör det. */
+  .morka {
+    padding: 34px 0 60px;
+    overflow-x: clip;
+    background: #141310;
+    color: #e9e5da;
+    color-scheme: dark;
+  }
+  /* Länksteget och formuläret är korta sidor. Den mörka ytan når ändå ner till sidfoten. */
+  .morka--hel {
+    min-height: calc(100vh - var(--huvud-h));
+    min-height: calc(100dvh - var(--huvud-h));
+  }
+  .morka :focus-visible {
+    outline-color: #f6f2e8;
+  }
+  /* Raderna läses lättast i en spalt som inte är bredare än en rad text orkar. */
+  .morka__ram {
+    max-width: 1080px;
+  }
+  .morka__ram--smal {
+    max-width: 660px;
+  }
+  .morka__kicker {
+    margin: 0;
+    color: #a39f92;
+    font: 500 12px/1.2 var(--font-mono);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .morka h1 {
+    margin: 12px 0 0;
+    color: #f6f2e8;
+    font: 650 clamp(36px, 4.6vw, 54px) / 1 var(--font-sans);
+    letter-spacing: -0.035em;
+  }
+  .morka__ingress {
+    max-width: 54ch;
+    margin: 12px 0 0;
+    color: #c9c4b6;
+    font-size: 16.5px;
+    line-height: 1.5;
+  }
+  .morka a {
+    color: #f6f2e8;
+  }
+  .morka .knapp {
+    border-color: #f6f2e8;
+    background: #f6f2e8;
+    color: #141310;
+  }
+  .morka .knapp:hover {
+    border-color: #ffffff;
+    background: #ffffff;
+    color: #141310;
+  }
+  .morka .knapp--ghost {
+    border-color: #4a473f;
+    background: transparent;
+    color: #f6f2e8;
+  }
+  .morka .knapp--ghost:hover {
+    border-color: #f6f2e8;
+    background: transparent;
+    color: #f6f2e8;
+  }
+  .morka .knapp--fara {
+    border-color: rgb(243 166 131 / 0.5);
+    background: transparent;
+    color: #f3a683;
+  }
+  .morka .knapp--fara:hover {
+    border-color: #f3a683;
+    background: rgb(243 166 131 / 0.08);
+    color: #f3a683;
+  }
+  .morka .knapp:disabled {
+    opacity: 0.6;
+    cursor: progress;
+  }
+  @media (max-width: 560px) {
+    .morka {
+      padding: 26px 0 44px;
+    }
+    .morka__ingress {
+      font-size: 16px;
+    }
   }
   /* Raden för en medlem, ritad av src/lib/uppdragkort.ts. Den är mörk, likadan i listan och i
      förhandsvisningen på den ljusa sidan. Listans bredd avgör formen, inte fönstrets: i en bred
@@ -241,7 +332,132 @@ const etiketter: Etiketter = {
     }
   }
 
-  /* Kunskaperna i formuläret: de valda orden som knappar som tar bort sig själva, och förslag att lägga till. */
+  /* ---------- Formuläret ---------- */
+
+  /* Formuläret ska gå fort: stora fält, en sak i taget och så lite text som det går. Allt står
+     på samma mörka sida som listan, så att raden överst ser ut precis som den kommer att göra. */
+  .uppdragsform {
+    display: grid;
+    gap: 26px;
+    max-width: 600px;
+  }
+  .uppdragsform fieldset {
+    display: grid;
+    gap: 10px;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .falt {
+    display: grid;
+    gap: 9px;
+    min-width: 0;
+  }
+  .uppdragsform legend,
+  .falt__etikett {
+    display: flex;
+    align-items: baseline;
+    gap: 9px;
+    padding: 0;
+    color: #f6f2e8;
+    font: 600 15.5px/1.3 var(--font-sans);
+  }
+  /* En legend står utanför rutnätet i sitt fieldset, så avståndet till fälten sätts här. */
+  .uppdragsform legend {
+    margin-bottom: 10px;
+  }
+  /* Det lilla bredvid etiketten: frivilligt, eller hur många ord som är valda. */
+  .falt__vid {
+    color: #979386;
+    font: 500 11px/1 var(--font-mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .faltnot {
+    margin: 0;
+    color: #a39f92;
+    font-size: 13.5px;
+    line-height: 1.45;
+  }
+  .faltnot:empty {
+    display: none;
+  }
+  .falt__fel {
+    margin: 0;
+    color: #f3a683;
+    font-size: 13.5px;
+    font-weight: 600;
+  }
+  .uppdragsform input[type='text'],
+  .uppdragsform input[type='email'],
+  .uppdragsform select {
+    width: 100%;
+    min-height: 52px;
+    padding: 0 16px;
+    border: 1px solid #3a3832;
+    border-radius: 12px;
+    background: #1e1d19;
+    color: #f6f2e8;
+    font: 400 16.5px/1.3 var(--font-sans);
+    transition:
+      border-color 240ms cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 240ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .uppdragsform input::placeholder {
+    color: #979386;
+  }
+  .uppdragsform input:focus-visible,
+  .uppdragsform select:focus-visible {
+    outline: 0;
+    border-color: #f6f2e8;
+    box-shadow: 0 0 0 3px rgb(246 242 232 / 0.14);
+  }
+  .uppdragsform [aria-invalid='true'] {
+    border-color: #f3a683;
+  }
+  .faltrad {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+  }
+  .faltrad > input,
+  .faltrad > select {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  /* Kunskaperna: orden och fältet står i samma ruta, som man är van vid från andra ställen. */
+  .ordfalt {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    min-height: 52px;
+    padding: 7px 8px;
+    border: 1px solid #3a3832;
+    border-radius: 12px;
+    background: #1e1d19;
+    cursor: text;
+    transition:
+      border-color 240ms cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 240ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .ordfalt:focus-within {
+    border-color: #f6f2e8;
+    box-shadow: 0 0 0 3px rgb(246 242 232 / 0.14);
+  }
+  .uppdragsform .ordfalt input[type='text'] {
+    flex: 1;
+    width: auto;
+    min-width: 170px;
+    min-height: 36px;
+    padding: 0 8px;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
   .ordval {
     display: flex;
     flex-wrap: wrap;
@@ -257,72 +473,143 @@ const etiketter: Etiketter = {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    min-height: 38px;
-    padding: 0 12px;
-    border: 1px solid hsl(var(--rule));
+    min-height: 36px;
+    padding: 0 11px;
+    border: 1px solid transparent;
     border-radius: 8px;
-    background: hsl(var(--bg-soft));
-    color: hsl(var(--ink));
+    background: #2f2c25;
+    color: #ecdfbd;
     font: 500 13px/1 var(--font-mono);
     cursor: pointer;
+    transition:
+      border-color 240ms cubic-bezier(0.16, 1, 0.3, 1),
+      color 240ms cubic-bezier(0.16, 1, 0.3, 1);
   }
   .ordval__ord:hover {
-    border-color: hsl(var(--rust));
-    color: hsl(var(--rust));
+    border-color: #f3a683;
+    color: #f3a683;
   }
   .ordval__ord:focus-visible {
-    outline: 2px solid hsl(var(--moss));
+    outline: 2px solid #f6f2e8;
     outline-offset: 2px;
   }
   .ordval--forslag .ordval__ord {
-    border-style: dashed;
+    border: 1px dashed #4a473f;
     background: transparent;
+    color: #c9c4b6;
   }
   .ordval--forslag .ordval__ord:hover {
-    border-color: hsl(var(--moss));
-    color: hsl(var(--moss));
-  }
-  .faltrad {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-  .faltrad input {
-    flex: 1;
-    min-width: 200px;
+    border-style: solid;
+    border-color: #f6f2e8;
+    color: #f6f2e8;
   }
 
-  /* Bildvalet i formuläret: bilden som den syns, och två vägar att få in en. */
-  .bildval {
+  /* Val som brickor: områdena och vad medlemmen erbjuder. */
+  .brickval {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .bricka {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-height: 38px;
+    padding: 0 13px;
+    border: 1px solid #3a3832;
+    border-radius: var(--r-pill);
+    color: #c9c4b6;
+    font: 500 13.5px/1 var(--font-sans);
+    cursor: pointer;
+    transition:
+      background-color 240ms cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 240ms cubic-bezier(0.16, 1, 0.3, 1),
+      color 240ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .bricka input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .bricka:has(input:checked) {
+    border-color: #f6f2e8;
+    background: #f6f2e8;
+    color: #141310;
+    font-weight: 600;
+  }
+  .bricka:has(input:focus-visible) {
+    outline: 2px solid #f6f2e8;
+    outline-offset: 2px;
+  }
+  .bricka:has(input:disabled) {
+    opacity: 0.4;
+    cursor: default;
+  }
+  .val {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    color: #e3dece;
+    font-size: 15px;
+    line-height: 1.45;
+    cursor: pointer;
+  }
+  .val input {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    margin: 1px 0 0;
+    accent-color: #f6f2e8;
+  }
+  .val--rad {
+    align-items: center;
+    min-height: 52px;
+    white-space: nowrap;
+  }
+
+  /* Bilden: rund som i raden, med vägarna att få in en bredvid. */
+  .bildval__rad {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 14px 18px;
+    gap: 10px;
   }
   .bildval__visning {
     position: relative;
     flex: none;
-    width: 96px;
-    height: 96px;
+    width: 56px;
+    height: 56px;
     overflow: hidden;
-    border-radius: 18px;
-    background: #1e1d19;
+    border-radius: 50%;
+    background: #2a2722;
+    box-shadow: 0 0 0 1px hsl(40 30% 80% / 0.16);
   }
   .bildval__visning img {
+    display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
-  .bildval__visning img.bildval__hand {
-    object-fit: contain;
-    object-position: 50% 100%;
-    padding: 8px 4px 0;
+  .bildval__visning--utan {
+    background: radial-gradient(circle at 38% 32%, #f5eedf, #d9cdb4 75%);
   }
-  .bildval__vagar {
-    display: grid;
-    flex: 1;
-    gap: 10px;
-    min-width: 220px;
+  .bildval__visning--utan img {
+    position: absolute;
+    left: 50%;
+    bottom: -6%;
+    width: 88%;
+    height: auto;
+    transform: translateX(-47%);
+  }
+  .bildval__fil {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+  }
+  .bildval__fil:focus-visible + .knapp {
+    outline: 2px solid #f6f2e8;
+    outline-offset: 2px;
   }
   .bildval__x {
     display: flex;
@@ -332,99 +619,95 @@ const etiketter: Etiketter = {
     flex: 1;
     min-width: 0;
   }
-  .bildval__fil {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    opacity: 0;
-  }
-  .bildval__fil:focus-visible + .knapp {
-    outline: 2px solid hsl(var(--moss));
-    outline-offset: 2px;
-  }
-
-  /* Formulären */
-  .uppdragsform {
-    display: grid;
-    gap: 18px;
-    max-width: 560px;
-  }
-  .uppdragsform fieldset {
-    display: grid;
-    gap: 8px;
-    margin: 0;
-    padding: 0;
+  .lankknapp {
+    padding: 6px 2px;
     border: 0;
-    min-width: 0;
-  }
-  .uppdragsform legend,
-  .falt__etikett {
-    padding: 0;
-    color: hsl(var(--ink));
-    font-weight: 600;
-    font-size: 15px;
-  }
-  .falt {
-    display: grid;
-    gap: 6px;
-  }
-  .falt__hjalp {
-    margin: 0;
-    font-size: 13.5px;
-    color: hsl(var(--ink-mute));
-  }
-  .falt__fel {
-    margin: 0;
-    font-size: 13.5px;
-    font-weight: 600;
-    color: hsl(var(--rust));
-  }
-  .uppdragsform input[type='text'],
-  .uppdragsform input[type='email'],
-  .uppdragsform input[type='url'],
-  .uppdragsform select {
-    width: 100%;
-    min-height: 46px;
-    padding: 10px 12px;
-    border: 1.5px solid hsl(var(--rule));
-    border-radius: var(--r-btn);
-    background: hsl(var(--bg));
-    color: hsl(var(--ink));
-    font: 400 16px/1.3 var(--font-sans);
-  }
-  .uppdragsform input:focus-visible,
-  .uppdragsform select:focus-visible {
-    outline: 0;
-    border-color: hsl(var(--moss));
-    box-shadow: 0 0 0 3px hsl(var(--moss) / 0.15);
-  }
-  .uppdragsform [aria-invalid='true'] {
-    border-color: hsl(var(--rust));
-  }
-  .val {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    font-size: 15px;
-    line-height: 1.4;
+    background: none;
+    color: #a39f92;
+    font: 500 13.5px/1.2 var(--font-sans);
+    text-decoration: underline;
     cursor: pointer;
   }
-  .val input {
-    flex: none;
-    width: 18px;
-    height: 18px;
-    margin: 1px 0 0;
-    accent-color: hsl(var(--moss));
+  .lankknapp:hover {
+    color: #f6f2e8;
   }
-  .valrutnat {
+  .lankknapp--fara,
+  .lankknapp--fara:hover {
+    color: #f3a683;
+  }
+
+  /* Det som inte behövs för att synas ligger hopfällt. */
+  .mer {
+    border-top: 1px solid #2b2924;
+    border-bottom: 1px solid #2b2924;
+  }
+  .mer summary {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 10px;
+    padding: 17px 0;
+    color: #f6f2e8;
+    font: 600 15.5px/1.3 var(--font-sans);
+    list-style: none;
+    cursor: pointer;
+  }
+  .mer summary::-webkit-details-marker {
+    display: none;
+  }
+  .mer summary span {
+    color: #979386;
+    font: 400 13.5px/1.3 var(--font-sans);
+  }
+  .mer summary::after {
+    content: '+';
+    margin-left: auto;
+    color: #a39f92;
+    font: 400 20px/1 var(--font-mono);
+  }
+  .mer[open] summary::after {
+    content: '–';
+  }
+  .mer__kropp {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+    gap: 24px;
+    padding: 6px 0 24px;
+  }
+
+  /* Spara står kvar längst ner medan man fyller i, så att knappen alltid är inom räckhåll. */
+  .sparrad {
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
     gap: 8px 16px;
+    margin: 0 -8px;
+    padding: 18px 8px calc(14px + env(safe-area-inset-bottom));
+    background: linear-gradient(to top, #141310 76%, rgb(20 19 16 / 0));
   }
-  .val:has(input:disabled) {
-    color: hsl(var(--ink-mute));
-    cursor: default;
+  .sparrad .knapp {
+    min-height: 50px;
+    padding: 0 26px;
+    font-size: 16px;
   }
+  .sparrad__kvitto {
+    margin: 0;
+    color: #e9e5da;
+    font-size: 14.5px;
+  }
+  .sparrad__kvitto:empty {
+    display: none;
+  }
+  /* På en telefon är knappen lika bred som fälten, så att tummen når den var den än är. */
+  @media (max-width: 560px) {
+    .sparrad .knapp {
+      flex: 1 1 100%;
+      justify-content: center;
+    }
+  }
+
   .honung {
     position: absolute;
     left: -10000px;
@@ -433,32 +716,20 @@ const etiketter: Etiketter = {
     overflow: hidden;
   }
   .besked {
+    max-width: 600px;
     padding: 16px 18px;
-    border-radius: var(--r-card);
-    background: hsl(var(--bg-soft));
-    border-left: 3px solid hsl(var(--moss));
+    border-left: 3px solid #cfc8b4;
+    border-radius: 12px;
+    background: #1e1d19;
+    color: #e9e5da;
   }
   .besked--fel {
-    border-left-color: hsl(var(--rust));
+    border-left-color: #f3a683;
   }
   .besked p {
     margin: 0;
   }
   .besked p + p {
     margin-top: 8px;
-  }
-  .knapp:disabled {
-    opacity: 0.6;
-    cursor: progress;
-  }
-  .knapp--fara {
-    background: transparent;
-    border-color: hsl(var(--rust) / 0.5);
-    color: hsl(var(--rust));
-  }
-  .knapp--fara:hover {
-    background: hsl(var(--rust) / 0.08);
-    border-color: hsl(var(--rust));
-    color: hsl(var(--rust));
   }
 </style>

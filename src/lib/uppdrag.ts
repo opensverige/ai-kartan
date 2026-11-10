@@ -262,6 +262,20 @@ export function lanktyp(href: string): Lanktyp | null {
   return host.includes('.') ? { typ: 'sida', host } : null;
 }
 
+/**
+ * Länken som medlemmen skrev den, gjord till en https-adress. Den som skriver "github.com/kim"
+ * eller klistrar in en http-adress ska inte behöva rätta det själv. Det som inte ser ut som en
+ * adress lämnas orört, så att formuläret kan säga vad som är fel.
+ */
+export function normaliseraLank(text: string): string {
+  const s = text.trim();
+  if (!s || /\s/.test(s)) return s;
+  if (/^https:\/\//i.test(s)) return s;
+  if (/^http:\/\//i.test(s)) return `https://${s.slice(7)}`;
+  if (/^[a-z][a-z0-9+.-]*:/i.test(s)) return s;
+  return /^[^/]+\.[^/]+/.test(s) ? `https://${s}` : s;
+}
+
 /** Det som läses ur GitHubs lista över ett kontos öppna kodförråd. */
 export type GithubForrad = { fork?: boolean; language?: string | null; topics?: string[] };
 

@@ -13,6 +13,7 @@ import {
   lankEtikett,
   lanktyp,
   medKunskap,
+  normaliseraLank,
   ortrad,
   perKommun,
   snabbval,
@@ -134,6 +135,19 @@ test('länken avgör vad som går att hämta', () => {
   assert.equal(lanktyp('http://kim.se'), null);
   assert.equal(lanktyp('kim.se'), null);
   assert.equal(lanktyp('https://localhost/'), null);
+});
+
+test('en länk utan https får det, och det som inte är en adress lämnas orört', () => {
+  assert.equal(normaliseraLank('github.com/kim-e'), 'https://github.com/kim-e');
+  assert.equal(normaliseraLank('  www.kim.se/portfolio '), 'https://www.kim.se/portfolio');
+  assert.equal(normaliseraLank('http://kim.se'), 'https://kim.se');
+  assert.equal(normaliseraLank('HTTPS://kim.se'), 'HTTPS://kim.se');
+  assert.equal(normaliseraLank('https://x.com/kim_e'), 'https://x.com/kim_e');
+  assert.equal(normaliseraLank('kim'), 'kim');
+  assert.equal(normaliseraLank('min sida'), 'min sida');
+  assert.equal(normaliseraLank('mailto:kim@kim.se'), 'mailto:kim@kim.se');
+  assert.equal(normaliseraLank(''), '');
+  assert.deepEqual(lanktyp(normaliseraLank('linkedin.com/in/kim')), { typ: 'linkedin' });
 });
 
 test('förslagen från GitHub är språk och ämnesord ur egna förråd, vanligast först', () => {
