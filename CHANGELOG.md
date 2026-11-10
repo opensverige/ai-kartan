@@ -2,6 +2,10 @@
 
 Kodens och funktionernas historik. Dataändringar loggas separat och automatiskt i `history/changelog.json` och på sajten under Ändringar. Samma rader som här finns maskinläsbart i `history/bygglogg.json`.
 
+## 2026-11-10
+
+- Organisationer som delar adress får var sin prick på kartan. Förut ritades de som en enda prick med ett antal i, och man fick trycka flera gånger på den för att nå de andra. Nu står prickarna tätt ihop runt adressen. Var och en visar sitt eget namn när man pekar på den och öppnar sin egen sida när man trycker. Två på samma adress skrivs med båda namnen över prickarna, fler än två med antalet. I dag gäller det elva adresser, alla med två organisationer. Reglerna ligger i `src/lib/sammaadress.ts`.
+
 ## 2026-11-05
 
 - Frågestatistiken tappar inte längre större delen av dygnet. Jobbet hos GitHub är schemalagt var femtonde minut, men GitHub startade det bara var andra till sjunde timme. Skriptet hämtade ändå bara loggens senaste timme, som om sajten låg på Vercels gratisplan. Allt äldre blev en lucka, mellan 21 oktober och 4 november ungefär 82 procent av tiden, fast loggen fanns kvar. Sajten ligger på Pro, där Vercel sparar loggen ett dygn. Nu läser skriptet teamets plan och hämtar så långt bak som loggen sparas. Går planen inte att läsa räknas en timme, och tiden före blir en lucka som förut. Personuppgifter säger nu att loggen sparas ett dygn. Frågor i de gamla luckorna går inte att räkna i efterhand.
