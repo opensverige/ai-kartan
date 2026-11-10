@@ -14,6 +14,9 @@ export const HANDLING = 'aikartan:handling';
 /** En organisation har öppnats i panelen, från en prick, listan eller sökningen. `detail` är id:t. */
 export const ORG = 'aikartan:org';
 
+/** Föreningens lista över medlemmar som tar uppdrag har kommit. Förslagen kan då få sin rad dit. */
+export const UPPDRAG = 'aikartan:uppdrag';
+
 /** Det som paletten och motorn läser om en organisation. Kartans egen post har fler fält. */
 export type Kartrad = Skalpost & { ds: string; dv: string | null };
 
@@ -27,6 +30,15 @@ export interface Platsrad {
   antal: number;
 }
 
+/**
+ * Raden till listan över medlemmar som tar uppdrag: hur många sökningen träffar, och sökningen
+ * som ska följa med dit. Namnen står i listan, aldrig i kartans sök.
+ */
+export interface Uppdragsrad {
+  antal: number;
+  q: string;
+}
+
 export interface Kartgranssnitt {
   /** Null tills kartbiblioteket har laddats, och om kartan inte gick att rita. */
   karta: MapLibreMap | null;
@@ -34,7 +46,7 @@ export interface Kartgranssnitt {
   /** Alla organisationer, tomt tills datan har kommit. */
   poster(): readonly Kartrad[];
   /** Samma sökning som sidhuvudets sökruta, med bästa träffen först. */
-  sok(q: string): { org: readonly Kartrad[]; platser: readonly Platsrad[] };
+  sok(q: string): { org: readonly Kartrad[]; platser: readonly Platsrad[]; uppdrag: Uppdragsrad | null };
   /** Öppnar organisationen i panelen. `via` räknas som öppnad organisation, null räknas inte. */
   oppnaOrg(id: string, via: Oppnadvia | null): void;
   /** Samma som kartans egna handlingar: knuffen försvinner och den första handlingen räknas. */

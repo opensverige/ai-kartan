@@ -58,7 +58,7 @@ const antal = hamtaData().statistik.antal;
 <script>
   import { TOMT_FILTER, type Filter } from '../lib/filter';
   import { MAX_TECKEN, type Fragedata, type Svar } from '../lib/fraga/typer';
-  import { HANDLING, ORG, REDO, kartgranssnitt, type Kartgranssnitt, type Kartrad } from '../lib/fraga/kartgranssnitt';
+  import { HANDLING, ORG, REDO, UPPDRAG, kartgranssnitt, type Kartgranssnitt, type Kartrad } from '../lib/fraga/kartgranssnitt';
   import { chipsHtml, esc, forslagHtml, ingenAnslutningHtml, svarHtml, type Lankar, type Svarsvy, type Vyetiketter } from '../lib/fraga/vy';
   import { skapaKlient } from '../lib/fraga/klient';
   import { skapaPalettlage } from '../lib/fraga/palettlage';
@@ -101,6 +101,8 @@ const antal = hamtaData().statistik.antal;
       discord: document.querySelector<HTMLElement>('.ingang')?.dataset.discord ?? '',
       infra: app.dataset.infra || 'https://infra.opensverige.se',
       infralogo: app.dataset.infralogo || `${kartbas}ai-infra.png`,
+      uppdrag: app.dataset.uppdrag || `${kartbas}uppdrag`,
+      pixelhand: `${kartbas}pixelhand.webp`,
     };
     const stilla = window.matchMedia('(prefers-reduced-motion: reduce)');
     // Samma dag som servern räknar med, så att dagens urval blir detsamma i reservvägen.
@@ -307,8 +309,8 @@ const antal = hamtaData().statistik.antal;
     }
 
     function ritaForslag(q: string): void {
-      const t = kartgranssnitt()?.sok(q) ?? { org: [], platser: [] };
-      kropp.innerHTML = forslagHtml(q, t.org.slice(0, 5), t.platser.slice(0, 3), etiketter, lankar);
+      const t = kartgranssnitt()?.sok(q) ?? { org: [], platser: [], uppdrag: null };
+      kropp.innerHTML = forslagHtml(q, t.org.slice(0, 5), t.platser.slice(0, 3), etiketter, lankar, t.uppdrag);
       vidare.hidden = true;
       vidare.replaceChildren();
       nyLista(true);
@@ -369,7 +371,7 @@ const antal = hamtaData().statistik.antal;
 
     function valj(rad: HTMLElement): void {
       // Raden till AI-Infra är en länk. Enter öppnar den som ett klick.
-      if (rad.hasAttribute('data-infrarad')) return rad.click();
+      if (rad.hasAttribute('data-infrarad') || rad.hasAttribute('data-uppdragsrad')) return rad.click();
       if (rad.hasAttribute('data-fraga')) {
         if (rad.getAttribute('aria-disabled') !== 'true') void fraga(input.value);
         return;
@@ -430,6 +432,8 @@ const antal = hamtaData().statistik.antal;
       if (mal === dialog || mal.closest('[data-stang]')) return stang();
       // AI-Infra öppnas i en ny flik som vanligt. Klicket räknas som en länk ut.
       if (mal.closest('[data-infrarad]')) return kartgranssnitt()?.handelser.utlank('ai-infra');
+      // Raden till dem som tar uppdrag är en vanlig länk till listan.
+      if (mal.closest('[data-uppdragsrad]')) return;
       const kartlank = mal.closest<HTMLAnchorElement>('a[data-kartlank]');
       if (kartlank) {
         if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
@@ -491,6 +495,11 @@ const antal = hamtaData().statistik.antal;
     // Att öppna paletten räknas också som en handling, men den lämnar inte första skärmen.
     document.addEventListener(HANDLING, (e) => lage() === 'hem' && (e as CustomEvent<string>).detail !== 'ai' && byt('karta'));
     document.addEventListener(ORG, () => lage() === 'hem' && byt('karta'));
+    // Listan över dem som tar uppdrag kom efter att besökaren börjat skriva. Förslagen ritas om en
+    // gång, om ingen rad hunnit väljas med piltangenterna.
+    document.addEventListener(UPPDRAG, () => {
+      if (dialog.open && palett.tillstand() === 'forslag' && aktiv <= 0) ritaForslag(input.value.trim());
+    });
     document.addEventListener(REDO, () => {
       if (!dialog.open) return;
       if (palett.tillstand() === 'tom') ritaTom();
@@ -859,6 +868,21 @@ const antal = hamtaData().statistik.antal;
   }
   .palett-rad--infra:hover {
     color: hsl(var(--ink));
+  }
+  .palett-rad--uppdrag,
+  .palett-rad--uppdrag:hover {
+    color: hsl(var(--ink));
+    text-decoration: none;
+  }
+  /* Föreningens hand i samma ljusa rundel som i listan över dem som tar uppdrag. */
+  .palett-rad__ikon.palett-rad__ikon--hand {
+    place-items: end center;
+    border-radius: 50%;
+    background: radial-gradient(circle at 38% 32%, #f5eedf, #d9cdb4 75%);
+  }
+  .palett-rad__ikon--hand img {
+    width: 40px;
+    height: auto;
   }
   .palett-rad[aria-disabled='true'] {
     cursor: default;

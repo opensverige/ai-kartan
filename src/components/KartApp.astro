@@ -262,7 +262,7 @@ const medlemsdatum = medlemmar
   import { urvalSomCsv } from '../lib/csv';
   import { grupperaPerPlats, platsEfterUtzoomning, platsmitt, zoomgranser, ZOOM_KOMMUN, ZOOM_POSTER, type Platsgrupp } from '../lib/platsgrupper';
   import { arPaskagg, cirkel, type Medlemsvy } from '../lib/medlemmar';
-  import { UPPDRAG_API, bildUrl, dagensOrdning, perKommun, type Profil } from '../lib/uppdrag';
+  import { UPPDRAG_API, bildUrl, dagensOrdning, perKommun, uppdragstraff, type Profil, type Uppslag } from '../lib/uppdrag';
   import { pixelhandSrc, ritaKort } from '../lib/uppdragkort';
   import { kommunytor } from '../lib/kommunyta';
   import { normalisera, tolka, traffar, tomtSvar, finnsI, type Tolkning } from '../lib/sok';
@@ -273,7 +273,7 @@ const medlemsdatum = medlemmar
   import { tittext } from '../lib/titt';
   import { skapaHandelser, tillVercel, type Handling } from '../lib/handelser';
   import { AVSTAND, knuffordning, etikettrutor, korsar, ryms, type Ruta } from '../lib/knuff';
-  import { REDO, HANDLING, ORG, type Kartgranssnitt, type Kartrad } from '../lib/fraga/kartgranssnitt';
+  import { REDO, HANDLING, ORG, UPPDRAG, type Kartgranssnitt, type Kartrad } from '../lib/fraga/kartgranssnitt';
   import type { Kartpost } from '../lib/data';
 
   type Post = {
@@ -287,7 +287,7 @@ const medlemsdatum = medlemmar
   type PlatsTraff = { typ: 'kommun' | 'lan'; kod: string; namn: string; nn: string; under: string; antal: number };
   /** `visat` är orden som faktiskt söktes när utfyllnadsord togs bort. Annars tom. */
   type SokTraff = { org: Rad[]; platser: PlatsTraff[]; totalt: number; visat: string };
-  type SokVal = { typ: 'org'; o: Rad } | { typ: 'plats'; p: PlatsTraff } | { typ: 'vy' };
+  type SokVal = { typ: 'org'; o: Rad } | { typ: 'plats'; p: PlatsTraff } | { typ: 'vy' } | { typ: 'uppdrag'; q: string };
 
   const app = document.querySelector<HTMLElement>('.app');
   if (app) starta(app);
@@ -1095,6 +1095,16 @@ const medlemsdatum = medlemmar
         for (const p of t.platser) html += rad({ typ: 'plats', p }, `<span class="logo logo--liten logo--plats" aria-hidden="true">${ikon('nal', 17)}</span>`, markera(p.namn, q), `${esc(p.under)} · ${p.antal} ${plural(p.antal)}`);
         html += '</div>';
       }
+      // Sökningen gäller organisationer. Träffar den också medlemmar som tar uppdrag står antalet
+      // sist, med vägen till listan. Namnen står aldrig här.
+      const u = uppdragslage ? uppdragstraff(uppdragslage.profiler, q, uppdragslage.uppslag) : null;
+      if (u) {
+        const bild = `<span class="logo logo--liten logo--ikon logo--hand" aria-hidden="true"><img src="${esc(pixelhandSrc())}" alt=""></span>`;
+        const under = u.q ? `Matchar ”${esc(u.q)}” · visa dem i listan` : 'Föreningsmedlemmar som går att anlita · visa listan';
+        html += '<div role="group" aria-label="Tar uppdrag"><p class="sokgrupp">Tar uppdrag</p>';
+        html += rad({ typ: 'uppdrag', q: u.q }, bild, `${u.antal} ${u.antal === 1 ? 'medlem' : 'medlemmar'} som tar uppdrag`, under);
+        html += '</div>';
+      }
       if (sokVal.length && tomtSvar(q)) html = (saknasHtml(q, 'p') ?? '') + html;
       if (!sokVal.length) {
         html =
@@ -1115,6 +1125,7 @@ const medlemsdatum = medlemmar
 
     function oppnaSok() {
       if (!sokLada || !sokFalt || !alla.length) return;
+      hamtaUppdragslage();
       renderSok();
       sokLada.hidden = false;
       sokFalt.setAttribute('aria-expanded', 'true');
@@ -1150,6 +1161,9 @@ const medlemsdatum = medlemmar
         // Sökfältet har släppt fokus. Det går till kortet, som annars ligger långt bort i tabbordningen.
         medlemskort?.querySelector<HTMLElement>('#medlemsrubrik')?.focus({ preventScroll: true });
         return;
+      }
+      if (v.typ === 'uppdrag') {
+        return void (location.href = `${app.dataset.uppdrag ?? '/uppdrag'}${v.q ? `?q=${encodeURIComponent(v.q)}` : ''}`);
       }
       if (v.typ === 'org') {
         if (!medKarta) return void (location.href = `${orgbas}${encodeURIComponent(v.o.id)}`);
@@ -1481,6 +1495,26 @@ const medlemsdatum = medlemmar
         return null;
       });
       return handlage;
+    }
+
+    // Det sökrutan behöver för sin rad om dem som tar uppdrag: profilerna och namnen de slås upp
+    // mot. Hämtas första gången någon öppnar sökrutan, med samma anrop som händerna använder.
+    let uppdragslage: { profiler: Profil[]; uppslag: Uppslag } | null = null;
+    let uppdragslageBegart = false;
+    function hamtaUppdragslage(): void {
+      if (uppdragslageBegart) return;
+      uppdragslageBegart = true;
+      void hamtaHander().then((l) => {
+        if (!l) {
+          uppdragslageBegart = false;
+          return;
+        }
+        const kommuner = Object.fromEntries(Object.entries(l.punkter).map(([kod, punkt]) => [kod, punkt[2]]));
+        uppdragslage = { profiler: l.profiler, uppslag: { kommuner, omraden: etiketter.omraden } };
+        // Den som redan skrivit något ser raden direkt, utan att behöva skriva en bokstav till.
+        if (sokLada && !sokLada.hidden && sokAktiv < 0 && uppdragstraff(l.profiler, sokFalt?.value ?? '', uppdragslage.uppslag)) renderSok();
+        document.dispatchEvent(new CustomEvent(UPPDRAG));
+      });
     }
 
     /** Raden i kortet: hur många som tar uppdrag och deras initialer, eller vägen dit för den första. */
@@ -2474,7 +2508,10 @@ const medlemsdatum = medlemmar
       karta: null,
       redo: false,
       poster: (): readonly Kartrad[] => alla,
-      sok: (q) => sok(q),
+      sok(q) {
+        hamtaUppdragslage();
+        return { ...sok(q), uppdrag: uppdragslage ? uppdragstraff(uppdragslage.profiler, q, uppdragslage.uppslag) : null };
+      },
       oppnaOrg(id, via) {
         const o = alla.find((x) => x.id === id);
         if (!o) return;
@@ -2647,6 +2684,12 @@ const medlemsdatum = medlemmar
     width: 84%;
     height: 84%;
     object-fit: contain;
+  }
+  /* Föreningens hand i sökrutan, i samma ljusa rundel som i listan över dem som tar uppdrag. */
+  .logo.logo--hand {
+    align-items: flex-end;
+    border-radius: 50%;
+    background: radial-gradient(circle at 38% 32%, #f5eedf, #d9cdb4 75%);
   }
   .logo--liten {
     width: 38px;
