@@ -49,6 +49,7 @@ export interface OrgData {
   areas: Fakta<string[]>;
   kommun: Fakta<string | null>;
   coordinates?: Fakta<{ lat: number; lng: number }>;
+  platser?: Fakta<{ kommun: string }>[];
   founded?: Fakta<number | null>;
   active?: Fakta<boolean | null>;
   evidence: Belagg[];
@@ -286,15 +287,21 @@ export const FALT: { nyckel: keyof OrgData; etikett: string }[] = [
   { nyckel: 'areas', etikett: 'Områden' },
   { nyckel: 'kommun', etikett: 'Säte (kommun)' },
   { nyckel: 'coordinates', etikett: 'Position' },
+  { nyckel: 'platser', etikett: 'Plats (kommun)' },
   { nyckel: 'founded', etikett: 'Grundat' },
   { nyckel: 'active', etikett: 'Aktiv' },
 ];
 
-export function allaFakta(o: OrgData): { nyckel: keyof OrgData; etikett: string; fakta: Fakta }[] {
-  const ut: { nyckel: keyof OrgData; etikett: string; fakta: Fakta }[] = [];
+/** Varje plats blir en egen rad, med kommunkoden i ankaret. */
+export function allaFakta(o: OrgData): { nyckel: keyof OrgData; ankare: string; etikett: string; fakta: Fakta }[] {
+  const ut: { nyckel: keyof OrgData; ankare: string; etikett: string; fakta: Fakta }[] = [];
   for (const f of FALT) {
+    if (f.nyckel === 'platser') {
+      for (const p of o.platser ?? []) ut.push({ nyckel: f.nyckel, ankare: `plats-${p.value.kommun}`, etikett: f.etikett, fakta: p });
+      continue;
+    }
     const v = o[f.nyckel] as Fakta | undefined;
-    if (v && typeof v === 'object' && 'status' in v) ut.push({ nyckel: f.nyckel, etikett: f.etikett, fakta: v });
+    if (v && typeof v === 'object' && 'status' in v) ut.push({ nyckel: f.nyckel, ankare: f.nyckel, etikett: f.etikett, fakta: v });
   }
   return ut;
 }
@@ -312,6 +319,11 @@ export function visaVarde(d: Dataset, o: Org, nyckel: keyof OrgData, fakta: Fakt
       return (v as string[]).map((x) => d.etikett.omraden.get(x)?.label ?? x).join(', ');
     case 'kommun':
       return o.h.kommun_namn ? `${o.h.kommun_namn}, ${o.h.lan_namn}` : String(v);
+    case 'platser': {
+      const kod = (v as { kommun: string }).kommun;
+      const k = d.kommuner.find((x) => x.kod === kod);
+      return k ? `${k.namn}, ${k.lan_namn}` : kod;
+    }
     case 'coordinates': {
       const c = v as { lat: number; lng: number };
       return `${c.lat.toFixed(4)}, ${c.lng.toFixed(4)}`;
