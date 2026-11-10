@@ -38,7 +38,8 @@ export default defineConfig({
   },
   integrations: [
     sitemap({
-      filter: (page) => !page.includes('/api/'),
+      // Sidorna där en medlem lägger upp och ändrar sin profil har inget att göra i en sökmotor.
+      filter: (page) => !page.includes('/api/') && !/\/uppdrag\/(lagg-upp|redigera)/.test(page),
       serialize(item) {
         const id = item.url.match(/\/organisation\/([^/]+)\/?$/)?.[1];
         const datum = id ? andrad.get(id) : DATASIDA.test(item.url) ? senastAndrad : undefined;

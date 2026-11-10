@@ -6,7 +6,7 @@ import { url, SAJT } from '../lib/data';
 <Sida
   titel="Personuppgifter och integritet"
   kicker="Integritet"
-  ingress="Kartan handlar om organisationer. Om människor visar den bara antal per region. Sajten har inga konton och inga kakor. Besök räknas utan att vi vet vem du är."
+  ingress="Kartan handlar om organisationer. Om människor visar den antal per region, och de föreningsmedlemmar som själva har lagt upp sig under Tar uppdrag. Sajten har inga konton och inga kakor. Besök räknas utan att vi vet vem du är."
   beskrivning="Hur AI-kartan hanterar personuppgifter: inga kakor, anonym besöksräkning och bara uppgifter om organisationer. Rättelse och borttagning inom 14 dagar."
   stig="/integritet"
 >
@@ -48,10 +48,24 @@ import { url, SAJT } from '../lib/data';
   <p>Just nu finns inga enskilda firmor på kartan, och vi tar inte emot några förrän det går att begära borttagning utan konto. En enskild firma är en person. Sådana poster skapas bara av personen själv, vilket är samtycket, och innehåller aldrig organisationsnumret eftersom det är ett personnummer. Posten tas bort på begäran av personen, utan diskussion, via <a href={`${SAJT.repo}/issues/new?template=borttagning.yml`} rel="noopener">borttagningsärendet</a> eller Discord. Borttagningen syns i historiken som ”hela posten borttagen”, utan innehållet. Uppgifter om enskilda firmor omfattas inte av CC BY-licensen som sådana och får inte sammanställas vidare.</p>
 
   <h2 id="medlemmar">Föreningens medlemmar på kartan</h2>
-  <p>Kartan har en vy som visar hur många på föreningens Discord som har valt varje region. Rollen väljer var och en själv: en stad och tio mil runt den, eller annan ort. Kartan får bara antalet per roll, aldrig vem som har valt vad. Inga namn, konton eller adresser hämtas, och medlemsregistret används inte. Ett antal under fem skrivs som ”färre än 5”, också i filen som ligger öppet i <a href={`${SAJT.repo}/blob/main/data/gemenskap/regioner.json`} rel="noopener">repot</a>.</p>
+  <p>Kartan har en vy som visar hur många på föreningens Discord som har valt varje region. Rollen väljer var och en själv: en stad och tio mil runt den, eller annan ort. Kartan får bara antalet per roll, aldrig vem som har valt vad. Inga namn, konton eller adresser hämtas, och medlemsregistret används inte. Ett antal under fem skrivs som ”färre än 5”, också i filen som ligger öppet i <a href={`${SAJT.repo}/blob/main/data/gemenskap/regioner.json`} rel="noopener">repot</a>. Vyn visar också hur många konton servern har, ur Discords inbjudan, och de föreningsmedlemmar som själva har lagt upp sig under <a href="#uppdrag">Tar uppdrag</a>.</p>
+
+  <h2 id="uppdrag">Tar uppdrag</h2>
+  <p>Under <a href={url('/uppdrag')}>Tar uppdrag</a> visar föreningsmedlemmar att de tar uppdrag eller säljer tjänster. Bara aktiva medlemmar som är personer kan lägga upp sig, och bara själva. Medlemmen skriver sin e-post och får en engångslänk till den adress som finns i medlemsregistret. Länken gäller i 30 minuter och öppnar en session på en timme. Sidan säger samma sak oavsett adress, så att ingen kan pröva sig fram till vem som är medlem.</p>
+  <ul>
+    <li><strong>Vad som visas:</strong> namn, en rad om vad man gör, en länk och, om man vill, högst sex kunskaper, högst tre områden, kommun, distans, bolagets namn och webbplats och en bild. Raden visar att personen är medlem i OpenSverige. Allt det går att söka på i listan, liksom vad man erbjuder. E-post, medlemsnummer och personnummer visas aldrig. Personnummer och organisationsnummer stoppas i formuläret.</li>
+    <li><strong>Sök:</strong> listan har ett eget sökfält. Kartans sökruta gäller organisationer. Träffar en sökning där också medlemmar som tar uppdrag visar den hur många, och leder till listan. Namnen står bara i listan.</li>
+    <li><strong>På kartan:</strong> den som har valt en kommun syns som en hand i kommunens mitt i kartans medlemsvy, aldrig närmare än så. Den som inte har valt kommun syns bara i listan.</li>
+    <li><strong>Bilden:</strong> den är frivillig. Utan bild visar raden föreningens hand. Bilden beskärs och kodas om i medlemmens webbläsare, så platsuppgifter i filen följer inte med. Den sparas i en lagring som inte är öppen, och kartan visar den bara så länge profilen syns. Den raderas med profilen.</li>
+    <li><strong>Hämta från länken:</strong> medlemmen kan låta sin webbläsare hämta det som ligger öppet på den länk hen själv har angett. Bilden slås upp av unavatar.io, som får kontots namn på X eller GitHub, eller den egna sidans adress. För GitHub hämtas också presentationen och språken i de öppna kodförråden, direkt från GitHub, som förslag att välja bland. Det sker bara när medlemmen trycker på knappen, och inget sparas förrän hen sparar. Från LinkedIn hämtas ingenting. Föreningen hämtar aldrig uppgifter om en medlem på egen hand.</li>
+    <li><strong>Var det sparas:</strong> i föreningens medlemsdatabas hos Supabase i Stockholm, aldrig i kartans repo. Raderna och händerna hämtas när sidan öppnas och bakas inte in i sajten, så att en borttagen profil inte finns kvar någonstans på kartan.</li>
+    <li><strong>Klick:</strong> länken på raden går via en räknare som sparar antal klick per profil och dag, och inget om den som klickar. Medlemmen ser sin egen siffra för de senaste 30 dagarna. Siffrorna raderas efter 90 dagar.</li>
+    <li><strong>Grund:</strong> samtycke, skilt från medlemskapet. Texten som kryssas i och tidpunkten sparas med profilen.</li>
+    <li><strong>Ta bort:</strong> en ny länk, sedan Ta bort min profil. Profilen, bilden och klicken raderas direkt. Den som går ur föreningen syns inte från samma dag, och profilen raderas efter 30 dagar.</li>
+  </ul>
 
   <h2 id="grund">Rättslig grund</h2>
-  <p>Uppgifter om juridiska personer är inte personuppgifter. När en uppgift ändå kan knytas till en person, som för en enskild firma, är grunden samtycke från personen själv. Namn på bidragsgivare förekommer i git-historiken på GitHub, på samma sätt som i alla öppna projekt; den som bidrar väljer själv vilket GitHub-konto som syns.</p>
+  <p>Uppgifter om juridiska personer är inte personuppgifter. När en uppgift ändå kan knytas till en person, som för en enskild firma eller en profil under Tar uppdrag, är grunden samtycke från personen själv. Namn på bidragsgivare förekommer i git-historiken på GitHub, på samma sätt som i alla öppna projekt; den som bidrar väljer själv vilket GitHub-konto som syns.</p>
 
   <h2 id="rattigheter">Dina rättigheter</h2>
   <p>Begär rättelse eller borttagning via <a href={`${SAJT.repo}/issues/new/choose`} rel="noopener">ärendemallarna</a> eller i <a href={SAJT.discord} rel="noopener">Discord</a>. Vi svarar inom 14 dagar. Du kan också vända dig till Integritetsskyddsmyndigheten.</p>

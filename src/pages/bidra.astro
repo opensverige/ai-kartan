@@ -32,17 +32,9 @@ const nyFilUrl = `${SAJT.repo}/new/main/data/organisationer`;
       <p>Ett öppet ärende som du kan följa. Här går det också att <a href={rattaUrl} rel="noopener">rätta</a> och <a href={bortUrl} rel="noopener">ta bort</a>.</p>
       <a class="knapp knapp--ghost knapp--liten" href={nyUrl} rel="noopener">Lägg till via GitHub</a>
     </li>
-    <li class="kort kort--mjuk vag vag--snart">
-      <p class="kicker">Kommer snart</p>
-      <h3>E-post</h3>
-      <p>Utan konto.</p>
-    </li>
-    <li class="kort kort--mjuk vag vag--snart">
-      <p class="kicker">Kommer snart</p>
-      <h3>Formulär</h3>
-      <p>Utan konto, här på sajten.</p>
-    </li>
   </ul>
+
+  <p class="notis notis--moss" id="uppdrag">Frilansar du och är medlem i föreningen? <a href={url('/uppdrag/lagg-upp')}>Lägg upp dig under Tar uppdrag →</a></p>
 
   <h2 id="formular">Det här behöver vi</h2>
   <ul class="uppgifter">
@@ -129,13 +121,6 @@ evidence:
   }
   .vag .knapp {
     margin-top: auto;
-  }
-  .vag--snart {
-    border-style: dashed;
-    color: hsl(var(--ink-mute));
-  }
-  .vag--snart h3 {
-    color: hsl(var(--ink-mute));
   }
   .uppgifter {
     display: grid;

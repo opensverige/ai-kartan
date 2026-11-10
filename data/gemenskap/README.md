@@ -10,11 +10,14 @@ Nya medlemmar på föreningens Discord svarar på frågan "Var bor du?" och får
 - Medlemsregistret och Discords medlemslista används inte.
 - **Ett antal mellan 1 och 4 skrivs som `"<5"`, aldrig som siffra.** Repot är publikt, så det räcker inte att sajten döljer siffran. Bygget och testerna stannar om en sådan siffra står i filen.
 - Summan på kortet räknar bara regionerna, inte "annan ort". Finns ett `"<5"` med står summan som "drygt", utan att det dolda antalet räknas in.
+- `discord.konton` är alla konton på servern, botar inräknade. Kortet ritar en prick per konto: de som syns på kartan, de som har valt annan ort och resten, som inte har valt region. Ett dolt `"<5"` hamnar bland resten, som då står som "högst". Bygget stannar om servern har färre konton än regionerna och annan ort tillsammans.
 
 ## Uppdatera
 
 1. Öppna serverinställningarna på Discord och gå till Roller. Antalet står bredvid varje roll.
 2. Skriv in antalen i `regioner.json`: `0`, `"<5"` eller siffran om den är fem eller mer. Sätt `uppdaterad` till dagens datum.
-3. Kör `npm test`.
+3. Samma dag: hämta antalet konton ur inbjudan och skriv det i `discord.konton`, med dagens datum i `discord.uppdaterad`.
+   `curl -s "https://discord.com/api/v10/invites/ZbV4qB34um?with_counts=true"` ger det som `approximate_member_count`.
+4. Kör `npm test`.
 
 En ny region behöver `namn`, `kommun` (kommunkoden för staden, ur `data/geo/kommuner.json`) och `antal`.

@@ -6,6 +6,7 @@ import { hamtaData, allaFakta, visaVarde, kalltypEtikett, formateraDatum, typiko
 import type { Org } from '../../lib/data';
 import { brodsmulor, metabeskrivning } from '../../lib/meta';
 import { ikon, logga } from '../../lib/ikoner';
+import { ANKARE_VI } from '../../lib/dela';
 
 export function getStaticPaths() {
   const d = hamtaData();
@@ -87,6 +88,8 @@ const citat = `OpenSverige AI-kartan, ”${org.name.value}”, hämtad ${idag}, 
           <Fragment set:html={ikon('dela', 15)} /> Dela
         </button>
       </p>
+      {/* Organisationen hittar sin egen delalänk här. Ankaret öppnar delningsbladet i vi-form, se Dela.astro. */}
+      {!nedlagd && <p class="org__vi meta ej-utskrift">Är det ni? <a href={`#${ANKARE_VI}`}>Dela att ni finns på kartan.</a></p>}
       {nedlagd && <div class="notis notis--rust"><strong>Markerad som nedlagd eller avregistrerad.</strong> Posten ligger kvar tills den tas bort, så att historiken behålls.</div>}
       {gammal && <div class="notis"><strong>Inte omkontrollerad på över 180 dagar.</strong> Uppgifterna kan vara inaktuella. <a href={rattelseUrl} rel="noopener">Hjälp till att kontrollera.</a></div>}
     </header>
@@ -249,6 +252,9 @@ const citat = `OpenSverige AI-kartan, ”${org.name.value}”, hämtad ${idag}, 
     font-size: 19px;
     max-width: 64ch;
     color: hsl(var(--ink-soft));
+  }
+  .org__vi {
+    margin-top: -4px;
   }
   .tabellram {
     overflow-x: auto;

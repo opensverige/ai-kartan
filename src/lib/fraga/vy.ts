@@ -6,7 +6,7 @@
 import { normalisera } from '../sok.ts';
 import type { Etiketter } from '../sokindex.ts';
 import { arInfrafraga } from './forfilter.ts';
-import type { Platsrad } from './kartgranssnitt.ts';
+import type { Platsrad, Uppdragsrad } from './kartgranssnitt.ts';
 import { MAX_TECKEN, type Kunskap, type Modellfelsort, type Svar } from './typer.ts';
 
 export interface Lankar {
@@ -17,6 +17,9 @@ export interface Lankar {
   /** Systersajten AI-Infra och dess logga. */
   infra: string;
   infralogo: string;
+  /** Listan över medlemmar som tar uppdrag, och föreningens hand som står framför raden dit. */
+  uppdrag: string;
+  pixelhand: string;
 }
 
 /** Etiketterna som sidan har, med typernas ikoner när de finns. */
@@ -124,6 +127,21 @@ function infraradHtml(l: Lankar): string {
   );
 }
 
+/**
+ * Raden till listan över föreningsmedlemmar som tar uppdrag. Den står sist, efter organisationer
+ * och platser, och säger bara hur många sökningen träffar. Namnen står i listan, aldrig här.
+ */
+function uppdragsradHtml(u: Uppdragsrad, l: Lankar): string {
+  const href = `${l.uppdrag}${u.q ? `?q=${encodeURIComponent(u.q)}` : ''}`;
+  return (
+    `<div role="group" aria-label="Tar uppdrag"><p class="palett__rubrik" aria-hidden="true">Tar uppdrag</p>` +
+    `<a class="palett-rad palett-rad--uppdrag" role="option" aria-selected="false" tabindex="-1" href="${esc(href)}" data-uppdragsrad>` +
+    `<span class="palett-rad__ikon palett-rad__ikon--hand" aria-hidden="true"><img src="${esc(l.pixelhand)}" alt="" width="40" height="42" loading="lazy" decoding="async"></span>` +
+    `<span class="palett-rad__text"><span class="palett-rad__namn">${u.antal} ${u.antal === 1 ? 'medlem' : 'medlemmar'} som tar uppdrag →</span>` +
+    `<span class="palett-rad__under">${u.q ? `Matchar ”${esc(u.q)}” · visa dem i listan` : 'Föreningsmedlemmar som går att anlita · visa listan'}</span></span></a></div>`
+  );
+}
+
 /** Raden under namnet i ett svar: utdraget runt det som matchade, eller skälen när träffen inte står i texten. */
 function skalUnder(o: Radpost, skal: readonly string[]): string {
   const ord = skal.join(' ').match(/”([^”]+)”/)?.[1];
@@ -131,8 +149,18 @@ function skalUnder(o: Radpost, skal: readonly string[]): string {
   return esc([skal.length ? `Matchar ${skal.join(' · ')}` : '', o.d ?? ''].filter(Boolean).join(' · '));
 }
 
-/** Medan man skriver: Fråga AI överst, sedan organisationer och platser ur kartans egen sökning. */
-export function forslagHtml(q: string, org: readonly Radpost[], platser: readonly Platsrad[], e: Vyetiketter, l: Lankar): string {
+/**
+ * Medan man skriver: Fråga AI överst, sedan organisationer och platser ur kartans egen sökning.
+ * Sist står raden till medlemmarna som tar uppdrag, när sökningen träffar någon av dem.
+ */
+export function forslagHtml(
+  q: string,
+  org: readonly Radpost[],
+  platser: readonly Platsrad[],
+  e: Vyetiketter,
+  l: Lankar,
+  uppdrag: Uppdragsrad | null = null,
+): string {
   const fraga = q.trim();
   const forLang = fraga.length > MAX_TECKEN;
   const forsta = fraga.split(/\s+/)[0] ?? '';
@@ -166,6 +194,7 @@ export function forslagHtml(q: string, org: readonly Radpost[], platser: readonl
         `</div>`,
     );
   }
+  if (uppdrag) delar.push(uppdragsradHtml(uppdrag, l));
   return `<div class="palett-rader" id="palett-lista" role="listbox" aria-label="Förslag">${delar.join('')}</div>`;
 }
 

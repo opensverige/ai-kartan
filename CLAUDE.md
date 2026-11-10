@@ -46,6 +46,7 @@ node scripts/andringar.mjs --skriv-ut   # se vad som ändrats
 | `src/lib/data.ts` | Laddar allt en gång per bygge |
 | `src/components/KartApp.astro` | Karta, filter och lista (MapLibre, OpenFreeMap) |
 | `src/pages/organisation/[id].astro` | Permalänk per organisation |
+| `src/lib/uppdrag.ts`, `src/pages/uppdrag/` | Tar uppdrag. Profilerna ligger i föreningens medlemsdatabas, aldrig här, och ritas i webbläsaren |
 | `scripts/lib/granskning.mjs` | Granskningslistan som en människa bockar av på varje pull request med organisationer |
 | `scripts/lib/granskningskorning.mjs` | Körningen som läser pull requesten, skriver listan och sätter läget |
 | `scripts/lib/granskningsgit.mjs` | Räknar med git ut vad pull requesten skulle ändra i main om den slogs ihop nu |

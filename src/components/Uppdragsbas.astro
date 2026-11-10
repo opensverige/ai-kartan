@@ -1,0 +1,464 @@
+---
+// Det som sidorna under /uppdrag delar: namnen på kommuner och områden, som raderna och sökningen
+// slår upp, och stilen för raderna och formuläret. Raderna ritas i webbläsaren, så stilen är global.
+import { hamtaData } from '../lib/data';
+import type { Etiketter } from '../lib/uppdragkort';
+
+const d = hamtaData();
+const etiketter: Etiketter = {
+  kommuner: Object.fromEntries(d.kommuner.map((k) => [k.kod, k.namn])),
+  omraden: Object.fromEntries(d.taxonomi.omraden.map((o) => [o.id, o.label])),
+};
+---
+
+<script type="application/json" id="uppdrag-etiketter" set:html={JSON.stringify(etiketter)} />
+
+<style is:global>
+  /* En regel med display får inte vinna över hidden, som sidornas skript sätter. */
+  :is(.uppdrag__sok, .redigera, .uppdragsform, .besked, .knapp, .falt)[hidden] {
+    display: none !important;
+  }
+  /* Raden för en medlem, ritad av src/lib/uppdragkort.ts. Den är mörk, likadan i listan och i
+     förhandsvisningen på den ljusa sidan. Listans bredd avgör formen, inte fönstrets: i en bred
+     lista står allt på en rad som ögat följer rakt ner, och i en smal spalt staplas det.
+     Det kompakta kortet vid handen på kartan står i global.css. */
+  .medlemslista {
+    container-type: inline-size;
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .medlemsrad {
+    position: relative;
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px 14px;
+    padding: 16px;
+    border: 1px solid #2b2924;
+    border-radius: 14px;
+    background: #1a1915;
+    color: #e3dece;
+    transition:
+      background-color 240ms cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 240ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .medlemsrad__bild {
+    position: relative;
+    display: block;
+    width: 48px;
+    height: 48px;
+    overflow: hidden;
+    border-radius: 50%;
+    background: #2a2722;
+    box-shadow: 0 0 0 1px hsl(40 30% 80% / 0.16);
+  }
+  .medlemsrad__bild-foto {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  /* Utan bild står föreningens hand i en ljus rundel, så att platsen ser avsedd ut och inte tom. */
+  .medlemsrad__bild--utan {
+    background: radial-gradient(circle at 38% 32%, #f5eedf, #d9cdb4 75%);
+  }
+  .medlemsrad__bild-hand {
+    position: absolute;
+    left: 50%;
+    bottom: -6%;
+    width: 88%;
+    transform: translateX(-47%);
+  }
+  .medlemsrad__vem {
+    min-width: 0;
+  }
+  .medlemsrad__namn {
+    margin: 0;
+    color: #f6f2e8;
+    font: 650 16.5px/1.2 var(--font-sans);
+    letter-spacing: -0.01em;
+    overflow-wrap: anywhere;
+  }
+  .medlemsrad__ort {
+    margin: 4px 0 0;
+    color: #a39f92;
+    font: 500 11.5px/1.3 var(--font-mono);
+    letter-spacing: 0.03em;
+  }
+  /* I en smal spalt står länken uppe till höger, bredvid namnet, och raden om vad medlemmen gör
+     under. Då ryms fler medlemmar på en telefonskärm. */
+  .medlemsrad__vad {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    min-width: 0;
+  }
+  .medlemsrad__rubrik {
+    margin: 0;
+    color: #e3dece;
+    font: 400 16px/1.4 var(--font-sans);
+    overflow-wrap: anywhere;
+  }
+  .medlemsrad__ord {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin: 10px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .medlemsrad__kunskap {
+    padding: 4px 8px;
+    border-radius: 6px;
+    background: #2b2822;
+    color: #ecdfbd;
+    font: 500 12px/1.2 var(--font-mono);
+  }
+  .medlemsrad__omrade {
+    color: #a39f92;
+    font: 400 13px/1.3 var(--font-sans);
+  }
+  .medlemsrad__omrade::before {
+    content: '·';
+    margin-right: 6px;
+    color: #7a766b;
+  }
+  .medlemsrad__omrade:first-child::before {
+    content: none;
+  }
+  .medlemsrad__kunskap + .medlemsrad__omrade {
+    margin-left: 2px;
+  }
+  .medlemsrad__ut {
+    grid-column: 3;
+    grid-row: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 5px;
+    min-width: 0;
+    max-width: 150px;
+  }
+  .medlemsrad__lank {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    max-width: 100%;
+    min-height: 36px;
+    padding: 0 12px;
+    border: 1px solid #4a473f;
+    border-radius: var(--r-pill);
+    color: #f6f2e8;
+    font: 600 13.5px/1 var(--font-sans);
+    text-decoration: none;
+    white-space: nowrap;
+    transition:
+      background-color 240ms cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 240ms cubic-bezier(0.16, 1, 0.3, 1),
+      color 240ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .medlemsrad__marke {
+    display: inline-flex;
+    flex: none;
+  }
+  .medlemsrad__lanktext {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  /* Hela raden är länken: ett stort mål i stället för en liten knapp. Bolagets länk ligger ovanpå. */
+  .medlemsrad__lank[href]::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+  }
+  .medlemsrad__lank:focus-visible {
+    outline: 0;
+  }
+  .medlemsrad__lank:focus-visible::after {
+    outline: 2px solid #f6f2e8;
+    outline-offset: 2px;
+  }
+  .medlemsrad__lank[aria-disabled='true'] {
+    cursor: default;
+  }
+  @media (hover: hover) {
+    .medlemsrad:has(.medlemsrad__lank[href]):hover {
+      border-color: #5d594f;
+      background: #211f1a;
+    }
+    .medlemsrad:hover .medlemsrad__lank[href] {
+      border-color: #f6f2e8;
+      background: #f6f2e8;
+      color: #141310;
+    }
+  }
+  .medlemsrad__bolag {
+    position: relative;
+    z-index: 1;
+    max-width: 100%;
+    overflow: hidden;
+    color: #a39f92;
+    font-size: 12.5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  a.medlemsrad__bolag:hover {
+    color: #f6f2e8;
+  }
+  /* Platsen sist i listan, för den som själv tar uppdrag. */
+  .medlemsrad--ledig {
+    border-style: dashed;
+    border-color: #3d3a33;
+    background: transparent;
+  }
+  @container (min-width: 760px) {
+    .medlemsrad {
+      grid-template-columns: 48px minmax(0, 190px) minmax(0, 1fr) auto;
+      gap: 20px;
+      padding: 14px 18px 14px 16px;
+    }
+    .medlemsrad__vad {
+      grid-column: 3;
+      grid-row: 1;
+    }
+    .medlemsrad__ut {
+      grid-column: 4;
+      gap: 6px;
+      max-width: 220px;
+    }
+    .medlemsrad__lank {
+      gap: 8px;
+      min-height: 40px;
+      padding: 0 16px;
+      font-size: 14.5px;
+    }
+    .medlemsrad__bolag {
+      font-size: 13px;
+    }
+  }
+
+  /* Kunskaperna i formuläret: de valda orden som knappar som tar bort sig själva, och förslag att lägga till. */
+  .ordval {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ordval:empty {
+    display: none;
+  }
+  .ordval__ord {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 38px;
+    padding: 0 12px;
+    border: 1px solid hsl(var(--rule));
+    border-radius: 8px;
+    background: hsl(var(--bg-soft));
+    color: hsl(var(--ink));
+    font: 500 13px/1 var(--font-mono);
+    cursor: pointer;
+  }
+  .ordval__ord:hover {
+    border-color: hsl(var(--rust));
+    color: hsl(var(--rust));
+  }
+  .ordval__ord:focus-visible {
+    outline: 2px solid hsl(var(--moss));
+    outline-offset: 2px;
+  }
+  .ordval--forslag .ordval__ord {
+    border-style: dashed;
+    background: transparent;
+  }
+  .ordval--forslag .ordval__ord:hover {
+    border-color: hsl(var(--moss));
+    color: hsl(var(--moss));
+  }
+  .faltrad {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .faltrad input {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  /* Bildvalet i formuläret: bilden som den syns, och två vägar att få in en. */
+  .bildval {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px 18px;
+  }
+  .bildval__visning {
+    position: relative;
+    flex: none;
+    width: 96px;
+    height: 96px;
+    overflow: hidden;
+    border-radius: 18px;
+    background: #1e1d19;
+  }
+  .bildval__visning img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .bildval__visning img.bildval__hand {
+    object-fit: contain;
+    object-position: 50% 100%;
+    padding: 8px 4px 0;
+  }
+  .bildval__vagar {
+    display: grid;
+    flex: 1;
+    gap: 10px;
+    min-width: 220px;
+  }
+  .bildval__x {
+    display: flex;
+    gap: 8px;
+  }
+  .bildval__x input {
+    flex: 1;
+    min-width: 0;
+  }
+  .bildval__fil {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+  }
+  .bildval__fil:focus-visible + .knapp {
+    outline: 2px solid hsl(var(--moss));
+    outline-offset: 2px;
+  }
+
+  /* Formulären */
+  .uppdragsform {
+    display: grid;
+    gap: 18px;
+    max-width: 560px;
+  }
+  .uppdragsform fieldset {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+  .uppdragsform legend,
+  .falt__etikett {
+    padding: 0;
+    color: hsl(var(--ink));
+    font-weight: 600;
+    font-size: 15px;
+  }
+  .falt {
+    display: grid;
+    gap: 6px;
+  }
+  .falt__hjalp {
+    margin: 0;
+    font-size: 13.5px;
+    color: hsl(var(--ink-mute));
+  }
+  .falt__fel {
+    margin: 0;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: hsl(var(--rust));
+  }
+  .uppdragsform input[type='text'],
+  .uppdragsform input[type='email'],
+  .uppdragsform input[type='url'],
+  .uppdragsform select {
+    width: 100%;
+    min-height: 46px;
+    padding: 10px 12px;
+    border: 1.5px solid hsl(var(--rule));
+    border-radius: var(--r-btn);
+    background: hsl(var(--bg));
+    color: hsl(var(--ink));
+    font: 400 16px/1.3 var(--font-sans);
+  }
+  .uppdragsform input:focus-visible,
+  .uppdragsform select:focus-visible {
+    outline: 0;
+    border-color: hsl(var(--moss));
+    box-shadow: 0 0 0 3px hsl(var(--moss) / 0.15);
+  }
+  .uppdragsform [aria-invalid='true'] {
+    border-color: hsl(var(--rust));
+  }
+  .val {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 15px;
+    line-height: 1.4;
+    cursor: pointer;
+  }
+  .val input {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    margin: 1px 0 0;
+    accent-color: hsl(var(--moss));
+  }
+  .valrutnat {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+    gap: 8px 16px;
+  }
+  .val:has(input:disabled) {
+    color: hsl(var(--ink-mute));
+    cursor: default;
+  }
+  .honung {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+  .besked {
+    padding: 16px 18px;
+    border-radius: var(--r-card);
+    background: hsl(var(--bg-soft));
+    border-left: 3px solid hsl(var(--moss));
+  }
+  .besked--fel {
+    border-left-color: hsl(var(--rust));
+  }
+  .besked p {
+    margin: 0;
+  }
+  .besked p + p {
+    margin-top: 8px;
+  }
+  .knapp:disabled {
+    opacity: 0.6;
+    cursor: progress;
+  }
+  .knapp--fara {
+    background: transparent;
+    border-color: hsl(var(--rust) / 0.5);
+    color: hsl(var(--rust));
+  }
+  .knapp--fara:hover {
+    background: hsl(var(--rust) / 0.08);
+    border-color: hsl(var(--rust));
+    color: hsl(var(--rust));
+  }
+</style>
