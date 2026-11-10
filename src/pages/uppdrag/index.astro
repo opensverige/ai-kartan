@@ -11,7 +11,7 @@ import Bas from '../../layouts/Bas.astro';
 import Uppdragsbas from '../../components/Uppdragsbas.astro';
 import { url } from '../../lib/data';
 import { ikon } from '../../lib/ikoner';
-import { BLI_MEDLEM, UPPDRAG_API } from '../../lib/uppdrag';
+import { BLI_MEDLEM, uppdragUrl } from '../../lib/uppdrag';
 
 const hammarhand = url('/hammarhand.webp');
 ---
@@ -56,7 +56,7 @@ const hammarhand = url('/hammarhand.webp');
 
       <p class="morka__antal" id="uppdrag-antal" role="status">Hämtar medlemmarna …</p>
 
-      <ul class="medlemslista" id="uppdrag-lista" data-api={UPPDRAG_API}></ul>
+      <ul class="medlemslista" id="uppdrag-lista" data-api={uppdragUrl()}></ul>
       <p class="morka__tomt" id="uppdrag-tomt" hidden>
         <button class="knapp" type="button" id="uppdrag-rensa">Visa alla →</button>
       </p>

@@ -7,8 +7,18 @@
 // opensverige/webbplats under supabase/. Reglerna här står utan webbläsare, så att de går att pröva.
 import { finnsI, normalisera } from './sok.ts';
 
-/** Funktionen bakom korten, länken i mejlet och klickräkningen. */
-export const UPPDRAG_API = 'https://kmkttmasoemqcyzkjuyv.supabase.co/functions/v1/uppdrag';
+/** Funktionen bakom raderna, länken i mejlet och klickräkningen. */
+const UPPDRAG_BAS = 'https://kmkttmasoemqcyzkjuyv.supabase.co/functions/v1/uppdrag';
+
+/**
+ * Adressen till funktionen, alltid låst till en körning inom EU. Databasen ligger i Stockholm,
+ * men Supabase kör funktionen närmast den som anropar, och Stockholm går inte att välja. Utan
+ * tillägget hade en besökare utanför EU fått medlemmarnas uppgifter behandlade där. Funktionen
+ * skickar själv om ett anrop som hamnar fel, så det här är första spärren av två.
+ */
+export function uppdragUrl(vag: string = '', fraga: string = ''): string {
+  return `${UPPDRAG_BAS}${vag}?${fraga ? `${fraga}&` : ''}forceFunctionRegion=eu-central-1`;
+}
 
 /** Där man blir medlem. Bara medlemmar kan lägga upp sig. */
 export const BLI_MEDLEM = 'https://opensverige.se/bli-medlem';
@@ -61,12 +71,12 @@ export const ERBJUDER_TEXT: Record<Erbjuder, string> = {
  */
 export function bildUrl(p: { slug: string; bild: string | null }): string | null {
   if (!p.bild || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.(webp|jpg)$/.test(p.bild)) return null;
-  return `${UPPDRAG_API}/b/${encodeURIComponent(p.slug)}?v=${p.bild}`;
+  return uppdragUrl(`/b/${encodeURIComponent(p.slug)}`, `v=${p.bild}`);
 }
 
 /** Profilens länk går via funktionen, som räknar klicket och skickar vidare. */
 export function klickUrl(slug: string): string {
-  return `${UPPDRAG_API}/k/${encodeURIComponent(slug)}`;
+  return uppdragUrl(`/k/${encodeURIComponent(slug)}`);
 }
 
 /** Vad knappen på kortet heter: tjänstens namn när den är känd, annars värdnamnet. */

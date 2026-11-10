@@ -24,7 +24,7 @@ import {
   sokProfiler,
   somRubrik,
   uppdragstraff,
-  UPPDRAG_API,
+  uppdragUrl,
 } from './uppdrag.ts';
 
 const profil = (slug, erbjuder = 'uppdrag', distans = false, omraden = []) => ({
@@ -219,9 +219,19 @@ test('personnummer fångas, vanliga tal gör det inte', () => {
   assert.equal(harPersonnummer('Bygger sedan 2019 åt 100 000 användare'), false);
 });
 
+test('varje anrop till funktionen är låst till en körning inom EU', () => {
+  const EU = 'forceFunctionRegion=eu-central-1';
+  for (const adress of [uppdragUrl(), uppdragUrl('/profil'), uppdragUrl('/b/kim-e-3f9a', 'v=x.webp'), klickUrl('kim-e-3f9a')]) {
+    assert.ok(new URL(adress).search.includes(EU), adress);
+    assert.equal(new URL(adress).searchParams.get('forceFunctionRegion'), 'eu-central-1');
+  }
+  assert.equal(new URL(uppdragUrl('/b/kim-e-3f9a', 'v=x.webp')).searchParams.get('v'), 'x.webp');
+  assert.equal(new URL(uppdragUrl('/profil')).pathname.endsWith('/uppdrag/profil'), true);
+});
+
 test('klicket går via funktionen och slugen kodas', () => {
-  assert.equal(klickUrl('kim-e-3f9a'), `${UPPDRAG_API}/k/kim-e-3f9a`);
-  assert.equal(klickUrl('a/b'), `${UPPDRAG_API}/k/a%2Fb`);
+  assert.equal(klickUrl('kim-e-3f9a'), uppdragUrl('/k/kim-e-3f9a'));
+  assert.ok(klickUrl('a/b').includes('/uppdrag/k/a%2Fb?'));
 });
 
 test('en hand per kommun, och den som bara arbetar på distans syns inte på kartan', () => {
@@ -243,7 +253,7 @@ test('raden under namnet säger ort och distans, eller ingenting', () => {
 
 test('bildens adress går via funktionen och bara för ett giltigt namn', () => {
   const namn = '3f1c2a9e-1b2c-4d5e-8f90-0a1b2c3d4e5f.webp';
-  assert.equal(bildUrl({ slug: 'kim-e-3f9a', bild: namn }), `${UPPDRAG_API}/b/kim-e-3f9a?v=${namn}`);
+  assert.equal(bildUrl({ slug: 'kim-e-3f9a', bild: namn }), uppdragUrl('/b/kim-e-3f9a', `v=${namn}`));
   assert.equal(bildUrl({ slug: 'kim-e-3f9a', bild: null }), null);
   assert.equal(bildUrl({ slug: 'kim-e-3f9a', bild: '../hemlig.webp' }), null);
   assert.equal(bildUrl({ slug: 'kim-e-3f9a', bild: 'f09' }), null);

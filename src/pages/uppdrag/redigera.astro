@@ -11,7 +11,7 @@
 import Bas from '../../layouts/Bas.astro';
 import Uppdragsbas from '../../components/Uppdragsbas.astro';
 import { hamtaData, url } from '../../lib/data';
-import { SAMTYCKE_TEXT, UPPDRAG_API } from '../../lib/uppdrag';
+import { SAMTYCKE_TEXT } from '../../lib/uppdrag';
 
 const d = hamtaData();
 const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv'));
@@ -67,7 +67,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
         </div>
 
         <div class="redigera__spalter">
-          <form class="uppdragsform" id="profil-form" novalidate data-api={UPPDRAG_API}>
+          <form class="uppdragsform" id="profil-form" novalidate>
             <div class="falt">
               <label class="falt__etikett" for="f-lank">Din länk</label>
               <input
@@ -229,7 +229,10 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
               <span id="r-klick" hidden></span>
               <span id="r-session"></span>
             </p>
-            <p><button class="lankknapp lankknapp--fara" type="button" id="r-ta-bort" hidden>Ta bort min rad</button></p>
+            <p class="redigera__val">
+              <button class="lankknapp" type="button" id="r-hamta" hidden>Ladda ner mina uppgifter</button>
+              <button class="lankknapp lankknapp--fara" type="button" id="r-ta-bort" hidden>Ta bort min rad</button>
+            </p>
             <div class="besked besked--fel" id="r-bekrafta" hidden>
               <p><strong>Ta bort raden?</strong> Den försvinner från listan direkt.</p>
               <p class="redigera__knappar">
@@ -358,6 +361,11 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
   .redigera__fot p {
     margin: 0 0 10px;
   }
+  .redigera__val {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 20px;
+  }
   .redigera__knappar {
     display: flex;
     flex-wrap: wrap;
@@ -386,6 +394,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
     medKunskap,
     normaliseraLank,
     somRubrik,
+    uppdragUrl,
     type GithubForrad,
     type Profil,
   } from '../../lib/uppdrag';
@@ -420,7 +429,6 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
   const UTKAST = 'uppdrag-utkast';
   const UTKAST_SPARAS_MS = 24 * 3600 * 1000;
   const form = document.getElementById('profil-form') as HTMLFormElement;
-  const api = form.dataset.api ?? '';
   const etiketter = JSON.parse(document.getElementById('uppdrag-etiketter')?.textContent || '{}') as Etiketter;
   const hitta = <T extends HTMLElement>(id: string): T => document.getElementById(id) as T;
   const laddar = hitta('r-laddar');
@@ -567,6 +575,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
     klick.hidden = !l.profil;
     klick.textContent = `${l.klick30} klick på din rad de senaste 30 dagarna.`;
     taBort.hidden = !l.profil;
+    hitta('r-hamta').hidden = !l.profil;
   }
 
   function lasForm(): Record<string, unknown> {
@@ -1103,7 +1112,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
   /* ---------- Spara och ta bort ---------- */
 
   async function anrop(metod: 'PUT' | 'DELETE', kropp?: unknown): Promise<Response> {
-    return fetch(`${api}/profil`, {
+    return fetch(uppdragUrl('/profil'), {
       method: metod,
       headers: { 'Content-Type': 'application/json', 'x-uppdrag-session': lagrat?.session ?? '' },
       body: kropp === undefined ? undefined : JSON.stringify(kropp),
@@ -1167,6 +1176,19 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
     }
   });
 
+  // Rätten att få ut sina uppgifter: det sparade, som en fil som går att läsa av en maskin.
+  // Filen görs i webbläsaren av det som redan finns här. Inget hämtas och inget skickas.
+  hitta('r-hamta').addEventListener('click', () => {
+    if (!lagrat?.profil) return;
+    const innehall = { ...lagrat.profil, bild: bildUrl(lagrat.profil), klick_senaste_30_dagarna: lagrat.klick30 };
+    const adress = URL.createObjectURL(new Blob([JSON.stringify(innehall, null, 2)], { type: 'application/json' }));
+    const lank = document.createElement('a');
+    lank.href = adress;
+    lank.download = 'tar-uppdrag-mina-uppgifter.json';
+    lank.click();
+    URL.revokeObjectURL(adress);
+  });
+
   taBort.addEventListener('click', () => {
     bekrafta.hidden = false;
     hitta<HTMLButtonElement>('r-avbryt').focus();
@@ -1199,7 +1221,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
   async function oppnaMedKod(token: string): Promise<void> {
     visa('laddar');
     try {
-      const svar = await fetch(`${api}/session`, {
+      const svar = await fetch(uppdragUrl('/session'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token }),

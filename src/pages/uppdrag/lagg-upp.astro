@@ -6,7 +6,7 @@ import Bas from '../../layouts/Bas.astro';
 import Uppdragsbas from '../../components/Uppdragsbas.astro';
 import { url } from '../../lib/data';
 import { ikon } from '../../lib/ikoner';
-import { BLI_MEDLEM, UPPDRAG_API } from '../../lib/uppdrag';
+import { BLI_MEDLEM, uppdragUrl } from '../../lib/uppdrag';
 ---
 
 <Bas
@@ -23,7 +23,7 @@ import { BLI_MEDLEM, UPPDRAG_API } from '../../lib/uppdrag';
       <h1 id="lagg-rubrik">Lägg upp dig.</h1>
       <p class="morka__ingress">Vi mejlar en länk till din rad. Inget konto, inget lösenord.</p>
 
-      <form class="uppdragsform lankform" id="lank-form" data-api={UPPDRAG_API} novalidate>
+      <form class="uppdragsform lankform" id="lank-form" data-api={uppdragUrl('/lank')} novalidate>
         <div class="falt">
           <label class="falt__etikett" for="epost">Din e-post</label>
           <div class="faltrad">
@@ -216,7 +216,7 @@ import { BLI_MEDLEM, UPPDRAG_API } from '../../lib/uppdrag';
     knapp.disabled = true;
     knapp.textContent = 'Skickar …';
     try {
-      const svar = await fetch(`${form.dataset.api}/lank`, {
+      const svar = await fetch(form.dataset.api ?? '', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ epost: adress, webbplats: (form.elements.namedItem('webbplats') as HTMLInputElement).value }),

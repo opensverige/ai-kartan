@@ -268,7 +268,7 @@ const medlemsdatum = medlemmar
   import { urvalSomCsv } from '../lib/csv';
   import { grupperaPerPlats, platsEfterUtzoomning, platsmitt, zoomgranser, ZOOM_KOMMUN, ZOOM_POSTER, type Platsgrupp } from '../lib/platsgrupper';
   import { arPaskagg, cirkel, type Medlemsvy } from '../lib/medlemmar';
-  import { UPPDRAG_API, bildUrl, dagensOrdning, perKommun, uppdragstraff, type Profil, type Uppslag } from '../lib/uppdrag';
+  import { bildUrl, dagensOrdning, perKommun, uppdragstraff, uppdragUrl, type Profil, type Uppslag } from '../lib/uppdrag';
   import { hammarhandSrc, ritaKort } from '../lib/uppdragkort';
   import { kommunytor } from '../lib/kommunyta';
   import { delaAdresser, type Adressplats } from '../lib/sammaadress';
@@ -1595,7 +1595,7 @@ const medlemsdatum = medlemmar
 
     function hamtaHander(): Promise<Handlage | null> {
       handlage ??= (async () => {
-        const svar = await fetch(UPPDRAG_API);
+        const svar = await fetch(uppdragUrl());
         if (!svar.ok) throw new Error(`Profilerna: ${svar.status}`);
         const { profiler } = (await svar.json()) as { profiler: Profil[] };
         const idag = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Stockholm' }).format(new Date());
