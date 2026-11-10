@@ -6,7 +6,7 @@
 import Sida from '../../layouts/Sida.astro';
 import Uppdragsbas from '../../components/Uppdragsbas.astro';
 import { hamtaData, url } from '../../lib/data';
-import { UPPDRAG_API } from '../../lib/uppdrag';
+import { KUNSKAPSFORSLAG, UPPDRAG_API } from '../../lib/uppdrag';
 
 const d = hamtaData();
 const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv'));
@@ -15,7 +15,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
 <Sida
   titel="Din profil"
   kicker="Tar uppdrag"
-  ingress="Fyll i det du vill visa. Kortet visar hur det ser ut i listan."
+  ingress="Fyll i det du vill visa. Raden visar hur det ser ut i listan."
   beskrivning="Lägg upp eller ändra din profil under Tar uppdrag på AI-kartan."
   stig="/uppdrag/redigera"
   noindex
@@ -50,9 +50,43 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
         <p class="falt__fel" id="fel-namn" hidden></p>
       </div>
 
+      <div class="falt">
+        <label class="falt__etikett" for="f-lank">Din länk</label>
+        <p class="falt__hjalp" id="hjalp-lank">GitHub, X, en egen sida eller LinkedIn. Hela raden i listan leder dit.</p>
+        <div class="faltrad">
+          <input id="f-lank" name="lank" type="url" maxlength="300" inputmode="url" placeholder="https://" required aria-describedby="hjalp-lank fel-lank lank-status" />
+          <button class="knapp knapp--ghost" type="button" id="f-lankhamta">Hämta från länken →</button>
+        </div>
+        <p class="falt__hjalp" id="lank-status" role="status"></p>
+        <p class="falt__fel" id="fel-lank" hidden></p>
+      </div>
+
+      <div class="falt">
+        <label class="falt__etikett" for="f-rubrik">Vad du gör, på en rad</label>
+        <p class="falt__hjalp" id="hjalp-rubrik">Till exempel: Bygger agenter och RAG åt mindre bolag.</p>
+        <input id="f-rubrik" name="rubrik" type="text" maxlength="90" required aria-describedby="hjalp-rubrik fel-rubrik" />
+        <p class="falt__fel" id="fel-rubrik" hidden></p>
+      </div>
+
+      <div class="falt">
+        <label class="falt__etikett" for="f-kunskap">Kunskaper, högst sex</label>
+        <p class="falt__hjalp" id="hjalp-kunskaper">Det du vill bli hittad på: tekniker, språk och verktyg. Orden står på raden och går att söka på.</p>
+        <ul class="ordval" id="kunskaper-valda" aria-label="Dina kunskaper"></ul>
+        <div class="faltrad">
+          <input id="f-kunskap" type="text" maxlength="24" list="kunskaper-lista" autocomplete="off" spellcheck="false" placeholder="Till exempel RAG" aria-describedby="hjalp-kunskaper fel-kunskaper" />
+          <button class="knapp knapp--ghost" type="button" id="f-kunskap-lagg">Lägg till</button>
+        </div>
+        <datalist id="kunskaper-lista">{KUNSKAPSFORSLAG.map((k) => <option value={k} />)}</datalist>
+        <div class="falt" id="kunskaper-hamtade" hidden>
+          <p class="falt__hjalp">Förslag från GitHub. Välj dem som stämmer.</p>
+          <div class="ordval ordval--forslag" id="kunskaper-forslag"></div>
+        </div>
+        <p class="falt__fel" id="fel-kunskaper" role="status" hidden></p>
+      </div>
+
       <fieldset aria-describedby="hjalp-bild fel-bild">
-        <legend>Din bild</legend>
-        <p class="falt__hjalp" id="hjalp-bild">En bild där man ser dig. Den beskärs till en kvadrat i din webbläsare, och platsuppgifter i filen följer inte med.</p>
+        <legend>Din bild, frivillig</legend>
+        <p class="falt__hjalp" id="hjalp-bild">Utan bild står föreningens hand på raden. En bild beskärs till en kvadrat i din webbläsare, och platsuppgifter i filen följer inte med.</p>
         <div class="bildval">
           <span class="bildval__visning"><img id="bild-visning" src={url('/pixelhand.webp')} alt="" class="bildval__hand" /></span>
           <div class="bildval__vagar">
@@ -70,20 +104,6 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
         <p class="falt__hjalp" id="bild-status" role="status"></p>
         <p class="falt__fel" id="fel-bild" hidden></p>
       </fieldset>
-
-      <div class="falt">
-        <label class="falt__etikett" for="f-rubrik">Vad du gör, på en rad</label>
-        <p class="falt__hjalp" id="hjalp-rubrik">Till exempel: Bygger agenter och RAG åt mindre bolag.</p>
-        <input id="f-rubrik" name="rubrik" type="text" maxlength="90" required aria-describedby="hjalp-rubrik fel-rubrik" />
-        <p class="falt__fel" id="fel-rubrik" hidden></p>
-      </div>
-
-      <div class="falt">
-        <label class="falt__etikett" for="f-lank">Portfolio eller LinkedIn</label>
-        <p class="falt__hjalp" id="hjalp-lank">Länken som knappen på kortet leder till.</p>
-        <input id="f-lank" name="lank" type="url" maxlength="300" inputmode="url" placeholder="https://" required aria-describedby="hjalp-lank fel-lank" />
-        <p class="falt__fel" id="fel-lank" hidden></p>
-      </div>
 
       <fieldset aria-describedby="fel-erbjuder">
         <legend>Vad du erbjuder</legend>
@@ -106,7 +126,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
 
       <fieldset aria-describedby="hjalp-omraden fel-omraden">
         <legend>Områden, högst tre</legend>
-        <p class="falt__hjalp" id="hjalp-omraden">Samma områden som på kartan. De styr filtret i listan och står inte på kortet.</p>
+        <p class="falt__hjalp" id="hjalp-omraden">Samma områden som på kartan. De står efter dina kunskaper och går att söka på.</p>
         <div class="valrutnat">
           {d.taxonomi.omraden.map((o) => (
             <label class="val"><input type="checkbox" name="omraden" value={o.id} /> {o.label}</label>
@@ -157,7 +177,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
 
     <aside class="redigera__forhand" aria-labelledby="forhand-rubrik">
       <p class="kicker" id="forhand-rubrik">Så här syns du</p>
-      <div id="forhand"></div>
+      <div class="medlemslista" id="forhand"></div>
       <p class="meta" id="r-klick" hidden></p>
       <p class="meta" id="r-session"></p>
     </aside>
@@ -179,9 +199,6 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
   }
   .redigera__forhand .kicker {
     margin: 0;
-  }
-  #forhand {
-    max-width: 250px;
   }
   .redigera__forhand .meta {
     margin: 0;
@@ -207,8 +224,19 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
 </style>
 
 <script>
-  import { bildUrl, harPersonnummer, type Profil } from '../../lib/uppdrag';
-  import { folie, pixelhandSrc, ritaKort, type Etiketter } from '../../lib/uppdragkort';
+  import {
+    bildUrl,
+    forslagFranGithub,
+    giltigKunskap,
+    harPersonnummer,
+    lanktyp,
+    MAX_KUNSKAPER,
+    medKunskap,
+    somRubrik,
+    type GithubForrad,
+    type Profil,
+  } from '../../lib/uppdrag';
+  import { pixelhandSrc, ritaKort, type Etiketter } from '../../lib/uppdragkort';
 
   type Lagrat = {
     session: string;
@@ -229,7 +257,6 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
   const klar = hitta('r-klar');
   const yta = hitta('r-yta');
   const forhand = hitta('forhand');
-  folie(forhand);
   const klick = hitta('r-klick');
   const sessionText = hitta('r-session');
   const spara = hitta<HTMLButtonElement>('r-spara');
@@ -240,6 +267,9 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
   let lagrat: Lagrat | null = null;
   /** En ny bild, beskuren och omkodad, som en data-adress. Skickas med när profilen sparas. */
   let nyBild: string | null = null;
+  /** Kunskaperna som de står i formuläret, och förslagen som hämtats från medlemmens GitHub. */
+  let kunskaper: string[] = [];
+  let forslag: string[] = [];
   const bildVisning = hitta<HTMLImageElement>('bild-visning');
   const bildStatus = hitta('bild-status');
   const BILD_SIDA = 512;
@@ -291,6 +321,9 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
     falt('bolag_webbplats').value = p?.bolag_webbplats ?? '';
     if (p?.bolag_namn || p?.bolag_webbplats) (hitta('f-bolag-ruta') as HTMLDetailsElement).open = true;
     falt('samtycke').checked = Boolean(p);
+    kunskaper = [...(p?.kunskaper ?? [])];
+    forslag = [];
+    visaKunskaper();
     nyBild = null;
     visaBild();
     taBort.hidden = !p;
@@ -316,6 +349,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
       kommun: (form.elements.namedItem('kommun') as HTMLSelectElement).value,
       distans: falt('distans').checked,
       omraden: [...form.querySelectorAll<HTMLInputElement>('input[name="omraden"]:checked')].map((c) => c.value),
+      kunskaper,
       bolag_namn: falt('bolag_namn').value.trim(),
       bolag_webbplats: falt('bolag_webbplats').value.trim(),
       samtycke: falt('samtycke').checked,
@@ -334,12 +368,13 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
       kommun: String(f.kommun) || null,
       distans: Boolean(f.distans),
       omraden: f.omraden as string[],
+      kunskaper,
       bolag_namn: String(f.bolag_namn) || null,
       bolag_webbplats: String(f.bolag_webbplats) || null,
       uppdaterad_at: lagrat?.profil?.uppdaterad_at ?? new Date().toISOString(),
       bild: lagrat?.profil?.bild ?? null,
     };
-    forhand.replaceChildren(ritaKort(profil, etiketter, { forhandsvisning: true, form: 'samlarkort', bildSrc: nyBild ?? undefined }));
+    forhand.replaceChildren(ritaKort(profil, etiketter, { forhandsvisning: true, form: 'rad', bildSrc: nyBild ?? undefined }));
   }
 
   function begransaOmraden(): void {
@@ -356,10 +391,11 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
     kommun: 'Välj en kommun ur listan.',
     distans: 'Något gick fel med valet Distans. Ladda om sidan.',
     omraden: 'Välj högst tre områden.',
+    kunskaper: 'Korta ord, högst 24 tecken var. Inga länkar eller adresser.',
     bolag_namn: 'Högst 80 tecken. Inget organisationsnummer.',
     bolag_webbplats: 'Länken ska börja med https://.',
     samtycke: 'Kryssa i rutan för att synas i listan.',
-    bild: 'Lägg till en bild: ladda upp en, eller hämta din från X.',
+    bild: 'Bilden gick inte att spara. Prova en annan, eller spara utan bild.',
   };
 
   function visaFel(namn: string[]): void {
@@ -377,6 +413,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
       if (forsta.startsWith('bolag')) (hitta('f-bolag-ruta') as HTMLDetailsElement).open = true;
       const input = form.elements.namedItem(forsta);
       if (input instanceof HTMLElement) input.focus();
+      else if (forsta === 'kunskaper') kunskapFalt.focus();
       else form.querySelector<HTMLInputElement>(`input[name="${forsta}"]`)?.focus();
     }
   }
@@ -401,7 +438,6 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
     if (harPersonnummer(String(f.bolag_namn))) fel.push('bolag_namn');
     if (f.bolag_webbplats && !https(String(f.bolag_webbplats))) fel.push('bolag_webbplats');
     if (!f.samtycke) fel.push('samtycke');
-    if (!f.bild && !lagrat?.profil?.bild) fel.push('bild');
     return fel;
   }
 
@@ -453,7 +489,8 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
     throw new Error('stor');
   }
 
-  async function taIn(kalla: Blob, klar: string): Promise<void> {
+  /** Tar in en bild och säger om det gick. Varför det inte gick står under bilden. */
+  async function taIn(kalla: Blob, klar: string): Promise<boolean> {
     bildStatus.textContent = 'Beskär bilden …';
     try {
       nyBild = await kodaOm(kalla);
@@ -463,6 +500,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
       fel.textContent = '';
       visaBild();
       forhandsvisa();
+      return true;
     } catch (e) {
       const skal = e instanceof Error ? e.message : '';
       bildStatus.textContent =
@@ -471,6 +509,7 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
           : skal === 'stor'
             ? 'Bilden blev för stor. Prova en annan.'
             : 'Kunde inte läsa bilden. Prova en JPG eller PNG.';
+      return false;
     }
   }
 
@@ -516,6 +555,164 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
     void hamtaFranX();
   });
 
+  /* ---------- Kunskaperna ---------- */
+
+  const kunskapFalt = hitta<HTMLInputElement>('f-kunskap');
+  const kunskaperValda = hitta('kunskaper-valda');
+  const forslagYta = hitta('kunskaper-hamtade');
+  const forslagRad = hitta('kunskaper-forslag');
+  const kunskapFel = hitta('fel-kunskaper');
+
+  function ordknapp(ord: string, text: string, etikett: string): HTMLButtonElement {
+    const knapp = document.createElement('button');
+    knapp.type = 'button';
+    knapp.className = 'ordval__ord';
+    knapp.textContent = text;
+    knapp.dataset.ord = ord;
+    knapp.setAttribute('aria-label', etikett);
+    return knapp;
+  }
+
+  function visaKunskaper(): void {
+    kunskaperValda.replaceChildren(
+      ...kunskaper.map((k) => {
+        const li = document.createElement('li');
+        li.append(ordknapp(k, `${k} ×`, `Ta bort ${k}`));
+        return li;
+      }),
+    );
+    const kvar = forslag.filter((f) => !kunskaper.some((k) => k.toLowerCase() === f.toLowerCase()));
+    forslagRad.replaceChildren(...kvar.map((f) => ordknapp(f, `+ ${f}`, `Lägg till ${f}`)));
+    forslagYta.hidden = kvar.length === 0;
+  }
+
+  /** Lägger till det som står i texten. Flera ord går att skriva eller klistra in med komma emellan. */
+  function laggTillKunskaper(text: string): void {
+    const ord = text.split(',').map((o) => o.trim()).filter(Boolean);
+    if (!ord.length) return;
+    const full = kunskaper.length >= MAX_KUNSKAPER;
+    for (const o of ord) kunskaper = medKunskap(kunskaper, o);
+    const fel = full ? 'Högst sex. Ta bort ett ord för att lägga till ett nytt.' : ord.some((o) => !giltigKunskap(o.replace(/\s+/g, ' '))) ? FELTEXT.kunskaper : '';
+    kunskapFel.textContent = fel;
+    kunskapFel.hidden = !fel;
+    visaKunskaper();
+    forhandsvisa();
+  }
+
+  function laggTillFranFaltet(): void {
+    laggTillKunskaper(kunskapFalt.value);
+    if (kunskapFel.hidden) kunskapFalt.value = '';
+  }
+  hitta('f-kunskap-lagg').addEventListener('click', () => {
+    laggTillFranFaltet();
+    kunskapFalt.focus();
+  });
+  // Enter och komma lägger till ordet i stället för att skicka hela formuläret.
+  kunskapFalt.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter' && e.key !== ',') return;
+    e.preventDefault();
+    laggTillFranFaltet();
+  });
+  kunskaperValda.addEventListener('click', (e) => {
+    const ord = (e.target as Element | null)?.closest<HTMLElement>('[data-ord]')?.dataset.ord;
+    if (!ord) return;
+    kunskaper = kunskaper.filter((k) => k !== ord);
+    kunskapFel.hidden = true;
+    visaKunskaper();
+    forhandsvisa();
+    kunskapFalt.focus();
+  });
+  forslagRad.addEventListener('click', (e) => {
+    const ord = (e.target as Element | null)?.closest<HTMLElement>('[data-ord]')?.dataset.ord;
+    if (ord) laggTillKunskaper(ord);
+  });
+
+  /* ---------- Hämta från länken ---------- */
+
+  // Medlemmen har redan skrivit sin länk. Går den till GitHub, X eller en egen sida hämtar
+  // webbläsaren det som ligger öppet där: bilden via unavatar.io, och från GitHub också
+  // presentationen och språken i de öppna kodförråden. Bara kontots namn eller sidans adress
+  // skickas. Inget sparas förrän medlemmen sparar, och allt går att ändra först.
+  const lankStatus = hitta('lank-status');
+  const lankHamta = hitta<HTMLButtonElement>('f-lankhamta');
+  const UTAN_SPAR: RequestInit = { credentials: 'omit', referrerPolicy: 'no-referrer' };
+
+  async function hamtaBild(adress: string): Promise<boolean> {
+    try {
+      const r = await fetch(adress, UTAN_SPAR);
+      if (!r.ok) return false;
+      const blob = await r.blob();
+      if (!blob.type.startsWith('image/')) return false;
+      return await taIn(blob, 'Bilden från länken är klar. Den sparas när du sparar profilen.');
+    } catch {
+      return false;
+    }
+  }
+
+  async function hamtaGithub(namn: string): Promise<{ rubrik: string; forslag: string[] }> {
+    const las = async <T,>(vag: string): Promise<T | null> => {
+      try {
+        const r = await fetch(`https://api.github.com/users/${encodeURIComponent(namn)}${vag}`, {
+          ...UTAN_SPAR,
+          headers: { Accept: 'application/vnd.github+json' },
+        });
+        return r.ok ? ((await r.json()) as T) : null;
+      } catch {
+        return null;
+      }
+    };
+    const [konto, forrad] = await Promise.all([
+      las<{ bio?: string | null }>(''),
+      las<GithubForrad[]>('/repos?per_page=100&sort=pushed'),
+    ]);
+    return { rubrik: somRubrik(konto?.bio ?? ''), forslag: Array.isArray(forrad) ? forslagFranGithub(forrad) : [] };
+  }
+
+  async function hamtaFranLanken(): Promise<void> {
+    const typ = lanktyp(falt('lank').value.trim());
+    if (!typ) {
+      lankStatus.textContent = 'Skriv din länk först, med https:// i början.';
+      return;
+    }
+    if (typ.typ === 'linkedin') {
+      lankStatus.textContent = 'LinkedIn lämnar inte ut något till andra sajter. Fyll i själv. Bilden går att hämta från X längre ner.';
+      return;
+    }
+    lankHamta.disabled = true;
+    lankStatus.textContent = 'Hämtar …';
+    try {
+      const hamtat: string[] = [];
+      if (typ.typ === 'github') {
+        const [bild, konto] = await Promise.all([
+          hamtaBild(`https://unavatar.io/github/${encodeURIComponent(typ.namn)}?fallback=false`),
+          hamtaGithub(typ.namn),
+        ]);
+        if (bild) hamtat.push('bilden');
+        if (konto.rubrik && !falt('rubrik').value.trim()) {
+          falt('rubrik').value = konto.rubrik;
+          hamtat.push('raden om vad du gör');
+        }
+        forslag = konto.forslag;
+        if (forslag.length) hamtat.push('förslag på kunskaper');
+        visaKunskaper();
+      } else if (typ.typ === 'x') {
+        if (await hamtaBild(`https://unavatar.io/x/${encodeURIComponent(typ.namn)}?fallback=false`)) hamtat.push('bilden');
+      } else if (await hamtaBild(`https://unavatar.io/${encodeURIComponent(typ.host)}?fallback=false`)) {
+        hamtat.push('bilden');
+      }
+      forhandsvisa();
+      const uppraknat = hamtat.length > 1 ? `${hamtat.slice(0, -1).join(', ')} och ${hamtat.at(-1)}` : hamtat[0];
+      lankStatus.textContent = hamtat.length
+        ? `Hämtade ${uppraknat}. Ändra det som inte stämmer. Inget sparas förrän du sparar.`
+        : typ.typ === 'sida'
+          ? `Hittade ingen bild på ${typ.host} som går att använda. Fyll i själv.`
+          : 'Hittade inget att hämta just nu. Fyll i själv.';
+    } finally {
+      lankHamta.disabled = false;
+    }
+  }
+  lankHamta.addEventListener('click', () => void hamtaFranLanken());
+
   async function anrop(metod: 'PUT' | 'DELETE', kropp?: unknown): Promise<Response> {
     return fetch(`${api}/profil`, {
       method: metod,
@@ -538,6 +735,8 @@ const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     sparfel.hidden = true;
+    // Ett ord som står kvar i fältet räknas med, också när medlemmen inte tryckte på Lägg till.
+    if (kunskapFalt.value.trim()) laggTillFranFaltet();
     const f = lasForm();
     const lokala = provaLokalt(f);
     visaFel(lokala);

@@ -1,18 +1,18 @@
 ---
 // Tar uppdrag: föreningsmedlemmar som visar att de tar uppdrag eller säljer tjänster.
-// Korten hämtas från medlemsdatabasen när sidan öppnas och bakas aldrig in i bygget,
+// Raderna hämtas från medlemsdatabasen när sidan öppnas och bakas aldrig in i bygget,
 // så att en borttagen profil inte ligger kvar i en gammal deploy. Se src/lib/uppdrag.ts.
 //
-// Sidan är mörk med flit och bryter mot resten av kartan. Varje medlem står som ett samlarkort
-// med sin egen bild, och korten delas ut på bordet när listan har hämtats. Lediga platser står som
-// kort med baksidan upp, så att raden är full även när få har lagt upp sig. De är utsmyckning och
-// döljs för skärmläsare.
+// Sidan är mörk med flit och bryter mot resten av kartan. Den är byggd för att avgöra snabbt:
+// sökfältet står först, varje medlem är en rad med allt som behövs för att välja, och hela raden
+// leder till medlemmens egen länk. Det finns ingen profilsida emellan. Valen under sökfältet är
+// orden som flest har angett, så att besökaren känner igen i stället för att gissa.
 import Bas from '../../layouts/Bas.astro';
 import Uppdragsbas from '../../components/Uppdragsbas.astro';
-import { hamtaData, url } from '../../lib/data';
+import { url } from '../../lib/data';
+import { ikon } from '../../lib/ikoner';
 import { BLI_MEDLEM, UPPDRAG_API } from '../../lib/uppdrag';
 
-const d = hamtaData();
 const pixelhand = url('/pixelhand.webp');
 ---
 
@@ -24,57 +24,61 @@ const pixelhand = url('/pixelhand.webp');
   <Uppdragsbas />
 
   <section class="morka" aria-labelledby="morka-rubrik">
-    <div class="ram ram--bred">
+    <div class="ram morka__ram">
       <header class="morka__topp">
-        <img class="morka__hand" src={pixelhand} alt="" width="680" height="720" decoding="async" fetchpriority="high" />
         <div class="morka__text">
           <p class="morka__kicker">Tar uppdrag · OpenSverige</p>
           <h1 id="morka-rubrik">Anlita en byggare.</h1>
           <p class="morka__ingress">
             Medlemmar i OpenSverige som bygger med AI och tar uppdrag. Var och en har lagt upp sig själv.
+            <a class="morka__lagg" href={url('/uppdrag/lagg-upp')}>Lägg upp dig →</a>
           </p>
         </div>
-        <div class="morka__knappar">
-          <a class="knapp morka__knapp" href={url('/uppdrag/lagg-upp')}>Lägg upp dig →</a>
-          <a class="knapp morka__knapp morka__knapp--ghost" href={BLI_MEDLEM} rel="noopener">Bli medlem →</a>
-        </div>
+        <img class="morka__hand" src={pixelhand} alt="" width="680" height="720" decoding="async" fetchpriority="high" />
       </header>
 
-      <div class="morka__rad">
-        <form class="uppdrag__filter" id="uppdrag-filter" aria-label="Filtrera" hidden>
-          <fieldset>
-            <legend class="visuellt-dold">Vad de erbjuder</legend>
-            <label class="filterval"><input type="radio" name="erbjuder" value="alla" checked /> Alla</label>
-            <label class="filterval"><input type="radio" name="erbjuder" value="uppdrag" /> Tar uppdrag</label>
-            <label class="filterval"><input type="radio" name="erbjuder" value="tjanster" /> Säljer tjänster</label>
-            <label class="filterval"><input type="checkbox" name="distans" /> Distans</label>
-          </fieldset>
-          <label class="uppdrag__omrade">
-            <span class="visuellt-dold">Område</span>
-            <select name="omrade" id="uppdrag-omrade">
-              <option value="">Alla områden</option>
-              {d.taxonomi.omraden.map((o) => <option value={o.id}>{o.label}</option>)}
-            </select>
-          </label>
+      <div class="uppdrag__sok" id="uppdrag-sokyta" hidden>
+        <form class="sokfalt" id="uppdrag-sokform" role="search">
+          <label class="visuellt-dold" for="uppdrag-sok">Sök bland medlemmarna</label>
+          <span class="sokfalt__ikon" set:html={ikon('sok', 18)} />
+          <input
+            id="uppdrag-sok"
+            type="search"
+            name="q"
+            maxlength="80"
+            placeholder="Sök på kunskap, ort eller namn"
+            autocomplete="off"
+            spellcheck="false"
+            enterkeyhint="search"
+          />
         </form>
-        <p class="morka__antal" id="uppdrag-antal" role="status">Hämtar medlemmarna …</p>
+        <div class="snabbval" id="uppdrag-snabbval" role="group" aria-label="Vanliga sökningar"></div>
       </div>
 
-      <ul class="profiler" id="uppdrag-lista" data-api={UPPDRAG_API}></ul>
+      <p class="morka__antal" id="uppdrag-antal" role="status">Hämtar medlemmarna …</p>
+
+      <ul class="medlemslista" id="uppdrag-lista" data-api={UPPDRAG_API}></ul>
+      <p class="morka__tomt" id="uppdrag-tomt" hidden>
+        <button class="knapp morka__knapp" type="button" id="uppdrag-rensa">Visa alla →</button>
+      </p>
       <noscript><p class="morka__ingress">Listan hämtas med JavaScript. Slå på det för att se medlemmarna.</p></noscript>
 
-      <template id="uppdrag-skugga">
-        <li class="kortbak" aria-hidden="true">
-          <a class="kortbak__yta" href={url('/uppdrag/lagg-upp')} tabindex="-1">
-            <span class="kortbak__ord">OpenSverige</span>
-            <span class="kortbak__medaljong">
-              <img class="kortbak__hand" src={pixelhand} alt="" decoding="async" loading="lazy" />
-            </span>
-            <span class="kortbak__fot">
-              <span class="kortbak__etikett">Ledig plats</span>
-              <span class="kortbak__lank">Lägg upp dig →</span>
-            </span>
-          </a>
+      <template id="uppdrag-ledig">
+        <li class="medlemsrad medlemsrad--ledig">
+          <span class="medlemsrad__bild medlemsrad__bild--utan">
+            <img class="medlemsrad__bild-hand" src={pixelhand} alt="" decoding="async" loading="lazy" />
+          </span>
+          <div class="medlemsrad__vem">
+            <p class="medlemsrad__namn" data-roll="namn">Din plats</p>
+            <p class="medlemsrad__ort">Bara för medlemmar</p>
+          </div>
+          <div class="medlemsrad__vad">
+            <p class="medlemsrad__rubrik" data-roll="rubrik">Tar du uppdrag eller säljer tjänster? Lägg upp dig själv.</p>
+          </div>
+          <div class="medlemsrad__ut">
+            <a class="medlemsrad__lank" href={url('/uppdrag/lagg-upp')}>Lägg upp dig →</a>
+            <a class="medlemsrad__bolag" href={BLI_MEDLEM} rel="noopener">Bli medlem först →</a>
+          </div>
         </li>
       </template>
 
@@ -84,7 +88,8 @@ const pixelhand = url('/pixelhand.webp');
           <li>Bara medlemmar i föreningen OpenSverige kan lägga upp sig. Medlemskapet är gratis och tar två minuter.</li>
           <li>Uppgifterna är medlemmarnas egna. Föreningen förmedlar inga uppdrag och går inte i god för någon.</li>
           <li>Ordningen byts varje dag, så att ingen alltid står först. Ingen kan köpa en plats.</li>
-          <li>Bilden lägger medlemmen upp själv. Den som inte visar personen, eller bryter mot föreningens regler, tas bort.</li>
+          <li>Raden leder till medlemmens egen länk. Kontakten tar ni där, föreningen är inte med.</li>
+          <li>Bilden väljer medlemmen själv. En bild som bryter mot föreningens regler tas bort.</li>
           <li>
             Klick på en medlems länk räknas per dag, så att medlemmen ser om profilen ger något. Inget sparas om den som
             klickar. <a href={url('/integritet#uppdrag')}>Mer om det</a>.
@@ -97,42 +102,31 @@ const pixelhand = url('/pixelhand.webp');
 
 <style>
   .morka {
-    padding: 52px 0 60px;
+    padding: 34px 0 60px;
+    overflow: hidden;
     background: #141310;
     color: #e9e5da;
   }
   .morka :global(:focus-visible) {
     outline-color: #f6f2e8;
   }
-  /* Pixelhanden står till höger i sidhuvudet och sticker ner mot korten. Texten och knapparna
-     står till vänster. */
-  .morka {
-    overflow: hidden;
+  /* Raderna läses lättast i en spalt som inte är bredare än en rad text orkar. */
+  .morka__ram {
+    max-width: 1080px;
   }
+  /* Sidhuvudet är lågt, så att de första medlemmarna syns utan att rulla. Handen står till höger. */
   .morka__topp {
     position: relative;
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: end;
-    gap: 24px 40px;
-    min-height: 300px;
-  }
-  .morka__text {
-    position: relative;
-    z-index: 1;
+    gap: 24px;
   }
   .morka__hand {
-    position: absolute;
-    right: -10px;
-    bottom: -18px;
-    width: min(340px, 32vw);
+    width: min(150px, 18vw);
     height: auto;
+    margin-bottom: -38px;
     pointer-events: none;
-  }
-  .morka__knappar {
-    position: relative;
-    z-index: 1;
-    grid-column: 1;
   }
   .morka__kicker {
     margin: 0;
@@ -142,23 +136,21 @@ const pixelhand = url('/pixelhand.webp');
     text-transform: uppercase;
   }
   .morka h1 {
-    margin: 14px 0 0;
+    margin: 12px 0 0;
     color: #f6f2e8;
-    font: 650 clamp(46px, 7vw, 84px) / 0.95 var(--font-sans);
+    font: 650 clamp(36px, 4.6vw, 54px) / 1 var(--font-sans);
     letter-spacing: -0.035em;
   }
   .morka__ingress {
     max-width: 54ch;
-    margin: 16px 0 0;
+    margin: 12px 0 0;
     color: #c9c4b6;
-    font-size: 18px;
+    font-size: 16.5px;
     line-height: 1.5;
   }
-  .morka__knappar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 6px;
+  .morka__lagg {
+    color: #f6f2e8;
+    white-space: nowrap;
   }
   .morka__knapp {
     border-color: #f6f2e8;
@@ -170,221 +162,108 @@ const pixelhand = url('/pixelhand.webp');
     background: #ffffff;
     color: #141310;
   }
-  .morka__knapp--ghost {
-    border-color: #4a473f;
-    background: transparent;
-    color: #f6f2e8;
-  }
-  .morka__knapp--ghost:hover {
-    border-color: #f6f2e8;
-    background: transparent;
-    color: #f6f2e8;
-  }
 
-  .morka__rad {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px 24px;
-    margin: 48px 0 22px;
-  }
-  .morka__antal {
-    margin: 0 0 0 auto;
-    color: #a39f92;
-    font: 500 12px/1.4 var(--font-mono);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-  .uppdrag__filter {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px;
-  }
-  .uppdrag__filter fieldset {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin: 0;
-    padding: 0;
-    border: 0;
-  }
-  .filterval {
+  /* Sökfältet är sidans enda stora reglage. Valen under det skriver i samma fält. */
+  .uppdrag__sok {
     position: relative;
+    margin-top: 22px;
+  }
+  .sokfalt {
+    position: relative;
+  }
+  .sokfalt__ikon {
+    position: absolute;
+    top: 50%;
+    left: 16px;
     display: inline-flex;
-    align-items: center;
-    min-height: 38px;
-    padding: 0 14px;
+    color: #a39f92;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+  .sokfalt input {
+    width: 100%;
+    min-height: 54px;
+    padding: 0 16px 0 46px;
+    border: 1px solid #3a3832;
+    border-radius: 14px;
+    background: #1e1d19;
+    color: #f6f2e8;
+    font: 400 17px/1.2 var(--font-sans);
+    transition:
+      border-color 240ms cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 240ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .sokfalt input::placeholder {
+    color: #979386;
+  }
+  .sokfalt input:focus-visible {
+    outline: 0;
+    border-color: #f6f2e8;
+    box-shadow: 0 0 0 3px rgb(246 242 232 / 0.14);
+  }
+  .snabbval {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+  }
+  .snabbval:empty {
+    display: none;
+  }
+  .snabbval :global(.snabbval__val) {
+    flex: none;
+    min-height: 36px;
+    padding: 0 13px;
     border: 1px solid #3a3832;
     border-radius: var(--r-pill);
-    background: #1e1d19;
+    background: transparent;
     color: #c9c4b6;
-    font-size: 14.5px;
+    font: 500 13.5px/1 var(--font-sans);
     cursor: pointer;
+    transition:
+      background-color 240ms cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 240ms cubic-bezier(0.16, 1, 0.3, 1),
+      color 240ms cubic-bezier(0.16, 1, 0.3, 1);
   }
-  .filterval:has(input:checked) {
+  @media (hover: hover) {
+    .snabbval :global(.snabbval__val:hover) {
+      border-color: #8f8b7f;
+      color: #f6f2e8;
+    }
+  }
+  .snabbval :global(.snabbval__val[aria-pressed='true']) {
     border-color: #f6f2e8;
     background: #f6f2e8;
     color: #141310;
     font-weight: 600;
   }
-  .filterval:has(input:focus-visible) {
-    outline: 2px solid #f6f2e8;
-    outline-offset: 2px;
-  }
-  .filterval input {
-    position: absolute;
-    opacity: 0;
-    pointer-events: none;
-  }
-  .uppdrag__omrade select {
-    min-height: 38px;
-    padding: 0 12px;
-    border: 1px solid #3a3832;
-    border-radius: var(--r-pill);
-    background: #1e1d19;
-    color: #e9e5da;
-    font: 400 14.5px/1 var(--font-sans);
-  }
 
-  /* Korten ligger lite snett, som utlagda på ett bord. Inte på telefon, där de står tätt. */
-  @media (min-width: 561px) {
-    .morka :global(.profiler > :nth-child(3n + 2)) {
-      transform: rotate(0.5deg);
-    }
-    .morka :global(.profiler > :nth-child(3n)) {
-      transform: rotate(-0.6deg);
-    }
+  .morka__antal {
+    margin: 18px 0 10px;
+    color: #a39f92;
+    font: 500 12px/1.4 var(--font-mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
   }
-  /* Korten delas ut ett i taget när listan har hämtats, och igen när filtret ändras. */
+  .morka__tomt {
+    margin: 4px 0 0;
+  }
+  /* Raderna kommer in en efter en när listan har hämtats. Inte vid varje tangenttryck i sökfältet. */
   @media (prefers-reduced-motion: no-preference) {
-    .morka :global(.profiler > li) {
-      animation: kortdelning 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
-      animation-delay: calc(var(--i, 0) * 55ms);
+    .morka :global(.medlemslista--in > li) {
+      animation: radin 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation-delay: calc(min(var(--i, 0), 10) * 40ms);
     }
   }
-  @keyframes kortdelning {
+  @keyframes radin {
     from {
       opacity: 0;
-      transform: translateY(26px) rotate(-2deg) scale(0.97);
-    }
-  }
-
-  /* Baksidan: lediga platser. Ett rutmönster, föreningens hand i en medaljong och ingen text som
-     låtsas vara en person. Det första kortet säger vart man går för att lägga upp sig. */
-  .morka :global(.kortbak) {
-    display: flex;
-    min-width: 0;
-    perspective: 900px;
-  }
-  .morka :global(.kortbak__yta) {
-    position: relative;
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    gap: 14px;
-    /* Höjden följer kortformatet när raden bara har baksidor, men bredden får aldrig växa ur
-       kolumnen när raden är högre än så. */
-    min-width: 0;
-    aspect-ratio: 63 / 88;
-    padding: 22px 14px 20px;
-    border: 1.5px solid transparent;
-    border-radius: 16px;
-    background:
-      radial-gradient(ellipse at 50% 46%, transparent 0 28%, rgb(0 0 0 / 0.5) 88%) padding-box,
-      repeating-linear-gradient(45deg, hsl(40 55% 72% / 0.075) 0 1px, transparent 1px 9px) padding-box,
-      repeating-linear-gradient(-45deg, hsl(40 55% 72% / 0.075) 0 1px, transparent 1px 9px) padding-box,
-      linear-gradient(#1b1915, #1b1915) padding-box,
-      linear-gradient(var(--folievinkel, 125deg), #4b3d29, #a88b5b 30%, #5b4931 50%, #cbb07a 70%, #4b3d29)
-        border-box;
-    box-shadow: 0 18px 34px -18px rgb(0 0 0 / 0.75);
-    color: #b9a57c;
-    text-decoration: none;
-    transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
-    transition: transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .morka :global(.kortbak__yta::before) {
-    content: '';
-    position: absolute;
-    inset: 7px;
-    border: 1px solid hsl(40 50% 70% / 0.2);
-    border-radius: 10px;
-    pointer-events: none;
-  }
-  .morka :global(.kortbak__ord) {
-    font: 600 9.5px/1 var(--font-mono);
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-  }
-  .morka :global(.kortbak__medaljong) {
-    position: relative;
-    width: 58%;
-    aspect-ratio: 1;
-    overflow: hidden;
-    border-radius: 50%;
-    background: radial-gradient(circle at 38% 32%, #f5eedf, #d9cdb4 75%);
-    box-shadow:
-      0 0 0 1.5px #b8975e,
-      0 0 0 7px hsl(40 45% 70% / 0.07),
-      0 12px 26px rgb(0 0 0 / 0.55);
-  }
-  .morka :global(.kortbak__hand) {
-    position: absolute;
-    left: 50%;
-    bottom: -4%;
-    width: 86%;
-    height: auto;
-    transform: translateX(-47%);
-  }
-  /* Foten har plats för två rader på alla baksidor, så att medaljongen står lika högt i raden. */
-  .morka :global(.kortbak__fot) {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 8px;
-    min-height: 44px;
-  }
-  .morka :global(.kortbak__etikett) {
-    color: #8f8a7c;
-    font: 600 10px/1 var(--font-mono);
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-  }
-  .morka :global(.kortbak__lank) {
-    display: none;
-    color: #f6f2e8;
-    font: 650 14.5px/1.2 var(--font-sans);
-  }
-  .morka :global(.kortbak--forst .kortbak__yta) {
-    background:
-      radial-gradient(ellipse at 50% 46%, transparent 0 28%, rgb(0 0 0 / 0.45) 88%) padding-box,
-      repeating-linear-gradient(45deg, hsl(40 55% 72% / 0.1) 0 1px, transparent 1px 9px) padding-box,
-      repeating-linear-gradient(-45deg, hsl(40 55% 72% / 0.1) 0 1px, transparent 1px 9px) padding-box,
-      linear-gradient(#1f1c17, #1f1c17) padding-box,
-      linear-gradient(var(--folievinkel, 125deg), #6e5634, #f1dca2 22%, #9a7646 40%, #fff1c8 58%, #8a6a3e 76%, #e6c88a)
-        border-box;
-  }
-  .morka :global(.kortbak--forst .kortbak__etikett) {
-    color: #dcc28c;
-  }
-  .morka :global(.kortbak--forst .kortbak__lank) {
-    display: block;
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .morka :global(.kortbak__yta:hover .kortbak__lank) {
-      display: block;
-    }
-    .morka :global(.kortbak__yta:hover .kortbak__etikett) {
-      color: #dcc28c;
+      transform: translateY(10px);
     }
   }
 
   .morka__om {
-    margin-top: 36px;
+    margin-top: 32px;
     color: #a39f92;
     font: 400 12.5px/1.6 var(--font-mono);
   }
@@ -408,16 +287,17 @@ const pixelhand = url('/pixelhand.webp');
 
   @media (max-width: 560px) {
     .morka {
-      padding: 32px 0 44px;
+      padding: 28px 0 44px;
     }
     .morka__topp {
-      min-height: 0;
+      grid-template-columns: minmax(0, 1fr);
     }
     .morka__hand {
-      top: -40px;
-      right: -36px;
-      bottom: auto;
-      width: 150px;
+      position: absolute;
+      top: -34px;
+      right: -30px;
+      width: 132px;
+      margin: 0;
       opacity: 0.9;
     }
     .morka h1 {
@@ -426,97 +306,103 @@ const pixelhand = url('/pixelhand.webp');
     .morka__ingress {
       font-size: 16px;
     }
-    .morka__rad {
-      margin: 24px 0 16px;
+    .uppdrag__sok {
+      margin-top: 22px;
     }
-    .morka__antal {
-      margin-left: 0;
+    /* Valen står på en rad som går att dra i sidled, så att listan börjar högt upp. */
+    .snabbval {
+      flex-wrap: nowrap;
+      margin-right: calc(var(--gutter) * -1);
+      padding-right: var(--gutter);
+      overflow-x: auto;
+      scrollbar-width: none;
     }
-    .morka :global(.kortbak__yta) {
-      padding: 16px 10px 14px;
-      border-radius: 13px;
-    }
-    .morka :global(.kortbak__ord) {
-      font-size: 8px;
-      letter-spacing: 0.22em;
-    }
-    .morka :global(.kortbak__etikett) {
-      font-size: 8.5px;
-    }
-    .morka :global(.kortbak__lank) {
-      font-size: 13px;
+    .snabbval::-webkit-scrollbar {
+      display: none;
     }
   }
 </style>
 
 <script>
-  import { dagensOrdning, passar, type Profil } from '../../lib/uppdrag';
-  import { folie, ritaKort, type Etiketter } from '../../lib/uppdragkort';
+  import { normalisera } from '../../lib/sok';
+  import { dagensOrdning, snabbval, sokProfiler, type Profil } from '../../lib/uppdrag';
+  import { ritaKort, type Etiketter } from '../../lib/uppdragkort';
 
-  const lista = document.getElementById('uppdrag-lista') as HTMLUListElement;
-  const antal = document.getElementById('uppdrag-antal') as HTMLElement;
-  const filter = document.getElementById('uppdrag-filter') as HTMLFormElement;
-  const mall = document.getElementById('uppdrag-skugga') as HTMLTemplateElement;
+  const hitta = <T extends HTMLElement>(id: string): T => document.getElementById(id) as T;
+  const lista = hitta<HTMLUListElement>('uppdrag-lista');
+  const antal = hitta('uppdrag-antal');
+  const sokyta = hitta('uppdrag-sokyta');
+  const sok = hitta<HTMLInputElement>('uppdrag-sok');
+  const valrad = hitta('uppdrag-snabbval');
+  const tomt = hitta('uppdrag-tomt');
+  const mall = hitta<HTMLTemplateElement>('uppdrag-ledig');
   const etiketter = JSON.parse(document.getElementById('uppdrag-etiketter')?.textContent || '{}') as Etiketter;
   const idag = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Stockholm' }).format(new Date());
 
   let alla: Profil[] = [];
   let hamtad = false;
-  let senasteKolumner = 0;
 
-  /** Hur många kort som står i bredd just nu. Rutnätet fyller raden själv, så det räknas ur det. */
-  function kolumner(): number {
-    return Math.max(1, getComputedStyle(lista).gridTemplateColumns.split(' ').filter(Boolean).length);
-  }
-
-  /**
-   * En ledig plats, med baksidan upp. Den första säger vart man går, och Bli först när ingen har
-   * lagt upp sig än.
-   */
-  function skugga(forst: boolean, tom: boolean): HTMLElement {
+  /** Platsen sist i listan, för den som själv tar uppdrag. Den säger Bli först när ingen har lagt upp sig. */
+  function ledig(tom: boolean): HTMLElement {
     const li = (mall.content.firstElementChild as HTMLElement).cloneNode(true) as HTMLElement;
-    if (forst) li.classList.add('kortbak--forst');
-    const etikett = li.querySelector('.kortbak__etikett');
-    if (forst && tom && etikett) etikett.textContent = 'Bli först';
+    if (tom) {
+      const namn = li.querySelector('[data-roll="namn"]');
+      const rubrik = li.querySelector('[data-roll="rubrik"]');
+      if (namn) namn.textContent = 'Bli först';
+      if (rubrik) rubrik.textContent = 'Ingen har lagt upp sig än. Tar du uppdrag eller säljer tjänster?';
+    }
     return li;
   }
 
-  function rita(): void {
-    const data = new FormData(filter);
-    const val = {
-      erbjuder: (data.get('erbjuder') as 'alla' | 'uppdrag' | 'tjanster') ?? 'alla',
-      distans: data.get('distans') === 'on',
-      omrade: String(data.get('omrade') ?? ''),
-    };
-    const filtrerat = val.erbjuder !== 'alla' || val.distans || val.omrade !== '';
-    const visade = alla.filter((p) => passar(p, val));
+  const medlemmar = (n: number): string => `${n} ${n === 1 ? 'medlem' : 'medlemmar'}`;
+
+  function rita(forsta = false): void {
+    const q = sok.value.trim();
     const n = alla.length;
-    // Med ett filter visas bara de som passar. Annars fyller lediga platser ut raden som
-    // pågår, och när ingen har lagt upp sig än en hel rad.
-    const k = kolumner();
-    senasteKolumner = k;
-    const antalSkuggor = filtrerat ? 0 : n === 0 ? k : (k - (n % k)) % k;
-    const skuggkort = Array.from({ length: antalSkuggor }, (_, i) => skugga(i === 0, n === 0));
-    const kort = [...visade.map((p) => ritaKort(p, etiketter, { form: 'samlarkort' })), ...skuggkort];
-    kort.forEach((k, i) => k.style.setProperty('--i', String(i)));
-    lista.replaceChildren(...kort);
+    const visade = sokProfiler(alla, q, etiketter);
+    const rader = visade.map((p) => ritaKort(p, etiketter, { form: 'rad' }));
+    // Utan sökning slutar listan med platsen för den som själv vill stå här. En tom lista visar
+    // den också när en sökning följde med i adressen.
+    if (!q || n === 0) rader.push(ledig(n === 0));
+    rader.forEach((r, i) => r.style.setProperty('--i', String(i)));
+    lista.classList.toggle('medlemslista--in', forsta);
+    lista.replaceChildren(...rader);
     antal.textContent =
       n === 0
         ? 'Ingen har lagt upp sig än'
-        : filtrerat
-          ? visade.length === 0
-            ? `Ingen av ${n} medlemmar passar filtret`
-            : `${visade.length} av ${n} medlemmar`
-          : `${n} ${n === 1 ? 'medlem' : 'medlemmar'} · ny ordning varje dag`;
-    filter.hidden = n < 2;
+        : !q
+          ? `${medlemmar(n)} · ny ordning varje dag`
+          : visade.length
+            ? `${visade.length} av ${medlemmar(n)}`
+            : `Ingen av ${medlemmar(n)} matchar ”${q}”`;
+    tomt.hidden = !(q && n > 0 && visade.length === 0);
+    const nq = normalisera(q);
+    for (const val of valrad.querySelectorAll<HTMLButtonElement>('button')) {
+      val.setAttribute('aria-pressed', String(normalisera(val.textContent ?? '') === nq));
+    }
+    // Med en enda medlem finns inget att söka i. En sökning som följde med i adressen går ändå att ta bort.
+    sokyta.hidden = n < 2 && !q;
   }
 
-  filter.addEventListener('change', rita);
-  folie(lista);
-  filter.addEventListener('submit', (e) => e.preventDefault());
-  // Fönstret byter bredd, och då kan antalet kort i bredd ändras. Skuggorna följer med.
-  addEventListener('resize', () => {
-    if (hamtad && kolumner() !== senasteKolumner) rita();
+  /** Sökningen står i adressen, så att den går att dela och så att kartans sök kan skicka hit en. */
+  function sattSokning(q: string): void {
+    sok.value = q;
+    history.replaceState(null, '', q.trim() ? `${location.pathname}?q=${encodeURIComponent(q.trim())}` : location.pathname);
+    if (hamtad) rita();
+  }
+
+  sok.value = (new URLSearchParams(location.search).get('q') ?? '').slice(0, 80);
+  sok.addEventListener('input', () => sattSokning(sok.value));
+  hitta<HTMLFormElement>('uppdrag-sokform').addEventListener('submit', (e) => e.preventDefault());
+  hitta('uppdrag-rensa').addEventListener('click', () => {
+    sattSokning('');
+    sok.focus();
+  });
+  // Ett val skriver sitt ord i sökfältet. Samma val en gång till tar bort det.
+  valrad.addEventListener('click', (e) => {
+    const val = (e.target as Element | null)?.closest<HTMLButtonElement>('button');
+    if (!val) return;
+    sattSokning(val.getAttribute('aria-pressed') === 'true' ? '' : (val.textContent ?? ''));
   });
 
   fetch(lista.dataset.api || '')
@@ -527,7 +413,17 @@ const pixelhand = url('/pixelhand.webp');
     .then((svar) => {
       alla = dagensOrdning(svar.profiler, idag);
       hamtad = true;
-      rita();
+      valrad.replaceChildren(
+        ...snabbval(alla, etiketter).map((ord) => {
+          const val = document.createElement('button');
+          val.type = 'button';
+          val.className = 'snabbval__val';
+          val.textContent = ord;
+          val.setAttribute('aria-pressed', 'false');
+          return val;
+        }),
+      );
+      rita(true);
     })
     .catch(() => {
       antal.textContent = 'Listan gick inte att hämta just nu. Ladda om sidan om en stund.';
