@@ -78,6 +78,16 @@ kommun:
   source_type: third_party
   verified_at: 2026-10-04
 
+# Valfritt: platser utöver sätet, till exempel kontor på andra orter. Bara kommunkod,
+# aldrig adress eller koordinat. Sätet upprepas inte här, och varje kommun står en gång.
+# platser:
+#   - value:
+#       kommun: "1480"
+#     status: claimed
+#     source_url: https://exempelbolaget.se/kontor/goteborg
+#     source_type: own_site
+#     verified_at: 2026-10-04
+
 founded:
   value: 2021
   status: claimed
@@ -91,6 +101,8 @@ evidence:                  # Minst ett belägg: en publik länk till något ni b
     title: Öppen svensk språkmodell
     status: claimed
     verified_at: 2026-10-04
+    # platser: ["1480"]    # Valfritt: kommunkoder i platser där länken visar AI-arbete. Bara då
+                           # får platsen en prick och räknas på orten. Länken ska själv nämna orten.
 
 links:
   github: https://github.com/exempelbolaget

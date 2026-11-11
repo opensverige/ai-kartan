@@ -175,3 +175,64 @@ test('dagens datum är det svenska, inte det i UTC', () => {
   assert.equal(idagISverige(new Date('2026-01-01T22:59:00Z')), '2026-01-01');
   assert.equal(idagISverige(new Date('2026-01-01T23:00:00Z')), '2026-01-02');
 });
+
+/** En plats som organisationens egen webbplats anger. */
+function plats(kod, andra = {}) {
+  return { value: { kommun: kod }, status: 'claimed', source_url: `https://ett.example/kontor/${kod}`, source_type: 'own_site', verified_at: '2026-10-07', ...andra };
+}
+
+test('platser utöver sätet går igenom', () => {
+  const r = validera([post('ett', 'https://ett.example', (p) => (p.platser = [plats('1480'), plats('1280')]))]);
+  assert.equal(r.kod, 0, r.text);
+});
+
+test('en plats med okänd kommunkod, sätets kommun eller samma kommun två gånger stoppas', () => {
+  const fall = [
+    [[plats('9999')], /platser\[0\]: koden "9999" finns inte/],
+    [[plats('0180')], /platser\[0\]: "0180" är sätets kommun/],
+    [[plats('1480'), plats('1480')], /platser\[1\]: "1480" står redan i platser/],
+    [[plats('1480', { source_url: undefined })], /platser\[0\]: källa saknas/],
+  ];
+  for (const [platser, monster] of fall) {
+    const r = validera([post('ett', 'https://ett.example', (p) => (p.platser = platser))]);
+    assert.notEqual(r.kod, 0, JSON.stringify(platser));
+    assert.match(r.text, monster);
+  }
+});
+
+test('ett belägg kan gälla flera platser, men bara platser som står i platser', () => {
+  // Samma case på två kontor, och sätet får också stå med.
+  let r = validera([post('ett', 'https://ett.example', (p) => {
+    p.platser = [plats('1480'), plats('1280')];
+    p.evidence[0].platser = ['1480', '1280', '0180'];
+  })]);
+  assert.equal(r.kod, 0, r.text);
+  // En kommun som inte står i platser stoppas.
+  r = validera([post('ett', 'https://ett.example', (p) => {
+    p.platser = [plats('1480')];
+    p.evidence[0].platser = ['1280'];
+  })]);
+  assert.notEqual(r.kod, 0);
+  assert.match(r.text, /anger platsen "1280", som inte står i platser/);
+  // Kommunkoden måste vara fyra siffror.
+  r = validera([post('ett', 'https://ett.example', (p) => {
+    p.platser = [plats('1480')];
+    p.evidence[0].platser = ['148'];
+  })]);
+  assert.notEqual(r.kod, 0);
+});
+
+test('en plats följer samma regler som andra uppgifter', () => {
+  // Egen webbplats ger högst claimed.
+  let r = validera([post('ett', 'https://ett.example', (p) => (p.platser = [plats('1480', { status: 'confirmed' })]))]);
+  assert.notEqual(r.kod, 0);
+  assert.match(r.text, /platser\[0\]: status "confirmed" kräver/);
+  // Bara kommunkod: ingen adress eller koordinat.
+  r = validera([post('ett', 'https://ett.example', (p) => (p.platser = [plats('1480', { value: { kommun: '1480', adress: 'Gatan 1' } })]))]);
+  assert.notEqual(r.kod, 0);
+  assert.match(r.text, /additional properties: "adress"/);
+  // Kommunkoden måste stå inom citattecken.
+  r = validera([post('ett', 'https://ett.example', (p) => (p.platser = [plats('1480', { value: { kommun: 1480 } })]))]);
+  assert.notEqual(r.kod, 0);
+  assert.match(r.text, /inom citattecken/);
+});

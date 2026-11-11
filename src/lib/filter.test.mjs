@@ -47,3 +47,13 @@ test('arTomt är sant bara för ett filter utan val', () => {
   assert.equal(arTomt(filter({ kommun: '1480' })), false);
   assert.equal(arTomt(filter({ typ: ['bolag'] })), false);
 });
+
+test('passarFilter: en plats utöver sätet räcker för kommunen och länet', () => {
+  const kontor = post('kontorsbolaget', 'Kontorsbolaget', { k: '0180', l: '01', p: [{ k: '1480', l: '14' }] });
+  const f = (x) => passarFilter(kontor, filter(x), tolka('', [kontor]));
+  assert.equal(f({ lan: '14', kommun: '1480' }), true);
+  assert.equal(f({ lan: '14' }), true);
+  assert.equal(f({ lan: '01', kommun: '0180' }), true);
+  assert.equal(f({ lan: '14', kommun: '1490' }), false);
+  assert.equal(f({ lan: '12' }), false);
+});

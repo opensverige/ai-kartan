@@ -63,3 +63,10 @@ test('mallarna pekar på platser, områden, typer och det som erbjuds, aldrig p�
   }
   assert.ok(FRAGEMALLAR.length >= 3);
 });
+
+test('en fråga om en kommun räknar en plats utöver sätet och heter som kommunen', () => {
+  // Kontoret står först, så att namnet inte kan tas från sätet.
+  const kontor = { t: 'bolag', o: ['utveckling'], a: ['generell'], k: '0180', kn: 'Stockholm', p: [{ k: '1480', kn: 'Göteborg' }] };
+  const [rad] = fragor([{ kommun: '1480' }], [kontor, ...poster], etikett);
+  assert.deepEqual(rad, { text: 'Göteborg', antal: 3, sok: 'kommun=1480' });
+});

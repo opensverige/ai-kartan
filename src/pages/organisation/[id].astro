@@ -25,6 +25,8 @@ const idag = d.byggd;
 const andringar = d.andringar.rader.filter((r) => r.id === org.id).slice(0, 40);
 const gammal = (org.h.dagar_sedan_kontroll ?? 0) > 180;
 const nedlagd = org.active?.value === false;
+// Ortnamnen för belägg som gäller vissa platser: sätet och platserna utöver det.
+const ortnamn = new Map([[org.kommun?.value ?? '', org.h.kommun_namn ?? ''], ...org.h.platser.map((p) => [p.kommun_kod, p.kommun_namn] as [string, string])]);
 // Namnet står redan i titeln. Beskrivningen börjar därför med typ och plats och sedan vad organisationen bygger.
 const typOchPlats = `${typ?.label ?? ''}${org.h.kommun_namn ? ` i ${org.h.kommun_namn}` : ''}`;
 const beskrivning = metabeskrivning(`${typOchPlats ? `${typOchPlats}: ` : ''}${org.description.value}`);
@@ -100,9 +102,9 @@ const citat = `OpenSverige AI-kartan, ”${org.name.value}”, hämtad ${idag}, 
             <tr><th>Uppgift</th><th>Värde</th><th>Status</th><th>Källa</th><th>Datum</th></tr>
           </thead>
           <tbody>
-            {fakta.map(({ nyckel, etikett, fakta: f }) => (
-              <tr id={`falt-${nyckel}`}>
-                <th scope="row"><a class="ankare" href={`#falt-${nyckel}`} aria-label={`Länk till ${etikett}`}>#</a> {etikett}</th>
+            {fakta.map(({ nyckel, ankare, etikett, fakta: f }) => (
+              <tr id={`falt-${ankare}`}>
+                <th scope="row"><a class="ankare" href={`#falt-${ankare}`} aria-label={`Länk till ${etikett}`}>#</a> {etikett}</th>
                 <td>
                   {nyckel === 'offers' ? (
                     <span class="rad">{(f.value as string[]).map((x) => <a class="tagg" href={url(`/organisationer?erbjuder=${x}`)}>{d.etikett.erbjuder.get(x)?.label ?? x}</a>)}</span>
@@ -138,6 +140,7 @@ const citat = `OpenSverige AI-kartan, ”${org.name.value}”, hämtad ${idag}, 
             <a class="belagg__lank" href={b.url} rel="noopener nofollow">{b.title ?? b.url}</a>
             <div class="meta">{b.url.replace(/^https?:\/\//, '')} · {formateraDatum(b.verified_at)}</div>
             {b.note && <div class="meta">{b.note}</div>}
+            {b.platser && b.platser.length > 0 && <div class="meta">Visar AI-arbete på: {b.platser.map((k) => ortnamn.get(k) ?? k).join(', ')}</div>}
           </li>
         ))}
       </ul>

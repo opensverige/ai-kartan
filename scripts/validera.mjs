@@ -94,7 +94,7 @@ function kontrolleraPost(post) {
       let text = `${stig} ${err.message}`;
       if (err.keyword === 'additionalProperties') text += `: "${err.params.additionalProperty}"`;
       if (err.keyword === 'enum') text += ` (tillåtna: ${err.params.allowedValues.join(', ')})`;
-      if (stig.startsWith('/kommun/value') && err.keyword === 'type') text += ' – kommunkoden måste stå inom citattecken, t.ex. "0180"';
+      if ((stig.startsWith('/kommun/value') || /^\/platser\/\d+\/value\/kommun/.test(stig)) && err.keyword === 'type') text += ' – kommunkoden måste stå inom citattecken, t.ex. "0180"';
       e(`schema: ${text}`);
     }
   }
@@ -131,6 +131,16 @@ function kontrolleraPost(post) {
   const kommunKod = data.kommun?.value;
   if (kommunKod && geo && !geo.kommunPerKod.has(kommunKod)) e(`kommun: koden "${kommunKod}" finns inte i data/geo/kommuner.json.`);
   if (kommunKod && !geo) w('kommun: geodata saknas lokalt, koden kunde inte kontrolleras.');
+  const platsKoder = new Set();
+  (Array.isArray(data.platser) ? data.platser : []).forEach((p, i) => {
+    if (p && typeof p === 'object' && !p.source_url) e(`platser[${i}]: källa saknas. Varje plats ska ha en egen source_url som visar orten.`);
+    const kod = p?.value?.kommun;
+    if (typeof kod !== 'string') return;
+    if (geo && !geo.kommunPerKod.has(kod)) e(`platser[${i}]: koden "${kod}" finns inte i data/geo/kommuner.json.`);
+    if (kod === kommunKod) e(`platser[${i}]: "${kod}" är sätets kommun. Sätet står i kommun och upprepas inte i platser.`);
+    if (platsKoder.has(kod)) e(`platser[${i}]: "${kod}" står redan i platser. En plats per kommun.`);
+    platsKoder.add(kod);
+  });
 
   // 6. Belägg
   const belagg = Array.isArray(data.evidence) ? data.evidence : [];
@@ -141,6 +151,9 @@ function kontrolleraPost(post) {
     if (belaggsUrler.has(b.url)) w(`evidence: samma länk två gånger: ${b.url}`);
     belaggsUrler.add(b.url);
     if (b.verified_at && b.verified_at > IDAG) e(`evidence: verified_at ${b.verified_at} ligger i framtiden.`);
+    for (const kod of Array.isArray(b.platser) ? b.platser : []) {
+      if (kod !== kommunKod && !platsKoder.has(kod)) e(`evidence: ${b.url} anger platsen "${kod}", som inte står i platser. Lägg till platsen med egen källa först.`);
+    }
   }
   const felSort = provaBelaggstyp(data, tax);
   if (felSort) w(felSort);

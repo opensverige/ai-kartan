@@ -51,7 +51,8 @@
         "status": { "type": "string", "enum": ["confirmed", "claimed"], "default": "claimed" },
         "verified_at": { "$ref": "#/definitions/date" },
         "verified_by": { "$ref": "#/definitions/verified_by" },
-        "note": { "type": "string", "maxLength": 300 }
+        "note": { "type": "string", "maxLength": 300 },
+        "platser": { "type": "array", "minItems": 1, "maxItems": 50, "uniqueItems": true, "items": { "type": "string", "pattern": "^\\d{4}$" }, "description": "Kommunkoder för de platser som belägget visar AI-arbete på. Länken ska själv knyta arbetet till orten. En plats med belägg får en egen prick och räknas på orten. Varje kod ska stå i platser eller vara sätets kommun." }
       }
     }
   },
@@ -67,6 +68,7 @@
     "areas": { "allOf": [ { "$ref": "#/definitions/fact" }, { "properties": { "value": { "type": "array", "minItems": 1, "maxItems": 6, "uniqueItems": true, "items": { "type": "string", "enum": ["agenter_automation", "datorseende", "energi_klimat", "fastighet_bygg", "fintech", "forsvar_sakerhet", "handel", "halsa", "industri", "jordbruk_skog", "juridik", "media_kreativt", "offentlig_sektor", "robotik", "sprakteknik", "transport_mobilitet", "utbildning", "generell"] } } } } ], "description": "Tillämpningsområden." },
     "kommun": { "allOf": [ { "$ref": "#/definitions/fact" }, { "properties": { "value": { "type": ["string", "null"], "pattern": "^\\d{4}$" } } } ], "description": "SCB:s fyrsiffriga kommunkod för sätet, inom citattecken. Län härleds ur koden. Utan koordinater är positionen på kartan kommunens mittpunkt." },
     "coordinates": { "allOf": [ { "$ref": "#/definitions/fact" }, { "properties": { "value": { "type": "object", "required": ["lat", "lng"], "additionalProperties": false, "properties": { "lat": { "type": "number", "minimum": 55, "maximum": 69.5 }, "lng": { "type": "number", "minimum": 10.5, "maximum": 24.5 } } } } } ], "description": "Exakt position som koordinat, aldrig som gatuadress i text. Besöksadressen från organisationens webbplats, annars den registrerade postadressen. Aldrig en adress som hämtas ur registret med c/o eller lägenhetsnummer, och aldrig för enskilda firmor. Anger organisationen själv adressen på sin webbplats används den." },
+    "platser": { "type": "array", "minItems": 1, "maxItems": 50, "items": { "allOf": [ { "$ref": "#/definitions/fact" }, { "properties": { "value": { "type": "object", "required": ["kommun"], "additionalProperties": false, "properties": { "kommun": { "type": "string", "pattern": "^\\d{4}$" } } } } } ] }, "description": "Platser utöver sätet, till exempel kontor på andra orter. Varje plats är en uppgift med egen källa och anger bara SCB:s kommunkod, aldrig adress eller koordinat. Sätet står i kommun och upprepas inte här." },
     "founded": { "allOf": [ { "$ref": "#/definitions/fact" }, { "properties": { "value": { "type": ["integer", "null"], "minimum": 1477, "maximum": 2100 } } } ], "description": "Grundat eller registrerat år." },
     "active": { "allOf": [ { "$ref": "#/definitions/fact" }, { "properties": { "value": { "type": ["boolean", "null"] } } } ], "description": "Finns organisationen kvar? false = nedlagd eller avregistrerad; posten ligger kvar markerad tills den tas bort." },
     "evidence": { "type": "array", "minItems": 1, "maxItems": 10, "items": { "$ref": "#/definitions/evidence_item" }, "description": "Belägg för att organisationen byggt något med AI. Minst ett krävs." },

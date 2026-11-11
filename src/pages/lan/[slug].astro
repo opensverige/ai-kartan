@@ -103,6 +103,12 @@ const jsonLd = [
     <div class="rutnat">
       {plats.organisationer.map((o) => <OrgKort org={o} />)}
     </div>
+    {plats.kontor.length > 0 && (
+      <p class="mt-3" id="kontor">
+        Har också kontor här: {plats.kontor.map((o, i) => <>{i > 0 && ', '}<a href={url(`/organisation/${o.id}`)}>{o.name.value}</a></>)}.
+        <span class="meta">Utan belägg för AI-arbete på orten räknas kontoret inte och får ingen prick. <a href={url('/metod#platser')}>Så räknar vi.</a></span>
+      </p>
+    )}
   </section>
 </Bas>
 

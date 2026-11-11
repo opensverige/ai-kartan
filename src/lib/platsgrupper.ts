@@ -17,6 +17,32 @@ export interface Platspost {
   ln: string | null;
   lat: number | null;
   lng: number | null;
+  /** Platser utöver sätet, var och en med en egen ruta i sin kommun. */
+  p?: readonly { k: string; kn: string; l: string; ln: string | null; lat: number; lng: number }[];
+}
+
+/** En nål på kartan: sätet eller en plats utöver det. `nyckel` är id för sätet och id@kommunkod för en plats. */
+export interface Nal {
+  nyckel: string;
+  id: string;
+  k: string | null;
+  kn: string | null;
+  l: string | null;
+  ln: string | null;
+  lat: number | null;
+  lng: number | null;
+  plats: boolean;
+}
+
+/** Nyckeln för en plats utöver sätet. Samma form som i scripts/lib/landplatser.mjs. */
+export const platsnyckel = (id: string, kod: string): string => `${id}@${kod}`;
+
+/** Organisationens nålar: sätet först, sedan en per plats. */
+export function nalar(o: Platspost): Nal[] {
+  return [
+    { nyckel: o.id, id: o.id, k: o.k, kn: o.kn, l: o.l, ln: o.ln, lat: o.lat, lng: o.lng, plats: false },
+    ...(o.p ?? []).map((p) => ({ nyckel: platsnyckel(o.id, p.k), id: o.id, k: p.k, kn: p.kn, l: p.l, ln: p.ln, lat: p.lat, lng: p.lng, plats: true })),
+  ];
 }
 
 export interface Platsgrupp {
@@ -34,9 +60,9 @@ export interface Plats {
 
 type Platsniva = 'lan' | 'kommun';
 
-const kod = (o: Platspost, niva: Platsniva): string | null => (niva === 'lan' ? o.l : o.k);
-const namn = (o: Platspost, niva: Platsniva): string | null => (niva === 'lan' ? o.ln : o.kn);
-const harPlats = (o: Platspost): o is Platspost & { lat: number; lng: number } => o.lat !== null && o.lng !== null;
+const kod = (o: Nal, niva: Platsniva): string | null => (niva === 'lan' ? o.l : o.k);
+const namn = (o: Nal, niva: Platsniva): string | null => (niva === 'lan' ? o.ln : o.kn);
+const harPlats = <T extends { lat: number | null; lng: number | null }>(o: T): o is T & { lat: number; lng: number } => o.lat !== null && o.lng !== null;
 
 export function nivaForZoom(zoom: number): Niva {
   if (zoom < ZOOM_KOMMUN) return 'lan';
@@ -49,7 +75,7 @@ export function nivaForZoom(zoom: number): Niva {
  */
 export function platsmitt(alla: Platspost[], niva: Platsniva): Map<string, [number, number]> {
   const summor = new Map<string, { lng: number; lat: number; antal: number }>();
-  for (const o of alla) {
+  for (const o of alla.flatMap(nalar)) {
     const k = kod(o, niva);
     if (!k || !harPlats(o)) continue;
     const s = summor.get(k) ?? { lng: 0, lat: 0, antal: 0 };
@@ -63,29 +89,31 @@ export function platsmitt(alla: Platspost[], niva: Platsniva): Map<string, [numb
 
 /**
  * Delar urvalet per plats. En plats med minst två organisationer blir en grupp med antal.
- * En organisation som är ensam på sin plats ritas som sig själv och hamnar i `ensamma`:
- * en bubbla med siffran 1 säger mindre än organisationen den döljer.
+ * Gruppen räknar organisationer, inte nålar: ett bolag med två kontor i länet räknas en gång.
+ * En organisation som är ensam på sin plats ritas som sig själv, och dess nålar där hamnar i
+ * `ensamma` med sina nycklar: en bubbla med siffran 1 säger mindre än organisationen den döljer.
  */
 export function grupperaPerPlats(
   urval: Platspost[],
   niva: Platsniva,
   mitt: Map<string, [number, number]>,
 ): { grupper: Platsgrupp[]; ensamma: Set<string> } {
-  const perPlats = new Map<string, Platspost[]>();
-  for (const o of urval) {
+  const perPlats = new Map<string, Nal[]>();
+  for (const o of urval.flatMap(nalar)) {
     const k = kod(o, niva);
     if (!k || !harPlats(o)) continue;
     perPlats.set(k, [...(perPlats.get(k) ?? []), o]);
   }
   const grupper: Platsgrupp[] = [];
   const ensamma = new Set<string>();
-  for (const [k, poster] of perPlats) {
+  for (const [k, nalarHar] of perPlats) {
     const punkt = mitt.get(k);
-    if (poster.length === 1 || !punkt) {
-      for (const o of poster) ensamma.add(o.id);
+    const antal = new Set(nalarHar.map((o) => o.id)).size;
+    if (antal === 1 || !punkt) {
+      for (const o of nalarHar) ensamma.add(o.nyckel);
       continue;
     }
-    grupper.push({ kod: k, namn: namn(poster[0], niva) ?? k, antal: poster.length, lng: punkt[0], lat: punkt[1] });
+    grupper.push({ kod: k, namn: namn(nalarHar[0], niva) ?? k, antal, lng: punkt[0], lat: punkt[1] });
   }
   // Störst först: den ritas underst, och dess namn får plats före de mindre.
   grupper.sort((a, b) => b.antal - a.antal || a.namn.localeCompare(b.namn, 'sv'));

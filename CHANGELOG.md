@@ -2,10 +2,15 @@
 
 Kodens och funktionernas historik. Dataändringar loggas separat och automatiskt i `history/changelog.json` och på sajten under Ändringar. Samma rader som här finns maskinläsbart i `history/bygglogg.json`.
 
+## 2026-11-11
+
+- En plats utöver sätet får en egen prick och räknas på orten först när ett belägg visar AI-arbete just där. Belägget får fältet `platser` med kommunkoderna det gäller, och samma belägg kan gälla flera platser när länken visar det. Valideringen stoppar en kod som inte står i organisationens platser. En plats med belägg ritas som en kontur i kommunens rutnät och är med i kommunens och länets antal, filter, sökning och frågor. En plats utan belägg står som raden Har också kontor här på kommun- och länssidan, räknas inte, får ingen prick och skapar ingen ny sida. En organisation räknas en gång i totalen. Organisationssidan visar vid varje belägg vilka orter det gäller. Exporterna har kvar en punkt och en rad per organisation, och `data.geojson` säger per plats om den har belägg. Regeln står på Metod under Fler platser än sätet. Beslutet togs i ärende #75.
+
 ## 2026-11-10
 
 - Regeln om c/o-adresser säger nu det vi gör. En adress som hämtas ur registret används inte om den har c/o eller lägenhetsnummer. Anger organisationen själv adressen på sin webbplats används den, också när registret har samma adress med c/o. Så har regeln tillämpats sedan 13 oktober: 20 av 142 exakta positioner kommer från en webbplats där registret har c/o eller lägenhetsnummer. Texten på Metod och Personuppgifter, i schemat och i agentreglerna sa det inte tydligt.
 - Organisationer som delar adress får var sin prick på kartan. Förut ritades de som en enda prick med ett antal i, och man fick trycka flera gånger på den för att nå de andra. Nu står prickarna tätt ihop runt adressen. Var och en visar sitt eget namn när man pekar på den och öppnar sin egen sida när man trycker. Två på samma adress skrivs med båda namnen över prickarna, fler än två med antalet. I dag gäller det elva adresser, alla med två organisationer. Reglerna ligger i `src/lib/sammaadress.ts`.
+- En organisation kan ha platser utöver sätet. Det nya fältet `platser` är en lista där varje plats är en uppgift med källa, datum och status, som alla andra fält, och anger bara en kommunkod. Egen webbplats ger egen uppgift, och ett register som listar arbetsställen kan ge bekräftad. Valideringen stoppar en kod som inte finns, sätets egen kommun och samma kommun två gånger. Platserna listas på organisationens sida. Kartan, kommun- och länssidorna och filtren visar än så länge bara sätet. Metoden, Personuppgifter, schemat och mallen säger den nya regeln. Knowit är första posten med platser. Förslaget kom i ärende #75.
 
 ## 2026-11-05
 

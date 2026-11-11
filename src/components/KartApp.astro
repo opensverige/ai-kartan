@@ -234,7 +234,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
   import type { Map as MapLibreMap, Popup, Marker, GeoJSONSource, ExpressionSpecification, MapLayerMouseEvent, PaddingOptions } from 'maplibre-gl';
   import { ikon, type IkonNamn } from '../lib/ikoner';
   import { urvalSomCsv } from '../lib/csv';
-  import { grupperaPerPlats, platsEfterUtzoomning, platsmitt, zoomgranser, ZOOM_KOMMUN, ZOOM_POSTER, type Platsgrupp } from '../lib/platsgrupper';
+  import { grupperaPerPlats, nalar, platsEfterUtzoomning, platsmitt, zoomgranser, ZOOM_KOMMUN, ZOOM_POSTER, type Platsgrupp } from '../lib/platsgrupper';
   import { arPaskagg, cirkel, type Medlemsvy } from '../lib/medlemmar';
   import { kommunytor } from '../lib/kommunyta';
   import { delaAdresser, type Adressplats } from '../lib/sammaadress';
@@ -253,7 +253,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     id: string; n: string; t: string; o: string[]; a: string[]; k: string | null; kn: string | null;
     l: string | null; ln: string | null; lat: number | null; lng: number | null; pt: string | null;
     d: string; s: string | null; c: number; f: number; w: string; i: string | null;
-    ds: Kartpost['ds']; dv: Kartpost['dv'];
+    ds: Kartpost['ds']; dv: Kartpost['dv']; p: Kartpost['p'];
   };
   /** Post med förberedd söktext: nn är namnet, ns allt som går att söka på. */
   type Rad = Post & { nn: string; ns: string };
@@ -841,6 +841,8 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       const rutor: [IkonNamn, string, string, string?][] = [
         ['tagg', 'Typ', etiketter.typer[o.t] || o.t],
         ['nal', 'Plats', o.kn ? `${o.kn}${o.ln ? `, ${o.ln}` : ''}` : 'Saknar plats', platsnot],
+        // Platserna utöver sätet, i den ordning posten anger dem. Var och en har källa på organisationens sida.
+        ...(o.p?.length ? [['nal', 'Även i', o.p.map((p) => p.kn).join(', ')] as [IkonNamn, string, string]] : []),
         ['lager', 'Erbjuder', lista(o.o, etiketter.erbjuder)],
         ['kompass', 'Område', lista(o.a, etiketter.omraden)],
         ['bock', 'Bekräftade fält', `${o.c} av ${o.f}`],
@@ -1204,15 +1206,20 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         : { top: 96, bottom: 48, left: 48, right: 72 };
     };
 
-    /** `el` och `ek` säger om organisationen är ensam i sitt län respektive sin kommun och då ritas som sig själv. */
+    /**
+     * En nål per säte och per plats utöver sätet. En plats ritas på kommunnivå, som en kontur, och hör
+     * till samma organisation. `el` och `ek` säger om nålen är ensam i sitt län respektive sin kommun
+     * och då ritas som sig själv. Mängderna har nålarnas nycklar, se `nalar` i platsgrupper.ts.
+     */
     function tillGeoJson(poster: Post[], ensamILan?: Set<string>, ensamIKommun?: Set<string>): GeoJSON.FeatureCollection {
       const medPlats = poster.filter((o) => o.lat !== null && o.lng !== null);
+      const platsnalar = poster.flatMap((o) => nalar(o).filter((n) => n.plats && n.lat !== null && n.lng !== null).map((n) => ({ o, n })));
       // Organisationer med besöksadress i samma hus ligger på samma punkt. Var och en får sin egen
       // prick, tätt ihop runt adressen. Reglerna står i src/lib/sammaadress.ts.
       const platser = adressplatser(poster);
       return {
         type: 'FeatureCollection',
-        features: medPlats.map((o) => {
+        features: [...medPlats.map((o): GeoJSON.Feature => {
           const p = platser.get(o.id);
           return {
             type: 'Feature',
@@ -1225,7 +1232,14 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
               etikett: p?.etikett ?? o.n,
             },
           };
-        }),
+        }), ...platsnalar.map(({ o, n }) => ({
+          type: 'Feature' as const,
+          geometry: { type: 'Point' as const, coordinates: [n.lng as number, n.lat as number] },
+          properties: {
+            id: o.id, n: o.n, t: o.t, k: n.k ?? '', pt: 'kommun', el: ensamILan?.has(n.nyckel) ?? false, ek: ensamIKommun?.has(n.nyckel) ?? false,
+            dn: 1, flytt: [0, 0], topp: 0, botten: 0, etikett: o.n, plats: n.kn ?? '',
+          },
+        }))],
       };
     }
 
@@ -1278,7 +1292,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     function ytnamnSomGeoJson(poster: Post[]): GeoJSON.FeatureCollection {
       return {
         type: 'FeatureCollection',
-        features: kommunytor(poster).map((y) => ({ type: 'Feature', geometry: { type: 'Point', coordinates: y.fot }, properties: { kod: y.kod, n: y.namn, antal: y.antal } })),
+        features: kommunytor(poster.flatMap((o) => nalar(o).map((n) => ({ ...n, pt: n.plats ? 'kommun' : o.pt })))).map((y) => ({ type: 'Feature', geometry: { type: 'Point', coordinates: y.fot }, properties: { kod: y.kod, n: y.namn, antal: y.antal } })),
       };
     }
 
@@ -1301,7 +1315,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     // urvalet finns den inte i någon grupp, och då ritas den på alla nivåer.
     function uppdateraVald() {
       const o = valdId ? alla.find((x) => x.id === valdId) : undefined;
-      const utanfor = o && !urval.includes(o) ? new Set([o.id]) : undefined;
+      const utanfor = o && !urval.includes(o) ? new Set(nalar(o).map((n) => n.nyckel)) : undefined;
       (karta!.getSource('vald') as GeoJSONSource | undefined)?.setData(tillGeoJson(o ? [o] : [], utanfor ?? ensamma.lan, utanfor ?? ensamma.kommun));
       // Delar den valda hus med andra står dess prick en bit från adressen. Ringen och namnet följer med dit.
       const p = o && !utanfor ? adressplats.get(o.id) : undefined;
@@ -1325,7 +1339,8 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       if (!karta) return;
       sattZoomgolv();
       const f = lasFilter();
-      const p = urval.filter((o) => o.lat !== null && o.lng !== null);
+      // Nålarna på den valda platsen: sätet där, eller platserna där. Ett säte i en annan kommun drar inte ut kartan.
+      const p = urval.flatMap(nalar).filter((o) => o.lat !== null && o.lng !== null && (f.kommun ? o.k === f.kommun : !f.lan || o.l === f.lan));
       if ((!f.lan && !f.kommun) || !p.length) {
         karta.fitBounds(SVERIGE, { padding: kartMarginal() }, AV_KOD);
         return;
@@ -1861,17 +1876,19 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
           karta!.getCanvas().style.cursor = 'pointer';
           const antal = Number(f.properties?.antal ?? 0);
           const id = String(f.properties?.id ?? `${f.layer.id}:${f.properties?.kod}`);
-          if (id === tipsFor) return;
-          tipsFor = id;
+          // En plats utöver sätet har samma id som sätet men ett eget tips.
+          const plats = String(f.properties?.plats ?? '');
+          if ((plats ? `${id}@${plats}` : id) === tipsFor) return;
+          tipsFor = plats ? `${id}@${plats}` : id;
           tips?.remove();
           // Den som delar hus med andra står en bit från adressen. Tipset pekar på pricken, inte på adressen.
           const adress = (f.geometry as GeoJSON.Point).coordinates as [number, number];
-          const p = antal ? undefined : adressplats.get(id);
+          const p = antal || plats ? undefined : adressplats.get(id);
           const punkt = karta!.project(adress);
           // Ett landmärke eller en grupp är högre än en prick, så tipset får mer luft.
           tips = new Tips({ closeButton: false, closeOnClick: false, offset: antal ? 34 : f.layer.id === 'landmarken' ? 24 : 14, className: 'tips' })
             .setLngLat(p && (p.dx || p.dy) ? karta!.unproject([punkt.x + p.dx, punkt.y + p.dy]) : adress)
-            .setText(antal ? `${f.properties?.n} · ${antal} organisationer` : String(f.properties?.n ?? ''))
+            .setText(antal ? `${f.properties?.n} · ${antal} organisationer` : plats ? `${f.properties?.n} · plats i ${plats}` : String(f.properties?.n ?? ''))
             .addTo(karta!);
         };
         const doljTips = () => {
@@ -2370,16 +2387,22 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       .then((data: { organisationer: Post[] }) => {
         alla = data.organisationer.map((o) => tillSokpost(o, etiketter));
         const perPlats = new Map<string, PlatsTraff>();
+        // En organisation räknas en gång i varje kommun och varje län där den har sätet eller en plats.
         for (const o of alla) {
-          if (o.l && o.ln) {
-            const p = perPlats.get(o.l) ?? { typ: 'lan' as const, kod: o.l, namn: o.ln, nn: normalisera(o.ln), under: 'Län', antal: 0 };
-            p.antal++;
-            perPlats.set(o.l, p);
-          }
-          if (o.k && o.kn) {
-            const p = perPlats.get(o.k) ?? { typ: 'kommun' as const, kod: o.k, namn: o.kn, nn: normalisera(o.kn), under: o.ln ?? 'Kommun', antal: 0 };
-            p.antal++;
-            perPlats.set(o.k, p);
+          const sedda = new Set<string>();
+          for (const n of nalar(o)) {
+            if (n.l && n.ln && !sedda.has(n.l)) {
+              sedda.add(n.l);
+              const p = perPlats.get(n.l) ?? { typ: 'lan' as const, kod: n.l, namn: n.ln, nn: normalisera(n.ln), under: 'Län', antal: 0 };
+              p.antal++;
+              perPlats.set(n.l, p);
+            }
+            if (n.k && n.kn && !sedda.has(n.k)) {
+              sedda.add(n.k);
+              const p = perPlats.get(n.k) ?? { typ: 'kommun' as const, kod: n.k, namn: n.kn, nn: normalisera(n.kn), under: n.ln ?? 'Kommun', antal: 0 };
+              p.antal++;
+              perPlats.set(n.k, p);
+            }
           }
         }
         platser = [...perPlats.values()].sort((a, b) => b.antal - a.antal || a.namn.localeCompare(b.namn, 'sv'));

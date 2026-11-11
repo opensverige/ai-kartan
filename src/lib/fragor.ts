@@ -22,6 +22,13 @@ export interface Fragepost {
   a: string[];
   k: string | null;
   kn: string | null;
+  /** Platser utöver sätet. En fråga om en kommun räknar med dem. */
+  p?: readonly { k: string; kn: string }[];
+}
+
+/** Kommunens namn hos posten, om den har sätet eller en plats där. */
+function kommunnamn(o: Fragepost, kod: string): string | null {
+  return o.k === kod ? o.kn : o.p?.find((p) => p.k === kod)?.kn ?? null;
 }
 
 export interface Frageetiketter {
@@ -56,7 +63,7 @@ export const FRAGEMALLAR: Fragemall[] = [
 ];
 
 function passar(o: Fragepost, m: Fragemall): boolean {
-  if (m.kommun && o.k !== m.kommun) return false;
+  if (m.kommun && o.k !== m.kommun && !o.p?.some((p) => p.k === m.kommun)) return false;
   if (m.omrade && !o.a.includes(m.omrade)) return false;
   if (m.typ && o.t !== m.typ) return false;
   if (m.erbjuder && !o.o.includes(m.erbjuder)) return false;
@@ -79,7 +86,7 @@ export function fragor(mallar: Fragemall[], poster: Fragepost[], etikett: Fragee
     const traffar = poster.filter((o) => passar(o, m));
     if (!traffar.length) continue;
     const amne = m.omrade ? etikett.omrade(m.omrade) : m.typ ? etikett.typer(m.typ) : m.erbjuder ? etikett.erbjuder(m.erbjuder) : null;
-    const plats = m.kommun ? traffar[0].kn ?? m.kommun : null;
+    const plats = m.kommun ? kommunnamn(traffar[0], m.kommun) ?? m.kommun : null;
     const text = m.text ?? (amne && plats ? `${amne} i ${plats}` : amne ?? plats);
     if (!text) continue;
     rad.push({ text, antal: traffar.length, sok: sokdel(m) });

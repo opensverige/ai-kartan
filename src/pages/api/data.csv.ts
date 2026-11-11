@@ -13,7 +13,7 @@ export const GET: APIRoute = () => {
   const faktafalt = ['name', 'legal_name', 'type', 'org_number', 'description', 'offers', 'areas', 'kommun', 'founded', 'active'] as const;
   const rubriker = ['id', 'url', 'website'];
   for (const f of faktafalt) rubriker.push(f, `${f}_status`, `${f}_source_url`, `${f}_verified_at`);
-  rubriker.push('kommun_namn', 'lan_kod', 'lan_namn', 'lat', 'lng', 'position_typ', 'evidence_urls', 'github', 'huggingface', 'linkedin', 'infra_id', 'self_submitted', 'record_created_at', 'record_updated_at', 'senast_verifierad', 'antal_bekraftade', 'antal_fakta');
+  rubriker.push('kommun_namn', 'lan_kod', 'lan_namn', 'lat', 'lng', 'position_typ', 'evidence_urls', 'github', 'huggingface', 'linkedin', 'infra_id', 'self_submitted', 'record_created_at', 'record_updated_at', 'senast_verifierad', 'antal_bekraftade', 'antal_fakta', 'platser_kommun_kod');
 
   const rader = [rubriker.join(',')];
   for (const o of d.organisationer) {
@@ -26,6 +26,8 @@ export const GET: APIRoute = () => {
       o.h.kommun_namn, o.h.lan_kod, o.h.lan_namn, o.h.position?.lat ?? null, o.h.position?.lng ?? null, o.h.position_typ,
       o.evidence.map((b) => b.url), o.links?.github ?? null, o.links?.huggingface ?? null, o.links?.linkedin ?? null, o.links?.infra_id ?? null,
       o.self_submitted ?? false, o.record_created_at, o.record_updated_at, o.h.senast_verifierad, o.h.antal_bekraftade, o.h.antal_fakta,
+      // Platserna utöver sätet som kommunkoder, sist så att ingen befintlig kolumn flyttas.
+      o.h.platser.map((p) => p.kommun_kod),
     );
     rader.push(rad.map(cell).join(','));
   }
