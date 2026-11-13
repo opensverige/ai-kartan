@@ -1,0 +1,100 @@
+id: bolagskvarnen
+
+name:
+  value: Bolagskvarnen
+  status: claimed
+  source_url: https://bolagskvarnen.se/om/
+  source_type: own_site
+  verified_at: 2026-11-13
+  verified_by: agent
+  note: "Bolagskvarnen är ett varumärke i Bolagskällan AB. Anmäld av organisationen själv."
+
+legal_name:
+  value: Bolagskällan AB
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559555594601
+  source_type: company_register
+  verified_at: 2026-11-13
+  verified_by: agent
+  note: "Namn enligt momsregistret, hämtat via EU:s tjänst VIES."
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559555594601
+  source_type: company_register
+  verified_at: 2026-11-13
+  verified_by: agent
+  note: "Bolagsformen är härledd ur det registrerade namnet. Momsregistret har inget eget fält för bolagsform."
+
+org_number:
+  value: "559555-5946"
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559555594601
+  source_type: company_register
+  verified_at: 2026-11-13
+  verified_by: agent
+
+website: https://bolagskvarnen.se
+
+description:
+  value: Tillhandahåller en MCP-server och ett REST-API med svensk bolagsdata (bolagsprofil, styrelse och firmateckning, historik och bokslut från Bolagsverket och SCB) för AI-agenter och egna system. Öppet att prova med testnyckel och påhittade bolag; riktig data öppnar snart.
+  status: claimed
+  source_url: https://bolagskvarnen.se/guider/mcp-server-for-bolagsdata/
+  source_type: own_site
+  verified_at: 2026-11-13
+  verified_by: agent
+
+offers:
+  value: [produkt, data]
+  status: claimed
+  source_url: https://bolagskvarnen.se
+  source_type: own_site
+  verified_at: 2026-11-13
+  verified_by: agent
+
+areas:
+  value: [agenter_automation]
+  status: claimed
+  source_url: https://bolagskvarnen.se
+  source_type: own_site
+  verified_at: 2026-11-13
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559555594601
+  source_type: company_register
+  verified_at: 2026-11-13
+  verified_by: agent
+  note: "Stockholm. Härledd från postorten i den registrerade adressen i momsregistret. Sätet enligt Bolagsverket är inte kontrollerat här; bolagskvarnen.se/om/ anger säte i Stockholm."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://ec.europa.eu/taxation_customs/vies/rest-api/ms/SE/vat/559555594601
+  source_type: company_register
+  verified_at: 2026-11-13
+  verified_by: agent
+  note: "Giltigt momsregistreringsnummer enligt VIES 2026-11-13."
+
+evidence:
+  - url: https://bolagskvarnen.se/guider/mcp-server-for-bolagsdata/
+    kind: produkt
+    title: "Bolagskvarnens MCP-server för svensk bolagsdata: adress, inloggning, verktyg och vad som fungerar nu"
+    status: claimed
+    verified_at: 2026-11-13
+    verified_by: agent
+  - url: https://github.com/gradientvibe/bolagskvarnen-examples
+    kind: repo
+    title: "Exempel på GitHub: MCP-konfiguration för Claude Code, Cursor, VS Code och Codex samt anrop mot REST-API:t (MIT)"
+    status: claimed
+    verified_at: 2026-11-13
+    verified_by: agent
+
+links:
+  github: https://github.com/gradientvibe/bolagskvarnen-examples
+
+record_created_at: 2026-11-13
+record_updated_at: 2026-11-13
