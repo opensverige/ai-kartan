@@ -118,6 +118,8 @@ I en pixelstad står organisationerna så här: den som har en exakt adress stå
 
 Medan pixelkartan är på står ett märke i kartan: ”Skapad av Gustaf Baltsar Garnow”, med länk till headless.design. Över hela landet, där städerna bara syns som öar, står också frågan ”Vill du se din stad i pixlar? Hör av dig.” under namnet. Märket står nere till vänster i kartan, och uppe till höger i telefon. Samma namn står i raden med kartans källor.
 
+Inne i en pixelstad rör sig staden: bilar, bussar och lastbilar på vägnätet, tåg, tunnelbana och spårvagnar på sina spår, färjor på sina linjer, småbåtar på öppet vatten och fågelflockar över taken, och träden och vattnet rör sig. Allt ritas i kod (`src/lib/pixelkarta/liv.ts` och `liv-pixlar.ts`) på en duk under kartbilden, i skala med kartan, och syns först när kartan är inzoomad så långt att det går att se. Näten det rör sig på kommer från bildtjänsten (underlag: OpenStreetMap) och hämtas först då. Koden hämtas först när en stad öppnas. Rörelsen står still utanför pixelstäderna, när pixelkartan är av och för den som har bett om mindre rörelse i sitt system, och den drar själv ner på mängden om datorn inte håller takten.
+
 Kartbilderna ligger inte i repot. Bildtjänsten svarar bara sajten själv, så ett eget bygge med adressen satt visar den vanliga kartan.
 
 ## Fråga kartan

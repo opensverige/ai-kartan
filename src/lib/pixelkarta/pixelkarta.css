@@ -37,6 +37,26 @@
   }
 }
 
+/* Det som rör sig i staden: bilar, tåg, båtar och fåglar på en duk, och under den träd och
+   vatten som rör sig. Över bildvisaren, under husens duk och kartbilden. */
+.pixelliv {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+/* Medan staden är nedtonad runt ett valt hus tonas trafiken med den. Träden och vattnet står
+   still då: de är kartbildens egna färger, och skulle lysa igenom tonen. */
+.pixelstad--tonad ~ .pixelliv {
+  filter: grayscale(0.6) sepia(0.22) contrast(0.92);
+  opacity: 0.6;
+}
+.pixelstad--tonad ~ .pixelliv--punkter {
+  display: none;
+}
+
 /* Knappen är överstruken när pixelkartan är av. */
 .pixelbrytare[aria-pressed='false'] {
   color: hsl(var(--ink-mute));

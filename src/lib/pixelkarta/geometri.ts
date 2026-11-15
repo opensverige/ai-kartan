@@ -29,6 +29,24 @@ export interface Kartblad {
 }
 
 /** Ett hus i kartbilden: dess form som bild (alfa) och var den ligger, i kartbildens punkter. */
+export interface Livsnat {
+  file: string;
+  edges: number;
+  samples: number;
+  nodes: number;
+  stepMeters: number;
+  /** Bildpunkter i kartbilden per steg i filens koordinater. */
+  unit: number;
+}
+/** Näten hos bildtjänsten som det som rör sig i en stad går på. Allt är valfritt: det som saknas rör sig inte. */
+export interface Livsfiler {
+  roads?: Livsnat;
+  rails?: Livsnat;
+  ferries?: Livsnat;
+  /** Öppet vatten som bild, 1/64 av kartbildens storlek: vitt där det är vatten. */
+  water?: string;
+}
+
 export interface Hus {
   picture: string;
   x: number;
@@ -46,6 +64,8 @@ export interface Stad {
   /** Organisationer med adress: huset de sitter i. */
   addresses?: Record<string, string>;
   houses?: Record<string, Hus>;
+  /** Det som rör sig i staden går på: vägar, spår, färjelinjer och öppet vatten. */
+  life?: Livsfiler;
 }
 
 export interface Kartfil {

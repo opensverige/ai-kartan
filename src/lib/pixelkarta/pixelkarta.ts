@@ -37,6 +37,7 @@ import {
   iBild,
 } from './geometri.ts';
 import './pixelkarta.css';
+import type { Liv } from './liv';
 
 export interface Val {
   karta: MapLibreMap;
@@ -73,6 +74,8 @@ export interface Pixelkarta {
   tillstand(): { stad: string; glugg: number; forberedd: boolean; ritad: boolean; avvikelse: number | null }[];
   /** Husmarkeringen just nu, för prov: vilket hus som är ritat, om staden är tonad och var huset ligger i rutan. */
   husprov(): { vald: string | null; tonad: boolean; ritat: boolean; ruta: { x: number; y: number; b: number; h: number } | null };
+  /** Det som rör sig i staden just nu, för prov. Tomt innan en stad har öppnats. */
+  livprov(): Record<string, unknown> | null;
 }
 
 /** Ett hus med sin form som bild, hämtad först när den behövs. */
@@ -543,6 +546,7 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
           redo = true;
           sedd = false;
           rutor = { komna: 0, fel: 0 };
+          oppnaLiv(stad);
           folj();
           // Gluggen öppnas först när kartbilden har ritats i sin helhet en gång.
           const ritad = () => {
@@ -569,8 +573,11 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
           if (rutor.fel >= (rutor.komna ? 8 : 3)) brast();
         });
         // Varje gång bildvisaren har ritat, i kartans bildruta eller i sin egen takt när skarpare
-        // bildrutor kommer, ritas husen om över dess nya bild.
-        v.addHandler('update-viewport', ritaHus);
+        // bildrutor kommer, ritas husen om över dess nya bild, och det som rör sig där bilden nu ligger.
+        v.addHandler('update-viewport', () => {
+          ritaHus();
+          liv?.ritaMedKartan();
+        });
         visare = v;
         return v;
       })
@@ -628,6 +635,36 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
     }
     return storst;
   }
+
+  /* ---------- det som rör sig ---------- */
+
+  // Bilar, tåg, båtar och fåglar i staden, och träd och vatten som rör sig (liv.ts och
+  // liv-pixlar.ts). Koden hämtas först när en stad har öppnats i bildvisaren, och inget av den
+  // för den som har bett om mindre rörelse. Dukarna läggs strax under husens duk.
+  const lugn = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let liv: Liv | null = null;
+  let livlofte: Promise<Liv | null> | null = null;
+  function oppnaLiv(lage: Lage) {
+    const v = visare;
+    const b = bibliotek;
+    if (lugn.matches || !v || !b) return;
+    livlofte ??= Promise.all([import('./liv'), import('./liv-pixlar')])
+      .then(([l, p]) => (liv = l.skapaLiv({ bibliotek: b, visare: v, fore: husduk, bas, mpb, ruta, delar: [p.pixeldel] })))
+      .catch(() => {
+        livlofte = null; // nästa stad som öppnas försöker igen
+        return null;
+      });
+    void livlofte.then((l) => {
+      if (!l || oppen !== lage) return;
+      l.oppna({ id: lage.stad.id, riktning: lage.stad.map.heading, bredd: lage.stad.map.width, filer: lage.stad.life ?? {} });
+      styrLiv();
+    });
+  }
+  /** Rörelsen går medan en pixelstad syns genom gluggen, och står still annars. */
+  function styrLiv() {
+    liv?.satt(aktiv() && !!oppen && redo && oppen.visad > 0 && !lugn.matches);
+  }
+  lugn.addEventListener('change', styrLiv);
 
   /* ---------- husen ---------- */
 
@@ -783,6 +820,7 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
       kvar ||= lage.visad !== lage.mal;
     }
     ritaHus();
+    styrLiv();
     karta.triggerRepaint();
     if (kvar) tonar = requestAnimationFrame(tona);
   }
@@ -809,6 +847,7 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
     marke.classList.toggle('skaparmarke--fraga', !lagen.some((lage) => lage.mal > 0.5));
     // Ritade bildvisaren ritades husen med den. Annars ritas de här: de kan behöva tas bort.
     if (!folj()) ritaHus();
+    styrLiv();
     if (!tonar && lagen.some((lage) => lage.visad !== lage.mal)) {
       senast = performance.now();
       tonar = requestAnimationFrame(tona);
@@ -1047,6 +1086,7 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
       lyssnare.push(l);
     },
     husprov: () => ({ vald: markerad, tonad, ritat: !!husritat, ruta: husritat }),
+    livprov: () => liv?.tillstand() ?? null,
     tillstand: () => lagen.map((lage) => ({ stad: lage.stad.id, glugg: lage.visad, forberedd: lage === oppen && redo, ritad: lage === oppen && sedd, avvikelse: lage === oppen ? avvikelse() : null })),
     satt,
   };
