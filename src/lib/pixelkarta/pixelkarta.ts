@@ -22,6 +22,7 @@ import type OpenSeadragon from 'openseadragon';
 import {
   type Kartfil,
   type Stad,
+  type Hus,
   type Projektion,
   type Narhet,
   VINKEL,
@@ -49,14 +50,34 @@ export interface Val {
 }
 
 export interface Pixelkarta {
-  /** Kartans största zoom över en plats: djupare över en pixelstad. */
-  zoomtak(lng: number, lat: number): number;
+  /** Kartans största zoom över en plats: djupare över en pixelstad. `zoom` är den zoom kartbiblioteket frågar för. */
+  zoomtak(lng: number, lat: number, zoom?: number): number;
   /** Om pixelkartan visas. */
   pa(): boolean;
   /** Slår av eller på pixelkartan. Valet sparas i webbläsaren. */
   satt(pa: boolean): void;
+  /**
+   * Platsen i vattnet för en organisation som saknar exakt adress och hör till en pixelstad.
+   * Null för alla andra, och när pixelkartan inte visas: då står den där sajten annars ställer den.
+   */
+  vatten(id: string): { lng: number; lat: number } | null;
+  /** Hur nära kartan går när en organisation i en pixelstad väljs, eller null för sajtens vanliga avstånd. */
+  narzoom(id: string): number | null;
+  /** Den valda organisationen: dess hus ritas ut i pixelstaden, och staden runt det tonas ner. */
+  markera(id: string | null): void;
+  /** Organisationen som pekas på: dess hus får en tunn kant. */
+  peka(id: string | null): void;
+  /** Anropas när platserna i vattnet börjar eller slutar gälla, så att sajten kan rita om sina prickar. */
+  vidByte(lyssnare: () => void): void;
   /** Läget just nu, för prov och felsökning. */
   tillstand(): { stad: string; glugg: number; forberedd: boolean; ritad: boolean; avvikelse: number | null }[];
+  /** Husmarkeringen just nu, för prov: vilket hus som är ritat, om staden är tonad och var huset ligger i rutan. */
+  husprov(): { vald: string | null; tonad: boolean; ritat: boolean; ruta: { x: number; y: number; b: number; h: number } | null };
+}
+
+/** Ett hus med sin form som bild, hämtad först när den behövs. */
+interface Husbild extends Hus {
+  bild: HTMLImageElement | null;
 }
 
 interface Lage {
@@ -80,6 +101,12 @@ interface Lage {
 const STORST_FORSTORING = 4;
 /** Bildvisaren förbereds när staden är så här nära, i "hela staden i bild". */
 const FORBERED = 4;
+/** Husen ritas ut när kartan är så här nära, i meter mark per skärmpunkt: i färg, och med kant. */
+const HUS_FARG = 4.5;
+const HUS_KANT = 9;
+/** Så nära går kartan när en organisation väljs, i meter mark per skärmpunkt: till ett hus, och till en plats i vattnet. */
+const NARA_HUS = 0.8;
+const NARA_VATTEN = 3;
 /** Namnet valet sparas under i webbläsaren. */
 const MINNE = 'pixelkarta';
 /** Källan och lagret som bär pixelkartans rad bland kartans källor. */
@@ -132,6 +159,25 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
       outan: false,
     };
   });
+
+  // Var sajtens organisationer står i pixelstäderna. De utan exakt adress har en plats i vattnet:
+  // sajten ställer dem annars i ett rutnät mitt i kommunen, och på en karta där varje hus syns
+  // läses en prick på ett hus som det huset. De med adress har ett hus, som kan ritas ut.
+  const vattenplatser = new Map<string, { lng: number; lat: number }>();
+  const husAv = new Map<string, { lage: Lage; hus: Husbild }>();
+  for (const lage of lagen) {
+    for (const [id, [x, y]] of Object.entries(lage.stad.water ?? {})) {
+      const m = lage.projektion.tillMark(x, y);
+      vattenplatser.set(id, { lng: m.lon, lat: m.lat });
+    }
+    const hus = new Map<string, Husbild>();
+    for (const [id, nyckel] of Object.entries(lage.stad.addresses ?? {})) {
+      const h = lage.stad.houses?.[nyckel];
+      if (!h) continue;
+      if (!hus.has(nyckel)) hus.set(nyckel, { ...h, bild: null });
+      husAv.set(id, { lage, hus: hus.get(nyckel) as Husbild });
+    }
+  }
 
   let vald = minne() !== 'av'; // besökarens val
   let trasig = false; // bildtjänsten har slutat svara
@@ -520,6 +566,9 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
           // Bildruta efter bildruta uteblir: tjänsten svarar inte, nekar eller har nått sin gräns.
           if (rutor.fel >= (rutor.komna ? 8 : 3)) brast();
         });
+        // Varje gång bildvisaren har ritat, i kartans bildruta eller i sin egen takt när skarpare
+        // bildrutor kommer, ritas husen om över dess nya bild.
+        v.addHandler('update-viewport', ritaHus);
         visare = v;
         return v;
       })
@@ -543,9 +592,9 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
     });
   }
 
-  /** Bildvisaren tar kartans vy: samma plats mitt i rutan, samma skala. */
-  function folj() {
-    if (!aktiv() || !visare || !redo || !oppen || !visare.world.getItemCount()) return;
+  /** Bildvisaren tar kartans vy: samma plats mitt i rutan, samma skala. Svarar om den ritade. */
+  function folj(): boolean {
+    if (!aktiv() || !visare || !redo || !oppen || !visare.world.getItemCount()) return false;
     const mitt = mittIRutan();
     const p = oppen.projektion.tillBild(mitt.lat, mitt.lng);
     const skala = mpb / meterPerPunkt(mitt.lat, karta.getZoom());
@@ -555,12 +604,13 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
     // Osedd ritar bildvisaren i sin egen takt. Syns den genom gluggen skulle den då ligga en
     // bildruta efter kartan, och staden släpa efter prickarna när kartan dras. Då ritar den
     // här samma steg som i sin egen slinga, genast.
-    if (oppen.visad <= 0 && oppen.mal <= 0) return;
+    if (oppen.visad <= 0 && oppen.mal <= 0) return false;
     vp.update();
     visare.world.update(true);
     (visare as unknown as { imageLoader: { clear(): void } }).imageLoader.clear();
     visare.world.draw();
     visare.raiseEvent('update-viewport', {});
+    return true;
   }
 
   /** Största avståndet på skärmen mellan en plats i kartan och samma plats i bildvisaren, för prov. */
@@ -575,6 +625,143 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
       storst = Math.max(storst, Math.hypot(q.x - ax * r.bredd, q.y - ay * r.hojd));
     }
     return storst;
+  }
+
+  /* ---------- husen ---------- */
+
+  // Den valda organisationens hus ritas ut i pixelstaden: staden tonas ner mot papper och huset
+  // behåller sina färger, med en kant runt. Husets form är en bild från bildtjänsten. Allt ritas
+  // på en egen duk mellan bildvisaren och kartbilden, så att sajtens prickar och namn ligger
+  // kvar överst.
+  const husduk = document.createElement('canvas');
+  husduk.className = 'pixelhus';
+  husduk.setAttribute('aria-hidden', 'true');
+  el.insertBefore(husduk, stadEl.nextSibling);
+  const penna = husduk.getContext('2d');
+  const ringduk = document.createElement('canvas');
+  const ringpenna = ringduk.getContext('2d');
+  const hjalpduk = document.createElement('canvas');
+  const hjalppenna = hjalpduk.getContext('2d');
+  const SVART = '#1c1a17';
+  const GRADDE = '#fdfbf7';
+  let markerad: string | null = null;
+  let pekad: string | null = null;
+  let tonad = false;
+  let husritat: { x: number; y: number; b: number; h: number } | null = null;
+
+  /** Husets form. Den hämtas första gången huset ska ritas, och huset ritas när den har kommit. */
+  function husbild(hus: Husbild): HTMLImageElement | null {
+    if (!hus.bild) {
+      const bild = new Image();
+      bild.crossOrigin = 'anonymous';
+      bild.onload = () => ritaHus();
+      bild.src = bas + hus.picture;
+      hus.bild = bild;
+    }
+    return hus.bild.complete && hus.bild.naturalWidth ? hus.bild : null;
+  }
+
+  /** Huset som hör till en organisation, om det ligger i staden som visas. */
+  const husIStaden = (id: string | null): Husbild | null => {
+    const h = id ? husAv.get(id) : undefined;
+    return h && h.lage === oppen ? h.hus : null;
+  };
+
+  function ritaHus() {
+    if (!penna || !ringpenna || !hjalppenna) return;
+    const r = ruta();
+    const tathet = Math.min(window.devicePixelRatio || 1, 2);
+    const bredd = Math.max(1, Math.round(r.bredd * tathet));
+    const hojd = Math.max(1, Math.round(r.hojd * tathet));
+    if (husduk.width !== bredd || husduk.height !== hojd) {
+      husduk.width = bredd;
+      husduk.height = hojd;
+    } else {
+      penna.globalCompositeOperation = 'source-over';
+      penna.clearRect(0, 0, bredd, hojd);
+    }
+    husritat = null;
+    const stad = oppen;
+    const synlig = aktiv() && !!stad && redo && stad.visad > 0;
+    const valt = synlig ? husIStaden(markerad) : null;
+    const pekat = synlig && pekad !== markerad ? husIStaden(pekad) : null;
+    // Staden är nedtonad så länge den valda organisationen har sitt hus i den.
+    if (!!valt !== tonad) {
+      tonad = !!valt;
+      stadEl.classList.toggle('pixelstad--tonad', tonad);
+    }
+    if (!stad || !visare || !bibliotek || (!valt && !pekat)) return;
+    husduk.style.opacity = String(stad.visad);
+    // Var kartbilden ligger i rutan just nu, enligt bildvisaren: det är dess bild husen ritas över.
+    const vp = visare.viewport;
+    const nolla = vp.imageToViewerElementCoordinates(new bibliotek.Point(0, 0));
+    const tusen = vp.imageToViewerElementCoordinates(new bibliotek.Point(1000, 0));
+    const skala = (tusen.x - nolla.x) / 1000; // skärmpunkter per bildpunkt i kartbilden
+    const meter = mpb / skala; // meter mark per skärmpunkt
+    type Ruta = { x: number; y: number; b: number; h: number };
+    const plats = (hus: Husbild): Ruta => ({ x: nolla.x + hus.x * skala, y: nolla.y + hus.y * skala, b: hus.w * skala, h: hus.h * skala });
+    const iRutan = (p: Ruta): boolean => p.x < r.bredd && p.y < r.hojd && p.x + p.b > 0 && p.y + p.h > 0;
+
+    // Det valda huset i sina färger: bildvisarens egen bild, behållen bara där huset är.
+    if (valt && meter <= HUS_FARG) {
+      const form = husbild(valt);
+      const p = plats(valt);
+      const kalla = (visare.drawer as unknown as { canvas?: HTMLCanvasElement }).canvas;
+      if (form && kalla && kalla.width && iRutan(p)) {
+        penna.imageSmoothingEnabled = skala < 1;
+        penna.drawImage(form, p.x * tathet, p.y * tathet, p.b * tathet, p.h * tathet);
+        penna.globalCompositeOperation = 'source-in';
+        penna.imageSmoothingEnabled = true;
+        penna.drawImage(kalla, 0, 0, kalla.width, kalla.height, 0, 0, bredd, hojd);
+        penna.globalCompositeOperation = 'source-over';
+        husritat = p;
+      }
+    }
+
+    // En kant runt huset: formen vidgad åt alla håll, med huset självt utskuret igen.
+    const kant = (hus: Husbild, stark: boolean) => {
+      const form = husbild(hus);
+      const p = plats(hus);
+      if (!form || !iRutan(p)) return;
+      const luft = Math.ceil(7 * tathet);
+      const b = Math.ceil(p.b * tathet);
+      const h = Math.ceil(p.h * tathet);
+      if (b < 4 || h < 4 || b > 4096 || h > 4096) return;
+      const helb = b + luft * 2;
+      const helh = h + luft * 2;
+      for (const duk of [ringduk, hjalpduk]) {
+        if (duk.width !== helb || duk.height !== helh) {
+          duk.width = helb;
+          duk.height = helh;
+        }
+      }
+      ringpenna.globalCompositeOperation = 'source-over';
+      ringpenna.clearRect(0, 0, helb, helh);
+      const lagg = (tjock: number, farg: string) => {
+        hjalppenna.globalCompositeOperation = 'source-over';
+        hjalppenna.clearRect(0, 0, helb, helh);
+        hjalppenna.imageSmoothingEnabled = skala < 1;
+        for (let k = 0; k < 16; k += 1) {
+          const v = (k / 16) * Math.PI * 2;
+          hjalppenna.drawImage(form, luft + Math.cos(v) * tjock * tathet, luft + Math.sin(v) * tjock * tathet, b, h);
+        }
+        hjalppenna.globalCompositeOperation = 'source-in';
+        hjalppenna.fillStyle = farg;
+        hjalppenna.fillRect(0, 0, helb, helh);
+        ringpenna.drawImage(hjalpduk, 0, 0);
+      };
+      if (stark) lagg(5, SVART);
+      lagg(stark ? 3 : 2.5, GRADDE);
+      ringpenna.globalCompositeOperation = 'destination-out';
+      ringpenna.imageSmoothingEnabled = skala < 1;
+      ringpenna.drawImage(form, luft, luft, b, h);
+      penna.drawImage(ringduk, Math.round(p.x * tathet) - luft, Math.round(p.y * tathet) - luft);
+      if (stark) husritat ??= p;
+    };
+    if (meter <= HUS_KANT) {
+      if (pekat) kant(pekat, false);
+      if (valt) kant(valt, true);
+    }
   }
 
   /* ---------- kameran avgör ---------- */
@@ -593,6 +780,7 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
       lage.visad = Math.abs(d) <= steg ? lage.mal : lage.visad + Math.sign(d) * steg;
       kvar ||= lage.visad !== lage.mal;
     }
+    ritaHus();
     karta.triggerRepaint();
     if (kvar) tonar = requestAnimationFrame(tona);
   }
@@ -615,7 +803,8 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
       lage.mal = pa && lage === oppen && sedd && lage.kantbild && liggerRatt ? glugg(n) : 0;
     }
     if (narmast) forbered(narmast);
-    folj();
+    // Ritade bildvisaren ritades husen med den. Annars ritas de här: de kan behöva tas bort.
+    if (!folj()) ritaHus();
     if (!tonar && lagen.some((lage) => lage.visad !== lage.mal)) {
       senast = performance.now();
       tonar = requestAnimationFrame(tona);
@@ -661,9 +850,15 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
     knapp.title = pa ? 'Pixelkartan är på. Tryck för den vanliga kartan.' : trasig ? 'Pixelkartan gick inte att ladda. Tryck för att försöka igen.' : 'Pixelkartan är av. Tryck för att slå på den.';
   }
 
+  const lyssnare: (() => void)[] = [];
+  let gallde = false; // om platserna i vattnet gällde senast sajten fick veta
   /** Det som följer direkt av att pixelkartan är av eller på: öarna, källraden, gesterna, synfältet. */
   function stall() {
     const pa = aktiv();
+    if (pa !== gallde) {
+      gallde = pa;
+      for (const l of lyssnare) l();
+    }
     try {
       if (!karta.getLayer(KALLRAD)) return;
     } catch {
@@ -794,18 +989,44 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
   skifta();
 
   return {
-    zoomtak(lng, lat) {
+    zoomtak(lng, lat, zoom) {
       // Medan kartan jämnas ut efter att pixelkartan slagits av gäller djupet ännu.
       if (!aktiv() && !fri && !skifte) return val.grundtak;
       // När besökaren zoomar med hjulet frågar kartbiblioteket med kamerans plats i stället för
       // kartans mitt, och med smalt synfält står kameran tiotals mil bakom mitten. Då gäller mitten.
-      if (arKameran(lng, lat)) {
+      // Hjulet frågar för ett steg från den zoom kartan har. En flygning frågar för sitt mål, som
+      // kan ligga långt bort och rakt bakom mitten utan att vara kameran: en vald organisation i
+      // en stad söderut, sedd från hela landet. Den ska få stadens djup.
+      const ettSteg = zoom === undefined || Math.abs(zoom - karta.getZoom()) < 1.5;
+      if (ettSteg && arKameran(lng, lat)) {
         const nu = karta.getCenter();
         return takVid(nu.lng, nu.lat);
       }
       return takVid(lng, lat);
     },
     pa: () => vald && !trasig,
+    vatten: (id) => (aktiv() ? (vattenplatser.get(id) ?? null) : null),
+    narzoom(id) {
+      if (!aktiv()) return null;
+      const hus = husAv.get(id);
+      if (hus) return zoomVid(hus.lage.mitt.lat, NARA_HUS);
+      const plats = vattenplatser.get(id);
+      return plats ? zoomVid(plats.lat, NARA_VATTEN) : null;
+    },
+    markera(id) {
+      if (id === markerad) return;
+      markerad = id;
+      ritaHus();
+    },
+    peka(id) {
+      if (id === pekad) return;
+      pekad = id;
+      ritaHus();
+    },
+    vidByte(l) {
+      lyssnare.push(l);
+    },
+    husprov: () => ({ vald: markerad, tonad, ritat: !!husritat, ruta: husritat }),
     tillstand: () => lagen.map((lage) => ({ stad: lage.stad.id, glugg: lage.visad, forberedd: lage === oppen && redo, ritad: lage === oppen && sedd, avvikelse: lage === oppen ? avvikelse() : null })),
     satt,
   };

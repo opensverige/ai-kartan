@@ -114,6 +114,8 @@ Stockholm, Göteborg och Malmö finns ritade som pixelstäder. De visas i sajten
 
 Pixelkartan är avstängd om inte `PUBLIC_PIXELKARTA_URL` är satt vid bygget. Värdet är adressen till bildtjänsten som lämnar ut kartbilderna, fram till och med versionen. Utan det byggs ingenting av pixelkartan in, och sajten är den vanliga kartan. Svarar bildtjänsten inte är sajten också den vanliga kartan. Besökaren kan själv slå av pixelkartan med en knapp på kartan.
 
+I en pixelstad står organisationerna så här: den som har en exakt adress står vid sitt hus, och väljs den ritas huset ut i färg medan staden runt det tonas ner. Den som saknar exakt adress flyter i vattnet, som en kontur med en ring under. I kommunens rutnät skulle den hamna på ett hus, och på en karta där varje hus syns läses en prick som just det huset. Utanför pixelstäderna, och när pixelkartan är av, står alla som förut. Platserna i vattnet och husens former kommer från bildtjänsten, inte från repot.
+
 Kartbilderna ligger inte i repot. Bildtjänsten svarar bara sajten själv, så ett eget bygge med adressen satt visar den vanliga kartan.
 
 ## Fråga kartan

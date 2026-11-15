@@ -28,10 +28,24 @@ export interface Kartblad {
   edge: string;
 }
 
+/** Ett hus i kartbilden: dess form som bild (alfa) och var den ligger, i kartbildens punkter. */
+export interface Hus {
+  picture: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}
+
 export interface Stad {
   id: string;
   label: string;
   map: Kartblad;
+  /** Organisationer utan exakt adress: deras plats i vattnet, i kartbildens punkter. */
+  water?: Record<string, [number, number]>;
+  /** Organisationer med adress: huset de sitter i. */
+  addresses?: Record<string, string>;
+  houses?: Record<string, Hus>;
 }
 
 export interface Kartfil {

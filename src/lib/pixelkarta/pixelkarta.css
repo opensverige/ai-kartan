@@ -12,6 +12,31 @@
   pointer-events: none !important;
 }
 
+/* Medan en vald organisations hus är utritat tonas staden runt det ner mot papper. */
+.pixelstad .openseadragon-container {
+  transition:
+    filter 0.25s ease,
+    opacity 0.25s ease;
+}
+.pixelstad--tonad .openseadragon-container {
+  filter: grayscale(0.6) sepia(0.22) contrast(0.92);
+  opacity: 0.6;
+}
+/* Huset i sina färger och kanten runt det: över bildvisaren, under kartbilden och dess prickar. */
+.pixelhus {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pixelstad .openseadragon-container {
+    transition: none;
+  }
+}
+
 /* Knappen är överstruken när pixelkartan är av. */
 .pixelbrytare[aria-pressed='false'] {
   color: hsl(var(--ink-mute));
