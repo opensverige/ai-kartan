@@ -549,11 +549,14 @@ function farjedel(v: Verktyg): Del {
   type Sort = { fart: number; langd: number; bredd: number; perKm: number; skrov: string; dack: string; hus: string; hushojd: number; skorsten: string };
   // en pendelbåt, och ett fartyg till Finland eller Baltikum
   const SORT: Sort[] = [
-    { fart: 5.5, langd: 30, bredd: 8, perKm: 1 / 1.6, skrov: '#f4f2ec', dack: '#d8dde2', hus: '#fbfaf6', hushojd: 6, skorsten: '' },
-    { fart: 8.5, langd: 185, bredd: 29, perKm: 1 / 9, skrov: '#f1f1ee', dack: '#cfd5db', hus: '#fbfaf6', hushojd: 26, skorsten: '#c0392b' },
+    { fart: 5.5, langd: 30, bredd: 8, perKm: 1 / 5, skrov: '#f4f2ec', dack: '#d8dde2', hus: '#fbfaf6', hushojd: 6, skorsten: '' },
+    { fart: 8.5, langd: 185, bredd: 29, perKm: 1 / 14, skrov: '#f1f1ee', dack: '#cfd5db', hus: '#fbfaf6', hushojd: 26, skorsten: '#c0392b' },
   ];
   const MAX_MPP = 3.6;
-  const TAK = 24;
+  // Färjelinjerna löper samman vid kajerna i innerstaden. Med en färja på var och en blev vattnet
+  // där fullt av båtar och kölvatten. Därför få färjor, och ingen ny nära en som redan går.
+  const TAK = 8;
+  const AVSTAND = 350; // meter mellan en ny färja och de som redan går
   type Farja = { e: number; hall: number; s: number; sort: Sort; fart: number; kaj: number; ute: number };
   let nat: Nat | null = null;
   let farjor: Farja[] = [];
@@ -574,6 +577,11 @@ function farjedel(v: Verktyg): Del {
       const vid = n.start[e] + Math.round(s);
       if (!n.syns[vid] || !inom(omrade, n.x[vid], n.y[vid])) continue;
       if (dold && inom(vy, n.x[vid], n.y[vid])) continue;
+      const nara = farjor.some((f) => {
+        const hos = n.start[f.e] + Math.round(mellan(f.s, 0, n.start[f.e + 1] - n.start[f.e] - 1));
+        return Math.hypot(n.x[hos] - n.x[vid], (n.y[hos] - n.y[vid]) * ROT2) * v.mpb < AVSTAND;
+      });
+      if (nara) continue;
       const sort = sortAv(n, e);
       return { e, hall: Math.random() < 0.5 ? 1 : -1, s, sort, fart: sort.fart * (0.9 + 0.2 * Math.random()), kaj: 0, ute: 0 };
     }
@@ -687,7 +695,7 @@ function farjedel(v: Verktyg): Del {
         const x = vy.ox + mx * vy.skala;
         const y = vy.oy + my * vy.skala;
         p.globalAlpha = toning;
-        if (f.kaj <= 0) kolvatten(v, vy, x, y, dr, df, sort.langd, sort.bredd, sort.langd * 1.6, toning);
+        if (f.kaj <= 0) kolvatten(v, vy, x, y, dr, df, sort.langd, sort.bredd, sort.langd * 0.7, toning * 0.55);
         p.globalAlpha = toning;
         skrov(v, vy, x, y, dr, df, sort.langd, sort.bredd, 0.4, v.skugga(sort.skrov, 0.7));
         skrov(v, vy, x, y, dr, df, sort.langd, sort.bredd, 2.2, sort.skrov);
@@ -715,8 +723,8 @@ function farjedel(v: Verktyg): Del {
 function batdel(v: Verktyg): Del {
   const MAX_MPP = 2.4;
   const TONING_MPP = 0.6;
-  const TAK = 70;
-  const KVADRATMETER_PER_BAT = 60000; // en båt per sex hektar öppet vatten
+  const TAK = 24;
+  const KVADRATMETER_PER_BAT = 200000; // en båt per tjugo hektar öppet vatten
   const UTANFOR = 0.6;
   type Vatten = { b: number; h: number; bitar: Uint8Array; cell: number };
   type Bat = { x: number; y: number; th: number; svang: number; styr: number; segel: boolean; fart: number; langd: number; lack: string; alfa: number; ute: number };
@@ -880,7 +888,7 @@ function batdel(v: Verktyg): Del {
         const df = Math.sin(b.th);
         const bredd = b.langd * 0.33;
         p.globalAlpha = toning * b.alfa;
-        kolvatten(v, vy, x, y, dr, df, b.langd, bredd, b.segel ? b.langd * 0.8 : b.langd * (1.2 + b.fart * 0.25), toning * b.alfa * (b.segel ? 0.5 : 1));
+        kolvatten(v, vy, x, y, dr, df, b.langd, bredd, b.segel ? b.langd * 0.5 : b.langd * (0.6 + b.fart * 0.08), toning * b.alfa * (b.segel ? 0.35 : 0.6));
         p.globalAlpha = toning * b.alfa;
         skrov(v, vy, x, y, dr, df, b.langd, bredd, 0.2, v.skugga(b.lack, 0.68));
         skrov(v, vy, x, y, dr, df, b.langd, bredd, 0.8, b.lack);
