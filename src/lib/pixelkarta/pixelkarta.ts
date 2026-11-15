@@ -62,6 +62,11 @@ export interface Pixelkarta {
    * Null för alla andra, och när pixelkartan inte visas: då står den där sajten annars ställer den.
    */
   vatten(id: string): { lng: number; lat: number } | null;
+  /**
+   * För en organisation som flyter i vattnet i en pixelstad: stadens namn, hur många i staden som
+   * har sitt hus tänt, och en bild av ett tänt hus. Tomt annars.
+   */
+  knuff(id: string): { stad: string; tanda: number; bild: string | null } | null;
   /** Hur nära kartan går när en organisation i en pixelstad väljs, eller null för sajtens vanliga avstånd. */
   narzoom(id: string): number | null;
   /** Den valda organisationen: dess hus ritas ut i pixelstaden, och staden runt det tonas ner. */
@@ -169,11 +174,13 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
   // sajten ställer dem annars i ett rutnät mitt i kommunen, och på en karta där varje hus syns
   // läses en prick på ett hus som det huset. De med adress har ett hus, som kan ritas ut.
   const vattenplatser = new Map<string, { lng: number; lat: number }>();
+  const vattenstad = new Map<string, Stad>();
   const husAv = new Map<string, { lage: Lage; hus: Husbild }>();
   for (const lage of lagen) {
     for (const [id, [x, y]] of Object.entries(lage.stad.water ?? {})) {
       const m = lage.projektion.tillMark(x, y);
       vattenplatser.set(id, { lng: m.lon, lat: m.lat });
+      vattenstad.set(id, lage.stad);
     }
     const hus = new Map<string, Husbild>();
     for (const [id, nyckel] of Object.entries(lage.stad.addresses ?? {})) {
@@ -1065,6 +1072,11 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
     },
     pa: () => vald && !trasig,
     vatten: (id) => (aktiv() ? (vattenplatser.get(id) ?? null) : null),
+    knuff(id) {
+      const stad = aktiv() ? vattenstad.get(id) : undefined;
+      if (!stad) return null;
+      return { stad: stad.label, tanda: Object.keys(stad.addresses ?? {}).length, bild: fil.example ? bas + fil.example : null };
+    },
     narzoom(id) {
       if (!aktiv()) return null;
       const hus = husAv.get(id);

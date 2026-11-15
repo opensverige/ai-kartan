@@ -71,6 +71,8 @@ export interface Stad {
 export interface Kartfil {
   version: number;
   metersPerPixel: number;
+  /** En liten bild av ett tänt hus, som exempel för den som inte har sitt tänt än. */
+  example?: string;
   cities: Stad[];
 }
 
