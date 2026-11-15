@@ -846,14 +846,38 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       if (o.pt !== 'kommun') return '';
       const lank = `<a href="${orgbas}${encodeURIComponent(o.id)}#ratta">Lägg till adress</a>`;
       return pixel?.vatten(o.id)
-        ? `<dd class="rutor__not">Ingen bekräftad adress än: flyter i vattnet. ${lank} så ritas huset ut.</dd>`
+        ? `<dd class="rutor__not">Ingen bekräftad adress än: flyter i vattnet. ${lank} så tänds huset.</dd>`
         : `<dd class="rutor__not">Exakt adress saknas. ${lank}</dd>`;
+    }
+
+    /**
+     * Knuffen för den som flyter i vattnet i en pixelstad: en liten rad med ett tänt hus, hur många
+     * i staden som har sitt hus tänt, och en väg vidare. Länken går rakt till rättelseformuläret
+     * med organisationen och fältet ifyllda, ett steg kortare än via organisationens sida.
+     */
+    function knuffHtml(o: Rad): string {
+      const k = o.pt === 'kommun' ? pixel?.knuff(o.id) : null;
+      if (!k || k.tanda < 1) return '';
+      const formular =
+        'https://github.com/opensverige/ai-kartan/issues/new?template=rattelse.yml' +
+        `&title=${encodeURIComponent(`Adress: ${o.n}`)}&organisation=${encodeURIComponent(o.id)}` +
+        `&falt=${encodeURIComponent('coordinates (adress på kartan)')}` +
+        `&nuvarande=${encodeURIComponent('Bara kommun, ingen exakt adress.')}` +
+        `&korrekt=${encodeURIComponent('Besöksadress: ')}`;
+      const bild = k.bild ? `<img src="${esc(k.bild)}" width="64" height="48" alt="" loading="lazy" decoding="async" />` : '';
+      return (
+        `<a class="tandhus" href="${formular}" target="_blank" rel="noopener">${bild}` +
+        `<span class="tandhus__text"><strong>${k.tanda} hus är tända i ${esc(k.stad)}.</strong> Ert är inte det än.</span> ` +
+        `<span class="tandhus__knapp">Tänd ert hus ${ikon('hoger', 14)}</span></a>`
+      );
     }
 
     /** Pixelkartan har kommit eller gått medan detaljvyn är öppen. Det som står om platsen skrivs om. */
     function skrivPlatsnot() {
       const o = valdId ? alla.find((x) => x.id === valdId) : undefined;
       const not = vyDetalj?.querySelector('.rutor__not');
+      const knuff = vyDetalj?.querySelector('[data-knuff]');
+      if (o && knuff) knuff.innerHTML = knuffHtml(o);
       if (o && not && o.pt === 'kommun') not.outerHTML = platsnotHtml(o);
     }
 
@@ -877,6 +901,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         `<div class="detalj__kropp">${logoHtml(o, 'logo--stor')}` +
         `<h2 class="detalj__namn" tabindex="-1">${esc(o.n)}</h2>` +
         `<p class="detalj__text">${esc(o.d)}</p>` +
+        `<div data-knuff>${knuffHtml(o)}</div>` +
         `<p class="kicker detalj__kicker">Detaljer</p>` +
         `<dl class="rutor">${rutor.map(([i, e, v, not]) => `<div><dt>${ikon(i, 16)}${e}</dt><dd>${esc(v)}</dd>${not ?? ''}</div>`).join('')}</dl>` +
         (o.i
@@ -3113,6 +3138,53 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     font-weight: 500;
     line-height: 1.35;
     color: hsl(var(--ink));
+  }
+  /* Knuffen för den som saknar adress i en pixelstad: en rad med ett tänt hus, hur många som har sitt, och en väg vidare. */
+  .tandhus {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 12px 0 16px;
+    padding: 6px 10px 6px 6px;
+    border: 1px solid hsl(var(--kant));
+    border-radius: 14px;
+    background: hsl(var(--yta-kort));
+    color: hsl(var(--ink));
+    font-size: 13px;
+    line-height: 1.3;
+    text-decoration: none;
+  }
+  .tandhus img {
+    flex: none;
+    width: 64px;
+    height: 48px;
+    border-radius: 9px;
+    object-fit: cover;
+  }
+  .tandhus__text {
+    flex: 1;
+    min-width: 0;
+  }
+  .tandhus__text strong {
+    display: block;
+  }
+  .tandhus__knapp {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 7px 10px;
+    border-radius: 999px;
+    background: hsl(var(--ink));
+    color: hsl(var(--yta));
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .tandhus:hover {
+    border-color: var(--typ-community);
+  }
+  .tandhus:hover .tandhus__knapp {
+    background: var(--typ-community);
   }
   /* Raden under platsen när adressen saknas. Markören är kartans egen kontur. */
   .rutor .rutor__not {
