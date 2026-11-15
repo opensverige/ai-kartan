@@ -6,6 +6,7 @@ import type { Map as MapLibreMap } from 'maplibre-gl';
 import type { Filter } from '../filter.ts';
 import type { Handelser, Handling, Oppnadvia } from '../handelser.ts';
 import type { Skalpost } from './skal.ts';
+import type { Pixelkarta } from '../pixelkarta/pixelkarta.ts';
 
 /** Organisationerna har kommit. `redo` på gränssnittet säger samma sak för den som lyssnar för sent. */
 export const REDO = 'aikartan:redo';
@@ -30,6 +31,8 @@ export interface Platsrad {
 export interface Kartgranssnitt {
   /** Null tills kartbiblioteket har laddats, och om kartan inte gick att rita. */
   karta: MapLibreMap | null;
+  /** Pixelkartan, när den är påslagen vid bygget och bildtjänsten har svarat. Annars null. */
+  pixel: Pixelkarta | null;
   redo: boolean;
   /** Alla organisationer, tomt tills datan har kommit. */
   poster(): readonly Kartrad[];

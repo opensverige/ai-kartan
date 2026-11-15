@@ -106,7 +106,15 @@ npm run build        # validerar och bygger till dist/
 | `node scripts/tips.mjs --fil arende.md` | Läser det korta formuläret och skriver svaret som boten ger i ärendet. |
 | `npm test` | Kör testerna för intaget av nya organisationer och för nedladdningen av ett urval. |
 
-Miljövariabler vid bygge: `SITE_URL` (standard `https://karta.opensverige.se`) och `BASE_PATH` (standard `/`).
+Miljövariabler vid bygge: `SITE_URL` (standard `https://karta.opensverige.se`) och `BASE_PATH` (standard `/`). `PUBLIC_PIXELKARTA_URL` slår på pixelkartan, se nedan.
+
+## Pixelkartan
+
+Stockholm, Göteborg och Malmö finns ritade som pixelstäder. De visas i sajtens egen karta: långt ute som små öar, och när man zoomar in lutar sig kartan och staden syns i full skärpa, med organisationerna kvar ovanpå. Koden ligger i `src/lib/pixelkarta/`.
+
+Pixelkartan är avstängd om inte `PUBLIC_PIXELKARTA_URL` är satt vid bygget. Värdet är adressen till bildtjänsten som lämnar ut kartbilderna, fram till och med versionen. Utan det byggs ingenting av pixelkartan in, och sajten är den vanliga kartan. Svarar bildtjänsten inte är sajten också den vanliga kartan. Besökaren kan själv slå av pixelkartan med en knapp på kartan.
+
+Kartbilderna ligger inte i repot. Bildtjänsten svarar bara sajten själv, så ett eget bygge med adressen satt visar den vanliga kartan.
 
 ## Fråga kartan
 
@@ -153,6 +161,7 @@ Citera med status och datum: *OpenSverige AI-kartan, ”Organisation”, hämtad
 - **Kod:** [AGPL-3.0](LICENSE).
 - **Data:** [CC BY 4.0](LICENSE-DATA) med attribution ”OpenSverige AI-kartan, karta.opensverige.se”. Enskilda fakta är fria. Uppgifter om enskilda firmor är personuppgifter och omfattas inte av licensen som sådana.
 - Kartunderlag: © OpenFreeMap, © OpenMapTiles, data från OpenStreetMap-bidragsgivare. Gränser: geoBoundaries (CC0 / CC BY 3.0). Typsnitt: SIL OFL.
+- **Pixelkartans bilder** ingår inte i repot och omfattas varken av AGPL eller CC BY. De är gjorda av Gustaf Baltsar Garnow och får inte kopieras eller återanvändas utan hans tillstånd. Underlag: Google Photorealistic 3D Tiles och OpenStreetMap. Koden som visar dem är AGPL som resten.
 
 ---
 

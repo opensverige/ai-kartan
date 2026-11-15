@@ -248,6 +248,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
   import { AVSTAND, knuffordning, etikettrutor, korsar, ryms, type Ruta } from '../lib/knuff';
   import { REDO, HANDLING, ORG, type Kartgranssnitt, type Kartrad } from '../lib/fraga/kartgranssnitt';
   import type { Kartpost } from '../lib/data';
+  import type { Pixelkarta } from '../lib/pixelkarta/pixelkarta';
 
   type Post = {
     id: string; n: string; t: string; o: string[]; a: string[]; k: string | null; kn: string | null;
@@ -354,6 +355,11 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     let detaljIHistorik = false;
     let karta: MapLibreMap | null = null;
     let kartaKlar = false;
+    // Pixelkartan: Stockholm, Göteborg och Malmö som pixelstäder i kartan. Adressen till
+    // bildtjänsten sätts vid bygget. Utan den laddas ingenting av pixelkartan, och kartan är
+    // den vanliga. Se src/lib/pixelkarta/pixelkarta.ts.
+    const PIXELKARTA: string | undefined = import.meta.env.PUBLIC_PIXELKARTA_URL;
+    let pixel: Pixelkarta | null = null;
     // Mittpunkt per län och kommun, räknad på alla organisationer. Där ritas platsens grupp.
     let mitt = { lan: new Map<string, [number, number]>(), kommun: new Map<string, [number, number]>() };
     // Följer med kartans egna kamerarörelser, så att de går att skilja från besökarens.
@@ -1346,6 +1352,8 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     const ORGKALLOR = ['orgs', 'lan-grupper', 'kommun-grupper', 'kommun-ytor-namn', 'vald'];
     /** Källorna som sajten själv lägger på kartan. Allt annat är kartbilden under dem. */
     const EGNA_KALLOR = new Set([...ORGKALLOR, 'medlemmar', 'medlemmar-ytor']);
+    /** Källor som inte är baskartans: sajtens egna lager och pixelkartans (öarna, källraden). */
+    const egenKalla = (kalla: string): boolean => EGNA_KALLOR.has(kalla) || kalla.startsWith('pixel');
     const MEDLEMSLAGER = ['medlemmar-yta', 'medlemmar-kant', 'medlemmar-ikon'];
     const KRAFTROD = '#c2511f';
     let kameraFore: { center: [number, number]; zoom: number } | null = null;
@@ -1582,7 +1590,8 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
           renderWorldCopies: false,
           maxZoom: STORSTA_ZOOM,
           transformConstrain: (plats, zoom) => {
-            const z = Math.min(Math.max(zoom, zoomgolv), STORSTA_ZOOM);
+            // Över en pixelstad får kartan gå djupare än annars.
+            const z = Math.min(Math.max(zoom, zoomgolv), pixel?.zoomtak(plats.lng, plats.lat) ?? STORSTA_ZOOM);
             // Rutan vidgas jämnt under de två första zoomstegen in från golvet.
             const t = Math.min(Math.max((z - zoomgolv) / 2, 0), 1);
             const kant = (i: 0 | 1, j: 0 | 1): number => MITT_UTZOOMAD[i][j] + (MITT_INZOOMAD[i][j] - MITT_UTZOOMAD[i][j]) * t;
@@ -1622,7 +1631,9 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         const { sourceId: kalla, tile } = e as { sourceId?: string; tile?: unknown };
         if (kalla) {
           // Ett fel utan kartbricka gäller källan själv. Då begärs inga kartbrickor alls, och det räcker för beskedet.
-          brickfel += !tile && !EGNA_KALLOR.has(kalla) ? 3 : 1;
+          // Pixelkartans bilder är inte kartans underlag. Uteblir de säger pixelkartan det själv.
+          if (kalla.startsWith('pixel')) return;
+          brickfel += !tile && !egenKalla(kalla) ? 3 : 1;
           if (kartaKlar) underlagsfel();
           return;
         }
@@ -1631,8 +1642,8 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       karta.on('sourcedata', (e) => {
         // Kartbiblioteket fäller ut källraden när baskartans källa har svarat. Öppnas medlemsvyn
         // från adressen sker det efter att vyn har fällt ihop den.
-        if (medlemslage && e.sourceDataType === 'metadata' && !EGNA_KALLOR.has(e.sourceId)) fallIhopKallrad();
-        if (!e.tile || EGNA_KALLOR.has(e.sourceId)) return;
+        if (medlemslage && e.sourceDataType === 'metadata' && !egenKalla(e.sourceId)) fallIhopKallrad();
+        if (!e.tile || egenKalla(e.sourceId)) return;
         brickor += 1;
         el.querySelector('.karta__fel--underlag')?.remove();
       });
@@ -2015,6 +2026,13 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         });
 
         kartaKlar = true;
+        if (PIXELKARTA) {
+          // Hämtas först här, när kartan står: pixelkartan får aldrig fördröja den vanliga.
+          import('../lib/pixelkarta/pixelkarta')
+            .then((m) => m.kopplaPixelkarta({ karta: karta!, el, app, bas: PIXELKARTA, grundtak: STORSTA_ZOOM }))
+            .then((p) => (granssnitt.pixel = pixel = p))
+            .catch((fel) => console.warn('Pixelkartan gick inte att starta', fel));
+        }
         if (alla.length) {
           uppdateraKarta();
           forstaVy();
@@ -2326,6 +2344,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     // Reglerna för hur det används står i src/lib/fraga/kartgranssnitt.ts.
     const granssnitt: Kartgranssnitt = {
       karta: null,
+      pixel: null,
       redo: false,
       poster: (): readonly Kartrad[] => alla,
       sok: (q) => sok(q),
