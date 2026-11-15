@@ -111,6 +111,8 @@ const NARA_VATTEN = 3;
 const MINNE = 'pixelkarta';
 /** Källan och lagret som bär pixelkartans rad bland kartans källor. */
 const KALLRAD = 'pixelkarta-kalla';
+/** Den som har gjort pixelkartan. Namnet står i ett märke i kartans hörn och i raden med kartans källor. */
+const SKAPARE = { namn: 'Gustaf Baltsar Garnow', lank: 'https://headless.design' };
 
 const IKON =
   '<svg class="ik" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>';
@@ -339,7 +341,7 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
   karta.addSource(KALLRAD, {
     type: 'geojson',
     data: { type: 'FeatureCollection', features: [] },
-    attribution: 'Pixelkarta © <a href="https://headless.design" target="_blank" rel="noopener">Gustaf Baltsar Garnow</a> · underlag Google 3D Tiles',
+    attribution: `Pixelkarta © <a href="${SKAPARE.lank}" target="_blank" rel="noopener">${SKAPARE.namn}</a> · underlag Google 3D Tiles`,
   });
   karta.addLayer({ id: KALLRAD, type: 'circle', source: KALLRAD });
 
@@ -803,6 +805,8 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
       lage.mal = pa && lage === oppen && sedd && lage.kantbild && liggerRatt ? glugg(n) : 0;
     }
     if (narmast) forbered(narmast);
+    // Frågan under skaparens namn står där ingen pixelstad är öppen.
+    marke.classList.toggle('skaparmarke--fraga', !lagen.some((lage) => lage.mal > 0.5));
     // Ritade bildvisaren ritades husen med den. Annars ritas de här: de kan behöva tas bort.
     if (!folj()) ritaHus();
     if (!tonar && lagen.some((lage) => lage.visad !== lage.mal)) {
@@ -825,6 +829,22 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
   });
 
   /* ---------- av och på ---------- */
+
+  // Vem som har gjort pixelkartan: ett märke i kartans hörn, med länk till skaparen. Över landet,
+  // där städerna bara är öar, står också en fråga under namnet.
+  const marke = document.createElement('a');
+  marke.className = 'skaparmarke skaparmarke--fraga';
+  marke.href = SKAPARE.lank;
+  marke.target = '_blank';
+  marke.rel = 'noopener';
+  // Pilen följer med namnets sista ord om raden bryts, så att den aldrig står ensam på en rad.
+  const ord = SKAPARE.namn.split(' ');
+  const sist = ord.pop();
+  const fore = ord.join(' ');
+  marke.innerHTML =
+    `<span class="skaparmarke__rad"><span class="skaparmarke__liten">Skapad av</span> ${fore} <span class="skaparmarke__sist">${sist} <span class="skaparmarke__pil" aria-hidden="true">↗</span></span></span>` +
+    '<span class="skaparmarke__fraga">Vill du se din stad i pixlar? Hör av dig.</span>';
+  el.parentElement?.appendChild(marke);
 
   const besked = document.createElement('p');
   besked.className = 'pixelbesked';

@@ -50,6 +50,69 @@
   display: none;
 }
 
+/* Vem som har gjort pixelkartan: ett märke nere till vänster i kartan, över raden om prickarna.
+   Det syns bara medan pixelkartan är på. */
+.skaparmarke {
+  position: absolute;
+  left: 12px;
+  bottom: 42px;
+  z-index: 3;
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  max-width: calc(100% - 96px);
+  padding: 8px 14px;
+  border: 1px solid hsl(var(--kant));
+  border-radius: 16px;
+  background: hsl(var(--yta-kort));
+  box-shadow: var(--skugga-flyt);
+  color: hsl(var(--ink));
+  font: 700 13px/1.2 var(--font-sans);
+  text-decoration: none;
+}
+.app--pixel .skaparmarke {
+  display: flex;
+}
+.skaparmarke__liten,
+.skaparmarke__fraga {
+  font-weight: 500;
+  color: hsl(var(--ink-mute));
+}
+.skaparmarke__sist {
+  white-space: nowrap;
+}
+.skaparmarke__pil {
+  color: var(--typ-community);
+}
+.skaparmarke__fraga {
+  display: none;
+}
+.skaparmarke--fraga .skaparmarke__fraga {
+  display: block;
+}
+.skaparmarke:hover {
+  border-color: var(--typ-community);
+}
+/* I en smal kartyta ligger raden om prickarna högre upp och bryts på två rader, och kartans
+   källrad når hit när den är utfälld. Märket står över båda. */
+@media (max-width: 1180px) {
+  .skaparmarke {
+    bottom: 106px;
+  }
+}
+/* I telefon har filterknappen hörnet uppe till vänster och bladet ligger nedtill. Märket står uppe till höger. */
+@media (max-width: 900px) {
+  .skaparmarke {
+    left: auto;
+    right: 12px;
+    top: 12px;
+    bottom: auto;
+    max-width: calc(100% - 132px);
+    padding: 7px 11px;
+    font-size: 12px;
+  }
+}
+
 /* Beskedet står upptill i kartan, där sajtens eget besked om kartbilden står. Nedtill ligger bladet i telefon. */
 .pixelbesked {
   position: absolute;
