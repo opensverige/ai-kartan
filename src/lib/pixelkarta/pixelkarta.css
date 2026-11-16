@@ -120,12 +120,22 @@
     bottom: 106px;
   }
 }
-/* I telefon har filterknappen hörnet uppe till vänster och bladet ligger nedtill. Märket står uppe till höger. */
+/* På sajtens startskärm ligger frågerutan över kartans nedre del, och dess toning över märkets
+   vanliga plats: märket syntes inte men gick att trycka på. Där står det uppe till vänster,
+   där kartans knappar annars står. */
+html[data-fraga][data-fragelage='hem'] .app[data-lage='karta'] .skaparmarke {
+  top: 12px;
+  bottom: auto;
+}
+/* I telefon har filterknappen hörnet uppe till vänster och bladet ligger nedtill. Märket står uppe
+   till höger. På startskärmen ligger kartans källrad också där uppe: då står märket under den
+   (--under-kallor sätts av pixelkarta.ts, som mäter källraden). */
 @media (max-width: 900px) {
-  .skaparmarke {
+  .skaparmarke,
+  html[data-fraga][data-fragelage='hem'] .app[data-lage='karta'] .skaparmarke {
     left: auto;
     right: 12px;
-    top: 12px;
+    top: calc(12px + var(--under-kallor, 0px));
     bottom: auto;
     max-width: calc(100% - 132px);
     padding: 7px 11px;

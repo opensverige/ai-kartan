@@ -14,6 +14,21 @@ import { medlemsvy, type Medlemsdata } from '../lib/medlemmar';
 import { tittext } from '../lib/titt';
 import { veckounderlag, veckan, dagensDatum } from '../lib/vecka';
 import medlemsdata from '../../data/gemenskap/regioner.json';
+import { createHash } from 'node:crypto';
+
+// Stilen för den som saknar JavaScript. is:inline i noscript: annars lyfter Astro ut stilen ur
+// noscript, och då gäller den inte. Sista regeln fäller upp bladet i telefon, där beskedet annars
+// ligger utanför skärmen utan att gå att nå. Astro hashar bara stilar det själv bygger in, så
+// den här får sin hash till Content Security Policy här, räknad på exakt den text som skrivs ut.
+const noscriptStil = `
+  .post--skelett { display: none; }
+  .fragor { display: none !important; }
+  .enkel-lista { margin: 16px 0; padding-left: 28px; line-height: 1.9; }
+  .enkel-lista span { color: hsl(var(--ink-mute)); }
+  @media (max-width: 900px) { .app[data-lage='karta'] .panel { transform: none !important; } }
+  @media (max-width: 900px) and (max-height: 520px) { .app[data-lage='karta'] .panel__intro { display: none; } }
+`;
+Astro.csp?.insertStyleHash(`sha256-${createHash('sha256').update(noscriptStil).digest('base64')}`);
 
 interface Props {
   lage?: 'karta' | 'lista';
@@ -109,16 +124,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       </div>
 
       <noscript>
-        {/* is:inline: annars lyfter Astro ut stilen ur noscript, och då gäller den inte. Sista regeln
-            fäller upp bladet i telefon, där beskedet annars ligger utanför skärmen utan att gå att nå. */}
-        <style is:inline>
-          .post--skelett { display: none; }
-          .fragor { display: none !important; }
-          .enkel-lista { margin: 16px 0; padding-left: 28px; line-height: 1.9; }
-          .enkel-lista span { color: hsl(var(--ink-mute)); }
-          @media (max-width: 900px) { .app[data-lage='karta'] .panel { transform: none !important; } }
-          @media (max-width: 900px) and (max-height: 520px) { .app[data-lage='karta'] .panel__intro { display: none; } }
-        </style>
+        <style is:inline set:html={noscriptStil} />
         <p class="lista__tom lista__tom--ram">
           <strong>Kartan och listan kräver JavaScript.</strong>
           <span>Alla organisationer finns också <a href={url('/plats')}>per kommun och län</a> och som <a href={url('/data')}>öppen data</a>.</span>
@@ -950,6 +956,18 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
           karta.flyTo({ center: [plats.lng, plats.lat], zoom: Math.max(karta.getZoom(), pixel?.narzoom(o.id) ?? ZOOM_POSTER + 0.5) }, AV_KOD);
         }
       }
+    }
+
+    /**
+     * Släpper den valda organisationen från kartan, som tillbakaknappen i detaljvyn gör. Ett tryck
+     * kan nå hit två gånger, från prickens lager och från kartan: det andra gör ingenting.
+     */
+    let slapptVid = -Infinity;
+    function slappVald() {
+      if (!valdId || performance.now() - slapptVid < 400) return;
+      slapptVid = performance.now();
+      if (detaljIHistorik) history.back();
+      else stangDetalj(true, false);
     }
 
     function stangDetalj(skriv = true, fokus = skriv) {
@@ -2002,13 +2020,23 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
           const id = e.features?.[0]?.properties?.id;
           const o = id ? alla.find((x) => x.id === String(id)) : undefined;
           if (!o) return;
+          // Ett tryck till på den som redan är vald släpper valet, och kartan visas som vanligt igen.
+          if (o.id === valdId && vyDetalj && !vyDetalj.hidden) return slappVald();
           handelser.orgOppnad('karta');
           visaDetalj(o, false);
         });
         karta!.on('click', (e) => {
+          const finns = (id: string) => !!karta!.getLayer(id);
+          const traff = karta!.queryRenderedFeatures(e.point, { layers: [...grupplager, ...punktlager].filter(finns) }).length > 0;
+          if (valdId && vyDetalj && !vyDetalj.hidden) {
+            // Den valdas egen prick ritas i ett eget lager över de andra: ett tryck på den släpper valet.
+            const paVald = karta!.queryRenderedFeatures(e.point, { layers: ['vald-ring', 'vald-punkt', 'vald-ikon'].filter(finns) }).length > 0;
+            // Tryck på tom karta släpper också valet. I en pixelstad hör den valdas hus till den:
+            // ett tryck på huset behåller valet, ett tryck utanför släpper det.
+            if (paVald || (!traff && !pixel?.paValtHus(e.point.x, e.point.y))) slappVald();
+          }
           // Tryck på tom karta fäller ner bottenbladet i smal vy.
-          const lager = [...grupplager, ...punktlager].filter((id) => karta!.getLayer(id));
-          if (smal.matches && !karta!.queryRenderedFeatures(e.point, { layers: lager }).length) sattBlad('titt');
+          if (smal.matches && !traff) sattBlad('titt');
         });
 
         // Typer med egen ikon ritas som landmärken: bilden i stället för en prick, med namnet under.
@@ -2111,7 +2139,11 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
               if (!p) return;
               // De utan exakt adress står i vattnet i en pixelstad, och i kommunens rutnät annars.
               const ritaOm = () => {
+                // Att kartan ritas om tar bort knuffen ("Tryck på en siffra"), som om besökaren hade
+                // ändrat urvalet. Här är det pixelkartan som kom, inte besökaren: knuffen ställs om.
+                const vantade = knuffvakt !== undefined || !!knuff;
                 if (alla.length) uppdateraKarta();
+                if (vantade) planeraKnuff();
                 skrivPlatsnot();
               };
               p.vidByte(ritaOm);

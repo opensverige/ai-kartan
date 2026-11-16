@@ -93,14 +93,19 @@ Det här gäller:
 - Läget sitter på pull requestens senaste commit. Två pull requests med samma senaste commit delar därför läge och skriver över varandras. Stäng dubbletten och kör om flödet på den riktiga.
 - AI får hjälpa dig att kontrollera att ett belägg visar det som påstås, men listan och intyget är dina. En bot kan kryssa i en ruta, och därför räcker inte rutorna: det är din kommentar som räknas. En agent som arbetar inloggad som du går inte att skilja från dig. Den regeln vilar därför på dig.
 - Listan gäller organisationer. Ändringar av kriterier, schema, validering och flöden granskas inte av den, även när läget är grönt. Listan och läget säger till när sådana filer ändras.
-- Sista punkten i kriterier.md, att `npm run validera` är grön, prövas av kontrollen Validera data och bygg.
+- Sista punkten i kriterier.md, att `npm run validera` är grön, prövas av kontrollen Schema, regler och länkar, jobbet i flödet Validera data och bygg.
 - Högst 30 organisationer per pull request. Fler än så delas upp.
 - Ett avslag skrivs i pull requesten med hänvisning till kriteriet. Tips från det korta formuläret hanteras enligt [Från tips till post](#från-tips-till-post). Den här filen är rutinen för alla som granskar.
 
-### Göra granskningen tvingande
+### Granskningen är tvingande
 
-Läget heter Granskning mot kriterierna. Det blir tvingande när det läggs till som obligatorisk kontroll för `main` under Settings → Rules, tillsammans med Validera data och bygg. Då går ingen pull request med en organisation att merga innan listan är avbockad och intygad, inte heller för den som äger repot. Raden Granskningslista / Skriv listan och sätt läget är flödets egen körning och ska inte väljas. Välj GitHub Actions som källa för läget när regeln skapas. Annars kan vem som helst med skrivrätt, också en annan app, sätta läget själv.
+Läget heter Granskning mot kriterierna och är sedan 2026-11-04 en obligatorisk kontroll för `main`, i regeln under Settings → Rules, tillsammans med Schema, regler och länkar. Ingen pull request med en organisation går att merga innan listan är avbockad och intygad, inte heller för den som äger repot. Regeln kräver också pull request för alla ändringar och att grenen är uppdaterad mot `main` före merge, och den stoppar force push.
 
-Slå också på Require branches to be up to date before merging. Flödet gör gröna lägen gula när `main` ändras och räknar om dem, men det sker några sekunder efter ändringen, och en commit direkt till `main` med `[skip ci]` i meddelandet startar ingen omräkning alls. Med inställningen på måste grenen uppdateras mot `main` före varje merge, och då finns inget sådant glapp. Flödet som skriver historiken gör egna commits till `main` och behöver då stå som undantag i regeln.
+Så är regeln byggd, för den som ska återskapa eller ändra den:
+
+- Källan för båda kontrollerna är GitHub Actions. Annars kan vem som helst med skrivrätt, också en annan app, sätta läget själv. Raden Granskningslista / Skriv listan och sätt läget är flödets egen körning och ska inte väljas.
+- Require branches to be up to date before merging är på. Flödet gör gröna lägen gula när `main` ändras och räknar om dem, men det sker några sekunder efter ändringen, och en commit direkt till `main` med `[skip ci]` i meddelandet startar ingen omräkning alls. Med inställningen på måste grenen uppdateras mot `main` före varje merge, och då finns inget sådant glapp.
+- Flödet som skriver historiken gör egna commits till `main` och är regelns enda undantag. Det pushar med deploy-nyckeln i hemligheten `HISTORIK_NYCKEL`, och deploy-nycklar står på regelns bypass-lista. GitHub Actions eget token kan inte stå där, så ett flöde som pushar med det stoppas av regeln.
+- En pull request som ett flöde öppnar med GitHub Actions eget token startar inga andra flöden. Flödet Nytt ärende till pull request startar därför Validera data och bygg och Granskningslista själv på grenen, så att kontrollerna finns.
 
 En pull request får sitt läge när den öppnas, när den ändras och när `main` ändras. Saknas läget ändå går flödet Granskningslista att köra för hand med pull requestens nummer: Actions → Granskningslista → Run workflow.

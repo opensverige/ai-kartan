@@ -45,6 +45,8 @@ export interface Livsfiler {
   ferries?: Livsnat;
   /** Öppet vatten som bild, 1/64 av kartbildens storlek: vitt där det är vatten. */
   water?: string;
+  /** Figurer som är bilder och inte ritas i kod: ballonger, ett skepp, ett flygplan. Det som saknas ritar sajten själv. */
+  figures?: { balloons?: string[]; ship?: string; plane?: string };
 }
 
 export interface Hus {
