@@ -10,7 +10,10 @@
  *   gjorde den 10 augusti 1628 efter 1 300 meter. Det händer en gång per besök, för den som
  *   tittar på det vattnet.
  *
- * Allt ritas i kod med lagrets ritning i tre led (liv.ts), över bilar och fåglar.
+ * Allt ritas över bilar och fåglar. Ballongerna och skeppet är bilder från bildtjänsten, när den
+ * har några (`figures` i stadens filer): en stilla bild var, som rörs i kod. De pekar alltid åt
+ * samma håll, så en bild räcker: en ballong är rund, och skeppet seglar en enda sträcka. Utan
+ * bilder, och för flygplanet, ritas de i kod med lagrets ritning i tre led (liv.ts).
  */
 import { type Del, type Verktyg, type Vy, stallRit, skX, skY, lada3, prisma, fyrkant, trekant, streck, langband, kortband } from './liv';
 
@@ -21,6 +24,52 @@ type Penna = CanvasRenderingContext2D;
 // Solen står i öster i kartbilden: en sak på höjden h kastar sin skugga så här långt åt väster och söder, i meter per meter.
 const SKUGGA_VAST = 0.5;
 const SKUGGA_SYD = 0.22;
+
+/* ---------- figurer som är bilder ---------- */
+
+/** En bild och dess halveringar, så att den inte flimrar när den ritas mycket mindre än den är. */
+type Figur = { steg: CanvasImageSource[]; bredder: number[]; b: number; h: number };
+// undefined: hämtas ännu. null: gick inte att hämta, och då ritas figuren i kod.
+const figurlager = new Map<string, Figur | null | undefined>();
+
+/** Figuren på en adress, hämtad en gång per besök. */
+function figur(adress: string): Figur | null | undefined {
+  if (figurlager.has(adress)) return figurlager.get(adress);
+  figurlager.set(adress, undefined);
+  const bild = new Image();
+  bild.crossOrigin = 'anonymous';
+  bild.onerror = () => figurlager.set(adress, null);
+  bild.onload = () => {
+    const steg: CanvasImageSource[] = [bild];
+    const bredder = [bild.naturalWidth];
+    let b = bild.naturalWidth;
+    let h = bild.naturalHeight;
+    let fran: CanvasImageSource = bild;
+    while (b > 12) {
+      b = Math.max(1, Math.round(b / 2));
+      h = Math.max(1, Math.round(h / 2));
+      const duk = document.createElement('canvas');
+      duk.width = b;
+      duk.height = h;
+      const penna = duk.getContext('2d');
+      if (!penna) break;
+      penna.drawImage(fran, 0, 0, b, h);
+      steg.push(duk);
+      bredder.push(b);
+      fran = duk;
+    }
+    figurlager.set(adress, { steg, bredder, b: bild.naturalWidth, h: bild.naturalHeight });
+  };
+  bild.src = adress;
+  return undefined;
+}
+
+/** Ritar figuren i rutan (x, y, b, h) skärmpunkter, med den halvering som ligger närmast över storleken på skärmen. */
+function ritaFigur(p: Penna, f: Figur, x: number, y: number, b: number, h: number, tathet: number) {
+  let i = 0;
+  while (i + 1 < f.steg.length && f.bredder[i + 1] >= b * tathet) i += 1;
+  p.drawImage(f.steg[i], x, y, b, h);
+}
 
 /* ---------- ballonger ---------- */
 
@@ -138,6 +187,40 @@ function ritaBallong(p: Penna, cx: number, cy: number, R: number, farger: [strin
   p.stroke();
 }
 
+/**
+ * En ballong som bild. Bilden är skuren efter ballongens kontur: höljet är så brett som bilden och
+ * börjar i dess överkant, mynningen ligger vid fyra femtedelar av höjden och korgen längst ner.
+ */
+function ritaBallongbild(p: Penna, f: Figur, cx: number, cy: number, R: number, eld: number, gung: number, klocka: number, tathet: number) {
+  const b = 2 * R;
+  const h = (b * f.h) / f.b;
+  p.save();
+  p.translate(cx, cy);
+  p.rotate(gung);
+  // lågan står mellan korgen och mynningen, bakom höljet, och fladdrar
+  if (eld > 0 && R >= 2.6) {
+    const fladder = 0.85 + 0.15 * Math.sin(klocka * 31);
+    const fot = -R + 0.87 * h;
+    const topp = fot - 0.12 * h * fladder;
+    p.fillStyle = `rgba(255,150,40,${mellan(eld, 0, 1).toFixed(2)})`;
+    p.beginPath();
+    p.moveTo(-0.07 * R, fot);
+    p.quadraticCurveTo(-0.1 * R, (fot + topp) / 2, 0, topp);
+    p.quadraticCurveTo(0.1 * R, (fot + topp) / 2, 0.07 * R, fot);
+    p.closePath();
+    p.fill();
+    p.fillStyle = `rgba(255,226,130,${mellan(eld, 0, 1).toFixed(2)})`;
+    p.beginPath();
+    p.moveTo(-0.035 * R, fot);
+    p.lineTo(0, fot - 0.07 * h * fladder);
+    p.lineTo(0.035 * R, fot);
+    p.closePath();
+    p.fill();
+  }
+  ritaFigur(p, f, -R, -R, b, h, tathet);
+  p.restore();
+}
+
 /* ---------- flygplanet med banderollen ---------- */
 
 const PLAN_MAX_MPP = 3.2;
@@ -190,6 +273,11 @@ const DACK = '#b08a5a';
 const SEGEL = '#f3ead2';
 const SEGEL_SKUGGA = '#d8cdaf';
 const SKROV = [-24, -4.4, -24, 4.4, -14, 5.6, 8, 5.8, 18, 4.2, 25, 0, 18, -4.2, 8, -5.8, -14, -5.6];
+// Skeppet som bild: från akterspegeln till bogsprötets spets, i samma mått som det ritade, med
+// fören åt höger. Bildens underkant är vattenlinjen på den sida som vetter mot kameran.
+const SKEPP_FRAN = -24;
+const SKEPP_TILL = 34;
+const SKEPP_VATTENLINJE = 2.6; // så långt nedanför skeppets mitt på skärmen, i skeppets mått
 
 /** Skeppet: skrov, relingar, för- och akterkastell, tre master med segel och flaggan i stortoppen. */
 function ritaVasa(p: Penna, k: number) {
@@ -253,6 +341,9 @@ export function luftdel(v: Verktyg): Del {
   let pass = 0;
   // Vasa: var hon är på sin sträcka, och hur långt hon har kommit i att sjunka
   const vasa = { finns: false, x0: 0, y0: 0, x1: 0, y1: 0, meter: 0, strackan: 0, dr: 1, df: 0, tid: -1, sett: 0, gjort: false, sagt: false };
+  // adresserna till stadens figurer hos bildtjänsten, när den har några
+  let ballongbilder: string[] = [];
+  let skeppsbild: string | null = null;
   const typsnitt = (getComputedStyle(document.documentElement).getPropertyValue('--font-sans') || '').trim() || 'system-ui, sans-serif';
 
   /** Banderollens texter, en per överflygning. */
@@ -297,6 +388,9 @@ export function luftdel(v: Verktyg): Del {
       vind = { x: (Math.cos(vinkel) * fart) / v.mpb, y: (-Math.sin(vinkel) * fart) / (ROT2 * v.mpb) };
       plan = null;
       planvila = 12 + 20 * Math.random();
+      ballongbilder = (stad.filer.figures?.balloons ?? []).map((fil) => v.adress(fil));
+      for (const adress of ballongbilder) figur(adress);
+      skeppsbild = stad.filer.figures?.ship ? v.adress(stad.filer.figures.ship) : null;
       vasa.finns = stad.id === VASA.stad;
       vasa.tid = -1;
       vasa.meter = 0;
@@ -357,7 +451,9 @@ export function luftdel(v: Verktyg): Del {
         if (vasa.tid < 0 && vasa.meter === 0) {
           const nara = vy.mpp <= VASA_MAX_MPP && vasa.x1 > vy.x0 && vasa.x1 < vy.x1 && vasa.y1 > vy.y0 && vasa.y1 < vy.y1;
           vasa.sett = nara ? vasa.sett + dt : 0;
-          if (vasa.sett > 4) vasa.meter = 0.01;
+          // hennes bild hämtas först när någon ser på vattnet, och hon väntar på den
+          const hamtas = nara && !!skeppsbild && figur(skeppsbild) === undefined;
+          if (vasa.sett > 4 && !hamtas) vasa.meter = 0.01;
         } else if (vasa.tid < 0) {
           vasa.meter += VASAFART * dt;
           if (vasa.meter >= vasa.strackan) vasa.tid = 0;
@@ -393,14 +489,19 @@ export function luftdel(v: Verktyg): Del {
           const djup = sjunkit(tid);
           const toning = mellan((VASA_MAX_MPP + 1 - vy.mpp) / 0.8, 0, 1) * mellan((19 - tid) / 3, 0, 1);
           p.globalAlpha = toning;
+          const bild = skeppsbild ? figur(skeppsbild) : null;
+          // bilden visar skeppet från sidan: dess vatten ligger vid skrovets underkant, inte vid skeppets mitt
+          const vatten = y + (bild ? SKEPP_VATTENLINJE * K : 0);
           // kölvattnet medan hon seglar, och ringarna på vattnet när hon går under
           if (vasa.tid < 0) {
             p.strokeStyle = 'rgba(235,246,250,0.4)';
             p.lineWidth = Math.max(1, 2.2 * K);
             p.lineCap = 'round';
             p.beginPath();
-            p.moveTo(x - vasa.dr * 24 * K, y + (vasa.df / ROT2) * 24 * K);
-            p.lineTo(x - vasa.dr * 52 * K, y + (vasa.df / ROT2) * 52 * K);
+            // bilden ligger vågrätt också när sträckan lutar: kölvattnet börjar då vid aktern i vattenlinjen
+            const akterY = vatten + (bild ? 0 : (vasa.df / ROT2) * 24 * K);
+            p.moveTo(x - vasa.dr * 24 * K, akterY);
+            p.lineTo(x - vasa.dr * 52 * K, akterY + (vasa.df / ROT2) * 28 * K);
             p.stroke();
           } else {
             for (let ring = 0; ring < 3; ring += 1) {
@@ -408,30 +509,71 @@ export function luftdel(v: Verktyg): Del {
               p.strokeStyle = `rgba(235,246,250,${(0.5 * (1 - vidd / 40)).toFixed(2)})`;
               p.lineWidth = Math.max(1, 0.9 * K);
               p.beginPath();
-              p.ellipse(x, y, vidd * K, (vidd * K) / ROT2, 0, 0, Math.PI * 2);
+              p.ellipse(x, vatten, vidd * K, (vidd * K) / ROT2, 0, 0, Math.PI * 2);
               p.stroke();
             }
           }
-          // Hon kränger åt babord, bort från kameran, och sjunker: det som är under vattenlinjen ritas inte.
           p.save();
-          if (djup > 0) {
-            stallRit(x, y, vasa.dr, vasa.df, K);
-            let vattenlinje = -Infinity;
-            for (let i = 0; i < SKROV.length; i += 2) vattenlinje = Math.max(vattenlinje, skY(SKROV[i], SKROV[i + 1], 0));
+          if (bild) {
+            // Bilden står stilla; rörelsen läggs på här. Hon gungar medan hon seglar. Sedan lägger
+            // hon sig över och sjunker, och det som är under vattenlinjen ritas inte.
+            const bredd = (SKEPP_TILL - SKEPP_FRAN) * K;
+            const hojd = (bredd * bild.h) / bild.b;
+            const vattenlinje = vatten;
+            const kr = krangning(tid);
+            const gung = vasa.tid < 0 ? Math.sin(v.klocka() * 1.1) : 0;
+            // skuggan på vattnet, åt väster, och skummet längs skrovet
+            if (djup < 6) {
+              p.fillStyle = 'rgba(8,12,20,0.13)';
+              p.beginPath();
+              p.ellipse(x - 5 * K, vattenlinje + 0.4 * K, 27 * K, 3 * K, 0, 0, Math.PI * 2);
+              p.fill();
+              p.fillStyle = 'rgba(235,246,250,0.34)';
+              p.beginPath();
+              p.ellipse(x + 0.5 * K, vattenlinje, 26 * K, 1.1 * K, 0, 0, Math.PI * 2);
+              p.fill();
+            }
             p.beginPath();
-            p.rect(0, 0, r.bredd, vattenlinje + 0.5);
+            p.rect(0, 0, r.bredd, vattenlinje + 0.6 * K);
             p.clip();
+            p.translate(x, vattenlinje + (djup * K) / ROT2 + 0.25 * K * gung);
+            p.rotate(0.012 * gung - 0.1 * kr);
+            // masterna lutar akteröver och blir kortare, som när hon lägger sig på sidan
+            p.transform(1, 0, 0.4 * kr, 1 - 0.22 * kr, 0, 0);
+            ritaFigur(p, bild, (SKEPP_FRAN / (SKEPP_TILL - SKEPP_FRAN)) * bredd, -hojd, bredd, hojd, r.tathet);
+          } else {
+            // Ritad i kod: hon kränger åt babord, bort från kameran, och sjunker.
+            if (djup > 0) {
+              stallRit(x, y, vasa.dr, vasa.df, K);
+              let vattenlinje = -Infinity;
+              for (let i = 0; i < SKROV.length; i += 2) vattenlinje = Math.max(vattenlinje, skY(SKROV[i], SKROV[i + 1], 0));
+              p.beginPath();
+              p.rect(0, 0, r.bredd, vattenlinje + 0.5);
+              p.clip();
+            }
+            stallRit(x, y, vasa.dr, vasa.df, K, -djup, -0.9 * krangning(tid));
+            ritaVasa(p, K);
           }
-          stallRit(x, y, vasa.dr, vasa.df, K, -djup, -0.9 * krangning(tid));
-          ritaVasa(p, K);
           p.restore();
+          // skummet där vattnet sluter sig om henne, så att hon inte är avskuren med ett rakt snitt
+          if (bild && djup > 0 && djup < 50) {
+            const kvar = 1 - djup / 52;
+            p.fillStyle = `rgba(235,246,250,${(0.5 * Math.min(1, djup / 4)).toFixed(2)})`;
+            p.beginPath();
+            p.ellipse(x + 2 * K, vatten + 0.5 * K, (8 + 20 * kvar) * K, (0.8 + 0.9 * kvar) * K, 0, 0, Math.PI * 2);
+            p.fill();
+          }
           p.globalAlpha = 1;
         }
       }
 
       // Ballongerna: först alla skuggor på marken, sedan ballongerna själva.
       const toning = mellan((BALLONG_MAX_MPP - vy.mpp) / 1.5, 0, 1);
-      if (toning > 0 && ballonger.length) {
+      // Har bildtjänsten ballonger som bilder ritas de, när alla har kommit. Går någon inte att hämta ritas ballongerna i kod.
+      const hamtade = ballongbilder.map(figur);
+      const bilder = hamtade.every((f) => !!f) ? (hamtade as Figur[]) : [];
+      const vantar = hamtade.some((f) => f === undefined) && !hamtade.includes(null);
+      if (toning > 0 && ballonger.length && !vantar) {
         const R0 = Math.max(1.8, BALLONGRADIE * k);
         for (let varv = 0; varv < 2; varv += 1) {
           for (const b of ballonger) {
@@ -450,7 +592,8 @@ export function luftdel(v: Verktyg): Del {
             } else {
               if (s.cy < -s.R * 2.2 || s.cy > r.hojd + s.R * 1.4 || s.cx < -s.R * 1.4 || s.cx > r.bredd + s.R * 1.4) continue;
               p.globalAlpha = toning;
-              ritaBallong(p, s.cx, s.cy, s.R, BALLONGFARGER[b.farger], b.eld, v.skugga);
+              if (bilder.length) ritaBallongbild(p, bilder[b.farger % bilder.length], s.cx, s.cy, s.R, b.eld, 0.03 * Math.sin(v.klocka() * 0.6 + b.fas * 3), v.klocka(), r.tathet);
+              else ritaBallong(p, s.cx, s.cy, s.R, BALLONGFARGER[b.farger], b.eld, v.skugga);
             }
           }
         }
@@ -539,6 +682,8 @@ export function luftdel(v: Verktyg): Del {
         ballongIRutan: synlig,
         eldar: ballonger.filter((b) => b.eld > 0).length,
         flygplan: plan ? plan.text : null,
+        ballongbilder: ballongbilder.filter((adress) => !!figur(adress)).length,
+        skeppsbild: !!skeppsbild && !!figur(skeppsbild),
         vasa: !vasa.finns ? null : vasa.gjort ? 'borta' : vasa.tid >= 0 ? 'sjunker' : vasa.meter > 0 ? 'seglar' : 'väntar',
       };
     },
