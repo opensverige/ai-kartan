@@ -81,11 +81,15 @@ export interface Pixelkarta {
   husprov(): { vald: string | null; tonad: boolean; ritat: boolean; ruta: { x: number; y: number; b: number; h: number } | null };
   /** Det som rör sig i staden just nu, för prov. Tomt innan en stad har öppnats. */
   livprov(): Record<string, unknown> | null;
+  /** Sätter i gång påskägget i staden som visas, om den har något. För prov, och för den som vet om det. */
+  pask(): boolean;
 }
 
 /** Ett hus med sin form som bild, hämtad först när den behövs. */
 interface Husbild extends Hus {
   bild: HTMLImageElement | null;
+  /** När formen senast inte gick att hämta. */
+  fel?: number;
 }
 
 interface Lage {
@@ -564,10 +568,15 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
           bild.addHandler('fully-loaded-change', ritad);
           ritad();
         });
-        v.addHandler('open-failed', () => {
+        v.addHandler('open-failed', (e) => {
+          // Har kartan hunnit vidare till en annan stad är det inte den här som väntas, och dess fel säger inget.
+          const kalla = String((e as { source?: unknown }).source ?? '');
+          if (oppen && kalla && !kalla.includes(oppen.stad.map.dzi)) return;
           oppen = null;
           if (aktiv()) brast();
         });
+        // Bildvisarens yta ligger under kartan och ska inte gå att stega till med tangenterna.
+        (v as unknown as { canvas?: HTMLElement }).canvas?.setAttribute('tabindex', '-1');
         v.addHandler('tile-loaded', () => {
           rutor.komna += 1;
           rutor.fel = 0;
@@ -645,9 +654,10 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
 
   /* ---------- det som rör sig ---------- */
 
-  // Bilar, tåg, båtar och fåglar i staden, och träd och vatten som rör sig (liv.ts och
-  // liv-pixlar.ts). Koden hämtas först när en stad har öppnats i bildvisaren, och inget av den
-  // för den som har bett om mindre rörelse. Dukarna läggs strax under husens duk.
+  // Bilar, tåg, båtar och fåglar i staden, träd och vatten som rör sig, och ballonger och ett
+  // flygplan över den (liv.ts, liv-pixlar.ts och liv-luft.ts). Koden hämtas först när en stad har
+  // öppnats i bildvisaren, och inget av den för den som har bett om mindre rörelse. Dukarna
+  // läggs strax under husens duk.
   const lugn = window.matchMedia('(prefers-reduced-motion: reduce)');
   let liv: Liv | null = null;
   let livlofte: Promise<Liv | null> | null = null;
@@ -655,15 +665,23 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
     const v = visare;
     const b = bibliotek;
     if (lugn.matches || !v || !b) return;
-    livlofte ??= Promise.all([import('./liv'), import('./liv-pixlar')])
-      .then(([l, p]) => (liv = l.skapaLiv({ bibliotek: b, visare: v, fore: husduk, bas, mpb, ruta, delar: [p.pixeldel] })))
+    livlofte ??= Promise.all([import('./liv'), import('./liv-pixlar'), import('./liv-luft')])
+      .then(([l, p, u]) => (liv = l.skapaLiv({ bibliotek: b, visare: v, fore: husduk, bas, mpb, ruta, sag, delar: [p.pixeldel, u.luftdel] })))
       .catch(() => {
         livlofte = null; // nästa stad som öppnas försöker igen
         return null;
       });
     void livlofte.then((l) => {
       if (!l || oppen !== lage) return;
-      l.oppna({ id: lage.stad.id, riktning: lage.stad.map.heading, bredd: lage.stad.map.width, filer: lage.stad.life ?? {} });
+      l.oppna({
+        id: lage.stad.id,
+        namn: lage.stad.label,
+        riktning: lage.stad.map.heading,
+        bredd: lage.stad.map.width,
+        hojd: lage.stad.map.height,
+        filer: lage.stad.life ?? {},
+        tillBild: (lat, lng) => lage.projektion.tillBild(lat, lng),
+      });
       styrLiv();
     });
   }
@@ -671,7 +689,11 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
   function styrLiv() {
     liv?.satt(aktiv() && !!oppen && redo && oppen.visad > 0 && !lugn.matches);
   }
-  lugn.addEventListener('change', styrLiv);
+  // Den som slår av "mindre rörelse" medan en stad är öppen får rörelsen i den staden, inte först i nästa.
+  lugn.addEventListener('change', () => {
+    if (!lugn.matches && oppen && redo) oppnaLiv(oppen);
+    else styrLiv();
+  });
 
   /* ---------- husen ---------- */
 
@@ -697,14 +719,21 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
 
   /** Husets form. Den hämtas första gången huset ska ritas, och huset ritas när den har kommit. */
   function husbild(hus: Husbild): HTMLImageElement | null {
-    if (!hus.bild) {
+    if (!hus.bild && (!hus.fel || performance.now() - hus.fel > 8000)) {
       const bild = new Image();
       bild.crossOrigin = 'anonymous';
       bild.onload = () => ritaHus();
+      // Formen kom inte. Den hämtas på nytt nästa gång huset ska ritas, tidigast om en stund.
+      bild.onerror = () => {
+        if (hus.bild !== bild) return;
+        hus.bild = null;
+        hus.fel = performance.now();
+        ritaHus();
+      };
       bild.src = bas + hus.picture;
       hus.bild = bild;
     }
-    return hus.bild.complete && hus.bild.naturalWidth ? hus.bild : null;
+    return hus.bild?.complete && hus.bild.naturalWidth ? hus.bild : null;
   }
 
   /** Huset som hör till en organisation, om det ligger i staden som visas. */
@@ -731,9 +760,11 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
     const synlig = aktiv() && !!stad && redo && stad.visad > 0;
     const valt = synlig ? husIStaden(markerad) : null;
     const pekat = synlig && pekad !== markerad ? husIStaden(pekad) : null;
-    // Staden är nedtonad så länge den valda organisationen har sitt hus i den.
-    if (!!valt !== tonad) {
-      tonad = !!valt;
+    // Staden är nedtonad så länge den valda organisationen har sitt hus i den, och husets form
+    // finns att rita ut: en stad som tonas ner utan att något hus lyser är bara en grå stad.
+    const tonas = !!valt && !!husbild(valt);
+    if (tonas !== tonad) {
+      tonad = tonas;
       stadEl.classList.toggle('pixelstad--tonad', tonad);
     }
     if (!stad || !visare || !bibliotek || (!valt && !pekat)) return;
@@ -863,6 +894,12 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
   karta.on('move', uppdatera);
   karta.on('resize', uppdatera);
 
+  // Ett tryck på något som svarar i det som rör sig (en ballong) ger ett besked.
+  karta.on('click', (e: MapMouseEvent) => {
+    const svar = aktiv() ? liv?.tryck(e.point.x, e.point.y) : null;
+    if (svar) sag(svar, 3600);
+  });
+
   // Ett tryck på en ö leder in i staden, om trycket inte gäller något av sajtens egna lager.
   karta.on('click', (e: MapMouseEvent) => {
     if (!aktiv()) return;
@@ -891,6 +928,22 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
     `<span class="skaparmarke__rad"><span class="skaparmarke__liten">Skapad av</span> ${fore} <span class="skaparmarke__sist">${sist} <span class="skaparmarke__pil" aria-hidden="true">↗</span></span></span>` +
     '<span class="skaparmarke__fraga">Vill du se din stad i pixlar? Hör av dig.</span>';
   el.parentElement?.appendChild(marke);
+  // I telefon står märket uppe till höger. På sajtens startskärm ligger kartans källrad också där
+  // uppe, och märket täckte den. Källradens nederkant mäts när den ändras, och märket står under den.
+  const kallhorn = el.querySelector<HTMLElement>('.maplibregl-ctrl-bottom-right');
+  function flyttaMarke() {
+    const k = kallhorn?.getBoundingClientRect();
+    const r = el.getBoundingClientRect();
+    const uppe = !!k && k.height > 0 && k.bottom < r.top + r.height / 2;
+    marke.style.setProperty('--under-kallor', uppe && k ? `${Math.max(0, Math.round(k.bottom - r.top))}px` : '0px');
+  }
+  if (kallhorn && typeof ResizeObserver !== 'undefined') new ResizeObserver(flyttaMarke).observe(kallhorn);
+  new MutationObserver(() => {
+    flyttaMarke();
+    window.setTimeout(flyttaMarke, 400); // och en gång till när skärmen har bytt läge färdigt
+  }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-fragelage'] });
+  karta.on('resize', flyttaMarke);
+  flyttaMarke();
 
   const besked = document.createElement('p');
   besked.className = 'pixelbesked';
@@ -1004,13 +1057,15 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
   /** Bildtjänsten svarar inte: tillbaka till den vanliga kartan, och det sägs. */
   function brast() {
     if (trasig) return;
+    // Den som har slagit av pixelkartan, eller är i en vy där den vilar, får inget besked om den.
+    const anvands = aktiv();
     trasig = true;
     oppen = null;
     redo = false;
     sedd = false;
     visaKnapp();
     skifta();
-    sag('Pixelkartan gick inte att ladda. Du ser den vanliga kartan.', 6000);
+    if (anvands) sag('Pixelkartan gick inte att ladda. Du ser den vanliga kartan.', 6000);
   }
 
   function satt(pa: boolean) {
@@ -1075,7 +1130,9 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
     knuff(id) {
       const stad = aktiv() ? vattenstad.get(id) : undefined;
       if (!stad) return null;
-      return { stad: stad.label, tanda: Object.keys(stad.addresses ?? {}).length, bild: fil.example ? bas + fil.example : null };
+      // Flera organisationer kan dela hus: det är husen som räknas, och bara de som går att rita ut.
+      const tanda = new Set(Object.values(stad.addresses ?? {}).filter((nyckel) => stad.houses?.[nyckel])).size;
+      return { stad: stad.label, tanda, bild: fil.example ? bas + fil.example : null };
     },
     narzoom(id) {
       if (!aktiv()) return null;
@@ -1099,6 +1156,7 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
     },
     husprov: () => ({ vald: markerad, tonad, ritat: !!husritat, ruta: husritat }),
     livprov: () => liv?.tillstand() ?? null,
+    pask: () => liv?.pask() ?? false,
     tillstand: () => lagen.map((lage) => ({ stad: lage.stad.id, glugg: lage.visad, forberedd: lage === oppen && redo, ritad: lage === oppen && sedd, avvikelse: lage === oppen ? avvikelse() : null })),
     satt,
   };

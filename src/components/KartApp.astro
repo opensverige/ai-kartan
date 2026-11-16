@@ -2111,7 +2111,11 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
               if (!p) return;
               // De utan exakt adress står i vattnet i en pixelstad, och i kommunens rutnät annars.
               const ritaOm = () => {
+                // Att kartan ritas om tar bort knuffen ("Tryck på en siffra"), som om besökaren hade
+                // ändrat urvalet. Här är det pixelkartan som kom, inte besökaren: knuffen ställs om.
+                const vantade = knuffvakt !== undefined || !!knuff;
                 if (alla.length) uppdateraKarta();
+                if (vantade) planeraKnuff();
                 skrivPlatsnot();
               };
               p.vidByte(ritaOm);
