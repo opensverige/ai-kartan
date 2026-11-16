@@ -73,6 +73,8 @@ export interface Pixelkarta {
   markera(id: string | null): void;
   /** Organisationen som pekas på: dess hus får en tunn kant. */
   peka(id: string | null): void;
+  /** Om en punkt i kartans ruta ligger på det valda huset, där det är ritat i pixelstaden. */
+  paValtHus(x: number, y: number): boolean;
   /** Anropas när platserna i vattnet börjar eller slutar gälla, så att sajten kan rita om sina prickar. */
   vidByte(lyssnare: () => void): void;
   /** Läget just nu, för prov och felsökning. */
@@ -1154,6 +1156,8 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
     vidByte(l) {
       lyssnare.push(l);
     },
+    // Husets ruta med en liten marginal: ett tryck på kanten runt huset räknas till huset.
+    paValtHus: (x, y) => !!husritat && x >= husritat.x - 6 && x <= husritat.x + husritat.b + 6 && y >= husritat.y - 6 && y <= husritat.y + husritat.h + 6,
     husprov: () => ({ vald: markerad, tonad, ritat: !!husritat, ruta: husritat }),
     livprov: () => liv?.tillstand() ?? null,
     pask: () => liv?.pask() ?? false,

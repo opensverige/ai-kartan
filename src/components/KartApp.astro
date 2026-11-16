@@ -952,6 +952,18 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       }
     }
 
+    /**
+     * Släpper den valda organisationen från kartan, som tillbakaknappen i detaljvyn gör. Ett tryck
+     * kan nå hit två gånger, från prickens lager och från kartan: det andra gör ingenting.
+     */
+    let slapptVid = -Infinity;
+    function slappVald() {
+      if (!valdId || performance.now() - slapptVid < 400) return;
+      slapptVid = performance.now();
+      if (detaljIHistorik) history.back();
+      else stangDetalj(true, false);
+    }
+
     function stangDetalj(skriv = true, fokus = skriv) {
       if (!vyDetalj || vyDetalj.hidden) return;
       const id = valdId;
@@ -2002,13 +2014,23 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
           const id = e.features?.[0]?.properties?.id;
           const o = id ? alla.find((x) => x.id === String(id)) : undefined;
           if (!o) return;
+          // Ett tryck till på den som redan är vald släpper valet, och kartan visas som vanligt igen.
+          if (o.id === valdId && vyDetalj && !vyDetalj.hidden) return slappVald();
           handelser.orgOppnad('karta');
           visaDetalj(o, false);
         });
         karta!.on('click', (e) => {
+          const finns = (id: string) => !!karta!.getLayer(id);
+          const traff = karta!.queryRenderedFeatures(e.point, { layers: [...grupplager, ...punktlager].filter(finns) }).length > 0;
+          if (valdId && vyDetalj && !vyDetalj.hidden) {
+            // Den valdas egen prick ritas i ett eget lager över de andra: ett tryck på den släpper valet.
+            const paVald = karta!.queryRenderedFeatures(e.point, { layers: ['vald-ring', 'vald-punkt', 'vald-ikon'].filter(finns) }).length > 0;
+            // Tryck på tom karta släpper också valet. I en pixelstad hör den valdas hus till den:
+            // ett tryck på huset behåller valet, ett tryck utanför släpper det.
+            if (paVald || (!traff && !pixel?.paValtHus(e.point.x, e.point.y))) slappVald();
+          }
           // Tryck på tom karta fäller ner bottenbladet i smal vy.
-          const lager = [...grupplager, ...punktlager].filter((id) => karta!.getLayer(id));
-          if (smal.matches && !karta!.queryRenderedFeatures(e.point, { layers: lager }).length) sattBlad('titt');
+          if (smal.matches && !traff) sattBlad('titt');
         });
 
         // Typer med egen ikon ritas som landmärken: bilden i stället för en prick, med namnet under.
