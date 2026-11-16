@@ -14,6 +14,21 @@ import { medlemsvy, type Medlemsdata } from '../lib/medlemmar';
 import { tittext } from '../lib/titt';
 import { veckounderlag, veckan, dagensDatum } from '../lib/vecka';
 import medlemsdata from '../../data/gemenskap/regioner.json';
+import { createHash } from 'node:crypto';
+
+// Stilen för den som saknar JavaScript. is:inline i noscript: annars lyfter Astro ut stilen ur
+// noscript, och då gäller den inte. Sista regeln fäller upp bladet i telefon, där beskedet annars
+// ligger utanför skärmen utan att gå att nå. Astro hashar bara stilar det själv bygger in, så
+// den här får sin hash till Content Security Policy här, räknad på exakt den text som skrivs ut.
+const noscriptStil = `
+  .post--skelett { display: none; }
+  .fragor { display: none !important; }
+  .enkel-lista { margin: 16px 0; padding-left: 28px; line-height: 1.9; }
+  .enkel-lista span { color: hsl(var(--ink-mute)); }
+  @media (max-width: 900px) { .app[data-lage='karta'] .panel { transform: none !important; } }
+  @media (max-width: 900px) and (max-height: 520px) { .app[data-lage='karta'] .panel__intro { display: none; } }
+`;
+Astro.csp?.insertStyleHash(`sha256-${createHash('sha256').update(noscriptStil).digest('base64')}`);
 
 interface Props {
   lage?: 'karta' | 'lista';
@@ -109,16 +124,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       </div>
 
       <noscript>
-        {/* is:inline: annars lyfter Astro ut stilen ur noscript, och då gäller den inte. Sista regeln
-            fäller upp bladet i telefon, där beskedet annars ligger utanför skärmen utan att gå att nå. */}
-        <style is:inline>
-          .post--skelett { display: none; }
-          .fragor { display: none !important; }
-          .enkel-lista { margin: 16px 0; padding-left: 28px; line-height: 1.9; }
-          .enkel-lista span { color: hsl(var(--ink-mute)); }
-          @media (max-width: 900px) { .app[data-lage='karta'] .panel { transform: none !important; } }
-          @media (max-width: 900px) and (max-height: 520px) { .app[data-lage='karta'] .panel__intro { display: none; } }
-        </style>
+        <style is:inline set:html={noscriptStil} />
         <p class="lista__tom lista__tom--ram">
           <strong>Kartan och listan kräver JavaScript.</strong>
           <span>Alla organisationer finns också <a href={url('/plats')}>per kommun och län</a> och som <a href={url('/data')}>öppen data</a>.</span>

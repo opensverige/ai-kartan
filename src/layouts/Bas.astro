@@ -6,6 +6,7 @@ import Besoksrakning from '../components/Besoksrakning.astro';
 import Dela from '../components/Dela.astro';
 import fs from 'node:fs';
 import path from 'node:path';
+import { createHash } from 'node:crypto';
 import { SAJT, absolutUrl, url } from '../lib/data';
 import { medVersion } from '../lib/meta';
 import { ROT } from '../../scripts/lib/organisationer.mjs';
@@ -38,6 +39,24 @@ const bildinnehall = bildNyckel !== undefined ? new TextEncoder().encode(bildNyc
 const bildUrl = absolutUrl(medVersion(bild, bildinnehall));
 // Besök räknas bara på den publika sajten. Lokalt, i förhandsvisningar och i andra byggen räknas inget.
 const raknaBesok = process.env.VERCEL_ENV === 'production';
+
+// Fråga kartan finns på kartsidan. Läget sätts före första ritningen, så att kartsidan inte hinner
+// visas i fel läge. Övriga sidor har sidhuvudets vanliga sökruta, och utan JavaScript är kartan
+// som förut. Skriptet ligger inline och körs direkt, och eftersom Astro bara hashar skript det
+// själv bygger in får det sin hash här, räknad på exakt den text som skrivs ut.
+const lageSkript = `(function () {
+  var rot = ${JSON.stringify(import.meta.env.BASE_URL)};
+  var p = new URLSearchParams(location.search);
+  if (location.pathname.replace(/\\/?$/, '/') !== rot.replace(/\\/?$/, '/')) return;
+  var d = document.documentElement;
+  d.dataset.fraga = '1';
+  // Pekar adressen på ett urval eller en organisation börjar besökaren i kartläget.
+  var urval = ['q', 'erbjuder', 'typ', 'omrade', 'lan', 'kommun', 'org', 'vy'].some(function (n) {
+    return p.get(n);
+  });
+  d.dataset.fragelage = urval || location.hash === '#karta' ? 'karta' : 'hem';
+})();`;
+Astro.csp?.insertScriptHash(`sha256-${createHash('sha256').update(lageSkript).digest('base64')}`);
 ---
 
 <!doctype html>
@@ -73,22 +92,7 @@ const raknaBesok = process.env.VERCEL_ENV === 'production';
     <link rel="preload" href={url('/fonts/JetBrainsMono-latin.woff2')} as="font" type="font/woff2" crossorigin />
     <link rel="sitemap" href={url('/sitemap-index.xml')} />
     {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
-    {/* Fråga kartan finns på kartsidan. Läget sätts före första ritningen, så att kartsidan inte hinner
-        visas i fel läge. Övriga sidor har sidhuvudets vanliga sökruta, och utan JavaScript är kartan
-        som förut. */}
-    <script is:inline define:vars={{ rot: import.meta.env.BASE_URL }}>
-      (function () {
-        var p = new URLSearchParams(location.search);
-        if (location.pathname.replace(/\/?$/, '/') !== rot.replace(/\/?$/, '/')) return;
-        var d = document.documentElement;
-        d.dataset.fraga = '1';
-        // Pekar adressen på ett urval eller en organisation börjar besökaren i kartläget.
-        var urval = ['q', 'erbjuder', 'typ', 'omrade', 'lan', 'kommun', 'org', 'vy'].some(function (n) {
-          return p.get(n);
-        });
-        d.dataset.fragelage = urval || location.hash === '#karta' ? 'karta' : 'hem';
-      })();
-    </script>
+    <script is:inline set:html={lageSkript} />
     {raknaBesok && <Besoksrakning />}
   </head>
   <body class:list={[{ 'app-sida': app }]}>
