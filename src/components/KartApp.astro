@@ -14,6 +14,21 @@ import { medlemsvy, type Medlemsdata } from '../lib/medlemmar';
 import { tittext } from '../lib/titt';
 import { veckounderlag, veckan, dagensDatum } from '../lib/vecka';
 import medlemsdata from '../../data/gemenskap/regioner.json';
+import { createHash } from 'node:crypto';
+
+// Stilen för den som saknar JavaScript. is:inline i noscript: annars lyfter Astro ut stilen ur
+// noscript, och då gäller den inte. Sista regeln fäller upp bladet i telefon, där beskedet annars
+// ligger utanför skärmen utan att gå att nå. Astro hashar bara stilar det själv bygger in, så
+// den här får sin hash till Content Security Policy här, räknad på exakt den text som skrivs ut.
+const noscriptStil = `
+  .post--skelett { display: none; }
+  .fragor { display: none !important; }
+  .enkel-lista { margin: 16px 0; padding-left: 28px; line-height: 1.9; }
+  .enkel-lista span { color: hsl(var(--ink-mute)); }
+  @media (max-width: 900px) { .app[data-lage='karta'] .panel { transform: none !important; } }
+  @media (max-width: 900px) and (max-height: 520px) { .app[data-lage='karta'] .panel__intro { display: none; } }
+`;
+Astro.csp?.insertStyleHash(`sha256-${createHash('sha256').update(noscriptStil).digest('base64')}`);
 
 interface Props {
   lage?: 'karta' | 'lista';
@@ -109,16 +124,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       </div>
 
       <noscript>
-        {/* is:inline: annars lyfter Astro ut stilen ur noscript, och då gäller den inte. Sista regeln
-            fäller upp bladet i telefon, där beskedet annars ligger utanför skärmen utan att gå att nå. */}
-        <style is:inline>
-          .post--skelett { display: none; }
-          .fragor { display: none !important; }
-          .enkel-lista { margin: 16px 0; padding-left: 28px; line-height: 1.9; }
-          .enkel-lista span { color: hsl(var(--ink-mute)); }
-          @media (max-width: 900px) { .app[data-lage='karta'] .panel { transform: none !important; } }
-          @media (max-width: 900px) and (max-height: 520px) { .app[data-lage='karta'] .panel__intro { display: none; } }
-        </style>
+        <style is:inline set:html={noscriptStil} />
         <p class="lista__tom lista__tom--ram">
           <strong>Kartan och listan kräver JavaScript.</strong>
           <span>Alla organisationer finns också <a href={url('/plats')}>per kommun och län</a> och som <a href={url('/data')}>öppen data</a>.</span>
@@ -237,6 +243,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
   import { grupperaPerPlats, platsEfterUtzoomning, platsmitt, zoomgranser, ZOOM_KOMMUN, ZOOM_POSTER, type Platsgrupp } from '../lib/platsgrupper';
   import { arPaskagg, cirkel, type Medlemsvy } from '../lib/medlemmar';
   import { kommunytor } from '../lib/kommunyta';
+  import { delaAdresser, type Adressplats } from '../lib/sammaadress';
   import { normalisera, tolka, traffar, tomtSvar, finnsI, type Tolkning } from '../lib/sok';
   import { passarFilter, filterTillSok, type Filter, type FacettNamn } from '../lib/filter';
   import { tillSokpost, type Etiketter } from '../lib/sokindex';
@@ -247,6 +254,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
   import { AVSTAND, knuffordning, etikettrutor, korsar, ryms, type Ruta } from '../lib/knuff';
   import { REDO, HANDLING, ORG, type Kartgranssnitt, type Kartrad } from '../lib/fraga/kartgranssnitt';
   import type { Kartpost } from '../lib/data';
+  import type { Pixelkarta } from '../lib/pixelkarta/pixelkarta';
 
   type Post = {
     id: string; n: string; t: string; o: string[]; a: string[]; k: string | null; kn: string | null;
@@ -353,12 +361,19 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     let detaljIHistorik = false;
     let karta: MapLibreMap | null = null;
     let kartaKlar = false;
+    // Pixelkartan: Stockholm, Göteborg och Malmö som pixelstäder i kartan. Adressen till
+    // bildtjänsten sätts vid bygget. Utan den laddas ingenting av pixelkartan, och kartan är
+    // den vanliga. Se src/lib/pixelkarta/pixelkarta.ts.
+    const PIXELKARTA: string | undefined = import.meta.env.PUBLIC_PIXELKARTA_URL;
+    let pixel: Pixelkarta | null = null;
     // Mittpunkt per län och kommun, räknad på alla organisationer. Där ritas platsens grupp.
     let mitt = { lan: new Map<string, [number, number]>(), kommun: new Map<string, [number, number]>() };
     // Följer med kartans egna kamerarörelser, så att de går att skilja från besökarens.
     const AV_KOD = { avKod: true };
     // Organisationer som är ensamma på sin plats i urvalet och därför ritas som sig själva.
     let ensamma = { lan: new Set<string>(), kommun: new Set<string>() };
+    // Var varje organisation i urvalet ritas i förhållande till sin adress. De som delar hus står bredvid varandra.
+    let adressplats = new Map<string, Adressplats>();
     let tips: Popup | null = null;
     let sokVal: SokVal[] = [];
     let sokAktiv = -1;
@@ -486,7 +501,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       // Orden får stå på kartan, men inte på det som ligger över den: bladet, knapparna, filtren och källraden.
       const ruta = (r: DOMRect): Ruta => ({ v: r.left - yta.left, t: r.top - yta.top, h: r.right - yta.left, b: r.bottom - yta.top });
       const fri: Ruta = { v: 8, t: 8, h: yta.width - 8, b: yta.height - 8 };
-      const ovanpa = ['.kartknappar', smal.matches ? '#oppna-filter' : '.filterrad', '.karta__not', '.maplibregl-ctrl-bottom-right', ...(smal.matches ? ['#panel'] : [])];
+      const ovanpa = ['.kartknappar', smal.matches ? '#oppna-filter' : '.filterrad', '.karta__not', '.skaparmarke', '.maplibregl-ctrl-bottom-right', ...(smal.matches ? ['#panel'] : [])];
       const hinder = ovanpa
         .map((v) => app.querySelector<HTMLElement>(v)?.getBoundingClientRect())
         .filter((r): r is DOMRect => !!r && r.width > 0 && r.height > 0)
@@ -829,12 +844,52 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
 
     /* ---------- Detaljvy ---------- */
 
+    // Rutan om platsen säger bara något extra när adressen saknas. Markören framför är kartans
+    // kontur, och länken leder till den vanliga vägen för rättelser. Varifrån en känd adress
+    // kommer står på organisationens sida, bland källorna. I en pixelstad flyter den som saknar
+    // adress i vattnet, och med en adress ritas dess hus ut.
+    function platsnotHtml(o: Rad): string {
+      if (o.pt !== 'kommun') return '';
+      const lank = `<a href="${orgbas}${encodeURIComponent(o.id)}#ratta">Lägg till adress</a>`;
+      return pixel?.vatten(o.id)
+        ? `<dd class="rutor__not">Ingen bekräftad adress än: flyter i vattnet. ${lank} så tänds huset.</dd>`
+        : `<dd class="rutor__not">Exakt adress saknas. ${lank}</dd>`;
+    }
+
+    /**
+     * Knuffen för den som flyter i vattnet i en pixelstad: en liten rad med ett tänt hus, hur många
+     * i staden som har sitt hus tänt, och en väg vidare. Länken går rakt till rättelseformuläret
+     * med organisationen och fältet ifyllda, ett steg kortare än via organisationens sida.
+     */
+    function knuffHtml(o: Rad): string {
+      const k = o.pt === 'kommun' ? pixel?.knuff(o.id) : null;
+      if (!k || k.tanda < 1) return '';
+      const formular =
+        'https://github.com/opensverige/ai-kartan/issues/new?template=rattelse.yml' +
+        `&title=${encodeURIComponent(`Adress: ${o.n}`)}&organisation=${encodeURIComponent(o.id)}` +
+        `&falt=${encodeURIComponent('coordinates (adress på kartan)')}` +
+        `&nuvarande=${encodeURIComponent('Bara kommun, ingen exakt adress.')}` +
+        `&korrekt=${encodeURIComponent('Besöksadress: ')}`;
+      const bild = k.bild ? `<img src="${esc(k.bild)}" width="64" height="48" alt="" loading="lazy" decoding="async" />` : '';
+      return (
+        `<a class="tandhus" href="${formular}" target="_blank" rel="noopener">${bild}` +
+        `<span class="tandhus__text"><strong>${k.tanda} hus är tända i ${esc(k.stad)}.</strong> Ert är inte det än.</span> ` +
+        `<span class="tandhus__knapp">Tänd ert hus ${ikon('hoger', 14)}</span></a>`
+      );
+    }
+
+    /** Pixelkartan har kommit eller gått medan detaljvyn är öppen. Det som står om platsen skrivs om. */
+    function skrivPlatsnot() {
+      const o = valdId ? alla.find((x) => x.id === valdId) : undefined;
+      const not = vyDetalj?.querySelector('.rutor__not');
+      const knuff = vyDetalj?.querySelector('[data-knuff]');
+      if (o && knuff) knuff.innerHTML = knuffHtml(o);
+      if (o && not && o.pt === 'kommun') not.outerHTML = platsnotHtml(o);
+    }
+
     function detaljHtml(o: Rad): string {
       const lista = (varden: string[], karta: Record<string, string>) => varden.map((x) => karta[x] || x).join(', ') || '–';
-      // Rutan säger bara något extra när adressen saknas. Markören framför är kartans kontur, och
-      // länken leder till den vanliga vägen för rättelser. Varifrån en känd adress kommer står på
-      // organisationens sida, bland källorna.
-      const platsnot = o.pt === 'kommun' ? `<dd class="rutor__not">Exakt adress saknas. <a href="${orgbas}${encodeURIComponent(o.id)}#ratta">Lägg till adress</a></dd>` : '';
+      const platsnot = platsnotHtml(o);
       const rutor: [IkonNamn, string, string, string?][] = [
         ['tagg', 'Typ', etiketter.typer[o.t] || o.t],
         ['nal', 'Plats', o.kn ? `${o.kn}${o.ln ? `, ${o.ln}` : ''}` : 'Saknar plats', platsnot],
@@ -852,6 +907,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         `<div class="detalj__kropp">${logoHtml(o, 'logo--stor')}` +
         `<h2 class="detalj__namn" tabindex="-1">${esc(o.n)}</h2>` +
         `<p class="detalj__text">${esc(o.d)}</p>` +
+        `<div data-knuff>${knuffHtml(o)}</div>` +
         `<p class="kicker detalj__kicker">Detaljer</p>` +
         `<dl class="rutor">${rutor.map(([i, e, v, not]) => `<div><dt>${ikon(i, 16)}${e}</dt><dd>${esc(v)}</dd>${not ?? ''}</div>`).join('')}</dl>` +
         (o.i
@@ -892,12 +948,26 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       document.dispatchEvent(new CustomEvent<string>(ORG, { detail: o.id }));
       if (karta && kartaKlar) {
         uppdateraVald();
-        if (flyg && o.lat !== null && o.lng !== null) {
+        const plats = flyg ? platsAv(o) : null;
+        if (plats) {
           karta.resize();
           // Ända in till nivån där organisationerna ritas, så att den valda syns bland sina grannar.
-          karta.flyTo({ center: [o.lng, o.lat], zoom: Math.max(karta.getZoom(), ZOOM_POSTER + 0.5) }, AV_KOD);
+          // I en pixelstad närmare: till huset, eller till platsen i vattnet.
+          karta.flyTo({ center: [plats.lng, plats.lat], zoom: Math.max(karta.getZoom(), pixel?.narzoom(o.id) ?? ZOOM_POSTER + 0.5) }, AV_KOD);
         }
       }
+    }
+
+    /**
+     * Släpper den valda organisationen från kartan, som tillbakaknappen i detaljvyn gör. Ett tryck
+     * kan nå hit två gånger, från prickens lager och från kartan: det andra gör ingenting.
+     */
+    let slapptVid = -Infinity;
+    function slappVald() {
+      if (!valdId || performance.now() - slapptVid < 400) return;
+      slapptVid = performance.now();
+      if (detaljIHistorik) history.back();
+      else stangDetalj(true, false);
     }
 
     function stangDetalj(skriv = true, fokus = skriv) {
@@ -1201,35 +1271,75 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         : { top: 96, bottom: 48, left: 48, right: 72 };
     };
 
+    /**
+     * Var en organisation ritas. I en pixelstad står den som saknar exakt adress i vattnet: i
+     * kommunens rutnät skulle den hamna på ett hus, och där läses en prick som just det huset.
+     * Utanför pixelstäderna, och när pixelkartan är av, står alla där de står i datan.
+     */
+    function platsAv(o: { id: string; lat: number | null; lng: number | null; pt?: string | null }): { lng: number; lat: number; vatten: boolean } | null {
+      const iVattnet = o.pt !== 'exakt' ? pixel?.vatten(o.id) : null;
+      if (iVattnet) return { ...iVattnet, vatten: true };
+      return o.lat !== null && o.lng !== null ? { lng: o.lng, lat: o.lat, vatten: false } : null;
+    }
+
     /** `el` och `ek` säger om organisationen är ensam i sitt län respektive sin kommun och då ritas som sig själv. */
     function tillGeoJson(poster: Post[], ensamILan?: Set<string>, ensamIKommun?: Set<string>): GeoJSON.FeatureCollection {
-      const medPlats = poster.filter((o) => o.lat !== null && o.lng !== null);
-      // Organisationer med besöksadress i samma hus ligger på samma punkt. De ritas som en nål med
-      // antal, och den första i bokstavsordning bär nålen och namnen.
-      const perPunkt = new Map<string, Post[]>();
-      for (const o of medPlats) {
-        if (o.pt !== 'exakt') continue;
-        const punkt = `${o.lat},${o.lng}`;
-        perPunkt.set(punkt, [...(perPunkt.get(punkt) ?? []), o]);
-      }
+      const medPlats = poster.flatMap((o) => {
+        const plats = platsAv(o);
+        return plats ? [{ o, plats }] : [];
+      });
+      // Organisationer med besöksadress i samma hus ligger på samma punkt. Var och en får sin egen
+      // prick, tätt ihop runt adressen. Reglerna står i src/lib/sammaadress.ts.
+      const platser = adressplatser(poster);
       return {
         type: 'FeatureCollection',
-        features: medPlats.map((o) => {
-          const grannar = (perPunkt.get(`${o.lat},${o.lng}`) ?? [o]).slice().sort((a, b) => a.n.localeCompare(b.n, 'sv'));
-          const forst = grannar[0].id === o.id;
+        features: medPlats.map(({ o, plats }) => {
+          const p = platser.get(o.id);
           return {
             type: 'Feature',
-            geometry: { type: 'Point', coordinates: [o.lng as number, o.lat as number] },
+            geometry: { type: 'Point', coordinates: [plats.lng, plats.lat] },
             properties: {
-              id: o.id, n: o.n, t: o.t, k: o.k ?? '', pt: o.pt ?? '', el: ensamILan?.has(o.id) ?? false, ek: ensamIKommun?.has(o.id) ?? false,
-              dn: grannar.length, df: forst, dids: grannar.map((g) => g.id).join(','),
-              // Namnet under nålen. Bara den första i huset skriver ut det, med de andra efter sig.
-              etikett: !forst ? '' : grannar.length > 1 ? `${o.n} + ${grannar.length - 1} till` : o.n,
-              tips: grannar.length > 1 ? `Samma adress: ${grannar.map((g) => g.n).join(', ')}` : o.n,
+              // pt 'vatten': en plats i en pixelstads vatten. Den ritas som kontur, utan kommunens yta under.
+              id: o.id, n: o.n, t: o.t, k: o.k ?? '', pt: plats.vatten ? 'vatten' : (o.pt ?? ''), el: ensamILan?.has(o.id) ?? false, ek: ensamIKommun?.has(o.id) ?? false,
+              // dn är antalet på adressen och flytt prickens plats räknat från den, i bildpunkter.
+              dn: p?.antal ?? 1, flytt: [p?.dx ?? 0, p?.dy ?? 0], topp: p?.topp ?? 0, botten: p?.botten ?? 0,
+              // Namnet vid pricken. Delar flera hus skriver den första ut allas, och de andra inget.
+              etikett: p?.etikett ?? o.n,
             },
           };
         }),
       };
+    }
+
+    /** En typ med ikon är bredare än en prick, och då får gruppen mer luft. */
+    function adressplatser(poster: Post[]): Map<string, Adressplats> {
+      return delaAdresser(poster, (typ) => typ in typikoner);
+    }
+
+    /**
+     * Pricken som bild, en per typ, med samma mått som cirkeln i lagret exakta-bas: radie 11 och
+     * en vit kant på 2,5. Svarar om bilderna finns.
+     */
+    function ritaPrickbilder(): boolean {
+      const RADIE = 11;
+      const KANT = 2.5;
+      const BREDD = 28;
+      const tathet = Math.max(2, Math.min(4, Math.ceil(window.devicePixelRatio || 1)));
+      for (const [typ, farg] of Object.entries(FARG)) {
+        const duk = document.createElement('canvas');
+        duk.width = duk.height = BREDD * tathet;
+        const penna = duk.getContext('2d');
+        if (!penna) return false;
+        const mitten = duk.width / 2;
+        for (const [radie, fyllning] of [[RADIE + KANT, '#fdfbf7'], [RADIE, farg]] as const) {
+          penna.beginPath();
+          penna.arc(mitten, mitten, radie * tathet, 0, Math.PI * 2);
+          penna.fillStyle = fyllning;
+          penna.fill();
+        }
+        karta!.addImage(`prick-${typ}`, penna.getImageData(0, 0, duk.width, duk.height), { pixelRatio: tathet });
+      }
+      return true;
     }
 
     function grupperSomGeoJson(grupper: Platsgrupp[]): GeoJSON.FeatureCollection {
@@ -1250,7 +1360,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     function ytnamnSomGeoJson(poster: Post[]): GeoJSON.FeatureCollection {
       return {
         type: 'FeatureCollection',
-        features: kommunytor(poster).map((y) => ({ type: 'Feature', geometry: { type: 'Point', coordinates: y.fot }, properties: { kod: y.kod, n: y.namn, antal: y.antal } })),
+        features: kommunytor(poster.filter((o) => !platsAv(o)?.vatten)).map((y) => ({ type: 'Feature', geometry: { type: 'Point', coordinates: y.fot }, properties: { kod: y.kod, n: y.namn, antal: y.antal } })),
       };
     }
 
@@ -1260,6 +1370,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       const lan = grupperaPerPlats(urval, 'lan', mitt.lan);
       const kommuner = grupperaPerPlats(urval, 'kommun', mitt.kommun);
       ensamma = { lan: lan.ensamma, kommun: kommuner.ensamma };
+      adressplats = adressplatser(urval);
       (karta!.getSource('orgs') as GeoJSONSource | undefined)?.setData(tillGeoJson(urval, lan.ensamma, kommuner.ensamma));
       (karta!.getSource('lan-grupper') as GeoJSONSource | undefined)?.setData(grupperSomGeoJson(lan.grupper));
       (karta!.getSource('kommun-grupper') as GeoJSONSource | undefined)?.setData(grupperSomGeoJson(kommuner.grupper));
@@ -1274,6 +1385,13 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       const o = valdId ? alla.find((x) => x.id === valdId) : undefined;
       const utanfor = o && !urval.includes(o) ? new Set([o.id]) : undefined;
       (karta!.getSource('vald') as GeoJSONSource | undefined)?.setData(tillGeoJson(o ? [o] : [], utanfor ?? ensamma.lan, utanfor ?? ensamma.kommun));
+      // Delar den valda hus med andra står dess prick en bit från adressen. Ringen och namnet följer med dit.
+      const p = o && !utanfor ? adressplats.get(o.id) : undefined;
+      const flytt: [number, number] = [p?.dx ?? 0, p?.dy ?? 0];
+      const lager = [['vald-ring', 'circle-translate'], ['vald-punkt', 'circle-translate'], ['vald-namn', 'text-translate'], ['vald-ikon', 'icon-translate']] as const;
+      for (const [id, egenskap] of lager) if (karta!.getLayer(id)) karta!.setPaintProperty(id, egenskap, flytt);
+      // I en pixelstad ritas den valdas hus ut.
+      pixel?.markera(o ? o.id : null);
     }
 
     /** Golvet följer skärmen och panelerna: hela Sverige plus lite luft, aldrig längre ut. */
@@ -1296,8 +1414,8 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         karta.fitBounds(SVERIGE, { padding: kartMarginal() }, AV_KOD);
         return;
       }
-      const lng = p.map((o) => o.lng as number);
-      const lat = p.map((o) => o.lat as number);
+      const lng = p.map((o) => platsAv(o)?.lng ?? (o.lng as number));
+      const lat = p.map((o) => platsAv(o)?.lat ?? (o.lat as number));
       const [v, s, o, n] = [Math.min(...lng), Math.min(...lat), Math.max(...lng), Math.max(...lat)];
       const [lagst, hogst] = zoomgranser(p);
       // Lite extra luft när kartan passas in, så att cirklar och namn inte hamnar i kanten.
@@ -1312,6 +1430,8 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     const ORGKALLOR = ['orgs', 'lan-grupper', 'kommun-grupper', 'kommun-ytor-namn', 'vald'];
     /** Källorna som sajten själv lägger på kartan. Allt annat är kartbilden under dem. */
     const EGNA_KALLOR = new Set([...ORGKALLOR, 'medlemmar', 'medlemmar-ytor']);
+    /** Källor som inte är baskartans: sajtens egna lager och pixelkartans (öarna, källraden). */
+    const egenKalla = (kalla: string): boolean => EGNA_KALLOR.has(kalla) || kalla.startsWith('pixel');
     const MEDLEMSLAGER = ['medlemmar-yta', 'medlemmar-kant', 'medlemmar-ikon'];
     const KRAFTROD = '#c2511f';
     let kameraFore: { center: [number, number]; zoom: number } | null = null;
@@ -1548,7 +1668,8 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
           renderWorldCopies: false,
           maxZoom: STORSTA_ZOOM,
           transformConstrain: (plats, zoom) => {
-            const z = Math.min(Math.max(zoom, zoomgolv), STORSTA_ZOOM);
+            // Över en pixelstad får kartan gå djupare än annars.
+            const z = Math.min(Math.max(zoom, zoomgolv), pixel?.zoomtak(plats.lng, plats.lat, zoom) ?? STORSTA_ZOOM);
             // Rutan vidgas jämnt under de två första zoomstegen in från golvet.
             const t = Math.min(Math.max((z - zoomgolv) / 2, 0), 1);
             const kant = (i: 0 | 1, j: 0 | 1): number => MITT_UTZOOMAD[i][j] + (MITT_INZOOMAD[i][j] - MITT_UTZOOMAD[i][j]) * t;
@@ -1588,7 +1709,9 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         const { sourceId: kalla, tile } = e as { sourceId?: string; tile?: unknown };
         if (kalla) {
           // Ett fel utan kartbricka gäller källan själv. Då begärs inga kartbrickor alls, och det räcker för beskedet.
-          brickfel += !tile && !EGNA_KALLOR.has(kalla) ? 3 : 1;
+          // Pixelkartans bilder är inte kartans underlag. Uteblir de säger pixelkartan det själv.
+          if (kalla.startsWith('pixel')) return;
+          brickfel += !tile && !egenKalla(kalla) ? 3 : 1;
           if (kartaKlar) underlagsfel();
           return;
         }
@@ -1597,8 +1720,8 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       karta.on('sourcedata', (e) => {
         // Kartbiblioteket fäller ut källraden när baskartans källa har svarat. Öppnas medlemsvyn
         // från adressen sker det efter att vyn har fällt ihop den.
-        if (medlemslage && e.sourceDataType === 'metadata' && !EGNA_KALLOR.has(e.sourceId)) fallIhopKallrad();
-        if (!e.tile || EGNA_KALLOR.has(e.sourceId)) return;
+        if (medlemslage && e.sourceDataType === 'metadata' && !egenKalla(e.sourceId)) fallIhopKallrad();
+        if (!e.tile || egenKalla(e.sourceId)) return;
         brickor += 1;
         el.querySelector('.karta__fel--underlag')?.remove();
       });
@@ -1721,12 +1844,32 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         GRUPPNIVAER.forEach(ritaCirklar);
         // Vilka organisationer som ritas på varje nivå: alla närmast, annars bara de som är ensamma på sin plats.
         const synlig = ['case', ['>=', ['zoom'], ZOOM_POSTER], true, ['>=', ['zoom'], ZOOM_KOMMUN], ['get', 'ek'], ['get', 'el']] as unknown as ExpressionSpecification;
-        // Den som bär nålen på en punkt med besöksadress. De som delar hus med den ritas inte en gång till.
-        const MED_BESOKSADRESS = ['all', ['==', ['get', 'pt'], 'exakt'], ['get', 'df']] as unknown as ExpressionSpecification;
         const UTAN_BESOKSADRESS = ['!=', ['get', 'pt'], 'exakt'] as unknown as ExpressionSpecification;
+        // De som delar hus får var sin prick en bit från adressen. En cirkel går inte att flytta per
+        // organisation, så de ritas som bilder av samma prick. Går bilderna inte att rita ligger
+        // prickarna kvar på varandra.
+        const prickbilder = ritaPrickbilder();
+        const delarHus = ['>', ['get', 'dn'], 1];
+        const ENSAM_I_HUSET = ['all', ['==', ['get', 'pt'], 'exakt'], prickbilder ? ['!', delarHus] : true] as unknown as ExpressionSpecification;
+        const DELAR_HUS = ['all', ['==', ['get', 'pt'], 'exakt'], delarHus] as unknown as ExpressionSpecification;
+        const FLYTT = ['array', 'number', 2, ['get', 'flytt']] as unknown as ExpressionSpecification;
         const TYPFARG = ['match', ['get', 't'], ...Object.entries(FARG).flat(), FARG.bolag] as unknown as ExpressionSpecification;
         // En organisation utan känd adress ritas som en kontur, som en markör för något man vet finns
         // men inte var. Den står i kommunens rutnät och svävar en aning. Färgen på konturen är typens.
+        // I en pixelstad flyter de i vattnet. En ring på vattenytan under var och en säger det: den
+        // ligger på marken och blir därför en oval när kartan lutar. Konturen svävar, ringen ligger still.
+        karta!.addLayer({
+          id: 'punkter-vatten', type: 'circle', source: 'orgs', filter: ['all', synlig, ['==', ['get', 'pt'], 'vatten']] as unknown as ExpressionSpecification,
+          paint: {
+            'circle-color': 'rgba(253, 251, 247, 0)',
+            'circle-radius': ['interpolate', ['linear'], ['zoom'], 4, 9, 9, 12, 13, 16.5],
+            'circle-stroke-width': 1.6,
+            'circle-stroke-color': 'rgba(253, 251, 247, 0.8)',
+            'circle-pitch-alignment': 'map',
+            'circle-translate': [0, 6],
+            'circle-translate-anchor': 'viewport',
+          },
+        });
         karta!.addLayer({
           id: 'punkter', type: 'circle', source: 'orgs', filter: ['all', synlig, UTAN_BESOKSADRESS],
           paint: {
@@ -1738,19 +1881,29 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         });
         // En organisation med exakt adress är en fylld prick på sin plats, och den står still.
         karta!.addLayer({
-          id: 'exakta-bas', type: 'circle', source: 'orgs', filter: ['all', synlig, ['==', ['get', 'pt'], 'exakt']],
+          id: 'exakta-bas', type: 'circle', source: 'orgs', filter: ['all', synlig, ENSAM_I_HUSET],
           paint: { 'circle-color': TYPFARG, 'circle-radius': ['interpolate', ['linear'], ['zoom'], 4, 6, 9, 8, 13, 11], 'circle-stroke-width': 2.5, 'circle-stroke-color': '#fdfbf7' },
         });
+        // Prickarna i ett delat hus. De syns bara närmast: längre ut räknas huset in i sin kommun.
+        // Bilderna tar ingen plats från namnen, precis som cirklarna.
+        if (prickbilder) {
+          karta!.addLayer({
+            id: 'exakta-delade', type: 'symbol', source: 'orgs', filter: ['all', synlig, DELAR_HUS],
+            layout: {
+              'icon-image': ['match', ['get', 't'], Object.keys(FARG), ['concat', 'prick-', ['get', 't']], 'prick-bolag'] as unknown as ExpressionSpecification,
+              'icon-offset': FLYTT, 'icon-allow-overlap': true, 'icon-ignore-placement': true,
+            },
+          });
+        }
         karta!.addLayer({
           id: 'namn', type: 'symbol', source: 'orgs', filter: synlig, minzoom: 7,
-          layout: { 'text-field': ['get', 'etikett'], 'text-font': ['Noto Sans Bold'], 'text-size': 12, 'text-anchor': 'bottom', 'text-offset': [0, -1.1], 'text-max-width': 9, 'text-optional': true },
+          layout: {
+            'text-field': ['get', 'etikett'], 'text-font': ['Noto Sans Bold'], 'text-size': 12, 'text-anchor': 'bottom', 'text-optional': true,
+            // Namnet står över pricken. Delar flera hus står det över den översta av dem, och får mer bredd för två namn.
+            'text-offset': ['interpolate', ['linear'], ['get', 'topp'], -120, ['literal', [0, -11.1]], 0, ['literal', [0, -1.1]]] as unknown as ExpressionSpecification,
+            'text-max-width': ['case', delarHus, 15, 9] as unknown as ExpressionSpecification,
+          },
           paint: { 'text-color': BLACK, 'text-halo-color': '#fdfbf7', 'text-halo-width': 1.8 },
-        });
-        // Delar flera organisationer hus ritas en prick, med antalet i.
-        karta!.addLayer({
-          id: 'exakta-antal', type: 'symbol', source: 'orgs', minzoom: ZOOM_KOMMUN, filter: ['all', synlig, MED_BESOKSADRESS, ['>', ['get', 'dn'], 1]],
-          layout: { 'text-field': ['to-string', ['get', 'dn']], 'text-font': ['Noto Sans Bold'], 'text-size': ['interpolate', ['linear'], ['zoom'], 9, 8.5, 13, 11], 'text-allow-overlap': true, 'text-ignore-placement': true },
-          paint: { 'text-color': '#fdfbf7' },
         });
         GRUPPNIVAER.forEach(ritaText);
 
@@ -1769,23 +1922,30 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
           id: 'ensam-yta', type: 'symbol', source: 'orgs', maxzoom: ZOOM_POSTER, filter: synlig,
           layout: { 'icon-image': 'tom', 'icon-size': 18, 'icon-allow-overlap': true, 'icon-padding': 0 },
         });
+        // Den valda kan stå en bit från sin adress, se uppdateraVald. Den flyttas som prickarna, i
+        // skärmens riktning, och utan övergång: ringen ska sitta på pricken direkt.
+        const VALD_FLYTT = {
+          circle: { 'circle-translate-anchor': 'viewport', 'circle-translate-transition': { duration: 0 } },
+          text: { 'text-translate-anchor': 'viewport', 'text-translate-transition': { duration: 0 } },
+          icon: { 'icon-translate-anchor': 'viewport', 'icon-translate-transition': { duration: 0 } },
+        } as const;
         karta!.addLayer({
           id: 'vald-ring', type: 'circle', source: 'vald', filter: synlig,
-          paint: { 'circle-color': '#fdfbf7', 'circle-radius': 15, 'circle-stroke-width': 3, 'circle-stroke-color': BLACK },
+          paint: { 'circle-color': '#fdfbf7', 'circle-radius': 15, 'circle-stroke-width': 3, 'circle-stroke-color': BLACK, ...VALD_FLYTT.circle },
         });
         karta!.addLayer({
           id: 'vald-punkt', type: 'circle', source: 'vald', filter: synlig,
-          paint: { 'circle-color': ['match', ['get', 't'], ...Object.entries(FARG).flat(), FARG.bolag] as unknown as ExpressionSpecification, 'circle-radius': 9 },
+          paint: { 'circle-color': ['match', ['get', 't'], ...Object.entries(FARG).flat(), FARG.bolag] as unknown as ExpressionSpecification, 'circle-radius': 9, ...VALD_FLYTT.circle },
         });
         karta!.addLayer({
           id: 'vald-namn', type: 'symbol', source: 'vald', filter: synlig,
           layout: { 'text-field': ['get', 'n'], 'text-font': ['Noto Sans Bold'], 'text-size': 13, 'text-anchor': 'bottom', 'text-offset': [0, -1.6], 'text-max-width': 10, 'text-allow-overlap': true },
-          paint: { 'text-color': BLACK, 'text-halo-color': '#fdfbf7', 'text-halo-width': 2 },
+          paint: { 'text-color': BLACK, 'text-halo-color': '#fdfbf7', 'text-halo-width': 2, ...VALD_FLYTT.text },
         });
 
         const grupplager = ['lan-grupp', 'kommun-grupp'];
         // Landmärkeslagret läggs till senare; lager som saknas hoppas över tills dess.
-        const punktlager = ['punkter', 'exakta-bas', 'landmarken'];
+        const punktlager = ['punkter', 'exakta-bas', 'exakta-delade', 'landmarken'];
         // En organisation som ritas som sig själv ligger ovanpå gruppernas cirklar. Pekar besökaren
         // på den är det den som gäller, inte gruppen under.
         const prickUnder = (e: MapLayerMouseEvent) => {
@@ -1807,16 +1967,22 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
           if (id === tipsFor) return;
           tipsFor = id;
           tips?.remove();
+          pixel?.peka(antal ? null : id);
+          // Den som delar hus med andra står en bit från adressen. Tipset pekar på pricken, inte på adressen.
+          const adress = (f.geometry as GeoJSON.Point).coordinates as [number, number];
+          const p = antal ? undefined : adressplats.get(id);
+          const punkt = karta!.project(adress);
           // Ett landmärke eller en grupp är högre än en prick, så tipset får mer luft.
           tips = new Tips({ closeButton: false, closeOnClick: false, offset: antal ? 34 : f.layer.id === 'landmarken' ? 24 : 14, className: 'tips' })
-            .setLngLat((f.geometry as GeoJSON.Point).coordinates as [number, number])
-            .setText(antal ? `${f.properties?.n} · ${antal} organisationer` : String(f.properties?.tips ?? f.properties?.n ?? ''))
+            .setLngLat(p && (p.dx || p.dy) ? karta!.unproject([punkt.x + p.dx, punkt.y + p.dy]) : adress)
+            .setText(antal ? `${f.properties?.n} · ${antal} organisationer` : String(f.properties?.n ?? ''))
             .addTo(karta!);
         };
         const doljTips = () => {
           tipsFor = null;
           karta!.getCanvas().style.cursor = '';
           tips?.remove();
+          pixel?.peka(null);
         };
         // En uppsättning lyssnare för alla lagren. Med en per lager släcker det ena lagrets
         // mouseleave tipset som det andra just visade.
@@ -1851,18 +2017,26 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         karta!.on('click', punktlager, (e) => {
           // Andra klicket i ett dubbelklick på en grupp: det som nu ligger under pekaren var inte målet.
           if (nyssGrupp()) return;
-          // Delar flera organisationer hus går varje tryck vidare till nästa av dem.
-          const iHuset = String(e.features?.[0]?.properties?.dids ?? '').split(',').filter(Boolean);
-          const id = iHuset.length > 1 ? iHuset[(iHuset.indexOf(valdId ?? '') + 1) % iHuset.length] : e.features?.[0]?.properties?.id;
+          const id = e.features?.[0]?.properties?.id;
           const o = id ? alla.find((x) => x.id === String(id)) : undefined;
           if (!o) return;
+          // Ett tryck till på den som redan är vald släpper valet, och kartan visas som vanligt igen.
+          if (o.id === valdId && vyDetalj && !vyDetalj.hidden) return slappVald();
           handelser.orgOppnad('karta');
           visaDetalj(o, false);
         });
         karta!.on('click', (e) => {
+          const finns = (id: string) => !!karta!.getLayer(id);
+          const traff = karta!.queryRenderedFeatures(e.point, { layers: [...grupplager, ...punktlager].filter(finns) }).length > 0;
+          if (valdId && vyDetalj && !vyDetalj.hidden) {
+            // Den valdas egen prick ritas i ett eget lager över de andra: ett tryck på den släpper valet.
+            const paVald = karta!.queryRenderedFeatures(e.point, { layers: ['vald-ring', 'vald-punkt', 'vald-ikon'].filter(finns) }).length > 0;
+            // Tryck på tom karta släpper också valet. I en pixelstad hör den valdas hus till den:
+            // ett tryck på huset behåller valet, ett tryck utanför släpper det.
+            if (paVald || (!traff && !pixel?.paValtHus(e.point.x, e.point.y))) slappVald();
+          }
           // Tryck på tom karta fäller ner bottenbladet i smal vy.
-          const lager = [...grupplager, ...punktlager].filter((id) => karta!.getLayer(id));
-          if (smal.matches && !karta!.queryRenderedFeatures(e.point, { layers: lager }).length) sattBlad('titt');
+          if (smal.matches && !traff) sattBlad('titt');
         });
 
         // Typer med egen ikon ritas som landmärken: bilden i stället för en prick, med namnet under.
@@ -1898,7 +2072,8 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
             {
               id: 'landmarken', type: 'symbol', source: 'orgs', minzoom: ZOOM_POSTER, filter: ['all', synlig, arLandmarke],
               // Ikonen stannar vid 40 px, samma storlek som den valda ikonen och dess ring är ritade för.
-              layout: { 'icon-image': ikon, 'icon-allow-overlap': true },
+              // Delar den hus med andra står den en bit från adressen, som prickarna.
+              layout: { 'icon-image': ikon, 'icon-allow-overlap': true, 'icon-offset': FLYTT },
             },
             'lan-grupp-namn',
           );
@@ -1907,7 +2082,12 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
           karta!.addLayer(
             {
               id: 'landmarken-namn', type: 'symbol', source: 'orgs', minzoom: ZOOM_POSTER, filter: ['all', synlig, arLandmarke],
-              layout: { 'text-field': ['get', 'n'], 'text-font': ['Noto Sans Bold'], 'text-size': 12, 'text-anchor': 'top', 'text-offset': [0, 1.85], 'text-max-width': 9 },
+              layout: {
+                'text-field': ['get', 'etikett'], 'text-font': ['Noto Sans Bold'], 'text-size': 12, 'text-anchor': 'top',
+                // Namnet står under ikonen. Delar flera hus står det under den nedersta av dem.
+                'text-offset': ['interpolate', ['linear'], ['get', 'botten'], 0, ['literal', [0, 1.85]], 120, ['literal', [0, 11.85]]] as unknown as ExpressionSpecification,
+                'text-max-width': ['case', delarHus, 15, 9] as unknown as ExpressionSpecification,
+              },
               paint: { 'text-color': BLACK, 'text-halo-color': '#fdfbf7', 'text-halo-width': 1.8 },
             },
             'lan-grupp-namn',
@@ -1915,16 +2095,18 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
           // Pricken och dess namn gäller alla typer längre ut, och bara typer utan ikon närmast.
           const somPrick = ['all', synlig, ['any', ['<', ['zoom'], ZOOM_POSTER], ['!', arLandmarke]]] as unknown as ExpressionSpecification;
           karta!.setFilter('punkter', ['all', somPrick, UTAN_BESOKSADRESS]);
-          karta!.setFilter('exakta-bas', ['all', somPrick, ['==', ['get', 'pt'], 'exakt']]);
+          karta!.setFilter('exakta-bas', ['all', somPrick, ENSAM_I_HUSET]);
           karta!.setFilter('namn', somPrick);
-          karta!.setFilter('exakta-antal', ['all', somPrick, MED_BESOKSADRESS, ['>', ['get', 'dn'], 1]]);
+          if (karta!.getLayer('exakta-delade')) karta!.setFilter('exakta-delade', ['all', somPrick, DELAR_HUS]);
           // Den valda organisationen på närmaste nivån: större ring bakom, och ikonen i stället för pricken.
           karta!.setPaintProperty('vald-ring', 'circle-radius', ['step', ['zoom'], 15, ZOOM_POSTER, ['case', arLandmarke, 24, 15]]);
           karta!.setFilter('vald-punkt', somPrick);
           karta!.addLayer(
-            { id: 'vald-ikon', type: 'symbol', source: 'vald', minzoom: ZOOM_POSTER, filter: ['all', synlig, arLandmarke], layout: { 'icon-image': ikon, 'icon-allow-overlap': true } },
+            { id: 'vald-ikon', type: 'symbol', source: 'vald', minzoom: ZOOM_POSTER, filter: ['all', synlig, arLandmarke], layout: { 'icon-image': ikon, 'icon-allow-overlap': true }, paint: VALD_FLYTT.icon },
             'vald-namn',
           );
+          // Lagret fanns inte när den valda senast ritades. Nu får det dess plats.
+          uppdateraVald();
           karta!.setLayoutProperty('vald-namn', 'text-offset', [
             'step', ['zoom'], ['literal', [0, -1.6]],
             ZOOM_POSTER, ['case', arLandmarke, ['literal', [0, -2.3]], ['literal', [0, -1.6]]],
@@ -1948,6 +2130,33 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         });
 
         kartaKlar = true;
+        if (PIXELKARTA) {
+          // Hämtas först här, när kartan står: pixelkartan får aldrig fördröja den vanliga.
+          import('../lib/pixelkarta/pixelkarta')
+            .then((m) => m.kopplaPixelkarta({ karta: karta!, el, app, bas: PIXELKARTA, grundtak: STORSTA_ZOOM }))
+            .then((p) => {
+              granssnitt.pixel = pixel = p;
+              if (!p) return;
+              // De utan exakt adress står i vattnet i en pixelstad, och i kommunens rutnät annars.
+              const ritaOm = () => {
+                // Att kartan ritas om tar bort knuffen ("Tryck på en siffra"), som om besökaren hade
+                // ändrat urvalet. Här är det pixelkartan som kom, inte besökaren: knuffen ställs om.
+                const vantade = knuffvakt !== undefined || !!knuff;
+                if (alla.length) uppdateraKarta();
+                if (vantade) planeraKnuff();
+                skrivPlatsnot();
+              };
+              p.vidByte(ritaOm);
+              ritaOm();
+              // En organisation kan vara vald redan, från en länk rakt till den. Kartan flög då dit
+              // innan pixelkartan fanns. Står den i en pixelstad går kartan nu hela vägen in.
+              const o = valdId ? alla.find((x) => x.id === valdId) : undefined;
+              const plats = o ? platsAv(o) : null;
+              const nara = o ? p.narzoom(o.id) : null;
+              if (plats && nara !== null && karta!.getZoom() < nara && !medlemslage) karta!.flyTo({ center: [plats.lng, plats.lat], zoom: nara }, AV_KOD);
+            })
+            .catch((fel) => console.warn('Pixelkartan gick inte att starta', fel));
+        }
         if (alla.length) {
           uppdateraKarta();
           forstaVy();
@@ -2000,7 +2209,8 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         }
         if (karta && kartaKlar) {
           uppdateraVald();
-          if (o.lat !== null && o.lng !== null) karta.flyTo({ center: [o.lng, o.lat], zoom: Math.max(karta.getZoom(), ZOOM_POSTER + 0.5) }, AV_KOD);
+          const plats = platsAv(o);
+          if (plats) karta.flyTo({ center: [plats.lng, plats.lat], zoom: Math.max(karta.getZoom(), pixel?.narzoom(o.id) ?? ZOOM_POSTER + 0.5) }, AV_KOD);
         }
         return;
       }
@@ -2259,6 +2469,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     // Reglerna för hur det används står i src/lib/fraga/kartgranssnitt.ts.
     const granssnitt: Kartgranssnitt = {
       karta: null,
+      pixel: null,
       redo: false,
       poster: (): readonly Kartrad[] => alla,
       sok: (q) => sok(q),
@@ -2959,6 +3170,53 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     font-weight: 500;
     line-height: 1.35;
     color: hsl(var(--ink));
+  }
+  /* Knuffen för den som saknar adress i en pixelstad: en rad med ett tänt hus, hur många som har sitt, och en väg vidare. */
+  .tandhus {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 12px 0 16px;
+    padding: 6px 10px 6px 6px;
+    border: 1px solid hsl(var(--kant));
+    border-radius: 14px;
+    background: hsl(var(--yta-kort));
+    color: hsl(var(--ink));
+    font-size: 13px;
+    line-height: 1.3;
+    text-decoration: none;
+  }
+  .tandhus img {
+    flex: none;
+    width: 64px;
+    height: 48px;
+    border-radius: 9px;
+    object-fit: cover;
+  }
+  .tandhus__text {
+    flex: 1;
+    min-width: 0;
+  }
+  .tandhus__text strong {
+    display: block;
+  }
+  .tandhus__knapp {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 7px 10px;
+    border-radius: 999px;
+    background: hsl(var(--ink));
+    color: hsl(var(--yta));
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .tandhus:hover {
+    border-color: var(--typ-community);
+  }
+  .tandhus:hover .tandhus__knapp {
+    background: var(--typ-community);
   }
   /* Raden under platsen när adressen saknas. Markören är kartans egen kontur. */
   .rutor .rutor__not {

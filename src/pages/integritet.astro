@@ -27,7 +27,7 @@ import { url, SAJT } from '../lib/data';
     <li>Berget kör modellen inom EES, enligt avtalet. Berget sparar inte frågorna, bara uppgifter om själva anropet, och tränar inte modeller på dem.</li>
     <li>Svarar inte Berget går frågan i stället till <a href="https://nebius.com" rel="noopener">Nebius</a>, ett nederländskt bolag som kör modellen i Finland. Där gäller samma sak: bara frågans text skickas, och Nebius sparar inte frågorna.</li>
     <li>Vi sparar inga frågor. Servern loggar bara vilken sorts svar det blev, hur lång tid det tog, om modellen svarade och vad frågan blev i kartans egna ord: område, typ, vad som erbjuds och län. De orden kommer ur kartans fasta listor, aldrig ur det du skrev. Sökord och platser som kartan inte känner till loggas inte.</li>
-    <li>Vercel sparar loggen i en timme. Var femtonde minut räknar ett jobb hos GitHub ihop den till antal för dagen. Dagens antal ligger krypterade hos GitHub och publiceras först när dagen är slut, i <a href="https://github.com/opensverige/ai-kartan/blob/statistik/fragestatistik.json" rel="noopener">fragestatistik.json</a>.</li>
+    <li>Vercel sparar loggen i ett dygn. Flera gånger per dygn räknar ett jobb hos GitHub ihop den till antal för dagen. Dagens antal ligger krypterade hos GitHub och publiceras först när dagen är slut, i <a href="https://github.com/opensverige/ai-kartan/blob/statistik/fragestatistik.json" rel="noopener">fragestatistik.json</a>.</li>
     <li>Varje område, typ, erbjudande och län räknas för sig, utan klockslag och utan kombinationer. Det som förekom färre än tre gånger under dagen räknas som övrigt. Ställs bara en fråga under en dag syns alltså att den ställdes, vilken sorts svar den fick och om modellen svarade, men aldrig vad den handlade om.</li>
     <li>Svarar modellen med ett fel, till exempel att krediten är slut, öppnas ett ärende på GitHub. Det visar ungefär när felet inträffade, men inget om frågan.</li>
     <li>Frågan och svaret finns bara i din webbläsare. De försvinner när du laddar om sidan. Väljer du Visa alla på kartan hamnar sökorden i sidans adress, som när du söker på kartan.</li>
@@ -40,7 +40,7 @@ import { url, SAJT } from '../lib/data';
   <ul>
     <li>Uppgifter på organisationsnivå: namn, organisationsnummer, säte på kommunnivå, vad organisationen bygger, publika länkar.</li>
     <li>Schemat saknar fält för kontaktpersoner, anställda, ägare, e-post och telefon. Den automatiska kontrollen stoppar sådana uppgifter innan de kan publiceras.</li>
-    <li>En organisation ritas på sin adress när den anger en besöksadress på sin webbplats, och annars på den registrerade postadressen hos Bolagsverket eller SCB. Adresser med c/o eller lägenhetsnummer används inte, och enskilda firmor får aldrig exakt position. Bara koordinaten sparas, aldrig gatuadressen. Övriga organisationer visas på kommunnivå.</li>
+    <li>En organisation ritas på sin adress när den anger en besöksadress på sin webbplats, och annars på den registrerade postadressen hos Bolagsverket eller SCB. En registrerad adress med c/o eller lägenhetsnummer används inte, om organisationen inte själv anger adressen på sin webbplats. Enskilda firmor får aldrig exakt position. Bara koordinaten sparas, aldrig gatuadressen. Övriga organisationer visas på kommunnivå.</li>
     <li>Bolagsverket visar styrelse och vd med namn. De fälten importeras aldrig.</li>
   </ul>
 

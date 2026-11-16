@@ -1,0 +1,111 @@
+id: bitnomad
+
+name:
+  value: BitNomad
+  status: claimed
+  source_url: https://bitnomad.se/sv/
+  source_type: own_site
+  verified_at: 2026-11-01
+  verified_by: agent
+  note: Tips i OpenSveriges Discord 2026-11-01.
+
+legal_name:
+  value: BitNomad AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5592371115
+  source_type: third_party
+  verified_at: 2026-11-01
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5592371115
+  source_type: third_party
+  verified_at: 2026-11-01
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559237-1115"
+  status: confirmed
+  source_url: https://www.allabolag.se/5592371115
+  source_type: third_party
+  verified_at: 2026-11-01
+  verified_by: agent
+
+website: https://bitnomad.se
+
+description:
+  value: Konsultbolag inom systemutveckling som bygger AI-lösningar som automatiserar arbetsflöden och integreras med befintliga system. Utvecklar Tralala, en självhostad kanban där AI-agenter arbetar via API, och publicerar publika AI-skills som låter kodassistenter granska arkitektur, affärsidé och risker.
+  status: claimed
+  source_url: https://bitnomad.se/sv/
+  source_type: own_site
+  verified_at: 2026-11-05
+  verified_by: agent
+
+offers:
+  value: [utveckling]
+  status: claimed
+  source_url: https://bitnomad.se/sv/
+  source_type: own_site
+  verified_at: 2026-11-05
+  verified_by: agent
+  note: Webbplatsen märker Skills som open source och Tralala som source-available. Tralala ligger under PolyForm Noncommercial 1.0.0 och Skills saknar licens. Ingen av dem är öppen källkod enligt OSI, så koden räknas som publik, inte öppen.
+
+areas:
+  value: [agenter_automation]
+  status: claimed
+  source_url: https://bitnomad.se/sv/
+  source_type: own_site
+  verified_at: 2026-11-01
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5592371115
+  source_type: third_party
+  verified_at: 2026-11-01
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm. Postadressen i registret är en c/o-adress, så ingen exakt position."
+
+founded:
+  value: 2020
+  status: confirmed
+  source_url: https://www.allabolag.se/5592371115
+  source_type: third_party
+  verified_at: 2026-11-01
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2020-01-16."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5592371115
+  source_type: third_party
+  verified_at: 2026-11-01
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://github.com/BitNomadAB/Tralala
+    kind: repo
+    title: "Tralala: självhostad kanban för människor och AI-agenter"
+    status: claimed
+    verified_at: 2026-11-01
+    verified_by: agent
+    note: README beskriver agenter med egna OpenAI-kompatibla eller A2A-ändpunkter och ett REST-API som agenterna arbetar genom.
+  - url: https://github.com/BitNomadAB/Skills
+    kind: repo
+    title: "Skills: publika AI-skills för kodassistenter"
+    status: claimed
+    verified_at: 2026-11-05
+    verified_by: agent
+    note: Skills som låter en kodassistent analysera affärsidé, konkurrenter, arkitektur och risker.
+
+links:
+  github: https://github.com/BitNomadAB
+
+record_created_at: 2026-11-01
+record_updated_at: 2026-11-05

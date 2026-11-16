@@ -1,7 +1,8 @@
-# Frågestatistik, var femtonde minut. Räknar Fråga kartans loggrader sedan förra körningen till antal
-# per dag. Dagen som pågår ligger förseglad i GitHubs cache. När dagen är slut publiceras den öppet
-# i fragestatistik.json på grenen statistik, med sällsynta ämnen som övrigt. Vercels gratisplan
-# sparar loggen i en timme, så en körning som uteblir längre än så blir en lucka i filen.
+# Frågestatistik, schemalagd var femtonde minut. Räknar Fråga kartans loggrader sedan förra körningen
+# till antal per dag. Dagen som pågår ligger förseglad i GitHubs cache. När dagen är slut publiceras
+# den öppet i fragestatistik.json på grenen statistik, med sällsynta ämnen som övrigt. GitHub startar
+# schemat ofta timmar för sent. Vercel sparar loggen ett dygn på Pro och en timme på gratisplanen, och
+# skriptet läser teamets plan. Uteblir körningen längre än loggen sparas blir det en lucka i filen.
 #
 # Statistiken ligger på en egen gren, eftersom Vercel deployar varje commit, även med [skip ci].
 # Grenens vercel.json stänger av deployer därifrån.

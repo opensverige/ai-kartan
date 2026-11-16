@@ -11,6 +11,7 @@ import {
   lasLoggar,
   lasLoggrad,
   laggTill,
+  lagringFor,
   avrunda,
   forloratTillstand,
   forsegla,
@@ -51,6 +52,28 @@ test('en markör äldre än loggen ger en lucka', () => {
   const f = fonster(markor, NU);
   assert.equal(f.fran, NU - LAGRING_MS);
   assert.deepEqual(f.lucka, { fran: markor, till: new Date(NU - LAGRING_MS).toISOString(), orsak: 'lagring' });
+});
+
+test('lagringen följer Vercels plan, och en okänd plan räknas som gratisplanen', () => {
+  const dygn = 23 * 60 * 60 * 1000;
+  assert.equal(lagringFor('pro'), dygn);
+  assert.equal(lagringFor('enterprise'), dygn);
+  assert.equal(lagringFor('hobby'), LAGRING_MS);
+  assert.equal(lagringFor(undefined), LAGRING_MS);
+  assert.equal(lagringFor('okand'), LAGRING_MS);
+});
+
+test('på Pro ger en körning som startar timmar sent ingen lucka', () => {
+  const markor = new Date(NU - 7 * 60 * 60 * 1000).toISOString();
+  assert.deepEqual(fonster(markor, NU, lagringFor('pro')), { fran: Date.parse(markor), till: NU - FORDROJNING_MS, lucka: null });
+});
+
+test('på Pro blir en markör äldre än loggen fortfarande en lucka', () => {
+  const pro = lagringFor('pro');
+  const markor = new Date(NU - 30 * 60 * 60 * 1000).toISOString();
+  const f = fonster(markor, NU, pro);
+  assert.equal(f.fran, NU - pro);
+  assert.deepEqual(f.lucka, { fran: markor, till: new Date(NU - pro).toISOString(), orsak: 'lagring' });
 });
 
 test('bara Fråga kartans rader i rätt form räknas', () => {
@@ -201,6 +224,8 @@ test('förlorat tillstånd ger en lucka bara när statistiken har börjat', () =
   assert.deepEqual(lucka, { fran: null, till: new Date(NU - LAGRING_MS).toISOString(), orsak: 'tillstand-saknas' });
   const { nyaLarm } = laggTill(tillstand, [], { fran: NU - LAGRING_MS, till: NU, lucka }, 0);
   assert.equal(nyaLarm.length, 1);
+  const pa = forloratTillstand({ ...tomPublicering(), start: '2026-10-19T10:00:00.000Z' }, NU, lagringFor('pro'));
+  assert.equal(pa.lucka.till, new Date(NU - lagringFor('pro')).toISOString());
 });
 
 test('tillståndet går bara att öppna med samma token', () => {

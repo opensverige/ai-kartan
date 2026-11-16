@@ -64,6 +64,15 @@ kommun:
   verified_by: agent
   note: Kommunsäte enligt allabolag.
 
+coordinates:
+  value: { lat: 59.33808, lng: 18.07204 }
+  status: claimed
+  source_url: https://www.kb.se/om-oss/kontakta-oss.html
+  source_type: own_site
+  verified_at: 2026-11-15
+  verified_by: agent
+  note: "Besöksadress enligt webbplatsen, geokodad med OpenStreetMap Nominatim (ODbL)."
+
 active:
   value: true
   status: confirmed
@@ -92,4 +101,4 @@ links:
   huggingface: https://huggingface.co/KBLab
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-04
+record_updated_at: 2026-11-15

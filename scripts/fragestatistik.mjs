@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Frågestatistik. Hämtar Fråga kartans loggrader sedan förra körningen ur Vercel och räknar dem
 // per dag. Dagen som pågår ligger i tillståndet, som aldrig publiceras. Dagar som är slut flyttas
-// till den öppna filen. Körs var femtonde minut av .github/workflows/fragestatistik.yml.
+// till den öppna filen. Schemat i .github/workflows/fragestatistik.yml säger var femtonde minut,
+// men GitHub startar det ofta timmar för sent. Fönstret går därför så långt bak som loggen sparas.
 //
 //   VERCEL_TOKEN=… node scripts/fragestatistik.mjs --tillstand pagaende.json --publicering statistik/fragestatistik.json
 //   Utan VERCEL_TOKEN används inloggningen i Vercels CLI, för att pröva lokalt.
@@ -12,7 +13,7 @@
 
 import fs from 'node:fs';
 import { execFileSync } from 'node:child_process';
-import { MAX_RADER, fonster, forloratTillstand, forsegla, lasLoggar, laggTill, oppna, publicera, rapport, tomPublicering } from './lib/fragestatistik.mjs';
+import { LAGRING_MS, MAX_RADER, fonster, forloratTillstand, forsegla, lagringFor, lasLoggar, laggTill, oppna, publicera, rapport, tomPublicering } from './lib/fragestatistik.mjs';
 
 const PROJEKT = process.env.VERCEL_PROJEKT ?? 'prj_TrQo0nemf38OYxmhiwkwKy3N4QSo';
 const TEAM = process.env.VERCEL_TEAM ?? 'team_joaSVLEv3jfSWBewCGoI5uhb';
@@ -39,14 +40,35 @@ if (!token && process.env.GITHUB_ACTIONS) {
   process.exit(2);
 }
 
+/**
+ * Teamets plan avgör hur långt bak loggen går att hämta. Går planen inte att läsa räknas
+ * gratisplanens timme, och tiden före blir en lucka som larmar.
+ */
+async function lasLagring() {
+  if (!token) return LAGRING_MS;
+  try {
+    const svar = await fetch(`https://api.vercel.com/v2/teams/${encodeURIComponent(TEAM)}`, {
+      headers: { Authorization: `Bearer ${token}` },
+      signal: AbortSignal.timeout(30_000),
+    });
+    if (!svar.ok) throw new Error(`status ${svar.status}`);
+    const team = await svar.json();
+    return lagringFor(team?.billing?.plan);
+  } catch (fel) {
+    console.error(`Teamets plan gick inte att läsa (${fel instanceof Error ? fel.message : 'okänt fel'}). Räknar med en timmes lagring.`);
+    return LAGRING_MS;
+  }
+}
+
+const lagring = await lasLagring();
 const nu = Date.now();
 const publicering = las(publiceringsfil) ?? tomPublicering();
 // Lokalt, utan token, ligger tillståndet i klartext. I GitHub är det alltid förseglat.
 const lastTillstand = las(tillstandsfil);
 const sparat = lastTillstand && token ? oppna(lastTillstand, token) : lastTillstand;
-const forlorat = sparat ? null : forloratTillstand(publicering, nu);
+const forlorat = sparat ? null : forloratTillstand(publicering, nu, lagring);
 const tillstand = sparat ?? forlorat.tillstand;
-const f0 = fonster(tillstand.markor, nu);
+const f0 = fonster(tillstand.markor, nu, lagring);
 const f = forlorat?.lucka ? { ...f0, lucka: forlorat.lucka } : f0;
 if (f.till <= f.fran) {
   console.log('Inget nytt fönster att hämta.');

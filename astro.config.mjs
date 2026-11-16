@@ -21,7 +21,34 @@ const senastAndrad = [...andrad.values()].filter(Boolean).sort().at(-1);
 // Sidor som byggs ur datan och därför ändras när datan gör det. Textsidorna får inget datum.
 const DATASIDA = /^https?:\/\/[^/]+\/(organisationer|plats|lan|andringar|data)?(\/|$)/;
 
+// Content Security Policy. Astro räknar hashar för de inline-skript och inline-stilar som byggs
+// in och skriver policyn som en meta-tagg i varje sida. Allt annat än sajten själv nekas, utom
+// det kartan hämtar: baskartans stil, tiles och glyfer från OpenFreeMap, och pixelstädernas
+// bilder från bildtjänsten när PUBLIC_PIXELKARTA_URL är satt vid bygget.
+// Stilattribut: kortens och detaljvyns färg sätts som style-attribut (--f) i HTML som byggs i
+// webbläsaren. Attribut går inte att hasha, så de tillåts (style-src-attr); stilelementen har hashar.
+const pixelkarta = process.env.PUBLIC_PIXELKARTA_URL ? new URL(process.env.PUBLIC_PIXELKARTA_URL).origin : '';
+const kallor = (...v) => v.filter(Boolean).join(' ');
+const CSP = [
+  "default-src 'self'",
+  `img-src ${kallor("'self'", 'data:', pixelkarta)}`,
+  `connect-src ${kallor("'self'", 'https://tiles.openfreemap.org', pixelkarta)}`,
+  "worker-src 'self'",
+  "font-src 'self'",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-src 'none'",
+];
+
 export default defineConfig({
+  security: {
+    csp: {
+      directives: CSP,
+      scriptDirective: { resources: ["'self'"] },
+      styleDirective: { resources: ["'self'", { resource: "'unsafe-inline'", kind: 'attribute' }] },
+    },
+  },
   site,
   base,
   output: 'static',

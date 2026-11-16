@@ -9,8 +9,22 @@
 
 import { createCipheriv, createDecipheriv, createHash, randomBytes } from 'node:crypto';
 
-/** Vercels gratisplan sparar loggen i en timme. Marginalen tar höjd för att körningen startar sent. */
+/**
+ * Vercels gratisplan sparar loggen i en timme. Det gäller också när planen inte går att läsa, så att
+ * tiden blir en lucka i stället för färre rader utan att det syns. Marginalen tar höjd för att
+ * körningen startar sent.
+ */
 export const LAGRING_MS = 55 * 60 * 1000;
+/** Pro sparar loggen ett dygn och Enterprise tre, enligt vercel.com/docs/logs/runtime. */
+const DYGN_MS = 23 * 60 * 60 * 1000;
+
+/**
+ * Hur långt bak loggen går att hämta, efter teamets plan. GitHub startar schemat ofta timmar för
+ * sent, så med en timmes fönster blev det mesta av dygnet luckor fast loggen fanns kvar.
+ */
+export function lagringFor(plan) {
+  return plan === 'pro' || plan === 'enterprise' ? DYGN_MS : LAGRING_MS;
+}
 /** Loggen når Vercel med viss fördröjning. Det senaste fönstret väntar därför till nästa körning. */
 export const FORDROJNING_MS = 5 * 60 * 1000;
 /**
@@ -58,9 +72,9 @@ export function svenskDag(ms) {
  * Fönstret som ska hämtas: från markören till strax före nu. Ligger markören längre bak än
  * loggen sparas börjar fönstret där loggen börjar, och tiden däremellan blir en lucka.
  */
-export function fonster(markor, nu) {
+export function fonster(markor, nu, lagring = LAGRING_MS) {
   const till = nu - FORDROJNING_MS;
-  const tidigast = nu - LAGRING_MS;
+  const tidigast = nu - lagring;
   if (markor === null) return { fran: tidigast, till, lucka: null };
   const fran = Date.parse(markor);
   if (fran >= tidigast) return { fran, till, lucka: null };
@@ -230,11 +244,11 @@ export function publicera(tillstand, publicering) {
  * Frågorna sedan förra körningen är då förlorade. Luckan har ingen känd början och läggs i fönstret,
  * så att den larmar som andra luckor.
  */
-export function forloratTillstand(publicering, nu) {
+export function forloratTillstand(publicering, nu, lagring = LAGRING_MS) {
   const tillstand = tomtTillstand();
   if (publicering.start === null) return { tillstand, lucka: null };
   tillstand.start = publicering.start;
-  return { tillstand, lucka: { fran: null, till: new Date(nu - LAGRING_MS).toISOString(), orsak: 'tillstand-saknas' } };
+  return { tillstand, lucka: { fran: null, till: new Date(nu - lagring).toISOString(), orsak: 'tillstand-saknas' } };
 }
 
 /**
