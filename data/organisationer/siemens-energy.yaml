@@ -1,0 +1,125 @@
+id: siemens-energy
+
+name:
+  value: Siemens Energy
+  status: claimed
+  source_url: https://www.siemens-energy.com/se/sv/home.html
+  source_type: own_site
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: Tips i OpenSveriges Discord 2026-11-16. Posten gäller det svenska dotterbolaget.
+
+legal_name:
+  value: Siemens Energy AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5566066048
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5566066048
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "556606-6048"
+  status: confirmed
+  source_url: https://www.allabolag.se/5566066048
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+
+website: https://www.siemens-energy.com/se/sv/home.html
+
+description:
+  value: Utvecklar, tillverkar och servar gasturbiner i Finspång. Har i examensarbeten tagit fram en språkmodell med sökning i egna dokument för förstudier av kundkrav, och maskininlärning som mjukvarusensor för gasturbinen SGT-700.
+  status: confirmed
+  source_url: https://odr.chalmers.se/items/8e07ecde-6e80-48c8-8bcd-1bcc6385eb85
+  source_type: academic
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: Gasturbinerna och Finspång enligt bolagets svenska webbplats. AI-arbetet enligt examensarbeten vid Chalmers och Politecnico di Torino med KTH, gjorda tillsammans med Siemens Energy AB.
+
+offers:
+  value: [forskning]
+  status: confirmed
+  source_url: https://odr.chalmers.se/items/8e07ecde-6e80-48c8-8bcd-1bcc6385eb85
+  source_type: academic
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: Bolaget säljer inga AI-tjänster. AI-arbetet syns som forskning tillsammans med lärosäten.
+
+areas:
+  value: [energi_klimat, industri]
+  status: claimed
+  source_url: https://www.siemens-energy.com/se/sv/home.html
+  source_type: own_site
+  verified_at: 2026-11-17
+  verified_by: agent
+
+kommun:
+  value: "0562"
+  status: confirmed
+  source_url: https://www.allabolag.se/5566066048
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Finspång. Webbplatsen anger också Trollhättan, Karlstad, Västerås, Örebro, Solna, Sundsvall och Malmö."
+
+coordinates:
+  value: { lat: 58.70985, lng: 15.77083 }
+  status: confirmed
+  source_url: https://www.allabolag.se/5566066048
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "Registrets adress, utan c/o. Den är Finspångs slott, där bolaget har sitt huvudkontor. Geokodad med OpenStreetMap Nominatim (ODbL)."
+
+founded:
+  value: 2001
+  status: confirmed
+  source_url: https://www.allabolag.se/5566066048
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2001-02-22."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5566066048
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://odr.chalmers.se/items/8e07ecde-6e80-48c8-8bcd-1bcc6385eb85
+    kind: publikation
+    title: "Chalmers 2025: språkmodell med RAG för förstudier av kundkrav, tränad på Siemens Energys gasturbinprojekt"
+    status: confirmed
+    verified_at: 2026-11-17
+    verified_by: agent
+    note: Examensarbete på masternivå, gjort tillsammans med Siemens Energy AB. Domänexperter på bolaget utvärderade modellerna.
+  - url: https://webthesis.biblio.polito.it/33205
+    kind: publikation
+    title: "Politecnico di Torino och KTH 2024: maskininlärning som mjukvarusensor för gasturbinen SGT-700"
+    status: confirmed
+    verified_at: 2026-11-17
+    verified_by: agent
+    note: Examensarbete med Siemens Energy AB som samarbetsföretag.
+  - url: https://www.umu.se/en/education/programmes/masters-programme-in-artificial-intelligence/the-future-will-be-based-on-ai-id3050411/
+    kind: case
+    title: "Umeå universitet 2025: algoritm för maskininlärning som analyserar mätdata på forskningsavdelningen i Finspång"
+    status: confirmed
+    verified_at: 2026-11-17
+    verified_by: agent
+    note: Porträtt av en tidigare student. Beskriver också ett verktyg som förutsäger när inspektioner behövs.
+
+record_created_at: 2026-11-17
+record_updated_at: 2026-11-17
