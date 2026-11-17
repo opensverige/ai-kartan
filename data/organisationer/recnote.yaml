@@ -1,0 +1,132 @@
+id: recnote
+
+name:
+  value: Recnote
+  status: claimed
+  source_url: https://recnote.ai/
+  source_type: own_site
+  verified_at: 2026-11-16
+  verified_by: agent
+  note: Anmäld i OpenSveriges Discord 2026-11-16.
+
+legal_name:
+  value: Recnote AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5595092460
+  source_type: third_party
+  verified_at: 2026-11-16
+  verified_by: agent
+  note: Webbplatsens integritetspolicy anger Recnote AB med samma organisationsnummer.
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5595092460
+  source_type: third_party
+  verified_at: 2026-11-16
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559509-2460"
+  status: confirmed
+  source_url: https://www.allabolag.se/5595092460
+  source_type: third_party
+  verified_at: 2026-11-16
+  verified_by: agent
+
+website: https://recnote.ai
+
+description:
+  value: Utvecklar Recnote, AI-stöd för dokumentation i vård, tandvård och socialtjänst. Plattformen gör samtal till journalanteckningar och tolkar mellan språk, och den kan köras helt i kundens egen miljö.
+  status: claimed
+  source_url: https://recnote.ai/
+  source_type: own_site
+  verified_at: 2026-11-16
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://recnote.ai/
+  source_type: own_site
+  verified_at: 2026-11-16
+  verified_by: agent
+
+areas:
+  value: [halsa, sprakteknik]
+  status: claimed
+  source_url: https://recnote.ai/
+  source_type: own_site
+  verified_at: 2026-11-16
+  verified_by: agent
+
+kommun:
+  value: "0680"
+  status: confirmed
+  source_url: https://www.allabolag.se/5595092460
+  source_type: third_party
+  verified_at: 2026-11-16
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Jönköping. Adressen i webbplatsens integritetspolicy ligger i samma kommun."
+
+coordinates:
+  value: { lat: 57.78155, lng: 14.24404 }
+  status: claimed
+  source_url: https://recnote.ai/legal-pages/privacy-policy
+  source_type: own_site
+  verified_at: 2026-11-16
+  verified_by: agent
+  note: "Adress enligt webbplatsens integritetspolicy, där bolaget själv anger den. Registret har samma adress med c/o. Nålen står mitt på gatan, eftersom husnumret saknas i OpenStreetMap (Nominatim, ODbL)."
+
+founded:
+  value: 2024
+  status: confirmed
+  source_url: https://www.allabolag.se/5595092460
+  source_type: third_party
+  verified_at: 2026-11-16
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2024-12-09."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5595092460
+  source_type: third_party
+  verified_at: 2026-11-16
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://recnote.ai/product/intra
+    kind: produkt
+    title: "Intra: AI-scribe som gör patientsamtal till journalanteckningar"
+    status: claimed
+    verified_at: 2026-11-16
+    verified_by: agent
+  - url: https://recnote.ai/product/nova
+    kind: produkt
+    title: "Nova: AI-tolk i realtid, röst till röst, för vården"
+    status: claimed
+    verified_at: 2026-11-16
+    verified_by: agent
+  - url: https://recnote.ai/resources/recnote-startar-pilot-med-folktandvarden-i-region-jonkopings-lan
+    kind: case
+    title: Recnote startar pilot med Folktandvården i Region Jönköpings län (2026-10-14)
+    status: claimed
+    verified_at: 2026-11-16
+    verified_by: agent
+    note: Bolagets egen artikel. Piloten är inte bekräftad av regionen i någon källa som agenten har läst.
+  - url: https://sciencepark.se/en/nyhet/ai-solution-for-automated-medical-documentation-is-the-winner-of-science-parks-innovation-competition/
+    kind: case
+    title: "Science Park: Recnote vinner kategorin Best Innovation i innovationstävlingen (2025-02-26)"
+    status: confirmed
+    verified_at: 2026-11-16
+    verified_by: agent
+    note: Science Park Jönköping beskriver en AI-lösning som transkriberar samtal mellan läkare och patient och skriver dokumentationen.
+
+links:
+  linkedin: https://www.linkedin.com/company/recnote
+
+record_created_at: 2026-11-16
+record_updated_at: 2026-11-16

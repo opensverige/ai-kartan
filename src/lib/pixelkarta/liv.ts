@@ -1,7 +1,7 @@
 /**
  * Det som rör sig i en pixelstad: bilar, bussar och lastbilar på vägnätet, fågelflockar, tåg,
  * tunnelbana och spårvagnar på sina spår, färjor på sina linjer och småbåtar på öppet vatten.
- * Träd och vatten som rör sig ligger i liv-pixlar.ts.
+ * Träd och vatten som rör sig ligger i liv-pixlar.ts, och det som rör sig i luften i liv-luft.ts.
  *
  * Allt ritas i kod på en duk som ligger över bildvisaren och under kartbilden, så att det syns
  * genom gluggen tillsammans med staden och sajtens prickar och namn ligger kvar överst. Platser
@@ -9,7 +9,8 @@
  *
  * Pixelkartans kamera ser 45 grader nedåt. En meter på marken är då 1 / (meter per bildpunkt)
  * bildpunkter i sidled och 1 / roten ur 2 av det uppåt i bilden, och en meter på höjden lyfter
- * en sak lika mycket.
+ * en sak lika mycket. Fordon och båtar ritas som lådor och skrov i tre led: taket, och de två
+ * sidor som vetter mot kameran, med ljuset från öster som i kartbilden.
  *
  * Näten av vägar, spår och färjelinjer kommer från bildtjänsten (underlag: OpenStreetMap). De är
  * stora, så vart och ett hämtas först när kartan har zoomats in så långt att det som rör sig på
@@ -24,6 +25,10 @@
  * - Bilarna lever i ett område som är större än rutan (0,6 av dess storlek åt varje håll) och nya
  *   börjar utanför rutan, så att den som drar kartan möter trafik som redan är på väg. Bara när
  *   rutan hoppar till en ny plats ställs bilar rakt in i den, och tonas då in.
+ *
+ * Ett fordon ska gå att följa med blicken. Därför jämnas nätens uppgift om vad som syns (se
+ * jamnaSynlighet), en bil som kommer till en återvändsgata vänder i stället för att försvinna,
+ * och den som måste bort medan den syns tonas bort där den står.
  */
 import type OpenSeadragon from 'openseadragon';
 import type { Livsfiler, Livsnat } from './geometri';
@@ -31,10 +36,16 @@ import type { Livsfiler, Livsnat } from './geometri';
 /** Staden som är öppen i bildvisaren. */
 export interface Livsstad {
   id: string;
+  /** Stadens namn, som det skrivs. */
+  namn: string;
   /** Kartbildens riktning i grader: 0 är norr uppåt. */
   riktning: number;
+  /** Kartbildens storlek i bildpunkter. */
   bredd: number;
+  hojd: number;
   filer: Livsfiler;
+  /** En plats på marken som punkt i kartbilden. */
+  tillBild(lat: number, lng: number): { x: number; y: number };
 }
 
 /** Var kartbilden ligger i rutan just nu. */
@@ -65,6 +76,8 @@ interface Nat {
   info: Uint8Array;
   /** 1 där punkten syns i kartbilden, 0 där den ligger bakom ett hus eller under en bro. */
   syns: Uint8Array;
+  /** Per kant: hur stor del av den som syns, 0 till 255. */
+  synlig: Uint8Array;
   utStart: Uint32Array;
   ut: Int32Array;
   celler: Map<string, number[]>;
@@ -78,6 +91,12 @@ export interface Del {
   rensa(): void;
   steg(dt: number, vy: Vy): void;
   rita(vy: Vy, franKartan: boolean): void;
+  /** Det som ligger över allt annat: det som flyger. */
+  ritaOver?(vy: Vy): void;
+  /** Ett tryck i rutan. Svarar med ett besked om trycket träffade något. */
+  tryck?(x: number, y: number, vy: Vy): string | null;
+  /** Sätter i gång delens påskägg, för prov. Svarar om det gick. */
+  pask?(): boolean;
   tillstand(): Record<string, unknown>;
 }
 /** Det lagret lånar ut till sina delar. */
@@ -94,6 +113,8 @@ export interface Verktyg {
   adress(fil: string): string;
   /** En duk till, under den här: för det som målar om kartbildens egna punkter. */
   dukUnder(): HTMLCanvasElement;
+  /** Ett kort besked till besökaren. */
+  sag(text: string, lange?: number): void;
 }
 export interface Liv {
   /** En stads kartbild har öppnats i bildvisaren. */
@@ -102,6 +123,10 @@ export interface Liv {
   satt(pa: boolean): void;
   /** Bildvisaren har just ritat: rita lagret där kartbilden ligger nu. */
   ritaMedKartan(): void;
+  /** Ett tryck i rutan. Svarar med ett besked om trycket träffade något som svarar. */
+  tryck(x: number, y: number): string | null;
+  /** Sätter i gång stadens påskägg, för prov. Svarar om staden har något och det gick. */
+  pask(): boolean;
   tillstand(): Record<string, unknown>;
 }
 
@@ -117,10 +142,24 @@ const CELL = 2048; // bildpunkter: näten är uppdelade i celler av den storleke
 const VINGE = 1.7;
 const VINGE_MINST = 1.5;
 // per vägklass: motorväg och motortrafikled, primär, sekundär, tertiär, lokalgator
-const FART = [24, 14.5, 13, 11.5, 8]; // meter per sekund
+// Farten är stadens, inte landsvägens: 25 till 40 km i timmen på gatorna, så att en bil går att följa.
+const FART = [21, 11.5, 10.5, 9.5, 7]; // meter per sekund
 const LUCKA = [38, 60, 85, 120, 210]; // meter väg per bil
 const LACK = ['#f2f0ea', '#d9dde2', '#b9bec6', '#2b2e34', '#3b4048', '#8a1f1f', '#c0392b', '#1f4f8a', '#2e6da4', '#3d6b4a', '#c9a227', '#6b6f78', '#f2f0ea', '#d9dde2', '#2b2e34'];
 const BILANDEL = [0, 0.25, 0.5, 1];
+// Bussarna har stadens färger: röda och blå i Stockholm, blå i Göteborg, gröna och gula i Malmö.
+const BUSSLACK: Record<string, string[]> = {
+  stockholm: ['#c8202b', '#c8202b', '#c8202b', '#1f5fa8'],
+  goteborg: ['#1f6fb5', '#1f6fb5', '#1f6fb5', '#e9edf0'],
+  malmo: ['#4f9e3a', '#4f9e3a', '#4f9e3a', '#e0b62e'],
+};
+const SKAPLACK = ['#f2f0ea', '#f2f0ea', '#d9dde2', '#2e6da4', '#e0b62e', '#3b4048'];
+const HYTTLACK = ['#c0392b', '#1f4f8a', '#f2f0ea', '#3d6b4a', '#e0b62e', '#2b2e34'];
+const GLAS = '#1b2430';
+const GLAS_LJUST = '#2c3a4d';
+const LYKTA = '#fff1bf';
+const BAKLYKTA = '#e0352b';
+const SKUGGFARG = 'rgba(8,12,20,0.30)';
 
 const mellan = (v: number, lag: number, hog: number): number => (v < lag ? lag : v > hog ? hog : v);
 
@@ -130,6 +169,207 @@ function skuggad(hex: string, faktor: number): string {
   const g = mellan(Math.round(((n >> 8) & 255) * faktor), 0, 255);
   const b = mellan(Math.round((n & 255) * faktor), 0, 255);
   return `rgb(${r},${g},${b})`;
+}
+
+/* ---------- ritning i tre led ---------- */
+
+// Saken som ritas just nu: var dess mitt står på skärmen, åt vilket håll den pekar på marken
+// (dr åt bildens höger, df bort från kameran), hur många skärmpunkter en meter är, hur högt över
+// marken dess botten ligger och hur mycket den lutar åt sidan. Det sätts med stallRit(). Sedan
+// ges alla mått i meter från sakens mitt: framåt, åt höger och uppåt.
+let RX = 0;
+let RY = 0;
+let RDR = 1;
+let RDF = 0;
+let RK = 1;
+let RUPP = 0;
+let RLUT = 0;
+
+export function stallRit(x: number, y: number, dr: number, df: number, k: number, upp = 0, lut = 0) {
+  RX = x;
+  RY = y;
+  RDR = dr;
+  RDF = df;
+  RK = k;
+  RUPP = upp;
+  RLUT = lut;
+}
+/** Var en punkt på saken hamnar på skärmen. */
+export const skX = (fram: number, hoger: number, upp = 0): number => RX + (RDR * fram + RDF * (hoger + upp * RLUT)) * RK;
+export const skY = (fram: number, hoger: number, upp = 0): number => RY + ((-RDF * fram + RDR * (hoger + upp * RLUT) - upp - RUPP) * RK) / ROT2;
+
+type Penna = CanvasRenderingContext2D;
+
+/** En yta med fyra hörn. */
+export function fyrkant(p: Penna, f0: number, h0: number, u0: number, f1: number, h1: number, u1: number, f2: number, h2: number, u2: number, f3: number, h3: number, u3: number, farg: string) {
+  p.fillStyle = farg;
+  p.beginPath();
+  p.moveTo(skX(f0, h0, u0), skY(f0, h0, u0));
+  p.lineTo(skX(f1, h1, u1), skY(f1, h1, u1));
+  p.lineTo(skX(f2, h2, u2), skY(f2, h2, u2));
+  p.lineTo(skX(f3, h3, u3), skY(f3, h3, u3));
+  p.closePath();
+  p.fill();
+}
+
+/** En yta med tre hörn: ett segel, en vimpel. */
+export function trekant(p: Penna, f0: number, h0: number, u0: number, f1: number, h1: number, u1: number, f2: number, h2: number, u2: number, farg: string) {
+  p.fillStyle = farg;
+  p.beginPath();
+  p.moveTo(skX(f0, h0, u0), skY(f0, h0, u0));
+  p.lineTo(skX(f1, h1, u1), skY(f1, h1, u1));
+  p.lineTo(skX(f2, h2, u2), skY(f2, h2, u2));
+  p.closePath();
+  p.fill();
+}
+
+/** Ett streck mellan två punkter: en mast, en lina. */
+export function streck(p: Penna, f0: number, h0: number, u0: number, f1: number, h1: number, u1: number, farg: string, tjocklek: number) {
+  p.strokeStyle = farg;
+  p.lineWidth = tjocklek;
+  p.lineCap = 'butt';
+  p.beginPath();
+  p.moveTo(skX(f0, h0, u0), skY(f0, h0, u0));
+  p.lineTo(skX(f1, h1, u1), skY(f1, h1, u1));
+  p.stroke();
+}
+
+/**
+ * En låda: från f0 till f1 framåt, h0 till h1 åt höger och u0 till u1 uppåt. De två sidor som
+ * vetter mot kameran ritas, och sedan taket. Sidan som vetter åt öster är i ljus, den andra i skugga.
+ */
+export function lada3(p: Penna, f0: number, f1: number, h0: number, h1: number, u0: number, u1: number, tak: string, ljus: string, mork: string) {
+  if (RDR > 0.03) fyrkant(p, f0, h1, u0, f1, h1, u0, f1, h1, u1, f0, h1, u1, RDF > 0 ? ljus : mork);
+  else if (RDR < -0.03) fyrkant(p, f0, h0, u0, f1, h0, u0, f1, h0, u1, f0, h0, u1, RDF < 0 ? ljus : mork);
+  if (RDF < -0.03) fyrkant(p, f1, h0, u0, f1, h1, u0, f1, h1, u1, f1, h0, u1, RDR > 0 ? ljus : mork);
+  else if (RDF > 0.03) fyrkant(p, f0, h0, u0, f0, h1, u0, f0, h1, u1, f0, h0, u1, RDR < 0 ? ljus : mork);
+  fyrkant(p, f0, h0, u1, f1, h0, u1, f1, h1, u1, f0, h1, u1, tak);
+}
+
+/** Ett band längs den långsida som syns: en fönsterrad, en rand. `b` är halva bredden. */
+export function langband(p: Penna, f0: number, f1: number, b: number, u0: number, u1: number, farg: string) {
+  if (RDR > -0.03 && RDR < 0.03) return;
+  const h = RDR > 0 ? b : -b;
+  fyrkant(p, f0, h, u0, f1, h, u0, f1, h, u1, f0, h, u1, farg);
+}
+
+/** Ett band på en kortsida, om den syns: en vindruta, en lykta. `fram` säger om sidan vetter framåt. */
+export function kortband(p: Penna, f: number, fram: boolean, h0: number, h1: number, u0: number, u1: number, farg: string) {
+  if (fram ? RDF > -0.03 : RDF < 0.03) return;
+  fyrkant(p, f, h0, u0, f, h1, u0, f, h1, u1, f, h0, u1, farg);
+}
+
+const PX = new Float32Array(16);
+const PY = new Float32Array(16);
+
+/**
+ * En form med raka sidor, som ett skrov: hörnen runt om i meter (fram, höger, fram, höger ...),
+ * från u0 till u1 uppåt. Sidorna som vetter mot kameran ritas, och sedan ovansidan, med en tunn
+ * kant runt om för den som ger en färg till den.
+ */
+export function prisma(p: Penna, horn: readonly number[], u0: number, u1: number, tak: string, ljus: string, mork: string, kant = '') {
+  const n = Math.min(16, horn.length >> 1);
+  let yta = 0;
+  for (let i = 0; i < n; i += 1) {
+    PX[i] = skX(horn[2 * i], horn[2 * i + 1], u0);
+    PY[i] = skY(horn[2 * i], horn[2 * i + 1], u0);
+  }
+  for (let i = 0; i < n; i += 1) {
+    const j = (i + 1) % n;
+    yta += PX[i] * PY[j] - PX[j] * PY[i];
+  }
+  const lx = skX(0, 0, u1) - skX(0, 0, u0);
+  const ly = skY(0, 0, u1) - skY(0, 0, u0);
+  const varv = yta > 0 ? 1 : -1;
+  for (let i = 0; i < n; i += 1) {
+    const j = (i + 1) % n;
+    // sidans riktning utåt: nedåt i bilden är mot kameran, åt höger är i ljus
+    const ux = (PY[j] - PY[i]) * varv;
+    const uy = -(PX[j] - PX[i]) * varv;
+    if (uy <= 0) continue;
+    p.fillStyle = ux > 0 ? ljus : mork;
+    p.beginPath();
+    p.moveTo(PX[i], PY[i]);
+    p.lineTo(PX[j], PY[j]);
+    p.lineTo(PX[j] + lx, PY[j] + ly);
+    p.lineTo(PX[i] + lx, PY[i] + ly);
+    p.closePath();
+    p.fill();
+  }
+  p.fillStyle = tak;
+  p.beginPath();
+  for (let i = 0; i < n; i += 1) {
+    if (i) p.lineTo(PX[i] + lx, PY[i] + ly);
+    else p.moveTo(PX[i] + lx, PY[i] + ly);
+  }
+  p.closePath();
+  p.fill();
+  if (kant) {
+    p.strokeStyle = kant;
+    p.lineWidth = Math.max(0.5, 0.12 * RK);
+    p.stroke();
+  }
+}
+
+/** Skuggan på marken av en låda som är `hojd` meter hög: solen står i öster, så skuggan faller åt väster. */
+export function skuggruta(p: Penna, f0: number, f1: number, h0: number, h1: number, hojd: number) {
+  const dx = -0.5 * hojd * RK;
+  const dy = 0.22 * hojd * RK;
+  p.fillStyle = SKUGGFARG;
+  p.beginPath();
+  for (let varv = 0; varv < 2; varv += 1) {
+    const ox = varv * dx;
+    const oy = varv * dy;
+    p.moveTo(skX(f0, h0) + ox, skY(f0, h0) + oy);
+    p.lineTo(skX(f1, h0) + ox, skY(f1, h0) + oy);
+    p.lineTo(skX(f1, h1) + ox, skY(f1, h1) + oy);
+    p.lineTo(skX(f0, h1) + ox, skY(f0, h1) + oy);
+    p.closePath();
+  }
+  p.fill();
+}
+
+/** Lyktor på ett fordon som är 2 F långt och 2 B brett: ljusa fram, röda bak. */
+function lyktor(p: Penna, F: number, B: number, u: number) {
+  kortband(p, F, true, -B + 0.1, -B + 0.5, u, u + 0.28, LYKTA);
+  kortband(p, F, true, B - 0.5, B - 0.1, u, u + 0.28, LYKTA);
+  kortband(p, -F, false, -B + 0.1, -B + 0.5, u, u + 0.28, BAKLYKTA);
+  kortband(p, -F, false, B - 0.5, B - 0.1, u, u + 0.28, BAKLYKTA);
+}
+
+/**
+ * Jämnar ut nätets uppgift om vad som syns. Underlaget säger det punkt för punkt, var fjärde
+ * meter, och är prickigt: en parkerad bil, en lyktstolpe eller en trädkrona räcker för att en
+ * punkt ska räknas som dold. De flesta dolda sträckor var en enda punkt långa, och en bil syntes
+ * i median en sekund åt gången innan den tonades bort och kom tillbaka. Här fylls dolda luckor på
+ * upp till `lucka` punkter mellan synliga, och sedan tas synliga öar på upp till `o` punkter
+ * mellan dolda bort. Det som är kvar som dolt är det som är långt nog att vara ett hus eller en bro.
+ */
+export function jamnaSynlighet(start: Uint32Array, syns: Uint8Array, lucka: number, o: number) {
+  const E = start.length - 1;
+  for (let e = 0; e < E; e += 1) {
+    const a = start[e];
+    const b = start[e + 1];
+    for (let varv = 0; varv < 2; varv += 1) {
+      // varv 0 fyller dolda luckor, varv 1 tar bort synliga öar
+      const letar = varv === 0 ? 0 : 1;
+      const storst = varv === 0 ? lucka : o;
+      let s = a;
+      while (s < b) {
+        if (syns[s] !== letar) {
+          s += 1;
+          continue;
+        }
+        let t = s;
+        while (t < b && syns[t] === letar) t += 1;
+        // mitt i kanten, eller vid dess ena ände om den är kort: korsningen hör till grannen
+        const inre = s > a && t < b;
+        const vidAnde = (s === a) !== (t === b) && t - s <= 2 && b - a > 4;
+        if ((inre && t - s <= storst) || (varv === 0 && vidAnde)) syns.fill(1 - letar, s, t);
+        s = t;
+      }
+    }
+  }
 }
 
 /**
@@ -172,6 +412,13 @@ function lasNat(b: Livsnat, buffert: ArrayBuffer): Nat {
       syns[s] = (bitar[s >> 3] >> (s & 7)) & 1;
     }
   }
+  jamnaSynlighet(start, syns, 4, 2);
+  const synlig = new Uint8Array(E);
+  for (let e = 0; e < E; e += 1) {
+    let antal = 0;
+    for (let s = start[e]; s < start[e + 1]; s += 1) antal += syns[s];
+    synlig[e] = Math.round((255 * antal) / Math.max(1, start[e + 1] - start[e]));
+  }
   // för varje korsning, kanterna en bil kan lämna den på: e + 1 framåt, -(e + 1) bakåt
   const antal = new Uint32Array(N + 1);
   for (let e = 0; e < E; e += 1) {
@@ -207,7 +454,7 @@ function lasNat(b: Livsnat, buffert: ArrayBuffer): Nat {
       }
     }
   }
-  return { E, S, steg: b.stepMeters, start, fran, till, x, y, info, syns, utStart: antal, ut, celler, stampel: new Uint32Array(E), varv: 0 };
+  return { E, S, steg: b.stepMeters, start, fran, till, x, y, info, syns, synlig, utStart: antal, ut, celler, stampel: new Uint32Array(E), varv: 0 };
 }
 
 /* ---------- det delarna har gemensamt ---------- */
@@ -302,46 +549,37 @@ function vidare(nat: Nat, e: number, hall: number): number {
   return val[bast];
 }
 
-/**
- * En låda som står på marken: dess grundyta är `langd` gånger `bredd` meter runt (x, y) på
- * skärmen, vriden längs (dr, df) på marken, och den ritas `hojd` meter upp.
- */
-function lada(v: Verktyg, vy: Vy, x: number, y: number, dr: number, df: number, langd: number, bredd: number, hojd: number, farg: string) {
-  const t = v.ruta().tathet;
-  const k = vy.skala / v.mpb;
-  const L = Math.max((langd * k) / 2, 0.6);
-  const B = Math.max((bredd * k) / 2, 0.6);
-  v.penna.setTransform(t * dr * L, t * (-df / ROT2) * L, t * df * B, t * (dr / ROT2) * B, t * x, t * (y - (hojd * k) / ROT2));
-  v.penna.fillStyle = farg;
-  v.penna.fillRect(-1, -1, 2, 2);
+const FORM = new Array<number>(18).fill(0);
+
+/** Ett skrov sett uppifrån, spetsigt i fören: hörnen runt om, för prisma(). Samma lista lämnas varje gång. */
+function skrovform(L: number, B: number): number[] {
+  const f = FORM;
+  f[0] = -L / 2;
+  f[1] = -0.4 * B;
+  f[2] = -L / 2;
+  f[3] = 0.4 * B;
+  f[4] = -0.36 * L;
+  f[5] = B / 2;
+  f[6] = 0.2 * L;
+  f[7] = B / 2;
+  f[8] = 0.4 * L;
+  f[9] = 0.3 * B;
+  f[10] = L / 2;
+  f[11] = 0;
+  f[12] = 0.4 * L;
+  f[13] = -0.3 * B;
+  f[14] = 0.2 * L;
+  f[15] = -B / 2;
+  f[16] = -0.36 * L;
+  f[17] = -B / 2;
+  return f;
 }
 
-/** Ett skrov sett uppifrån, spetsigt i fören: fem hörn, `langd` gånger `bredd` meter. */
-function skrov(v: Verktyg, vy: Vy, x: number, y: number, dr: number, df: number, langd: number, bredd: number, hojd: number, farg: string) {
-  const p = v.penna;
-  const t = v.ruta().tathet;
-  const k = vy.skala / v.mpb;
-  const L = Math.max((langd * k) / 2, 0.8);
-  const B = Math.max((bredd * k) / 2, 0.6);
-  p.setTransform(t * dr * L, t * (-df / ROT2) * L, t * df * B, t * (dr / ROT2) * B, t * x, t * (y - (hojd * k) / ROT2));
-  p.fillStyle = farg;
-  p.beginPath();
-  p.moveTo(-1, -0.82);
-  p.lineTo(0.45, -1);
-  p.lineTo(1, 0);
-  p.lineTo(0.45, 1);
-  p.lineTo(-1, 0.82);
-  p.closePath();
-  p.fill();
-}
-
-/** Det vita V som en båt i rörelse lämnar efter sig. */
+/** Det vita V som en båt i rörelse lämnar efter sig, starkast närmast aktern. */
 function kolvatten(v: Verktyg, vy: Vy, x: number, y: number, dr: number, df: number, langd: number, bredd: number, rackvidd: number, styrka: number) {
   if (styrka <= 0.02) return;
   const p = v.penna;
-  const t = v.ruta().tathet;
   const k = vy.skala / v.mpb;
-  p.setTransform(t, 0, 0, t, 0, 0);
   // en meter framåt och en meter åt höger, på skärmen
   const ax = dr * k;
   const ay = (-df / ROT2) * k;
@@ -350,41 +588,65 @@ function kolvatten(v: Verktyg, vy: Vy, x: number, y: number, dr: number, df: num
   // aktern
   const sx = x - ax * langd * 0.45;
   const sy = y - ay * langd * 0.45;
-  p.strokeStyle = `rgba(235,246,250,${(0.55 * styrka).toFixed(3)})`;
-  p.lineWidth = Math.max(1, bredd * k * 0.22);
   p.lineCap = 'round';
-  p.beginPath();
-  for (let sida = -1; sida <= 1; sida += 2) {
-    p.moveTo(sx + bx * sida * bredd * 0.3, sy + by * sida * bredd * 0.3);
-    p.lineTo(sx - ax * rackvidd + bx * sida * (bredd * 0.3 + rackvidd * 0.28), sy - ay * rackvidd + by * sida * (bredd * 0.3 + rackvidd * 0.28));
+  // armarna i tre bitar, svagare ju längre bak
+  for (let bit = 0; bit < 3; bit += 1) {
+    const fran = (rackvidd * bit) / 3;
+    const till = (rackvidd * (bit + 1)) / 3;
+    p.strokeStyle = `rgba(235,246,250,${(0.55 * styrka * (1 - bit * 0.3)).toFixed(3)})`;
+    p.lineWidth = Math.max(1, bredd * k * (0.2 - bit * 0.04));
+    p.beginPath();
+    for (let sida = -1; sida <= 1; sida += 2) {
+      const a = bredd * 0.3 + fran * 0.28;
+      const b = bredd * 0.3 + till * 0.28;
+      p.moveTo(sx - ax * fran + bx * sida * a, sy - ay * fran + by * sida * a);
+      p.lineTo(sx - ax * till + bx * sida * b, sy - ay * till + by * sida * b);
+    }
+    p.stroke();
   }
-  p.stroke();
   // det upprörda vattnet precis bakom aktern
-  p.strokeStyle = `rgba(235,246,250,${(0.35 * styrka).toFixed(3)})`;
-  p.lineWidth = Math.max(1, bredd * k * 0.5);
+  p.strokeStyle = `rgba(235,246,250,${(0.32 * styrka).toFixed(3)})`;
+  p.lineWidth = Math.max(1, bredd * k * 0.3);
   p.beginPath();
   p.moveTo(sx, sy);
-  p.lineTo(sx - ax * rackvidd * 0.45, sy - ay * rackvidd * 0.45);
+  p.lineTo(sx - ax * rackvidd * 0.3, sy - ay * rackvidd * 0.3);
   p.stroke();
+}
+
+/** En liten svensk flagga på en stång i aktern, `f` meter fram om mitten och med foten `u` meter upp. */
+function flagga(p: Penna, f: number, u: number, storlek: number, k: number) {
+  if (storlek * k < 3) return;
+  streck(p, f, 0, u, f, 0, u + storlek * 2.1, '#3a3f46', Math.max(0.6, 0.1 * k));
+  const u0 = u + storlek * 1.2;
+  const u1 = u + storlek * 2.1;
+  fyrkant(p, f, 0, u0, f - storlek * 1.5, 0, u0, f - storlek * 1.5, 0, u1, f, 0, u1, '#1f5fa8');
+  fyrkant(p, f, 0, u0 + storlek * 0.36, f - storlek * 1.5, 0, u0 + storlek * 0.36, f - storlek * 1.5, 0, u0 + storlek * 0.54, f, 0, u0 + storlek * 0.54, '#f2c230');
+  fyrkant(p, f - storlek * 0.42, 0, u0, f - storlek * 0.62, 0, u0, f - storlek * 0.62, 0, u1, f - storlek * 0.42, 0, u1, '#f2c230');
 }
 
 /* ---------- tåg, tunnelbana och spårvagnar ---------- */
 
 function tagdel(v: Verktyg): Del {
-  type Sort = { fart: number; vagnar: number; vagnslangd: number; perKm: number; tak: string; sida: string };
+  type Sort = { fart: number; vagnar: number; vagnslangd: number; perKm: number; kropp: string; rand: string; tak: string };
   // per sorts spår: tunnelbana, järnväg, lätt spårväg, spårvagn, smalspår
-  const SORT: Sort[] = [
-    { fart: 17, vagnar: 6, vagnslangd: 23, perKm: 1 / 1.7, tak: '#2f62a8', sida: '#dfe5ec' },
-    { fart: 23, vagnar: 6, vagnslangd: 26, perKm: 1 / 2.4, tak: '#d6dade', sida: '#3a5682' },
-    { fart: 12, vagnar: 3, vagnslangd: 15, perKm: 1 / 1.5, tak: '#e9ecef', sida: '#3c6fb0' },
-    { fart: 9, vagnar: 3, vagnslangd: 10, perKm: 1 / 1.0, tak: '#e9ecef', sida: '#2f62a8' },
-    { fart: 15, vagnar: 4, vagnslangd: 20, perKm: 1 / 1.9, tak: '#e4e7ea', sida: '#a33a2c' },
+  const GRUND: Sort[] = [
+    { fart: 14, vagnar: 6, vagnslangd: 23, perKm: 1 / 1.7, kropp: '#2f62a8', rand: '#e9edf0', tak: '#cdd4db' },
+    { fart: 17, vagnar: 6, vagnslangd: 26, perKm: 1 / 2.4, kropp: '#e6eaee', rand: '#2f4f86', tak: '#c6ccd3' },
+    { fart: 10, vagnar: 3, vagnslangd: 15, perKm: 1 / 1.5, kropp: '#eef1f3', rand: '#3c6fb0', tak: '#cfd5da' },
+    { fart: 8, vagnar: 3, vagnslangd: 10, perKm: 1 / 1.0, kropp: '#2f62a8', rand: '#f1f3f5', tak: '#d9dde2' },
+    { fart: 12, vagnar: 4, vagnslangd: 20, perKm: 1 / 1.9, kropp: '#a33a2c', rand: '#f0e9d8', tak: '#d5d8da' },
   ];
+  // Göteborgs spårvagnar är vita med blått, och Skånes pågatåg lila.
+  const STADENS: Record<string, Record<number, Partial<Sort>>> = {
+    goteborg: { 2: { kropp: '#f1f3f5', rand: '#1f6fb5' }, 3: { kropp: '#f1f3f5', rand: '#1f6fb5' } },
+    malmo: { 1: { kropp: '#6d4196', rand: '#dfe2e6' } },
+  };
   const MAX_MPP = 4.5;
   const BREDD = 3.0;
   const KOPPEL = 0.8;
   const TAK = 40;
   type Tag = { sort: Sort; vag: number[]; kant: number; slut: boolean; ute: number; h: number; fart: number };
+  let SORT = GRUND;
   let nat: Nat | null = null;
   let tagen: Tag[] = [];
   let urval: Urval | null = null;
@@ -420,13 +682,37 @@ function tagdel(v: Verktyg): Del {
     return null;
   }
 
+  /** En vagn: kroppen med en rand och en fönsterrad, taket med en platta, och rutor och lyktor i tågets ändar. */
+  function ritaVagn(p: Penna, sort: Sort, forst: boolean, sist: boolean, enkel: boolean) {
+    const F = sort.vagnslangd / 2;
+    const B = BREDD / 2;
+    skuggruta(p, -F, F, -B, B, 3.2);
+    lada3(p, -F, F, -B, B, 0.3, 3.5, sort.tak, v.skugga(sort.kropp, 0.94), v.skugga(sort.kropp, 0.7));
+    if (enkel) return;
+    langband(p, -F, F, B, 1.0, 1.35, sort.rand);
+    langband(p, -F + 1.0, F - 1.0, B, 1.75, 2.8, GLAS);
+    if (forst) {
+      kortband(p, F, true, -B + 0.25, B - 0.25, 1.7, 2.9, GLAS);
+      kortband(p, F, true, -B + 0.2, -B + 0.7, 0.75, 1.05, LYKTA);
+      kortband(p, F, true, B - 0.7, B - 0.2, 0.75, 1.05, LYKTA);
+    }
+    if (sist) {
+      kortband(p, -F, false, -B + 0.25, B - 0.25, 1.7, 2.9, GLAS);
+      kortband(p, -F, false, -B + 0.2, -B + 0.7, 0.75, 1.05, BAKLYKTA);
+      kortband(p, -F, false, B - 0.7, B - 0.2, 0.75, 1.05, BAKLYKTA);
+    }
+    lada3(p, -F + 1.2, F - 1.2, -B + 0.45, B - 0.45, 3.5, 3.72, v.skugga(sort.tak, 1.07), v.skugga(sort.tak, 0.86), v.skugga(sort.tak, 0.74));
+  }
+
   return {
-    oppna() {
+    oppna(stad) {
       nat = null;
       tagen = [];
       urval = null;
       alder = 9;
       fragat = false;
+      const stadens = STADENS[stad.id] ?? {};
+      SORT = GRUND.map((sort, i) => ({ ...sort, ...(stadens[i] ?? {}) }));
     },
     rensa() {
       tagen = [];
@@ -502,41 +788,44 @@ function tagdel(v: Verktyg): Del {
       const toning = mellan((MAX_MPP - vy.mpp) / 0.8, 0, 1);
       if (toning <= 0) return;
       const p = v.penna;
-      const t = v.ruta().tathet;
       const nara = vidgad(vy, 0.1);
-      p.globalAlpha = toning;
+      const k = vy.skala / v.mpb;
+      const enkel = k < 0.6; // långt ute: bara kropp och tak
       for (const tag of tagen) {
         const sort = tag.sort;
-        for (let c = 0; c < sort.vagnar; c += 1) {
+        const sista = tag.vag.length - 1;
+        // Vagnarna ritas bortifrån och hitåt, så att den som är närmast kameran hamnar överst.
+        const huvud = tag.vag[Math.floor(mellan(tag.h, 0, sista))];
+        const ande = tag.vag[Math.floor(mellan(tag.h - langdAv(tag) / n.steg, 0, sista))];
+        const hitat = n.y[huvud] > n.y[ande];
+        for (let i = 0; i < sort.vagnar; i += 1) {
+          const c = hitat ? sort.vagnar - 1 - i : i;
           const q = tag.h - (c * (sort.vagnslangd + KOPPEL) + sort.vagnslangd / 2) / n.steg;
-          if (q < 1 || q > tag.vag.length - 2) continue; // inte ute ur tunneln än, eller redan inne
+          if (q < 1 || q > sista - 1) continue; // inte ute ur tunneln än, eller redan inne
           const j = Math.floor(q);
           const andel = q - j;
           const s0 = tag.vag[j];
           const s1 = tag.vag[j + 1];
-          if (!n.syns[andel < 0.5 ? s0 : s1]) continue;
+          // Hur mycket av vagnen som syns, räknat över dess längd: den tonas in och ut ur en tunnel i stället för att slå om.
+          const syn = (n.syns[tag.vag[j - 1]] * (1 - andel) + n.syns[s0] + n.syns[s1] + n.syns[tag.vag[Math.min(sista, j + 2)]] * andel) / 3;
+          if (syn < 0.04) continue;
           const mx = n.x[s0] + (n.x[s1] - n.x[s0]) * andel;
           const my = n.y[s0] + (n.y[s1] - n.y[s0]) * andel;
           if (!inom(nara, mx, my)) continue;
           // vagnen pekar längs spåret en bit bakom och framför sin mitt
           const sa = tag.vag[Math.max(0, j - 2)];
-          const sb = tag.vag[Math.min(tag.vag.length - 1, j + 3)];
+          const sb = tag.vag[Math.min(sista, j + 3)];
           let dr = n.x[sb] - n.x[sa];
           let df = -(n.y[sb] - n.y[sa]) * ROT2;
           const dl = Math.hypot(dr, df);
           if (dl < 1e-6) continue;
           dr /= dl;
           df /= dl;
-          const x = vy.ox + mx * vy.skala;
-          const y = vy.oy + my * vy.skala;
-          lada(v, vy, x + 0.6, y + 0.8, dr, df, sort.vagnslangd + 0.6, BREDD + 0.8, 0, 'rgba(8,12,20,0.4)');
-          lada(v, vy, x, y, dr, df, sort.vagnslangd, BREDD, 0.9, v.skugga(sort.sida, 0.72));
-          lada(v, vy, x, y, dr, df, sort.vagnslangd, BREDD, 2.2, sort.sida);
-          lada(v, vy, x, y, dr, df, sort.vagnslangd - 0.6, BREDD, 3.0, '#1c2430');
-          lada(v, vy, x, y, dr, df, sort.vagnslangd - 0.4, BREDD - 0.3, 3.7, sort.tak);
+          p.globalAlpha = toning * syn;
+          stallRit(vy.ox + mx * vy.skala, vy.oy + my * vy.skala, dr, df, k);
+          ritaVagn(p, sort, c === 0, c === sort.vagnar - 1, enkel);
         }
       }
-      p.setTransform(t, 0, 0, t, 0, 0);
       p.globalAlpha = 1;
     },
     tillstand: () => ({ tag: tagen.length, tagmal: mal, spar: nat ? nat.E : 0 }),
@@ -546,18 +835,28 @@ function tagdel(v: Verktyg): Del {
 /* ---------- färjor ---------- */
 
 function farjedel(v: Verktyg): Del {
-  type Sort = { fart: number; langd: number; bredd: number; perKm: number; skrov: string; dack: string; hus: string; hushojd: number; skorsten: string };
+  type Sort = { stor: boolean; fart: number; langd: number; bredd: number; perKm: number };
   // en pendelbåt, och ett fartyg till Finland eller Baltikum
   const SORT: Sort[] = [
-    { fart: 5.5, langd: 30, bredd: 8, perKm: 1 / 5, skrov: '#f4f2ec', dack: '#d8dde2', hus: '#fbfaf6', hushojd: 6, skorsten: '' },
-    { fart: 8.5, langd: 185, bredd: 29, perKm: 1 / 14, skrov: '#f1f1ee', dack: '#cfd5db', hus: '#fbfaf6', hushojd: 26, skorsten: '#c0392b' },
+    { stor: false, fart: 5, langd: 30, bredd: 8, perKm: 1 / 5 },
+    { stor: true, fart: 7.5, langd: 185, bredd: 29, perKm: 1 / 14 },
   ];
+  // de stora fartygens färger: skrovet, och skorstenen
+  const REDERI: [string, string][] = [
+    ['#f1f1ee', '#b3261e'],
+    ['#b3261e', '#f1f1ee'],
+    ['#1d3a6b', '#e0b62e'],
+    ['#f1f1ee', '#1d3a6b'],
+  ];
+  const VITT = '#fbfaf6';
+  const VITT_SKUGGA = '#d6dade';
+  const KANT = 'rgba(16,28,48,0.55)';
   const MAX_MPP = 3.6;
   // Färjelinjerna löper samman vid kajerna i innerstaden. Med en färja på var och en blev vattnet
   // där fullt av båtar och kölvatten. Därför få färjor, och ingen ny nära en som redan går.
   const TAK = 8;
   const AVSTAND = 350; // meter mellan en ny färja och de som redan går
-  type Farja = { e: number; hall: number; s: number; sort: Sort; fart: number; kaj: number; ute: number };
+  type Farja = { e: number; hall: number; s: number; sort: Sort; fart: number; kaj: number; ute: number; rederi: number };
   let nat: Nat | null = null;
   let farjor: Farja[] = [];
   let urval: Urval | null = null;
@@ -583,9 +882,73 @@ function farjedel(v: Verktyg): Del {
       });
       if (nara) continue;
       const sort = sortAv(n, e);
-      return { e, hall: Math.random() < 0.5 ? 1 : -1, s, sort, fart: sort.fart * (0.9 + 0.2 * Math.random()), kaj: 0, ute: 0 };
+      return { e, hall: Math.random() < 0.5 ? 1 : -1, s, sort, fart: sort.fart * (0.9 + 0.2 * Math.random()), kaj: 0, ute: 0, rederi: Math.floor(Math.random() * REDERI.length) };
     }
     return null;
+  }
+
+  /** En pendelbåt: vitt skrov med mörk vattenlinje, en salong med fönster, styrhytt, skorsten och flagga. */
+  function ritaPendelbat(p: Penna, sort: Sort, k: number) {
+    const L = sort.langd;
+    const B = sort.bredd;
+    const form = skrovform(L, B);
+    prisma(p, form, 0, 0.7, '#1d2f4f', '#22375c', '#16233c');
+    prisma(p, form, 0.7, 2.0, '#b9c3c9', VITT, VITT_SKUGGA, KANT);
+    const salong = () => {
+      lada3(p, -0.36 * L, 0.24 * L, -0.36 * B, 0.36 * B, 2.0, 4.4, '#eef1f3', VITT, VITT_SKUGGA);
+      langband(p, -0.33 * L, 0.21 * L, 0.36 * B, 2.8, 3.7, GLAS);
+      kortband(p, 0.24 * L, true, -0.3 * B, 0.3 * B, 2.8, 3.7, GLAS);
+    };
+    const skorsten = () => {
+      lada3(p, -0.27 * L, -0.19 * L, -0.11 * B, 0.11 * B, 4.4, 6.6, '#22262c', '#e0b62e', '#b8921c');
+    };
+    const styrhytt = () => {
+      lada3(p, 0.03 * L, 0.19 * L, -0.25 * B, 0.25 * B, 4.4, 6.4, '#eef0f2', VITT, VITT_SKUGGA);
+      langband(p, 0.04 * L, 0.18 * L, 0.25 * B, 5.2, 6.0, GLAS);
+      kortband(p, 0.19 * L, true, -0.22 * B, 0.22 * B, 5.2, 6.0, GLAS);
+    };
+    salong();
+    // det som står akterut ligger närmast kameran när båten går bort från den
+    if (RDF > 0) {
+      styrhytt();
+      skorsten();
+    } else {
+      skorsten();
+      styrhytt();
+    }
+    flagga(p, -0.47 * L, 2.0, 1.5, k);
+  }
+
+  /** Ett fartyg: skrov i rederiets färg, tre våningar med fönsterrader, livbåtar, brygga och skorsten. */
+  function ritaFartyg(p: Penna, sort: Sort, rederi: [string, string]) {
+    const L = sort.langd;
+    const B = sort.bredd;
+    const form = skrovform(L, B);
+    const [skrovfarg, skorstensfarg] = rederi;
+    prisma(p, form, 0, 2.5, '#1a2230', '#232d3f', '#141a26');
+    prisma(p, form, 2.5, 10, '#b9c3c9', v.skugga(skrovfarg, 1), v.skugga(skrovfarg, 0.76), KANT);
+    lada3(p, -0.44 * L, 0.33 * L, -0.47 * B, 0.47 * B, 10, 19, '#dfe3e7', VITT, VITT_SKUGGA);
+    langband(p, -0.42 * L, 0.31 * L, 0.47 * B, 11.4, 12.9, GLAS);
+    langband(p, -0.42 * L, 0.31 * L, 0.47 * B, 14.6, 16.1, GLAS);
+    kortband(p, 0.33 * L, true, -0.42 * B, 0.42 * B, 14.6, 16.1, GLAS);
+    for (let i = 0; i < 5; i += 1) langband(p, (-0.3 + i * 0.12) * L, (-0.3 + i * 0.12 + 0.06) * L, 0.47 * B, 17.2, 18.6, '#e4672e');
+    lada3(p, -0.4 * L, 0.27 * L, -0.42 * B, 0.42 * B, 19, 25, '#e6e9ec', VITT, VITT_SKUGGA);
+    langband(p, -0.38 * L, 0.25 * L, 0.42 * B, 20.6, 22.6, GLAS);
+    const brygga = () => {
+      lada3(p, 0.17 * L, 0.27 * L, -0.5 * B, 0.5 * B, 25, 29, '#eef0f2', VITT, VITT_SKUGGA);
+      langband(p, 0.175 * L, 0.265 * L, 0.5 * B, 26.6, 28.2, GLAS);
+      kortband(p, 0.27 * L, true, -0.47 * B, 0.47 * B, 26.6, 28.2, GLAS);
+    };
+    const skorsten = () => {
+      lada3(p, -0.3 * L, -0.2 * L, -0.2 * B, 0.2 * B, 25, 37, v.skugga(skorstensfarg, 0.6), v.skugga(skorstensfarg, 1), v.skugga(skorstensfarg, 0.74));
+    };
+    if (RDF > 0) {
+      brygga();
+      skorsten();
+    } else {
+      skorsten();
+      brygga();
+    }
   }
 
   return {
@@ -669,7 +1032,6 @@ function farjedel(v: Verktyg): Del {
       const toning = mellan((MAX_MPP - vy.mpp) / 0.8, 0, 1);
       if (toning <= 0) return;
       const p = v.penna;
-      const t = v.ruta().tathet;
       const nara = vidgad(vy, 0.15);
       const k = vy.skala / v.mpb;
       for (const f of farjor) {
@@ -680,7 +1042,11 @@ function farjedel(v: Verktyg): Del {
         const i0 = a + Math.floor(s);
         const i1 = Math.min(i0 + 1, a + langd - 1);
         const andel = s - Math.floor(s);
-        if (!n.syns[andel < 0.5 ? i0 : i1]) continue; // under en bro
+        // under en bro tonas den bort och fram igen, över sin egen längd
+        let syn = 0;
+        for (let d = -2; d <= 2; d += 1) syn += n.syns[mellan(i0 + d, a, a + langd - 1)];
+        syn /= 5;
+        if (syn < 0.04) continue;
         const mx = n.x[i0] + (n.x[i1] - n.x[i0]) * andel;
         const my = n.y[i0] + (n.y[i1] - n.y[i0]) * andel;
         if (!inom(nara, mx, my)) continue;
@@ -694,24 +1060,12 @@ function farjedel(v: Verktyg): Del {
         df /= dl;
         const x = vy.ox + mx * vy.skala;
         const y = vy.oy + my * vy.skala;
-        p.globalAlpha = toning;
-        if (f.kaj <= 0) kolvatten(v, vy, x, y, dr, df, sort.langd, sort.bredd, sort.langd * 0.7, toning * 0.55);
-        p.globalAlpha = toning;
-        skrov(v, vy, x, y, dr, df, sort.langd, sort.bredd, 0.4, v.skugga(sort.skrov, 0.7));
-        skrov(v, vy, x, y, dr, df, sort.langd, sort.bredd, 2.2, sort.skrov);
-        skrov(v, vy, x, y, dr, df, sort.langd * 0.96, sort.bredd * 0.86, 2.6, sort.dack);
-        // huset på däck, lite akter om mitten
-        const hx = x - dr * sort.langd * 0.08 * k;
-        const hy = y + (df / ROT2) * sort.langd * 0.08 * k;
-        lada(v, vy, hx, hy, dr, df, sort.langd * 0.6, sort.bredd * 0.66, 2.6 + sort.hushojd * 0.5, '#27303c');
-        lada(v, vy, hx, hy, dr, df, sort.langd * 0.6, sort.bredd * 0.66, 2.6 + sort.hushojd, sort.hus);
-        if (sort.skorsten) {
-          const fx = x - dr * sort.langd * 0.26 * k;
-          const fy = y + (df / ROT2) * sort.langd * 0.26 * k;
-          lada(v, vy, fx, fy, dr, df, sort.langd * 0.07, sort.bredd * 0.3, 2.6 + sort.hushojd + 9, sort.skorsten);
-        }
+        p.globalAlpha = toning * syn;
+        if (f.kaj <= 0) kolvatten(v, vy, x, y, dr, df, sort.langd, sort.bredd, sort.langd * 0.7, toning * syn * 0.55);
+        stallRit(x, y, dr, df, k);
+        if (sort.stor) ritaFartyg(p, sort, REDERI[f.rederi]);
+        else ritaPendelbat(p, sort, k);
       }
-      p.setTransform(t, 0, 0, t, 0, 0);
       p.globalAlpha = 1;
     },
     tillstand: () => ({ farjor: farjor.length, farjemal: mal, farjelinjer: nat ? nat.E : 0 }),
@@ -726,8 +1080,28 @@ function batdel(v: Verktyg): Del {
   const TAK = 24;
   const KVADRATMETER_PER_BAT = 200000; // en båt per tjugo hektar öppet vatten
   const UTANFOR = 0.6;
+  const SEGELBAT = 0;
+  const MOTORBAT = 1;
+  const JOLLE = 2;
+  const SEGELDUK = '#fbfaf4';
   type Vatten = { b: number; h: number; bitar: Uint8Array; cell: number };
-  type Bat = { x: number; y: number; th: number; svang: number; styr: number; segel: boolean; fart: number; langd: number; lack: string; alfa: number; ute: number };
+  type Bat = {
+    x: number;
+    y: number;
+    th: number;
+    svang: number;
+    styr: number;
+    sort: number;
+    fart: number;
+    langd: number;
+    lack: string;
+    /** Åt vilken sida bommen står ut, och hur långt: -1 till 1. */
+    bom: number;
+    alfa: number;
+    ute: number;
+    /** Den har gått på grund i den grova vattenbilden och tonas bort. */
+    bort: boolean;
+  };
   let vatten: Vatten | null = null; // cell: bildpunkter i kartbilden per cell
   let batar: Bat[] = [];
   let omrade: Omrade | null = null;
@@ -774,22 +1148,69 @@ function batdel(v: Verktyg): Del {
       const y = omrade.y0 + Math.random() * (omrade.y1 - omrade.y0);
       if (!arOppet(x, y)) continue;
       if (dold && inom(vy, x, y)) continue;
-      const segel = Math.random() < 0.4;
+      const slump = Math.random();
+      const sort = slump < 0.4 ? SEGELBAT : slump < 0.85 ? MOTORBAT : JOLLE;
       return {
         x,
         y,
         th: Math.random() * Math.PI * 2,
         svang: 0,
         styr: 0,
-        segel,
-        fart: segel ? 2.2 + 1.3 * Math.random() : 5 + 6 * Math.random(),
-        langd: segel ? 8 + 3 * Math.random() : 5.5 + 3 * Math.random(),
-        lack: Math.random() < 0.75 ? '#f6f4ee' : Math.random() < 0.5 ? '#2b4a78' : '#7a2f28',
+        sort,
+        fart: sort === SEGELBAT ? 2.2 + 1.3 * Math.random() : sort === MOTORBAT ? 4.5 + 5 * Math.random() : 2.5 + 2 * Math.random(),
+        langd: sort === SEGELBAT ? 8.5 + 3 * Math.random() : sort === MOTORBAT ? 6 + 3 * Math.random() : 4.2 + 0.8 * Math.random(),
+        lack: Math.random() < 0.72 ? '#f6f4ee' : Math.random() < 0.5 ? '#2b4a78' : '#7a2f28',
+        bom: (Math.random() < 0.5 ? -1 : 1) * (0.5 + 0.5 * Math.random()),
         alfa: dold ? 1 : 0,
         ute: 0,
+        bort: false,
       };
     }
     return null;
+  }
+
+  /** Båten: skrov med däck, och på det ruff och segel, eller ruff med rutor och motor, eller en roddare. */
+  function ritaBat(p: Penna, b: Bat, k: number) {
+    const L = b.langd;
+    const B = L * (b.sort === SEGELBAT ? 0.3 : 0.36);
+    const form = skrovform(L, B);
+    prisma(p, form, 0, b.sort === JOLLE ? 0.5 : 0.8, b.sort === JOLLE ? '#b98f5b' : '#d9cfb8', v.skugga(b.lack, 1), v.skugga(b.lack, 0.72), 'rgba(16,28,48,0.5)');
+    if (b.sort === SEGELBAT) {
+      const upp = 0.8;
+      lada3(p, -0.12 * L, 0.2 * L, -0.26 * B, 0.26 * B, upp, upp + 0.5, '#f3f0e6', '#fbfaf4', '#d6d2c5');
+      // masten med storseglet akterut och focken förut; bommen står ut åt lä
+      const mast = 0.14 * L;
+      const topp = upp + 1.25 * L;
+      const ut = b.bom * 0.2 * L;
+      streck(p, mast, 0, upp, mast, 0, topp, '#4a4f57', Math.max(0.7, 0.12 * k));
+      trekant(p, mast, 0, upp + 0.9, mast, 0, topp, -0.4 * L, ut, upp + 0.9, SEGELDUK);
+      trekant(p, 0.47 * L, 0, upp, mast, 0, topp * 0.88, 0.1 * L, ut * 0.55, upp + 0.5, v.skugga(SEGELDUK, 0.9));
+      // en tunn kant, så att seglet syns mot ljust vatten och ljusa tak
+      p.strokeStyle = 'rgba(40,52,66,0.5)';
+      p.lineWidth = Math.max(0.5, 0.09 * k);
+      p.beginPath();
+      p.moveTo(skX(mast, 0, topp), skY(mast, 0, topp));
+      p.lineTo(skX(-0.4 * L, ut, upp + 0.9), skY(-0.4 * L, ut, upp + 0.9));
+      p.lineTo(skX(mast, 0, upp + 0.9), skY(mast, 0, upp + 0.9));
+      p.stroke();
+    } else if (b.sort === MOTORBAT) {
+      // sittbrunnen akterut, ruffen med rutor, och motorn i aktern
+      lada3(p, -0.4 * L, 0.0, -0.3 * B, 0.3 * B, 0.8, 0.84, '#8f7a5c', '#8f7a5c', '#8f7a5c');
+      const ruff = () => lada3(p, 0.0, 0.22 * L, -0.34 * B, 0.34 * B, 0.8, 1.5, '#f6f4ee', GLAS_LJUST, GLAS);
+      const motor = () => lada3(p, -0.52 * L, -0.44 * L, -0.12 * B, 0.12 * B, 0.4, 1.25, '#2c3138', '#343a42', '#1c2026');
+      if (RDF > 0) {
+        ruff();
+        motor();
+      } else {
+        motor();
+        ruff();
+      }
+    } else {
+      // en jolle: två tofter och någon i flytväst
+      lada3(p, -0.2 * L, -0.12 * L, -0.4 * B, 0.4 * B, 0.5, 0.56, '#8a6a43', '#8a6a43', '#8a6a43');
+      lada3(p, 0.12 * L, 0.2 * L, -0.36 * B, 0.36 * B, 0.5, 0.56, '#8a6a43', '#8a6a43', '#8a6a43');
+      lada3(p, -0.1 * L, 0.02 * L, -0.14 * B, 0.14 * B, 0.5, 1.3, '#f0c9a0', '#e4672e', '#b84f20');
+    }
   }
 
   return {
@@ -829,45 +1250,57 @@ function batdel(v: Verktyg): Del {
         alder = 0;
       }
       if (!omrade) return;
+      let kvar = 0;
       for (let i = batar.length - 1; i >= 0; i -= 1) {
         const b = batar[i];
-        // Båten ser en bit framför sig. Land där: den svänger mot den sida som har vatten och
-        // fortsätter svänga tills vägen fram är fri. Öppet vatten: den driver lite hit och dit.
-        const rackvidd = 45 + b.fart * 6;
-        const fram = framfor(b.x, b.y, b.th, rackvidd);
-        if (!arVatten(fram.x, fram.y)) {
-          if (!b.styr) {
-            const vanster = framfor(b.x, b.y, b.th + 0.9, rackvidd);
-            const hoger = framfor(b.x, b.y, b.th - 0.9, rackvidd);
-            const vv = arVatten(vanster.x, vanster.y);
-            const hv = arVatten(hoger.x, hoger.y);
-            b.styr = vv && !hv ? 1 : !vv && hv ? -1 : Math.random() < 0.5 ? 1 : -1;
-          }
-          b.svang = b.styr * 0.9;
+        let borta = false;
+        if (b.bort) {
+          b.alfa -= dt * 1.6;
+          borta = b.alfa <= 0.03;
         } else {
-          b.styr = 0;
-          b.svang += (Math.random() - 0.5) * 0.6 * dt;
-          b.svang *= 1 - Math.min(1, dt * 0.8);
-        }
-        b.th += b.svang * dt;
-        const takt = b.styr ? 0.55 : 1; // långsammare medan den svänger undan från land
-        const nasta = framfor(b.x, b.y, b.th, b.fart * takt * dt);
-        b.x = nasta.x;
-        b.y = nasta.y;
-        b.alfa += (1 - b.alfa) * Math.min(1, dt * 2);
-        let borta = !arVatten(b.x, b.y); // den har gått på grund i den grova vattenbilden
-        if (inom(omrade, b.x, b.y)) b.ute = 0;
-        else {
-          b.ute += dt;
-          if (b.ute > 0.5) borta = true;
+          kvar += 1;
+          // Båten ser en bit framför sig. Land där: den svänger mot den sida som har vatten och
+          // fortsätter svänga tills vägen fram är fri. Öppet vatten: den driver lite hit och dit.
+          const rackvidd = 45 + b.fart * 6;
+          const fram = framfor(b.x, b.y, b.th, rackvidd);
+          if (!arVatten(fram.x, fram.y)) {
+            if (!b.styr) {
+              const vanster = framfor(b.x, b.y, b.th + 0.9, rackvidd);
+              const hoger = framfor(b.x, b.y, b.th - 0.9, rackvidd);
+              const vv = arVatten(vanster.x, vanster.y);
+              const hv = arVatten(hoger.x, hoger.y);
+              b.styr = vv && !hv ? 1 : !vv && hv ? -1 : Math.random() < 0.5 ? 1 : -1;
+            }
+            b.svang = b.styr * 0.9;
+          } else {
+            b.styr = 0;
+            b.svang += (Math.random() - 0.5) * 0.6 * dt;
+            b.svang *= 1 - Math.min(1, dt * 0.8);
+          }
+          b.th += b.svang * dt;
+          const takt = b.styr ? 0.55 : 1; // långsammare medan den svänger undan från land
+          const nasta = framfor(b.x, b.y, b.th, b.fart * takt * dt);
+          // Den går inte upp på land i den grova vattenbilden: den stannar och tonas bort.
+          if (arVatten(nasta.x, nasta.y)) {
+            b.x = nasta.x;
+            b.y = nasta.y;
+          } else {
+            b.bort = true;
+          }
+          b.alfa += (1 - b.alfa) * Math.min(1, dt * 2);
+          if (inom(omrade, b.x, b.y)) b.ute = 0;
+          else {
+            b.ute += dt;
+            if (b.ute > 0.5) borta = true;
+          }
         }
         if (borta) {
           batar[i] = batar[batar.length - 1];
           batar.pop();
         }
       }
-      const satt = batar.length >= 0.7 * mal;
-      for (let k = Math.min(satt ? 2 : 30, mal - batar.length); k > 0; k -= 1) {
+      const satt = kvar >= 0.7 * mal;
+      for (let k = Math.min(satt ? 2 : 30, mal - kvar); k > 0; k -= 1) {
         const ny = nyBat(vy, satt);
         if (ny) batar.push(ny);
       }
@@ -877,44 +1310,25 @@ function batdel(v: Verktyg): Del {
       const toning = mellan((MAX_MPP - vy.mpp) / TONING_MPP, 0, 1);
       if (toning <= 0) return;
       const p = v.penna;
-      const t = v.ruta().tathet;
       const k = vy.skala / v.mpb;
-      const lyft = k / ROT2;
       for (const b of batar) {
         if (!inom(vy, b.x, b.y)) continue;
         const x = vy.ox + b.x * vy.skala;
         const y = vy.oy + b.y * vy.skala;
         const dr = Math.cos(b.th);
         const df = Math.sin(b.th);
-        const bredd = b.langd * 0.33;
-        p.globalAlpha = toning * b.alfa;
-        kolvatten(v, vy, x, y, dr, df, b.langd, bredd, b.segel ? b.langd * 0.5 : b.langd * (0.6 + b.fart * 0.08), toning * b.alfa * (b.segel ? 0.35 : 0.6));
-        p.globalAlpha = toning * b.alfa;
-        skrov(v, vy, x, y, dr, df, b.langd, bredd, 0.2, v.skugga(b.lack, 0.68));
-        skrov(v, vy, x, y, dr, df, b.langd, bredd, 0.8, b.lack);
-        if (b.segel) {
-          // seglet står upp från däcket: mastfot, masttopp och bommens ände
-          p.setTransform(t, 0, 0, t, 0, 0);
-          const mastX = x + dr * b.langd * 0.1 * k;
-          const mastY = y - (df / ROT2) * b.langd * 0.1 * k - 1.0 * lyft;
-          const bomX = x - dr * b.langd * 0.42 * k;
-          const bomY = y + (df / ROT2) * b.langd * 0.42 * k - 1.6 * lyft;
-          p.fillStyle = '#fbfaf4';
-          p.strokeStyle = 'rgba(40,52,66,0.55)';
-          p.lineWidth = Math.max(0.6, 0.12 * k);
-          p.beginPath();
-          p.moveTo(mastX, mastY);
-          p.lineTo(mastX, mastY - b.langd * 1.15 * lyft);
-          p.lineTo(bomX, bomY);
-          p.closePath();
-          p.fill();
-          p.stroke();
-        } else {
-          // en vindruta och en liten ruff
-          lada(v, vy, x + dr * b.langd * 0.05 * k, y - (df / ROT2) * b.langd * 0.05 * k, dr, df, b.langd * 0.3, bredd * 0.7, 1.5, '#27303c');
+        const alfa = toning * mellan(b.alfa, 0, 1);
+        p.globalAlpha = alfa;
+        if (!b.bort) kolvatten(v, vy, x, y, dr, df, b.langd, b.langd * 0.33, b.sort === MOTORBAT ? b.langd * (0.6 + b.fart * 0.08) : b.langd * 0.5, alfa * (b.sort === MOTORBAT ? 0.6 : 0.35));
+        if (b.langd * k < 3.2) {
+          // långt ute: en ljus prick
+          p.fillStyle = b.lack;
+          p.fillRect(x - 1, y - 1, 2, 2);
+          continue;
         }
+        stallRit(x, y, dr, df, k);
+        ritaBat(p, b, k);
       }
-      p.setTransform(t, 0, 0, t, 0, 0);
       p.globalAlpha = 1;
     },
     tillstand: () => ({ batar: batar.length, batmal: mal, vatten: !!vatten }),
@@ -933,7 +1347,9 @@ export function skapaLiv(val: {
   /** Meter mark per bildpunkt i kartbilden. */
   mpb: number;
   ruta(): { bredd: number; hojd: number };
-  /** Fler delar, som får lagrets verktyg (träd och vatten som rör sig). */
+  /** Ett kort besked till besökaren. */
+  sag(text: string, lange?: number): void;
+  /** Fler delar, som får lagrets verktyg (träd och vatten som rör sig, och det som flyger). */
   delar?: ((v: Verktyg) => Del)[];
 }): Liv {
   const { bibliotek, visare, mpb } = val;
@@ -956,36 +1372,62 @@ export function skapaLiv(val: {
   let klocka = 0;
   let slinga = 0;
 
+  const PERSONBIL = 0;
+  const TAXI = 1;
+  const SKAPBIL = 2;
+  const LASTBIL = 3;
+  const BUSS = 4;
   type Fagel = { langs: number; tvars: number; fas: number; takt: number };
-  type Flock = { x: number; y: number; vx: number; vy: number; faglar: Fagel[]; lyft: number; liv: number };
+  type Flock = { x: number; y: number; vx: number; vy: number; faglar: Fagel[]; lyft: number; liv: number; tonas: boolean };
   type Bil = {
     e: number;
     hall: number;
     s: number;
     fart: number;
+    /** Filen den ska ligga i, i meter till höger om vägens mitt, och var den ligger just nu. */
     fil: number;
+    sida: number;
+    sort: number;
     langd: number;
     bredd: number;
     hojd: number;
     lack: string;
-    ladformad: boolean;
+    /** Riktningen den ritas i: den följer vägens, men svänger mjukt genom en korsning. */
+    vr: number;
+    vf: number;
+    vriden: number;
     alfa: number;
+    /** Sekunder den har synts i rutan i ett sträck. */
+    syn: number;
     ute: number;
     rum: number; // hur långt den får gå i den här bildrutan innan den är för nära bilen framför
     haller: number; // korsningen den har, om någon
     forbi: number; // meter körda sedan den gick genom den korsningen
     vantat: number; // sekunder den har stått och väntat på en korsning
     dod: boolean;
+    /** Den ska bort medan den syns, och tonas bort där den står. */
+    bort: boolean;
   };
   let flockar: Flock[] = [];
   let vagar: Nat | null = null;
   let bilar: Bil[] = [];
   const urval = { kanter: [] as number[], vikter: [] as number[], totalt: 0, mal: 0, alder: 9, nyckel: '' };
   let omrade: Omrade | null = null; // där bilar hålls, i bildpunkter
-  let las = new Map<number, Bil>(); // korsning -> bilen som har den
+  const las = new Map<number, Bil>(); // korsning -> bilen som har den
   let fragat: Record<string, boolean> = {};
   // hur ofta lagret ritades i sin egen takt och i kartans bildruta
   const rakning = { egna: 0, medKartan: 0 };
+  // för prov: bilar som har vänt i en återvändsgata, och bilar som har tonats bort medan de syntes
+  const handelser = { vanda: 0, tonade: 0 };
+  // för prov: hur länge de senaste bilarna syntes i rutan i ett sträck, i sekunder
+  const lopp = new Float32Array(256);
+  let loppantal = 0;
+  const noteraLopp = (bil: Bil) => {
+    if (bil.syn <= 0) return;
+    lopp[loppantal % lopp.length] = bil.syn;
+    loppantal += 1;
+    bil.syn = 0;
+  };
 
   // hur mycket som visas: 3 allt, 2 mindre, 1 minst (se filens början)
   const liten =
@@ -1035,6 +1477,7 @@ export function skapaLiv(val: {
     hamtaNat,
     adress,
     dukUnder: () => underduk,
+    sag: val.sag,
   };
   const delar: Del[] = [tagdel(verktyg), farjedel(verktyg), batdel(verktyg), ...(val.delar ?? []).map((gor) => gor(verktyg))];
 
@@ -1051,8 +1494,8 @@ export function skapaLiv(val: {
   /* ---------- fåglar ---------- */
 
   /**
-   * En flock som ska korsa rutan. Med `redan` är den någonstans på väg genom rutan från början,
-   * annars börjar den utanför, på den sida den flyger in från.
+   * En flock som ska korsa rutan. Med `redan` är den någonstans på väg genom rutan från början
+   * och tonas in, annars börjar den utanför, på den sida den flyger in från.
    */
   function nyFlock(vy: Vy, redan: boolean): Flock {
     const slump = Math.random;
@@ -1066,7 +1509,7 @@ export function skapaLiv(val: {
     const cx = (vy.x0 + vy.x1) / 2 + (slump() - 0.5) * spannX * 0.8;
     const cy = (vy.y0 + vy.y1) / 2 + (slump() - 0.5) * spannY * 0.8;
     const bak = ((redan ? 0.5 * slump() - 0.1 : 0.75) * Math.max(spannX, spannY)) / fart;
-    const flock: Flock = { x: cx - vx * bak, y: cy - vyy * bak, vx, vy: vyy, faglar: [], lyft: (30 + 50 * slump()) / (ROT2 * mpb), liv: 0 };
+    const flock: Flock = { x: cx - vx * bak, y: cy - vyy * bak, vx, vy: vyy, faglar: [], lyft: (30 + 50 * slump()) / (ROT2 * mpb), liv: 0, tonas: redan };
     const antal = 4 + Math.floor(slump() * 8);
     for (let i = 0; i < antal; i += 1) {
       // ett löst V bakom den första fågeln; avstånden är i vinglängder, så de håller i varje zoom
@@ -1101,14 +1544,14 @@ export function skapaLiv(val: {
 
   /**
    * En fågel: en liten kropp och två vingar som slår. Den ritas tre gånger: skuggan på marken,
-   * en mörk kant, och den vita fågeln, så att den syns över vatten, tak och träd.
+   * en mörk kant, och den vita fågeln, så att den syns över vatten, tak och träd. Nära marken
+   * växer den inte längre med kartan: en mås i en ruta som är hundra meter bred är ingen jätte.
    */
   function ritaFaglar(vy: Vy) {
     if (!flockar.length) return;
-    const vinge = VINGE / vy.mpp; // skärmpunkter
-    const toning = mellan((vinge - VINGE_MINST) / 1.2, 0, 1);
+    const vinge = Math.min(VINGE / vy.mpp, 4.6); // skärmpunkter
+    const toning = mellan((VINGE / vy.mpp - VINGE_MINST) / 1.2, 0, 1);
     if (toning <= 0) return;
-    penna.globalAlpha = toning;
     penna.lineCap = 'round';
     penna.lineJoin = 'round';
     const varv = [
@@ -1116,32 +1559,37 @@ export function skapaLiv(val: {
       { farg: 'rgba(14,22,34,0.85)', bredd: vinge * 0.46 + Math.min(1.6, vinge * 0.3), lyft: true },
       { farg: '#fbf9f2', bredd: vinge * 0.46, lyft: true },
     ];
-    for (const v of varv) {
-      penna.strokeStyle = v.farg;
-      penna.lineWidth = Math.max(1, v.bredd);
-      penna.beginPath();
-      for (const f of flockar) {
-        const fart = Math.hypot(f.vx, f.vy);
-        const ux = f.vx / fart;
-        const uy = f.vy / fart;
+    for (const f of flockar) {
+      // en flock som ställs mitt i rutan tonas in
+      penna.globalAlpha = toning * (f.tonas ? mellan(f.liv / 1.2, 0, 1) : 1);
+      const fart = Math.hypot(f.vx, f.vy);
+      const ux = f.vx / fart;
+      const uy = f.vy / fart;
+      for (const v of varv) {
+        penna.strokeStyle = v.farg;
+        penna.lineWidth = Math.max(1, v.bredd);
+        penna.beginPath();
         for (const fagel of f.faglar) {
           const x = vy.ox + f.x * vy.skala + (ux * fagel.langs - uy * fagel.tvars) * vinge;
           const y = vy.oy + f.y * vy.skala + (uy * fagel.langs + ux * fagel.tvars) * vinge - (v.lyft ? f.lyft * vy.skala : 0);
           if (x < -30 || y < -30 || x > B + 30 || y > H + 30) continue;
-          const slag = Math.sin(klocka * fagel.takt + fagel.fas); // vingarna upp och ner
-          const dopp = vinge * (0.1 + 0.5 * slag);
+          // Vingslaget, sett uppifrån: vingarna blir kortare när de står upp eller ner, lika på båda sidor.
+          const slag = Math.sin(klocka * fagel.takt + fagel.fas);
+          const spann = vinge * (0.62 + 0.38 * (0.5 + 0.5 * slag));
           // kroppen, ett kort streck längs flykten
-          penna.moveTo(x - ux * vinge * 0.3, y - uy * vinge * 0.3);
-          penna.lineTo(x + ux * vinge * 0.2, y + uy * vinge * 0.2);
-          // vingarna, ut åt båda håll, böjda på mitten och svepta bakåt i spetsarna
-          const bx = ux * vinge * 0.45;
-          const by = uy * vinge * 0.45;
-          penna.moveTo(x - uy * vinge - bx, y + ux * vinge * 0.7 - by - dopp);
-          penna.quadraticCurveTo(x - uy * vinge * 0.45, y + ux * vinge * 0.3 - dopp * 1.3, x, y);
-          penna.quadraticCurveTo(x + uy * vinge * 0.45, y - ux * vinge * 0.3 - dopp * 1.3, x + uy * vinge - bx, y - ux * vinge * 0.7 - by - dopp);
+          penna.moveTo(x - ux * vinge * 0.32, y - uy * vinge * 0.32);
+          penna.lineTo(x + ux * vinge * 0.24, y + uy * vinge * 0.24);
+          // vingarna: ut åt båda håll, lite framåt i knogen och svepta bakåt i spetsarna
+          const tx = -uy * spann;
+          const ty = ux * spann * 0.72;
+          const bx = ux * vinge * 0.34;
+          const by = uy * vinge * 0.34;
+          penna.moveTo(x + tx - bx, y + ty - by);
+          penna.quadraticCurveTo(x + tx * 0.5 + bx * 0.45, y + ty * 0.5 + by * 0.45, x, y);
+          penna.quadraticCurveTo(x - tx * 0.5 + bx * 0.45, y - ty * 0.5 + by * 0.45, x - tx - bx, y - ty - by);
         }
+        penna.stroke();
       }
-      penna.stroke();
     }
     penna.globalAlpha = 1;
   }
@@ -1149,11 +1597,15 @@ export function skapaLiv(val: {
   /* ---------- vägar och bilar ---------- */
 
   const iOmradet = (x: number, y: number): boolean => !!omrade && inom(omrade, x, y);
+  // En väg som syns bär trafiken, och en som ligger bakom husen nästan ingen: bilarna är till för
+  // att ses. En bil på en gata bakom husen syns bara som en blink i varje korsning den passerar.
+  const synvikt = (n: Nat, e: number): number => 0.06 + 0.94 * (n.synlig[e] / 255) ** 2;
+  const platsAv = (n: Nat, bil: Bil): number => n.start[bil.e] + Math.round(mellan(bil.s, 0, n.start[bil.e + 1] - n.start[bil.e] - 1));
 
   /** Kanterna i området där bilar hålls, och hur många bilar så mycket väg ska bära. */
   function fornyaUrval(n: Nat, vy: Vy) {
     omrade = vidgad(vy, OMRADE);
-    const samlat = samla(n, omrade, (e, meter) => meter / LUCKA[n.info[e] & 7]);
+    const samlat = samla(n, omrade, (e, meter) => (meter / LUCKA[n.info[e] & 7]) * synvikt(n, e));
     urval.kanter = samlat.kanter;
     urval.vikter = samlat.summor;
     urval.totalt = samlat.totalt;
@@ -1180,32 +1632,44 @@ export function skapaLiv(val: {
       const info = n.info[e];
       const klass = info & 7;
       const enkelriktad = (info & 8) !== 0;
-      const buss = klass >= 1 && klass <= 3 && Math.random() < 0.05;
-      const lastbil = !buss && klass <= 1 && Math.random() < 0.07;
+      const slump = Math.random();
+      const sort = klass >= 1 && klass <= 3 && slump < 0.06 ? BUSS : klass <= 1 && slump > 0.93 ? LASTBIL : slump > 0.85 ? SKAPBIL : slump > 0.81 ? TAXI : PERSONBIL;
+      const farger = sort === BUSS ? (BUSSLACK[stad?.id ?? ''] ?? BUSSLACK.stockholm) : sort === LASTBIL ? HYTTLACK : sort === SKAPBIL ? SKAPLACK : LACK;
+      const fil = enkelriktad ? (Math.random() < 0.5 ? -1.7 : 1.7) * (klass === 0 ? 1 : 0.6) : 1.7;
       return {
         e,
         hall: enkelriktad || Math.random() < 0.5 ? 1 : -1,
         s,
         fart: FART[klass] * (0.82 + 0.3 * Math.random()),
-        fil: enkelriktad ? (Math.random() < 0.5 ? -1.7 : 1.7) * (klass === 0 ? 1 : 0.6) : 1.7,
-        langd: buss ? 12 : lastbil ? 8.5 : 4.3 + 0.5 * Math.random(),
-        bredd: buss || lastbil ? 2.5 : 1.85,
-        hojd: buss ? 3.0 : lastbil ? 2.9 : 1.45,
-        lack: buss ? (Math.random() < 0.7 ? '#c0392b' : '#2e6da4') : lastbil ? '#e8e6df' : LACK[Math.floor(Math.random() * LACK.length)],
-        ladformad: buss || lastbil,
+        fil,
+        sida: fil,
+        sort,
+        langd: sort === BUSS ? 12 : sort === LASTBIL ? 9.5 : sort === SKAPBIL ? 5.4 : 4.3 + 0.5 * Math.random(),
+        bredd: sort === BUSS || sort === LASTBIL ? 2.5 : sort === SKAPBIL ? 2.0 : 1.85,
+        hojd: sort === BUSS ? 3.05 : sort === LASTBIL ? 3.3 : sort === SKAPBIL ? 1.95 : 1.4,
+        lack: sort === TAXI ? '#1d1f24' : farger[Math.floor(Math.random() * farger.length)],
+        vr: 0,
+        vf: 0,
+        vriden: -1,
         // en bil som börjar utom synhåll är hel direkt; en som ställs in i rutan tonas in
         alfa: iRutan && n.syns[vid] ? 0 : 1,
+        syn: 0,
         ute: 0,
         rum: Infinity,
         haller: -1,
         forbi: -1,
         vantat: 0,
         dod: false,
+        bort: false,
       };
     }
     return null;
   }
 
+  /**
+   * Bilen väljer nästa kant i korsningen den har kommit till. I en återvändsgata vänder den och
+   * kör tillbaka. Svarar nej bara där en enkelriktad gata tar slut, vid kartbildens kant.
+   */
   function nastaKant(n: Nat, bil: Bil): boolean {
     const nod = bil.hall > 0 ? n.till[bil.e] : n.fran[bil.e];
     const har = riktningVid(n, bil.e, bil.hall, true);
@@ -1218,17 +1682,24 @@ export function skapaLiv(val: {
       const ref = n.ut[i];
       const e = Math.abs(ref) - 1;
       const hall = ref > 0 ? 1 : -1;
-      if (e === bil.e) continue; // ingen vänder om
+      if (e === bil.e) continue; // ingen vänder om där det finns en väg vidare
       const dar = riktningVid(n, e, hall, false);
       const tl = Math.hypot(dar.x, dar.y) || 1;
       const rakt = (har.x * dar.x + har.y * dar.y) / (hl * tl);
-      // mest rakt fram, och hellre in på en väg av samma slag
-      const vikt = 0.08 + Math.max(0, rakt) ** 3 * ((n.info[e] & 7) === (n.info[bil.e] & 7) ? 2 : 1);
+      // mest rakt fram, hellre in på en väg av samma slag, och hellre en väg som syns
+      const vikt = (0.08 + Math.max(0, rakt) ** 3 * ((n.info[e] & 7) === (n.info[bil.e] & 7) ? 2 : 1)) * synvikt(n, e);
       val_.push(ref);
       totalt += vikt;
       vikter.push(totalt);
     }
-    if (!val_.length) return false;
+    if (!val_.length) {
+      if (n.info[bil.e] & 8) return false;
+      // Återvändsgata: den vänder. Den står då på fel sida om vägen och glider över till sin egen.
+      bil.hall = -bil.hall;
+      bil.sida = -bil.sida;
+      handelser.vanda += 1;
+      return true;
+    }
     const dragning = Math.random() * totalt;
     while (bast < vikter.length - 1 && vikter[bast] < dragning) bast += 1;
     const valt = val_[bast];
@@ -1244,6 +1715,47 @@ export function skapaLiv(val: {
     if (bil.haller >= 0 && las.get(bil.haller) === bil) las.delete(bil.haller);
   };
 
+  /** Tar bort bilen på plats `i`, och släpper korsningen den höll. */
+  function taBort(i: number) {
+    const bil = bilar[i];
+    bil.dod = true;
+    noteraLopp(bil);
+    slappLas(bil);
+    bilar[i] = bilar[bilar.length - 1];
+    bilar.pop();
+  }
+
+  /** Alla bilar bort på en gång, och korsningarna med dem: en bil som inte finns kan inte hålla en korsning. */
+  function tomBilar() {
+    for (const bil of bilar) bil.dod = true;
+    bilar.length = 0;
+    las.clear();
+  }
+
+  /**
+   * För många bilar, när området har krympt eller nivån har gått ner: först bort med dem som ändå
+   * inte syns, och de som syns tonas bort där de står i stället för att slockna.
+   */
+  function gallra(n: Nat, vy: Vy, kvar: number) {
+    let over = kvar - (urval.mal + 80);
+    if (over <= 0) return;
+    for (let i = bilar.length - 1; i >= 0 && over > 0; i -= 1) {
+      const bil = bilar[i];
+      if (bil.bort) continue;
+      const vid = platsAv(n, bil);
+      if (bil.alfa < 0.1 || !inom(vy, n.x[vid], n.y[vid])) {
+        taBort(i);
+        over -= 1;
+      }
+    }
+    for (let i = 0; i < bilar.length && over > 0; i += 1) {
+      if (bilar[i].bort) continue;
+      bilar[i].bort = true;
+      handelser.tonade += 1;
+      over -= 1;
+    }
+  }
+
   function stegBilar(dt: number, vy: Vy) {
     if (!vagar) {
       // vägnätet hämtas när kartan först kommer nära där bilar syns
@@ -1255,7 +1767,7 @@ export function skapaLiv(val: {
     }
     const n = vagar;
     if (vy.mpp > BIL_MAX_MPP + 0.3) {
-      bilar.length = 0;
+      if (bilar.length || las.size) tomBilar();
       return;
     }
     urval.alder += dt;
@@ -1282,16 +1794,23 @@ export function skapaLiv(val: {
         samma[q].rum = Math.max(0, lucka - 2.5) / n.steg;
       }
     });
+    let kvar = 0; // bilar som inte är på väg att tonas bort
     for (let i = bilar.length - 1; i >= 0; i -= 1) {
       const bil = bilar[i];
+      if (bil.bort) {
+        bil.alfa -= dt * 2.5;
+        if (bil.alfa <= 0.03) taBort(i);
+        continue;
+      }
+      kvar += 1;
       let langd = n.start[bil.e + 1] - n.start[bil.e];
       let flytt = Math.min((bil.fart / n.steg) * dt, bil.rum);
       // I en korsning en bil i taget: den första inom 9 m har den tills den är 8 m förbi. De
       // andra stannar 4 m före. En som har väntat fem sekunder kör ändå, så att inget låser sig
       // för gott. Motorvägar vävs ihop utan det här.
       const nod = bil.hall > 0 ? n.till[bil.e] : n.fran[bil.e];
-      const kvar = (bil.hall > 0 ? langd - 1 - bil.s : bil.s) * n.steg;
-      if (kvar < 9 && bil.haller !== nod && (n.info[bil.e] & 7) > 0 && n.utStart[nod + 1] - n.utStart[nod] > 2) {
+      const framme = (bil.hall > 0 ? langd - 1 - bil.s : bil.s) * n.steg;
+      if (framme < 9 && bil.haller !== nod && (n.info[bil.e] & 7) > 0 && n.utStart[nod + 1] - n.utStart[nod] > 2) {
         const hallare = las.get(nod);
         if (!hallare || hallare.dod) {
           slappLas(bil);
@@ -1300,11 +1819,14 @@ export function skapaLiv(val: {
           bil.forbi = -1;
           bil.vantat = 0;
         } else if (bil.vantat < 5) {
-          flytt = Math.min(flytt, Math.max(0, kvar - 4) / n.steg);
+          flytt = Math.min(flytt, Math.max(0, framme - 4) / n.steg);
           bil.vantat += dt;
         }
       }
       bil.s += bil.hall * flytt;
+      // i sidled glider den till sin fil: efter en vändning, eller in på en gata med andra filer
+      const glid = bil.fil - bil.sida;
+      if (glid) bil.sida += mellan(glid, -2.4 * dt, 2.4 * dt);
       if (bil.forbi >= 0) {
         bil.forbi += flytt * n.steg;
         if (bil.forbi > 8) {
@@ -1313,12 +1835,13 @@ export function skapaLiv(val: {
           bil.forbi = -1;
         }
       }
-      let borta = false;
       let vakt = 0;
-      while ((bil.s > langd - 1 || bil.s < 0) && !borta && vakt < 4) {
+      while ((bil.s > langd - 1 || bil.s < 0) && vakt < 4) {
         const over = bil.s > langd - 1 ? bil.s - (langd - 1) : -bil.s;
         if (!nastaKant(n, bil)) {
-          borta = true;
+          // vägen tar slut här: den stannar och tonas bort
+          bil.s = mellan(bil.s, 0, langd - 1);
+          bil.bort = true;
           break;
         }
         langd = n.start[bil.e + 1] - n.start[bil.e];
@@ -1327,33 +1850,78 @@ export function skapaLiv(val: {
         bil.vantat = 0;
         vakt += 1;
       }
-      if (!borta) {
-        const vid = n.start[bil.e] + Math.round(mellan(bil.s, 0, langd - 1));
-        // synlig eller dold bakom ett hus: bilen tonas över en bråkdel av en sekund
-        bil.alfa += ((n.syns[vid] ? 1 : 0) - bil.alfa) * Math.min(1, dt * 7);
-        if (iOmradet(n.x[vid], n.y[vid])) bil.ute = 0;
-        else {
-          bil.ute += dt;
-          if (bil.ute > 0.4) borta = true;
+      const vid = n.start[bil.e] + Math.round(mellan(bil.s, 0, langd - 1));
+      // synlig eller dold bakom ett hus: bilen tonas över en bråkdel av en sekund
+      if (!bil.bort) bil.alfa += ((n.syns[vid] ? 1 : 0) - bil.alfa) * Math.min(1, dt * 6);
+      if (n.syns[vid] && inom(vy, n.x[vid], n.y[vid])) bil.syn += dt;
+      else noteraLopp(bil);
+      if (iOmradet(n.x[vid], n.y[vid])) bil.ute = 0;
+      else {
+        bil.ute += dt;
+        if (bil.ute > 0.4) {
+          taBort(i);
+          kvar -= 1;
         }
-      }
-      if (borta) {
-        bil.dod = true;
-        slappLas(bil);
-        bilar[i] = bilar[bilar.length - 1];
-        bilar.pop();
       }
     }
     // Påfyllning. Medan området är nästan tomt (rutan har hoppat, eller kartan zoomades just in)
     // ställs bilar var som helst och tonas in. När det väl är befolkat börjar nya utom synhåll
     // och kör in.
-    const satt = bilar.length >= 0.7 * urval.mal;
-    const plats = Math.min(satt ? 12 : 120, urval.mal - bilar.length);
+    const satt = kvar >= 0.7 * urval.mal;
+    const plats = Math.min(satt ? 12 : 120, urval.mal - kvar);
     for (let k = 0; k < plats; k += 1) {
       const ny = nyBil(n, vy, satt);
       if (ny) bilar.push(ny);
     }
-    if (bilar.length > urval.mal + 80) bilar.length = urval.mal + 80;
+    gallra(n, vy, kvar);
+  }
+
+  /** Ett fordon i tre led: kaross med sidor, hytt med glas, lyktor. Mitten och riktningen är redan satta med stallRit(). */
+  function ritaFordon(bil: Bil, k: number) {
+    const p = penna;
+    const F = bil.langd / 2;
+    const Bd = bil.bredd / 2;
+    const lack = bil.lack;
+    const fin = k > 2.4; // lyktor och annat smått syns först nära
+    skuggruta(p, -F, F, -Bd, Bd, bil.hojd * 0.75);
+    if (bil.sort === BUSS) {
+      lada3(p, -F, F, -Bd, Bd, 0.3, 3.05, '#e4e7ea', skugga(lack, 1), skugga(lack, 0.74));
+      langband(p, -F + 0.5, F - 0.5, Bd, 1.45, 2.45, GLAS);
+      kortband(p, F, true, -Bd + 0.15, Bd - 0.15, 1.25, 2.55, GLAS);
+      kortband(p, -F, false, -Bd + 0.3, Bd - 0.3, 1.6, 2.5, GLAS);
+      if (fin) {
+        kortband(p, F, true, -0.8, 0.8, 2.62, 2.92, '#f0b429'); // skylten med linjens nummer
+        lyktor(p, F, Bd, 0.6);
+      }
+      lada3(p, -F * 0.55, -F * 0.15, -0.65, 0.65, 3.05, 3.3, '#cfd3d7', '#c3c8cd', '#a9aeb4');
+    } else if (bil.sort === LASTBIL) {
+      const skap = () => lada3(p, -F, F * 0.42, -Bd, Bd, 0.9, 3.3, '#eceae4', '#e2e0d9', '#bdbbb4');
+      const hytt = () => {
+        lada3(p, F * 0.5, F, -Bd, Bd, 0.3, 2.5, skugga(lack, 1.1), skugga(lack, 0.95), skugga(lack, 0.7));
+        langband(p, F * 0.62, F * 0.94, Bd, 1.5, 2.2, GLAS);
+        kortband(p, F, true, -Bd + 0.15, Bd - 0.15, 1.45, 2.25, GLAS);
+        if (fin) lyktor(p, F, Bd, 0.55);
+      };
+      // den del som är närmast kameran ritas sist
+      if (RDF > 0) {
+        hytt();
+        skap();
+      } else {
+        skap();
+        hytt();
+      }
+    } else if (bil.sort === SKAPBIL) {
+      lada3(p, -F, F, -Bd, Bd, 0.25, 1.95, skugga(lack, 1.08), skugga(lack, 0.94), skugga(lack, 0.7));
+      langband(p, F * 0.3, F * 0.84, Bd, 1.15, 1.72, GLAS);
+      kortband(p, F, true, -Bd + 0.15, Bd - 0.15, 1.1, 1.75, GLAS);
+      if (fin) lyktor(p, F, Bd, 0.5);
+    } else {
+      lada3(p, -F, F, -Bd, Bd, 0.22, 0.82, skugga(lack, 1.04), skugga(lack, 0.9), skugga(lack, 0.68));
+      if (fin) lyktor(p, F, Bd, 0.42);
+      // hytten sitter lite bakom mitten: glas runt om och lackat tak
+      lada3(p, -F * 0.68, F * 0.3, -Bd * 0.86, Bd * 0.86, 0.82, 1.38, skugga(lack, 1.14), GLAS_LJUST, GLAS);
+      if (bil.sort === TAXI) lada3(p, -F * 0.32, -F * 0.1, -0.32, 0.32, 1.38, 1.58, '#f6d24a', '#f2c230', '#c99b14');
+    }
   }
 
   function ritaBilar(vy: Vy) {
@@ -1384,44 +1952,52 @@ export function skapaLiv(val: {
       if (dl < 1e-6) continue;
       dr /= dl;
       df /= dl;
+      // Bilen vrider sig mot vägens riktning under en bråkdel av en sekund, i stället för att slå om i en korsning.
+      if (bil.vriden >= 0) {
+        const andelVrid = 1 - Math.exp(-(klocka - bil.vriden) * 9);
+        const vr = bil.vr + (dr - bil.vr) * andelVrid;
+        const vf = bil.vf + (df - bil.vf) * andelVrid;
+        const vl = Math.hypot(vr, vf);
+        if (vl > 0.2) {
+          dr = vr / vl;
+          df = vf / vl;
+        }
+      }
+      bil.vr = dr;
+      bil.vf = df;
+      bil.vriden = klocka;
       // samma två riktningar i bilden: längs bilen, och åt dess höger
       const ax = dr;
       const ay = -df / ROT2;
       const bx = df;
       const by = dr / ROT2;
-      const x = vy.ox + mx * vy.skala + bx * bil.fil * k;
-      const y = vy.oy + my * vy.skala + by * bil.fil * k;
+      const x = vy.ox + mx * vy.skala + bx * bil.sida * k;
+      const y = vy.oy + my * vy.skala + by * bil.sida * k;
       const L = (bil.langd * k) / 2;
       const Bd = (bil.bredd * k) / 2;
-      penna.globalAlpha = bil.alfa * zoomtoning;
+      penna.globalAlpha = mellan(bil.alfa, 0, 1) * zoomtoning;
       if (L < 1.6) {
-        penna.setTransform(t, 0, 0, t, 0, 0);
         penna.fillStyle = bil.lack;
         penna.fillRect(x - 1, y - 1.5, 2, 2);
         continue;
       }
-      // skuggan på vägen, karossen, och hytten ovanpå
+      if (L >= 3.2) {
+        // nära nog för en modell med sidor och glas
+        stallRit(x, y, dr, df, k);
+        ritaFordon(bil, k);
+        continue;
+      }
+      // längre ut: skuggan på vägen, karossen och taket som tre plattor
       penna.setTransform(t * ax * (L + 0.6), t * ay * (L + 0.6), t * bx * (Bd + 0.6), t * by * (Bd + 0.6), t * (x + 0.5), t * (y + 0.6));
       penna.fillStyle = 'rgba(8,12,20,0.38)';
       penna.fillRect(-1, -1, 2, 2);
       penna.setTransform(t * ax * L, t * ay * L, t * bx * Bd, t * by * Bd, t * x, t * (y - 0.45 * lyft));
       penna.fillStyle = skugga(bil.lack, 0.78);
       penna.fillRect(-1, -1, 2, 2);
-      if (bil.ladformad) {
-        penna.setTransform(t * ax * L, t * ay * L, t * bx * Bd, t * by * Bd, t * x, t * (y - bil.hojd * lyft));
-        penna.fillStyle = bil.lack;
-        penna.fillRect(-1, -1, 2, 2);
-      } else {
-        penna.setTransform(t * ax * L, t * ay * L, t * bx * Bd, t * by * Bd, t * x, t * (y - 0.85 * lyft));
-        penna.fillStyle = bil.lack;
-        penna.fillRect(-1, -1, 2, 2);
-        // hytten sitter lite bakom mitten, med mörkt glas runt ett lackat tak
-        penna.setTransform(t * ax * L, t * ay * L, t * bx * Bd, t * by * Bd, t * x, t * (y - bil.hojd * lyft));
-        penna.fillStyle = 'rgba(18,24,34,0.92)';
-        penna.fillRect(-0.62, -0.86, 1.1, 1.72);
-        penna.fillStyle = skugga(bil.lack, 1.12);
-        penna.fillRect(-0.42, -0.74, 0.7, 1.48);
-      }
+      penna.setTransform(t * ax * L, t * ay * L, t * bx * Bd, t * by * Bd, t * x, t * (y - bil.hojd * lyft));
+      penna.fillStyle = bil.sort === BUSS ? '#e4e7ea' : bil.lack;
+      penna.fillRect(-1, -1, 2, 2);
+      penna.setTransform(t, 0, 0, t, 0, 0);
     }
     penna.setTransform(t, 0, 0, t, 0, 0);
     penna.globalAlpha = 1;
@@ -1455,7 +2031,10 @@ export function skapaLiv(val: {
     penna.setTransform(tathet, 0, 0, tathet, 0, 0);
     ritaBilar(vy);
     ritaFaglar(vy);
+    // det som flyger ligger över allt annat
+    for (const del of delar) del.ritaOver?.(vy);
     penna.setTransform(tathet, 0, 0, tathet, 0, 0);
+    penna.globalAlpha = 1;
   }
 
   function bildruta(nu: number) {
@@ -1511,9 +2090,8 @@ export function skapaLiv(val: {
   }
 
   function tom() {
-    bilar = [];
+    tomBilar();
     flockar = [];
-    las = new Map();
     for (const del of delar) del.rensa();
     passa();
     penna.setTransform(tathet, 0, 0, tathet, 0, 0);
@@ -1524,12 +2102,11 @@ export function skapaLiv(val: {
     oppna(ny) {
       stad = ny;
       vagar = null;
-      bilar = [];
+      tomBilar();
       omrade = null;
       urval.alder = 9;
       urval.nyckel = '';
       flockar = [];
-      las = new Map();
       fragat = {};
       for (const del of delar) del.oppna(ny);
     },
@@ -1548,17 +2125,43 @@ export function skapaLiv(val: {
     ritaMedKartan() {
       if (pa) rita(true);
     },
+    tryck(x, y) {
+      const vy = pa ? vyNu() : null;
+      if (!vy) return null;
+      for (const del of delar) {
+        const svar = del.tryck?.(x, y, vy);
+        if (svar) return svar;
+      }
+      return null;
+    },
+    pask() {
+      if (!pa) return false;
+      let gick = false;
+      for (const del of delar) gick = del.pask?.() === true || gick;
+      return gick;
+    },
     tillstand() {
       const vy = vyNu();
       let synliga = 0;
+      let vantar = 0;
       if (vy && vagar) {
         for (const bil of bilar) {
-          const vid = vagar.start[bil.e] + Math.round(mellan(bil.s, 0, vagar.start[bil.e + 1] - vagar.start[bil.e] - 1));
+          const vid = platsAv(vagar, bil);
           if (vagar.x[vid] > vy.x0 && vagar.x[vid] < vy.x1 && vagar.y[vid] > vy.y0 && vagar.y[vid] < vy.y1) synliga += 1;
+          if (bil.vantat > 0) vantar += 1;
         }
       }
       const mer: Record<string, unknown> = {};
       for (const del of delar) Object.assign(mer, del.tillstand());
+      const tider = Array.from(lopp.subarray(0, Math.min(loppantal, lopp.length))).sort((a, b) => a - b);
+      // för den som ser på en bil just nu: hur länge den syns i ett sträck, vägt med tiden
+      let halva = tider.reduce((a, b) => a + b, 0) / 2;
+      let vagd = 0;
+      for (const tid of tider) {
+        vagd = tid;
+        halva -= tid;
+        if (halva <= 0) break;
+      }
       return {
         pa,
         stad: stad?.id ?? null,
@@ -1569,6 +2172,15 @@ export function skapaLiv(val: {
         bilar: bilar.length,
         bilarIRutan: synliga,
         bilmal: urval.mal,
+        // bilar som står och väntar på en korsning, och korsningar som en bil håller
+        vantar,
+        korsningar: las.size,
+        ...handelser,
+        // hur länge en bil syns i ett sträck, i sekunder: medianen av de senaste gångerna, samma
+        // sak för den bil man råkar se på (vägt med tiden), och hur många gånger som är mätta
+        syntes: tider.length ? Math.round(tider[tider.length >> 1] * 10) / 10 : null,
+        foljs: tider.length ? Math.round(vagd * 10) / 10 : null,
+        lopp: loppantal,
         flockar: flockar.length,
         vagar: vagar ? vagar.E : 0,
         ritat: { ...rakning },

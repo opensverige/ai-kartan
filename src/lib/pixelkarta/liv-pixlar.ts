@@ -173,6 +173,14 @@ export function pixeldel(v: Verktyg): Del {
         }
         return;
       }
+      // Medan ett hus är valt är staden nedtonad och den här duken dold. Då kopieras och ritas inget.
+      if (v.visare.element.classList.contains('pixelstad--tonad')) {
+        if (harBild) {
+          torka();
+          harBild = false;
+        }
+        return;
+      }
       const stad = v.stad();
       const kalla = (v.visare.drawer as unknown as { canvas?: HTMLCanvasElement }).canvas;
       if (!stad || !kalla || !kalla.width || !kalla.height) return;
