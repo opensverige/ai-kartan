@@ -1,0 +1,73 @@
+# Inskickad av organisationen själv (ärende #121). Alla uppgifter är egen uppgift tills de bekräftats.
+id: aggcon-ab
+name:
+  value: Aggcon AB
+  status: claimed
+  source_url: https://web.audhumbla.eu
+  source_type: self_submitted
+  verified_at: 2026-11-17
+  verified_by: self
+type:
+  value: bolag
+  status: claimed
+  source_url: https://web.audhumbla.eu
+  source_type: self_submitted
+  verified_at: 2026-11-17
+  verified_by: self
+org_number:
+  value: 556728-3303
+  status: claimed
+  source_url: https://web.audhumbla.eu
+  source_type: self_submitted
+  verified_at: 2026-11-17
+  verified_by: self
+website: https://web.audhumbla.eu
+description:
+  value: Audhumbla är Aggcon AB:s mjukvarufabrik, där AI-agenter bygger och driver webbtjänster på löpande band. Bland dem finns MeinKlavier och Beste Baumfällung, som förmedlar pianostämmare och trädfällare i Tyskland, SaveQuest för spelutmaningar och Synergyfold, som licensierar klinisk data till AI-labb.
+  status: claimed
+  source_url: https://web.audhumbla.eu
+  source_type: self_submitted
+  verified_at: 2026-11-17
+  verified_by: self
+offers:
+  value:
+    - produkt
+    - utveckling
+  status: claimed
+  source_url: https://web.audhumbla.eu
+  source_type: self_submitted
+  verified_at: 2026-11-17
+  verified_by: self
+areas:
+  value:
+    - generell
+  status: claimed
+  source_url: https://web.audhumbla.eu
+  source_type: self_submitted
+  verified_at: 2026-11-17
+  verified_by: self
+kommun:
+  value: "0163"
+  status: claimed
+  source_url: https://web.audhumbla.eu
+  source_type: self_submitted
+  verified_at: 2026-11-17
+  verified_by: self
+  note: "Kommun angiven av organisationen: Sollentuna."
+founded:
+  value: 2006
+  status: claimed
+  source_url: https://web.audhumbla.eu
+  source_type: self_submitted
+  verified_at: 2026-11-17
+  verified_by: self
+evidence:
+  - url: https://web.audhumbla.eu
+    kind: produkt
+    title: Audhumbla – mjukvarufabrik med AI-agenter
+    status: claimed
+    verified_at: 2026-11-17
+    verified_by: self
+self_submitted: true
+record_created_at: 2026-11-17
+record_updated_at: 2026-11-17
