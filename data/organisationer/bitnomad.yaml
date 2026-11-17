@@ -68,7 +68,16 @@ kommun:
   source_type: third_party
   verified_at: 2026-11-01
   verified_by: agent
-  note: "Kommunsäte enligt allabolag.se: Stockholm. Postadressen i registret är en c/o-adress, så ingen exakt position."
+  note: "Kommunsäte enligt allabolag.se: Stockholm. Adressen i webbplatsens integritetsruta ligger i samma kommun."
+
+coordinates:
+  value: { lat: 59.26133, lng: 18.03882 }
+  status: claimed
+  source_url: https://bitnomad.se/sv/
+  source_type: own_site
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "Säte enligt integritetsrutan på webbplatsen, där bolaget själv anger adressen. Registrets postadress har c/o och används inte. Geokodad med OpenStreetMap Nominatim (ODbL)."
 
 founded:
   value: 2020
@@ -108,4 +117,4 @@ links:
   github: https://github.com/BitNomadAB
 
 record_created_at: 2026-11-01
-record_updated_at: 2026-11-05
+record_updated_at: 2026-11-17

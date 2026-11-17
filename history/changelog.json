@@ -1,8 +1,35 @@
 {
-  "generated_at": "2026-11-16T18:21:11Z",
-  "antal": 532,
-  "senaste_andring": "2026-11-16",
+  "generated_at": "2026-11-16T23:30:59Z",
+  "antal": 534,
+  "senaste_andring": "2026-11-17",
   "rader": [
+    {
+      "datum": "2026-11-17",
+      "commit": "b671738b46",
+      "id": "bitnomad",
+      "namn": "BitNomad",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.26133,
+        "lng": 18.03882
+      },
+      "status": "claimed",
+      "kalla": "https://bitnomad.se/sv/"
+    },
+    {
+      "datum": "2026-11-16",
+      "commit": "e6669481ef",
+      "id": "recnote",
+      "namn": "Recnote",
+      "falt": "hela posten",
+      "andring": "tillagd",
+      "gammalt": null,
+      "nytt": null,
+      "status": null,
+      "kalla": "https://recnote.ai"
+    },
     {
       "datum": "2026-11-16",
       "commit": "1c69fe248e",
