@@ -63,6 +63,15 @@ kommun:
   verified_by: agent
   note: Kommunsäte enligt allabolag.
 
+coordinates:
+  value: { lat: 58.58123, lng: 16.14809 }
+  status: claimed
+  source_url: https://www.smhi.se/en/contact-smhi
+  source_type: own_site
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "Besöksadress för huvudkontoret i Norrköping enligt kontaktsidan. Husnumret saknas i OpenStreetMap, så nålen står på SMHI:s byggnad där (Nominatim, ODbL). Tips i OpenSveriges Discord 2026-11-16."
+
 active:
   value: true
   status: confirmed
@@ -84,4 +93,4 @@ links:
   github: https://github.com/smhi
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-04
+record_updated_at: 2026-11-17
