@@ -63,6 +63,36 @@
       "lan": {
         "ovrigt": 1
       }
+    },
+    "2026-11-16": {
+      "fragor": 108,
+      "modellen_svarade": 108,
+      "svar": {
+        "opensverige": 3,
+        "tomt": 25,
+        "traffar": 42,
+        "bred": 31,
+        "utanfor": 6,
+        "manniska": 1
+      },
+      "modellfel": {},
+      "omrade": {
+        "energi_klimat": 3,
+        "sprakteknik": 3,
+        "halsa": 3,
+        "ovrigt": 8
+      },
+      "typ": {
+        "ovrigt": 4
+      },
+      "erbjuder": {
+        "ovrigt": 2
+      },
+      "lan": {
+        "14": 7,
+        "01": 12,
+        "ovrigt": 5
+      }
     }
   },
   "luckor": [
