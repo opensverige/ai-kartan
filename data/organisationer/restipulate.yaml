@@ -1,0 +1,103 @@
+id: restipulate
+
+name:
+  value: Restipulate
+  status: claimed
+  source_url: https://restipulate.se/
+  source_type: own_site
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: Anmäld i OpenSveriges Discord 2026-11-17.
+
+legal_name:
+  value: Restipulate AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5595959726
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5595959726
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559595-9726"
+  status: confirmed
+  source_url: https://www.allabolag.se/5595959726
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+
+website: https://restipulate.se
+
+description:
+  value: Utvecklar ett AI-verktyg som granskar kravspecifikationer och upphandlingsdokument i IT-projekt. Verktyget letar efter luckor, vaga formuleringar och juridiska risker och ger en lista med förslag.
+  status: claimed
+  source_url: https://restipulate.se/
+  source_type: own_site
+  verified_at: 2026-11-17
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://restipulate.se/
+  source_type: own_site
+  verified_at: 2026-11-17
+  verified_by: agent
+
+areas:
+  value: [juridik, offentlig_sektor]
+  status: claimed
+  source_url: https://restipulate.se/
+  source_type: own_site
+  verified_at: 2026-11-17
+  verified_by: agent
+
+kommun:
+  value: "0123"
+  status: confirmed
+  source_url: https://www.allabolag.se/5595959726
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Järfälla. Registrets postadress har c/o och används inte för position, och webbplatsen anger ingen besöksadress."
+
+founded:
+  value: 2026
+  status: confirmed
+  source_url: https://www.allabolag.se/5595959726
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2026-07-30."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5595959726
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://restipulate.se/
+    kind: produkt
+    title: AI-verktyg för granskning av kravspecifikationer och upphandlingsdokument, med exempel på en granskning
+    status: claimed
+    verified_at: 2026-11-17
+    verified_by: agent
+    note: Webbplatsen beskriver ett system som är under utveckling. Registrets verksamhetsbeskrivning säger samma sak.
+
+links:
+  linkedin: https://www.linkedin.com/company/restipulate
+
+record_created_at: 2026-11-17
+record_updated_at: 2026-11-17
