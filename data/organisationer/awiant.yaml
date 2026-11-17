@@ -1,0 +1,117 @@
+id: awiant
+
+name:
+  value: Awiant
+  status: claimed
+  source_url: https://awiant.com/
+  source_type: own_site
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: Anmäld i OpenSveriges Discord 2026-11-16. Hette tidigare Buzzcloud AB enligt webbplatsens integritetspolicy.
+
+legal_name:
+  value: Awiant AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5591552319
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: Webbplatsens integritetspolicy anger Awiant AB med samma organisationsnummer.
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5591552319
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559155-2319"
+  status: confirmed
+  source_url: https://www.allabolag.se/5591552319
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+
+website: https://awiant.com
+
+description:
+  value: Konsultbolag inom moln och AI som bygger AI-agenter på AWS åt kunder. Ett publicerat case är agenter som granskar leverantörsfakturor åt Volkswagen Financial Services, i drift sedan april 2026.
+  status: claimed
+  source_url: https://awiant.com/cases/agentic-invoice-processing
+  source_type: own_site
+  verified_at: 2026-11-17
+  verified_by: agent
+
+offers:
+  value: [utveckling, infrastruktur]
+  status: claimed
+  source_url: https://awiant.com/
+  source_type: own_site
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: Infrastruktur avser molndrift och managed services på AWS.
+
+areas:
+  value: [agenter_automation]
+  status: claimed
+  source_url: https://awiant.com/
+  source_type: own_site
+  verified_at: 2026-11-17
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5591552319
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm. Webbplatsen anger också kontor i Malmö och Karlstad."
+
+coordinates:
+  value: { lat: 59.33417, lng: 18.06618 }
+  status: claimed
+  source_url: https://awiant.com/contact
+  source_type: own_site
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "Huvudkontoret enligt webbplatsens kontaktsida, i kontorshuset Epicenter. Registret har samma adress. Geokodad med OpenStreetMap Nominatim (ODbL)."
+
+founded:
+  value: 2018
+  status: confirmed
+  source_url: https://www.allabolag.se/5591552319
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2018-04-10."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5591552319
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://awiant.com/cases/agentic-invoice-processing
+    kind: case
+    title: "AI-agenter som granskar leverantörsfakturor åt Volkswagen Financial Services, byggda på Claude via Amazon Bedrock"
+    status: claimed
+    verified_at: 2026-11-17
+    verified_by: agent
+    note: Bolagets eget case. Kunden bekräftar det inte i någon källa som agenten har läst.
+  - url: https://awiant.com/news/ai-agents-on-aws-bedrock
+    kind: publikation
+    title: Guide till att bygga och driva AI-agenter på AWS Bedrock (2026-06-10)
+    status: claimed
+    verified_at: 2026-11-17
+    verified_by: agent
+
+record_created_at: 2026-11-17
+record_updated_at: 2026-11-17
