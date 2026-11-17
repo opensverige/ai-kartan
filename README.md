@@ -106,7 +106,23 @@ npm run build        # validerar och bygger till dist/
 | `node scripts/tips.mjs --fil arende.md` | Läser det korta formuläret och skriver svaret som boten ger i ärendet. |
 | `npm test` | Kör testerna för intaget av nya organisationer och för nedladdningen av ett urval. |
 
-Miljövariabler vid bygge: `SITE_URL` (standard `https://karta.opensverige.se`) och `BASE_PATH` (standard `/`).
+Miljövariabler vid bygge: `SITE_URL` (standard `https://karta.opensverige.se`) och `BASE_PATH` (standard `/`). `PUBLIC_PIXELKARTA_URL` slår på pixelkartan, se nedan.
+
+## Pixelkartan
+
+Stockholm, Göteborg och Malmö finns ritade som pixelstäder. De visas i sajtens egen karta: långt ute som små öar, och när man zoomar in lutar sig kartan och staden syns i full skärpa, med organisationerna kvar ovanpå. Koden ligger i `src/lib/pixelkarta/`.
+
+Pixelkartan är avstängd om inte `PUBLIC_PIXELKARTA_URL` är satt vid bygget. Värdet är adressen till bildtjänsten som lämnar ut kartbilderna, fram till och med versionen. Utan det byggs ingenting av pixelkartan in, och sajten är den vanliga kartan. Svarar bildtjänsten inte är sajten också den vanliga kartan. Besökaren kan själv slå av pixelkartan med en knapp på kartan.
+
+I en pixelstad står organisationerna så här: den som har en exakt adress står vid sitt hus, och väljs den ritas huset ut i färg medan staden runt det tonas ner. Ett tryck till på samma prick, eller ett tryck på kartan utanför huset, släpper valet och visar kartan som vanligt igen. Den som saknar exakt adress flyter i vattnet, som en kontur med en ring under. I kommunens rutnät skulle den hamna på ett hus, och på en karta där varje hus syns läses en prick som just det huset. Utanför pixelstäderna, och när pixelkartan är av, står alla som förut. Platserna i vattnet och husens former kommer från bildtjänsten, inte från repot.
+
+Den som flyter i vattnet får en knuff i sin detaljvy: en liten bild av ett tänt hus, hur många i staden som har sitt hus tänt, och knappen ”Tänd ert hus”, som leder rakt till rättelseformuläret med organisationen och fältet för adress ifyllda. Bilden kommer från bildtjänsten. Knuffen visas inte utanför pixelstäderna eller när pixelkartan är av.
+
+Medan pixelkartan är på står ett märke i kartan: ”Skapad av Gustaf Baltsar Garnow”, med länk till headless.design. Över hela landet, där städerna bara syns som öar, står också frågan ”Vill du se din stad i pixlar? Hör av dig.” under namnet. Märket står nere till vänster i kartan, och uppe till höger i telefon. Samma namn står i raden med kartans källor.
+
+Inne i en pixelstad rör sig staden: bilar, taxibilar, skåpbilar, bussar och lastbilar på vägnätet, tåg, tunnelbana och spårvagnar på sina spår, färjor på sina linjer, småbåtar på öppet vatten och fågelflockar över taken, och träden och vattnet rör sig. Över staden driver luftballonger med vinden, och då och då drar ett litet flygplan en banderoll över rutan. Ett tryck på en ballong får den att elda och stiga. Ballongerna är bilder från bildtjänsten när den har några (`figures` i `karta.json`), och ritas annars i kod. Allt ritas i kod (`src/lib/pixelkarta/liv.ts`, `liv-pixlar.ts` och `liv-luft.ts`) på en duk under kartbilden, i skala med kartan, och syns först när kartan är inzoomad så långt att det går att se. Fordon och båtar ritas i tre led, med tak, sidor, fönster och lyktor, och i stadens färger: röda och blå bussar i Stockholm, blå i Göteborg och gröna i Malmö, vita spårvagnar med blått i Göteborg och lila pågatåg i Malmö. Ett fordon ska gå att följa med blicken: underlagets uppgift om vad som syns bakom hus och under broar jämnas ut när nätet läses, trafiken hålls till de gator som syns, och en bil som kommer till en återvändsgata vänder i stället för att försvinna. Näten det rör sig på kommer från bildtjänsten (underlag: OpenStreetMap) och hämtas först då. Koden hämtas först när en stad öppnas. Rörelsen står still utanför pixelstäderna, när pixelkartan är av och för den som har bett om mindre rörelse i sitt system, och den drar själv ner på mängden om datorn inte håller takten.
+
+Kartbilderna ligger inte i repot. Bildtjänsten svarar bara sajten själv, så ett eget bygge med adressen satt visar den vanliga kartan.
 
 ## Fråga kartan
 
@@ -153,6 +169,7 @@ Citera med status och datum: *OpenSverige AI-kartan, ”Organisation”, hämtad
 - **Kod:** [AGPL-3.0](LICENSE).
 - **Data:** [CC BY 4.0](LICENSE-DATA) med attribution ”OpenSverige AI-kartan, karta.opensverige.se”. Enskilda fakta är fria. Uppgifter om enskilda firmor är personuppgifter och omfattas inte av licensen som sådana.
 - Kartunderlag: © OpenFreeMap, © OpenMapTiles, data från OpenStreetMap-bidragsgivare. Gränser: geoBoundaries (CC0 / CC BY 3.0). Typsnitt: SIL OFL.
+- **Pixelkartans bilder** ingår inte i repot och omfattas varken av AGPL eller CC BY. De är gjorda av Gustaf Baltsar Garnow och får inte kopieras eller återanvändas utan hans tillstånd. Underlag: Google Photorealistic 3D Tiles och OpenStreetMap. Koden som visar dem är AGPL som resten.
 
 ---
 

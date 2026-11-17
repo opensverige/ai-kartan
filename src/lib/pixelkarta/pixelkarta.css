@@ -1,0 +1,192 @@
+/* Pixelkartan: bildvisaren under kartbilden, knappen som slår av den och beskedet. */
+
+/* Pixelstaden ligger under den platta kartans bild och syns bara genom gluggen i den. */
+.pixelstad {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: #f2eee5;
+}
+.pixelstad * {
+  pointer-events: none !important;
+}
+
+/* Medan en vald organisations hus är utritat tonas staden runt det ner mot papper. */
+.pixelstad .openseadragon-container {
+  transition:
+    filter 0.25s ease,
+    opacity 0.25s ease;
+}
+.pixelstad--tonad .openseadragon-container {
+  filter: grayscale(0.6) sepia(0.22) contrast(0.92);
+  opacity: 0.6;
+}
+/* Huset i sina färger och kanten runt det: över bildvisaren, under kartbilden och dess prickar. */
+.pixelhus {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pixelstad .openseadragon-container {
+    transition: none;
+  }
+}
+
+/* Det som rör sig i staden: bilar, tåg, båtar och fåglar på en duk, och under den träd och
+   vatten som rör sig. Över bildvisaren, under husens duk och kartbilden. */
+.pixelliv {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+/* Medan staden är nedtonad runt ett valt hus tonas trafiken med den. Träden och vattnet står
+   still då: de är kartbildens egna färger, och skulle lysa igenom tonen. */
+.pixelstad--tonad ~ .pixelliv {
+  filter: grayscale(0.6) sepia(0.22) contrast(0.92);
+  opacity: 0.6;
+}
+.pixelstad--tonad ~ .pixelliv--punkter {
+  display: none;
+}
+
+/* Knappen är överstruken när pixelkartan är av. */
+.pixelbrytare[aria-pressed='false'] {
+  color: hsl(var(--ink-mute));
+  background-image: linear-gradient(to top right, transparent calc(50% - 1px), currentColor calc(50% - 1px), currentColor calc(50% + 1px), transparent calc(50% + 1px));
+  background-size: 22px 22px;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+/* Medlemsvyn har sin egen karta. */
+.app[data-vy='medlemmar'] .pixelbrytare {
+  display: none;
+}
+
+/* Vem som har gjort pixelkartan: ett märke nere till vänster i kartan, över raden om prickarna.
+   Det syns bara medan pixelkartan är på. */
+.skaparmarke {
+  position: absolute;
+  left: 12px;
+  bottom: 42px;
+  z-index: 3;
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  max-width: calc(100% - 96px);
+  padding: 8px 14px;
+  border: 1px solid hsl(var(--kant));
+  border-radius: 16px;
+  background: hsl(var(--yta-kort));
+  box-shadow: var(--skugga-flyt);
+  color: hsl(var(--ink));
+  font: 700 13px/1.2 var(--font-sans);
+  text-decoration: none;
+}
+.app--pixel .skaparmarke {
+  display: flex;
+}
+.skaparmarke__liten,
+.skaparmarke__fraga {
+  font-weight: 500;
+  color: hsl(var(--ink-mute));
+}
+.skaparmarke__sist {
+  white-space: nowrap;
+}
+.skaparmarke__pil {
+  color: var(--typ-community);
+}
+.skaparmarke__fraga {
+  display: none;
+}
+.skaparmarke--fraga .skaparmarke__fraga {
+  display: block;
+}
+.skaparmarke:hover {
+  border-color: var(--typ-community);
+}
+/* I en smal kartyta ligger raden om prickarna högre upp och bryts på två rader, och kartans
+   källrad når hit när den är utfälld. Märket står över båda. */
+@media (max-width: 1180px) {
+  .skaparmarke {
+    bottom: 106px;
+  }
+}
+/* På sajtens startskärm ligger frågerutan över kartans nedre del, och dess toning över märkets
+   vanliga plats: märket syntes inte men gick att trycka på. Där står det uppe till vänster,
+   där kartans knappar annars står. */
+html[data-fraga][data-fragelage='hem'] .app[data-lage='karta'] .skaparmarke {
+  top: 12px;
+  bottom: auto;
+}
+/* I telefon har filterknappen hörnet uppe till vänster och bladet ligger nedtill. Märket står uppe
+   till höger. På startskärmen ligger kartans källrad också där uppe: då står märket under den
+   (--under-kallor sätts av pixelkarta.ts, som mäter källraden). */
+@media (max-width: 900px) {
+  .skaparmarke,
+  html[data-fraga][data-fragelage='hem'] .app[data-lage='karta'] .skaparmarke {
+    left: auto;
+    right: 12px;
+    top: calc(12px + var(--under-kallor, 0px));
+    bottom: auto;
+    max-width: calc(100% - 132px);
+    padding: 7px 11px;
+    font-size: 12px;
+  }
+}
+
+/* Beskedet står upptill i kartan, där sajtens eget besked om kartbilden står. Nedtill ligger bladet i telefon. */
+.pixelbesked {
+  position: absolute;
+  left: 50%;
+  top: 84px;
+  z-index: 4;
+  width: max-content;
+  max-width: calc(100% - 32px);
+  margin: 0;
+  padding: 9px 16px;
+  border: 1px solid hsl(var(--kant));
+  border-radius: 999px;
+  background: hsl(var(--yta));
+  box-shadow: var(--skugga-flyt);
+  color: hsl(var(--ink));
+  font: 500 14px/1.3 var(--font-sans);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -6px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.pixelbesked--visas {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .pixelbesked {
+    transition: none;
+  }
+}
+/* I telefon står filterknappen överst till vänster. Beskedet står under den. */
+@media (max-width: 900px) {
+  .pixelbesked {
+    top: 128px;
+    text-align: center;
+  }
+}
+
+/* Med pixelkartan på är raden med kartans källor längre. Utfälld på bred skärm bryts den på två
+   rader och står till vänster om kartknapparna, så att den varken går in under raden om
+   prickarna nere till vänster eller upp bakom knapparna. */
+@media (min-width: 901px) {
+  .app--pixel .maplibregl-ctrl-bottom-right:has(.maplibregl-compact-show) {
+    right: 58px;
+    max-width: 46%;
+  }
+}

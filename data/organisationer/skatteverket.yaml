@@ -63,6 +63,15 @@ kommun:
   verified_by: agent
   note: Kommunsäte enligt allabolag.
 
+coordinates:
+  value: { lat: 59.36135, lng: 17.97426 }
+  status: claimed
+  source_url: https://www.skatteverket.se/privat/folkbokforing/skatteverketsidkort.4.7dd11e17188c71ebf173c4c.html
+  source_type: own_site
+  verified_at: 2026-11-15
+  verified_by: agent
+  note: "Adress till kontoret med reception i Sundbyberg enligt webbplatsen, som inte kallar det huvudkontor. Geokodad med OpenStreetMap Nominatim (ODbL)."
+
 active:
   value: true
   status: confirmed
@@ -81,4 +90,4 @@ evidence:
     verified_by: agent
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-04
+record_updated_at: 2026-11-15

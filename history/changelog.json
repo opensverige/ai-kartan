@@ -1,8 +1,279 @@
 {
-  "generated_at": "2026-10-21T22:02:52Z",
-  "antal": 516,
-  "senaste_andring": "2026-10-20",
+  "generated_at": "2026-11-17T09:10:39Z",
+  "antal": 535,
+  "senaste_andring": "2026-11-17",
   "rader": [
+    {
+      "datum": "2026-11-17",
+      "commit": "bfe4c35449",
+      "id": "hiasynth",
+      "namn": "Hiasynth",
+      "falt": "hela posten",
+      "andring": "tillagd",
+      "gammalt": null,
+      "nytt": null,
+      "status": null,
+      "kalla": "https://hiasynth.co"
+    },
+    {
+      "datum": "2026-11-17",
+      "commit": "b671738b46",
+      "id": "bitnomad",
+      "namn": "BitNomad",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.26133,
+        "lng": 18.03882
+      },
+      "status": "claimed",
+      "kalla": "https://bitnomad.se/sv/"
+    },
+    {
+      "datum": "2026-11-16",
+      "commit": "e6669481ef",
+      "id": "recnote",
+      "namn": "Recnote",
+      "falt": "hela posten",
+      "andring": "tillagd",
+      "gammalt": null,
+      "nytt": null,
+      "status": null,
+      "kalla": "https://recnote.ai"
+    },
+    {
+      "datum": "2026-11-16",
+      "commit": "1c69fe248e",
+      "id": "techtify",
+      "namn": "Techtify",
+      "falt": "hela posten",
+      "andring": "tillagd",
+      "gammalt": null,
+      "nytt": null,
+      "status": null,
+      "kalla": "https://techtify.io"
+    },
+    {
+      "datum": "2026-11-16",
+      "commit": "1c69fe248e",
+      "id": "orchestrator-zero",
+      "namn": "Orchestrator Zero",
+      "falt": "hela posten",
+      "andring": "tillagd",
+      "gammalt": null,
+      "nytt": null,
+      "status": null,
+      "kalla": "https://oz0.ai"
+    },
+    {
+      "datum": "2026-11-16",
+      "commit": "7a533ac2af",
+      "id": "opper-ai",
+      "namn": "Opper AI",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.3379836,
+        "lng": 18.0630121
+      },
+      "status": "claimed",
+      "kalla": "https://hsbc.getproven.com/vendor/data-analytics-and-ai/opper-ai"
+    },
+    {
+      "datum": "2026-11-15",
+      "commit": "460e41ed20",
+      "id": "trafikverket",
+      "namn": "Trafikverket",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 60.48642,
+        "lng": 15.40868
+      },
+      "status": "claimed",
+      "kalla": "https://www.trafikverket.se/om-oss/kontakta-oss/vara-regionkontor/huvudkontor-borlange/"
+    },
+    {
+      "datum": "2026-11-15",
+      "commit": "460e41ed20",
+      "id": "svenska-kraftnat",
+      "namn": "Svenska kraftnät",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.36066,
+        "lng": 17.97431
+      },
+      "status": "claimed",
+      "kalla": "https://www.svk.se/om-oss/kontakta-oss/vara-kontor/"
+    },
+    {
+      "datum": "2026-11-15",
+      "commit": "460e41ed20",
+      "id": "sva",
+      "namn": "Statens veterinärmedicinska anstalt",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.823,
+        "lng": 17.65227
+      },
+      "status": "claimed",
+      "kalla": "https://www.sva.se/om-sva/kontakta-oss/hitta-hit/"
+    },
+    {
+      "datum": "2026-11-15",
+      "commit": "460e41ed20",
+      "id": "skogsstyrelsen",
+      "namn": "Skogsstyrelsen",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 57.76488,
+        "lng": 14.15426
+      },
+      "status": "claimed",
+      "kalla": "https://www.skogsstyrelsen.se/kontakt/"
+    },
+    {
+      "datum": "2026-11-15",
+      "commit": "460e41ed20",
+      "id": "skatteverket",
+      "namn": "Skatteverket",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.36135,
+        "lng": 17.97426
+      },
+      "status": "claimed",
+      "kalla": "https://www.skatteverket.se/privat/folkbokforing/skatteverketsidkort.4.7dd11e17188c71ebf173c4c.html"
+    },
+    {
+      "datum": "2026-11-15",
+      "commit": "460e41ed20",
+      "id": "riksarkivet",
+      "namn": "Riksarkivet",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.32683,
+        "lng": 18.02257
+      },
+      "status": "claimed",
+      "kalla": "https://riksarkivet.se/om-riksarkivet/kontakta-oss/verksamhetsplatser"
+    },
+    {
+      "datum": "2026-11-15",
+      "commit": "460e41ed20",
+      "id": "lantmateriet",
+      "namn": "Lantmäteriet",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 60.66638,
+        "lng": 17.13257
+      },
+      "status": "claimed",
+      "kalla": "https://www.lantmateriet.se/sv/om-lantmateriet/kontakta-oss/hitta-kontor/"
+    },
+    {
+      "datum": "2026-11-15",
+      "commit": "460e41ed20",
+      "id": "lakemedelsverket",
+      "namn": "Läkemedelsverket",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.8425,
+        "lng": 17.6409
+      },
+      "status": "claimed",
+      "kalla": "https://www.lakemedelsverket.se/sv/om-lakemedelsverket/kontakta-oss"
+    },
+    {
+      "datum": "2026-11-15",
+      "commit": "460e41ed20",
+      "id": "kungliga-biblioteket",
+      "namn": "Kungliga biblioteket",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.33808,
+        "lng": 18.07204
+      },
+      "status": "claimed",
+      "kalla": "https://www.kb.se/om-oss/kontakta-oss.html"
+    },
+    {
+      "datum": "2026-11-15",
+      "commit": "460e41ed20",
+      "id": "boverket",
+      "namn": "Boverket",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 56.16742,
+        "lng": 15.58826
+      },
+      "status": "claimed",
+      "kalla": "https://www.boverket.se/sv/om-boverket/kontakta-oss/"
+    },
+    {
+      "datum": "2026-11-05",
+      "commit": "990bbac456",
+      "id": "bitnomad",
+      "namn": "BitNomad",
+      "falt": "description",
+      "andring": "ändrad",
+      "gammalt": "Konsultbolag inom systemutveckling som bygger AI-lösningar som automatiserar arbetsflöden och integreras med befintliga system. Utvecklar Tralala, en självhostad kanban där AI-agenter arbetar via API, och publicerar öppna AI-skills som låter kodassistenter granska arkitektur, affärsidé och risker.",
+      "nytt": "Konsultbolag inom systemutveckling som bygger AI-lösningar som automatiserar arbetsflöden och integreras med befintliga system. Utvecklar Tralala, en självhostad kanban där AI-agenter arbetar via API, och publicerar publika AI-skills som låter kodassistenter granska arkitektur, affärsidé och risker.",
+      "status": "claimed",
+      "gammal_status": "claimed",
+      "kalla": "https://bitnomad.se/sv/"
+    },
+    {
+      "datum": "2026-11-05",
+      "commit": "ad1e11ffc9",
+      "id": "bitnomad",
+      "namn": "BitNomad",
+      "falt": "offers",
+      "andring": "ändrad",
+      "gammalt": [
+        "utveckling",
+        "oppen_kallkod"
+      ],
+      "nytt": [
+        "utveckling"
+      ],
+      "status": "claimed",
+      "gammal_status": "claimed",
+      "kalla": "https://bitnomad.se/sv/"
+    },
+    {
+      "datum": "2026-11-01",
+      "commit": "7861c82edb",
+      "id": "bitnomad",
+      "namn": "BitNomad",
+      "falt": "hela posten",
+      "andring": "tillagd",
+      "gammalt": null,
+      "nytt": null,
+      "status": null,
+      "kalla": "https://bitnomad.se"
+    },
     {
       "datum": "2026-10-20",
       "commit": "3f8b8c39cd",

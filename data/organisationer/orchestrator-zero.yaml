@@ -1,0 +1,109 @@
+id: orchestrator-zero
+
+name:
+  value: Orchestrator Zero
+  status: claimed
+  source_url: https://oz0.ai/
+  source_type: own_site
+  verified_at: 2026-11-16
+  verified_by: agent
+  note: Anmäld i OpenSveriges Discord 2026-11-16.
+
+legal_name:
+  value: Moon Ventures AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5595032540
+  source_type: third_party
+  verified_at: 2026-11-16
+  verified_by: agent
+  note: Webbplatsen anger Moon Ventures utan bolagsform eller organisationsnummer. Kopplingen bygger på namnet och på att adressen i anmälan är bolagets registrerade adress.
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5595032540
+  source_type: third_party
+  verified_at: 2026-11-16
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559503-2540"
+  status: confirmed
+  source_url: https://www.allabolag.se/5595032540
+  source_type: third_party
+  verified_at: 2026-11-16
+  verified_by: agent
+
+website: https://oz0.ai
+
+description:
+  value: Utvecklar Orchestrator Zero, en plattform för att köra AI-agenter på egna maskiner. Den är byggd på Temporal och har behörigheter för verktygsanrop, godkännanden av människor och kostnadsgränser för modeller. Programvaran är inte släppt; dokumentation och en demo är öppna.
+  status: claimed
+  source_url: https://oz0.ai/llms.txt
+  source_type: own_site
+  verified_at: 2026-11-16
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://oz0.ai/product/
+  source_type: own_site
+  verified_at: 2026-11-16
+  verified_by: agent
+  note: Webbplatsen anger att kärnan har licensen Apache 2.0, men källkoden är ännu inte publik. Därför räknas den inte som öppen källkod.
+
+areas:
+  value: [agenter_automation]
+  status: claimed
+  source_url: https://oz0.ai/product/
+  source_type: own_site
+  verified_at: 2026-11-16
+  verified_by: agent
+
+kommun:
+  value: "0138"
+  status: confirmed
+  source_url: https://www.allabolag.se/5595032540
+  source_type: third_party
+  verified_at: 2026-11-16
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Tyresö. Adressen i anmälan är registrets postadress, en c/o-adress i Stockholm, så ingen exakt position."
+
+founded:
+  value: 2024
+  status: confirmed
+  source_url: https://www.allabolag.se/5595032540
+  source_type: third_party
+  verified_at: 2026-11-16
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2024-11-04."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5595032540
+  source_type: third_party
+  verified_at: 2026-11-16
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://demo.oz0.ai/
+    kind: demo
+    title: Publik demo av Orchestrator Zero
+    status: claimed
+    verified_at: 2026-11-16
+    verified_by: agent
+    note: Demon kräver inloggning. Agenten har inte loggat in och har inte sett innehållet bakom inloggningen.
+  - url: https://oz0.ai/product/
+    kind: produkt
+    title: "Orchestrator Zero: körning av AI-agenter på egna maskiner"
+    status: claimed
+    verified_at: 2026-11-16
+    verified_by: agent
+    note: Dokumentationen på docs.oz0.ai är en publik förhandsversion. Enligt llms.txt är programvaran inte släppt.
+
+record_created_at: 2026-11-16
+record_updated_at: 2026-11-16

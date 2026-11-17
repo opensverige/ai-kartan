@@ -17,7 +17,7 @@
     "preview": "astro preview",
     "check": "astro check",
     "validera": "node scripts/validera.mjs",
-    "test": "node --test \"scripts/*.test.mjs\" \"src/lib/*.test.mjs\" \"src/lib/fraga/*.test.mjs\"",
+    "test": "node --test \"scripts/*.test.mjs\" \"src/lib/*.test.mjs\" \"src/lib/fraga/*.test.mjs\" \"src/lib/pixelkarta/*.test.mjs\"",
     "andringar": "node scripts/andringar.mjs",
     "farskhet": "node scripts/farskhet.mjs",
     "lankkoll": "node scripts/lankkoll.mjs",
@@ -30,14 +30,16 @@
     "@astrojs/sitemap": "^3.7.4",
     "ajv": "^8.20.0",
     "ajv-formats": "^3.0.1",
-    "astro": "^7.4.7",
+    "astro": "^7.4.11",
     "fontkitten": "^1.0.3",
-    "maplibre-gl": "^6.16.0",
+    "maplibre-gl": "^6.18.0",
+    "openseadragon": "^6.1.1",
     "sharp": "^0.35.5",
     "yaml": "^2.9.1"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
+    "@types/openseadragon": "^6.0.0",
     "typescript": "^5.9.3"
   }
 }
