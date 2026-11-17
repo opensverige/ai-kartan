@@ -1,0 +1,99 @@
+id: squidler
+
+name:
+  value: Squidler
+  status: claimed
+  source_url: https://squidler.io/
+  source_type: own_site
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: Anmäld i ärende #124 2026-11-17.
+
+legal_name:
+  value: Squidler AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5594177403
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5594177403
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559417-7403"
+  status: confirmed
+  source_url: https://www.allabolag.se/5594177403
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+
+website: https://squidler.io
+
+description:
+  value: Utvecklar Squidler, en AI-agent som arbetar som kollega åt små företag. Agenten sköter inkorgen, svarar och följer upp, bokar möten, samlar kvitton till bokföringen och bevakar konkurrenter.
+  status: claimed
+  source_url: https://squidler.io/
+  source_type: own_site
+  verified_at: 2026-11-17
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://squidler.io/
+  source_type: own_site
+  verified_at: 2026-11-17
+  verified_by: agent
+
+areas:
+  value: [agenter_automation]
+  status: claimed
+  source_url: https://squidler.io/
+  source_type: own_site
+  verified_at: 2026-11-17
+  verified_by: agent
+
+kommun:
+  value: "1283"
+  status: confirmed
+  source_url: https://www.allabolag.se/5594177403
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Helsingborg. Registrets adress ligger i Malmö och används inte för position, eftersom webbplatsen inte anger någon adress."
+
+founded:
+  value: 2023
+  status: confirmed
+  source_url: https://www.allabolag.se/5594177403
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2023-01-13."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5594177403
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://squidler.io/
+    kind: produkt
+    title: "Squidler: AI-agent som sköter inkorg, bokningar, bokföring och uppföljning"
+    status: claimed
+    verified_at: 2026-11-17
+    verified_by: agent
+
+record_created_at: 2026-11-17
+record_updated_at: 2026-11-17

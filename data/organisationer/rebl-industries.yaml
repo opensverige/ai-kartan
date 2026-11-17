@@ -1,0 +1,99 @@
+id: rebl-industries
+
+name:
+  value: Rebl Industries
+  status: claimed
+  source_url: https://www.rebl.industries/
+  source_type: own_site
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: Anmäld i ärende #126 2026-11-17.
+
+legal_name:
+  value: Rebl Industries AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5591671812
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5591671812
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559167-1812"
+  status: confirmed
+  source_url: https://www.allabolag.se/5591671812
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+
+website: https://www.rebl.industries
+
+description:
+  value: Hyr ut robotar för lager och produktion som en tjänst, med betalning efter utfört arbete. Robotarna lastar av och på pallar och plockar varor. De använder 3D-skanning och AI som känner igen paket.
+  status: claimed
+  source_url: https://www.rebl.industries/product
+  source_type: own_site
+  verified_at: 2026-11-17
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.rebl.industries/product
+  source_type: own_site
+  verified_at: 2026-11-17
+  verified_by: agent
+
+areas:
+  value: [robotik, datorseende]
+  status: claimed
+  source_url: https://www.rebl.industries/product
+  source_type: own_site
+  verified_at: 2026-11-17
+  verified_by: agent
+
+kommun:
+  value: "1480"
+  status: confirmed
+  source_url: https://www.allabolag.se/5591671812
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Göteborg. Registret anger bara en postbox i Borås, och webbplatsen anger ingen besöksadress. Bolaget ingår i en koncern med HELO AB som moderbolag."
+
+founded:
+  value: 2018
+  status: confirmed
+  source_url: https://www.allabolag.se/5591671812
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2018-08-02."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5591671812
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.rebl.industries/product
+    kind: produkt
+    title: "Robotar för pallastning, avlastning och plock, med kamerasystem och AI som känner igen paket"
+    status: claimed
+    verified_at: 2026-11-17
+    verified_by: agent
+
+record_created_at: 2026-11-17
+record_updated_at: 2026-11-17

@@ -68,6 +68,15 @@ kommun:
   verified_by: agent
   note: "Kommunsäte enligt allabolag.se: Göteborg."
 
+coordinates:
+  value: { lat: 57.70046, lng: 11.94819 }
+  status: claimed
+  source_url: https://aigothenburg.com/the-hub
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "AI Gothenburgs hub, där bolaget har plats enligt hubbens sida och bolagets eget inlägg på LinkedIn 2026-10-28. Samma nål som för AI Gothenburg. Husnumret saknas i OpenStreetMap (Nominatim, ODbL). Ändrat efter ärende #123."
+
 founded:
   value: 2023
   status: confirmed
@@ -105,4 +114,4 @@ links:
   linkedin: https://www.linkedin.com/company/voidleap/
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-04
+record_updated_at: 2026-11-17

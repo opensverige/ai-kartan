@@ -1,0 +1,99 @@
+id: north-house
+
+name:
+  value: North House
+  status: claimed
+  source_url: https://northhouse.se/
+  source_type: own_site
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: Anmäld i ärende #127 2026-11-17.
+
+legal_name:
+  value: North House AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5593623365
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5593623365
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559362-3365"
+  status: confirmed
+  source_url: https://www.allabolag.se/5593623365
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+
+website: https://northhouse.se
+
+description:
+  value: Utvecklar en plattform för styrdokument och regelefterlevnad. Plattformen svarar på frågor ur policydokumenten, sammanfattar och översätter dem med AI och följer upp ägarskap och granskningar.
+  status: claimed
+  source_url: https://northhouse.se/product
+  source_type: own_site
+  verified_at: 2026-11-17
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://northhouse.se/product
+  source_type: own_site
+  verified_at: 2026-11-17
+  verified_by: agent
+
+areas:
+  value: [juridik]
+  status: claimed
+  source_url: https://northhouse.se/product
+  source_type: own_site
+  verified_at: 2026-11-17
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5593623365
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm. Registrets postadress är en brevlåda och webbplatsen anger ingen besöksadress."
+
+founded:
+  value: 2022
+  status: confirmed
+  source_url: https://www.allabolag.se/5593623365
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2022-01-25."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5593623365
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://northhouse.se/product
+    kind: produkt
+    title: "North House: plattform för styrdokument med AI-sammanfattningar och svar på frågor ur policyer"
+    status: claimed
+    verified_at: 2026-11-17
+    verified_by: agent
+
+record_created_at: 2026-11-17
+record_updated_at: 2026-11-17

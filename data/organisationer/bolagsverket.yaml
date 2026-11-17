@@ -1,0 +1,110 @@
+id: bolagsverket
+
+name:
+  value: Bolagsverket
+  status: claimed
+  source_url: https://www.bolagsverket.se/
+  source_type: own_site
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: Anmäld i ärende #125 2026-11-17.
+
+legal_name:
+  value: Bolagsverket
+  status: confirmed
+  source_url: https://www.allabolag.se/2021005489
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+
+type:
+  value: myndighet
+  status: confirmed
+  source_url: https://www.allabolag.se/2021005489
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Statlig enhet."
+
+org_number:
+  value: "202100-5489"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021005489
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+
+website: https://www.bolagsverket.se
+
+description:
+  value: Myndigheten registrerar företag. Har byggt en AI-modell, tränad på historiska data, som jämför ett föreslaget företagsnamn med befintliga namn. Tjänsten finns som betaversion på verksamt.se sedan april 2025.
+  status: claimed
+  source_url: https://bolagsverket.se/omoss/nyheter/nyhetsarkiv/nyhetsarkiv2025/nyhetsarkiv2025/aiforenklarvaletavforetagsnamn.5599.html
+  source_type: own_site
+  verified_at: 2026-11-17
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://bolagsverket.se/omoss/nyheter/nyhetsarkiv/nyhetsarkiv2025/nyhetsarkiv2025/aiforenklarvaletavforetagsnamn.5599.html
+  source_type: own_site
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: Myndighetens egen e-tjänst.
+
+areas:
+  value: [offentlig_sektor]
+  status: claimed
+  source_url: https://bolagsverket.se/omoss/nyheter/nyhetsarkiv/nyhetsarkiv2025/nyhetsarkiv2025/aiforenklarvaletavforetagsnamn.5599.html
+  source_type: own_site
+  verified_at: 2026-11-17
+  verified_by: agent
+
+kommun:
+  value: "2281"
+  status: confirmed
+  source_url: https://www.allabolag.se/2021005489
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Sundsvall."
+
+coordinates:
+  value: { lat: 62.38912, lng: 17.31549 }
+  status: confirmed
+  source_url: https://www.allabolag.se/2021005489
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "Registrets adress, utan c/o. Den är myndighetens huvudkontor i Sundsvall. Geokodad med OpenStreetMap Nominatim (ODbL)."
+
+founded:
+  value: 2004
+  status: confirmed
+  source_url: https://www.allabolag.se/2021005489
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2004-08-09."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/2021005489
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://bolagsverket.se/omoss/nyheter/nyhetsarkiv/nyhetsarkiv2025/nyhetsarkiv2025/aiforenklarvaletavforetagsnamn.5599.html
+    kind: produkt
+    title: "AI förenklar valet av företagsnamn: tjänsten Hjälp att välja företagsnamn (2025-04-14)"
+    status: claimed
+    verified_at: 2026-11-17
+    verified_by: agent
+    note: Tjänsten ligger på verksamt.se och är en betaversion enligt myndigheten.
+
+record_created_at: 2026-11-17
+record_updated_at: 2026-11-17

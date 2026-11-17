@@ -1,0 +1,118 @@
+id: dentio
+
+name:
+  value: Dentio
+  status: claimed
+  source_url: https://dentio.com/sv/
+  source_type: own_site
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: Tips via LinkedIn till OpenSverige 2026-11-17.
+
+legal_name:
+  value: Dentio AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5594985136
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5594985136
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559498-5136"
+  status: confirmed
+  source_url: https://www.allabolag.se/5594985136
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+
+website: https://dentio.com
+
+description:
+  value: Utvecklar AI-verktyg för tandvården. Verktyget spelar in konsultationen och skriver ett utkast till journalanteckning med taligenkänning och språkmodeller. En AI-receptionist svarar i telefon och bokar tider.
+  status: claimed
+  source_url: https://dentio.com/sv/about/
+  source_type: own_site
+  verified_at: 2026-11-17
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://dentio.com/sv/
+  source_type: own_site
+  verified_at: 2026-11-17
+  verified_by: agent
+
+areas:
+  value: [halsa, sprakteknik]
+  status: claimed
+  source_url: https://dentio.com/sv/
+  source_type: own_site
+  verified_at: 2026-11-17
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5594985136
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+coordinates:
+  value: { lat: 59.33588, lng: 18.06351 }
+  status: claimed
+  source_url: https://dentio.com/sv/privacy/
+  source_type: own_site
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "Adressen enligt webbplatsens integritetspolicy. Registret har samma adress. Geokodad med OpenStreetMap Nominatim (ODbL)."
+
+founded:
+  value: 2024
+  status: confirmed
+  source_url: https://www.allabolag.se/5594985136
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2024-10-01."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5594985136
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://dentio.com/sv/
+    kind: produkt
+    title: "Dentio: AI-assisterad journalföring för tandläkare"
+    status: claimed
+    verified_at: 2026-11-17
+    verified_by: agent
+    note: Webbplatsen anger att produkten är CE-märkt som medicinteknisk produkt klass I.
+  - url: https://dentio.com/sv/ai-receptionist/
+    kind: produkt
+    title: "AI-receptionist som svarar i telefon och bokar tider åt tandkliniker"
+    status: claimed
+    verified_at: 2026-11-17
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/dentio-sweden/
+
+record_created_at: 2026-11-17
+record_updated_at: 2026-11-17
