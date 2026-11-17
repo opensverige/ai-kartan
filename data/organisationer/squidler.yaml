@@ -67,7 +67,16 @@ kommun:
   source_type: third_party
   verified_at: 2026-11-17
   verified_by: agent
-  note: "Kommunsäte enligt allabolag.se: Helsingborg. Registrets adress ligger i Malmö och används inte för position, eftersom webbplatsen inte anger någon adress."
+  note: "Kommunsäte enligt allabolag.se: Helsingborg. Kontoret ligger i Malmö, se position."
+
+coordinates:
+  value: { lat: 55.61123, lng: 12.99422 }
+  status: confirmed
+  source_url: https://www.allabolag.se/5594177403
+  source_type: third_party
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "Registrets adress, utan c/o. Bolaget bekräftade adressen i OpenSveriges Discord 2026-11-17. Huset är inkubatorn Minc i Västra hamnen. Geokodad med OpenStreetMap Nominatim (ODbL)."
 
 founded:
   value: 2023
