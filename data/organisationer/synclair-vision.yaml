@@ -36,19 +36,19 @@ org_number:
 website: https://www.synclairvision.com
 
 description:
-  value: "Utvecklar kamerasystem för drönare där programvara korrigerar vidvinkelbilder och AI analyserar videon i realtid för att upptäcka avvikelser och följa mål."
+  value: Utvecklar MOSS, ett kamerasystem för drönare som navigerar utan satellitpositionering. Operatören eller en AI-modell väljer mål, och systemet följer målet och styr drönaren mot det.
   status: claimed
-  source_url: https://www.synclairvision.com/technology?feature=ai-driven-analysis
+  source_url: https://www.synclairvision.com/
   source_type: own_site
-  verified_at: 2026-10-04
+  verified_at: 2026-11-17
   verified_by: agent
 
 offers:
   value: [produkt]
   status: claimed
-  source_url: https://www.synclairvision.com/technology?feature=ai-driven-analysis
+  source_url: https://www.synclairvision.com/
   source_type: own_site
-  verified_at: 2026-10-04
+  verified_at: 2026-11-17
   verified_by: agent
 
 areas:
@@ -56,7 +56,7 @@ areas:
   status: claimed
   source_url: https://www.synclairvision.com/
   source_type: own_site
-  verified_at: 2026-10-04
+  verified_at: 2026-11-17
   verified_by: agent
 
 kommun:
@@ -84,12 +84,13 @@ active:
   verified_by: agent
 
 evidence:
-  - url: https://www.synclairvision.com/technology?feature=ai-driven-analysis
+  - url: https://www.synclairvision.com/
     kind: produkt
-    title: "Teknik: AI-driven analys i kamerasystem för drönare"
+    title: "Synclair MOSS: visionssystem för autonoma drönare"
     status: claimed
-    verified_at: 2026-10-04
+    verified_at: 2026-11-17
     verified_by: agent
+    note: Den tidigare tekniksidan finns inte längre.
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-04
+record_updated_at: 2026-11-17

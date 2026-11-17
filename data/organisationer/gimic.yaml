@@ -35,27 +35,28 @@ org_number:
 website: https://www.gimic.se
 
 description:
-  value: "Utvecklar ett AI-baserat system för automatiserad visuell kvalitetskontroll i industriell produktion, med verktyg för modellträning och uppföljning."
+  value: Utvecklar AI-baserade system för automatiserad visuell kvalitetskontroll i industriell produktion. Modellerna tränas på kundens produktionsdata, och resultaten samlas i Gimic Portal.
   status: claimed
-  source_url: https://www.gimic.se/platform
+  source_url: https://www.gimic.se/service/kvalitetskontroll
   source_type: own_site
-  verified_at: 2026-10-04
+  verified_at: 2026-11-17
   verified_by: agent
+  note: Gimic Portal nämns i kundcaset med Swepart.
 
 offers:
   value: [produkt]
   status: claimed
-  source_url: https://www.gimic.se/platform
+  source_url: https://www.gimic.se/service/kvalitetskontroll
   source_type: own_site
-  verified_at: 2026-10-04
+  verified_at: 2026-11-17
   verified_by: agent
 
 areas:
   value: [industri, datorseende]
   status: claimed
-  source_url: https://www.gimic.se/platform
+  source_url: https://www.gimic.se/service/kvalitetskontroll
   source_type: own_site
-  verified_at: 2026-10-04
+  verified_at: 2026-11-17
   verified_by: agent
 
 kommun:
@@ -86,12 +87,19 @@ active:
   note: "Status aktiv enligt allabolag."
 
 evidence:
-  - url: https://www.gimic.se/platform
+  - url: https://www.gimic.se/service/kvalitetskontroll
     kind: produkt
-    title: "Gimic Platform: AI-baserad visuell inspektion med Edge, Portal och Studio"
+    title: "Kvalitetskontroll: AI-modeller som hittar defekter i realtid i produktionslinjen"
     status: claimed
-    verified_at: 2026-10-04
+    verified_at: 2026-11-17
     verified_by: agent
+  - url: https://www.gimic.se/case-study/swepart-gimic-ai-kvalitetskontroll
+    kind: case
+    title: "Kundcase: AI-inspektion av kugghjul och drivaxlar i Sweparts fabriker"
+    status: claimed
+    verified_at: 2026-11-17
+    verified_by: agent
+    note: Bolagets eget case. Fyra enheter i fabrikerna i Liatorp och Sibbhult enligt sidan.
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-04
+record_updated_at: 2026-11-17

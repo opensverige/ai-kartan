@@ -16,7 +16,7 @@ legal_name:
   source_type: third_party
   verified_at: 2026-11-16
   verified_by: agent
-  note: Webbplatsen anger Moon Ventures utan bolagsform eller organisationsnummer. Kopplingen bygger på namnet och på att adressen i anmälan är bolagets registrerade adress.
+  note: Webbplatsens sidfot anger Moon Ventures med samma organisationsnummer.
 
 type:
   value: bolag
@@ -69,7 +69,16 @@ kommun:
   source_type: third_party
   verified_at: 2026-11-16
   verified_by: agent
-  note: "Kommunsäte enligt allabolag.se: Tyresö. Adressen i anmälan är registrets postadress, en c/o-adress i Stockholm, så ingen exakt position."
+  note: "Kommunsäte enligt allabolag.se: Tyresö. Kontoret ligger i Stockholm, se position."
+
+coordinates:
+  value: { lat: 59.34561, lng: 18.05287 }
+  status: claimed
+  source_url: https://oz0.ai/
+  source_type: own_site
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "Adressen i webbplatsens sidfot, tillsammans med bolagets namn och organisationsnummer. Geokodad med OpenStreetMap Nominatim (ODbL). Tillagd efter ärende #117."
 
 founded:
   value: 2024
@@ -106,4 +115,4 @@ evidence:
     note: Dokumentationen på docs.oz0.ai är en publik förhandsversion. Enligt llms.txt är programvaran inte släppt.
 
 record_created_at: 2026-11-16
-record_updated_at: 2026-11-16
+record_updated_at: 2026-11-17

@@ -39,25 +39,25 @@ website: https://www.repli5.com
 description:
   value: Bygger en plattform som genererar syntetiska, automatiskt annoterade träningsdata för datorseende med 3D-simulering och generativ AI. Plattformen finns i sluten beta.
   status: claimed
-  source_url: https://www.repli5.com/platform
+  source_url: https://www.repli5.com/
   source_type: own_site
-  verified_at: 2026-10-04
+  verified_at: 2026-11-17
   verified_by: agent
 
 offers:
   value: [produkt, data]
   status: claimed
-  source_url: https://www.repli5.com/platform
+  source_url: https://www.repli5.com/
   source_type: own_site
-  verified_at: 2026-10-04
+  verified_at: 2026-11-17
   verified_by: agent
 
 areas:
   value: [datorseende, industri, transport_mobilitet, forsvar_sakerhet]
   status: claimed
-  source_url: https://www.repli5.com/platform
+  source_url: https://www.repli5.com/
   source_type: own_site
-  verified_at: 2026-10-04
+  verified_at: 2026-11-17
   verified_by: agent
 
 kommun:
@@ -88,16 +88,16 @@ active:
   note: "Status enligt allabolag.se: Aktiv."
 
 evidence:
-  - url: https://www.repli5.com/platform
+  - url: https://www.repli5.com/
     kind: produkt
-    title: "Repli5 Data Engine: syntetiska träningsdata för datorseende"
+    title: "Repli5: syntetiska träningsdata för datorseende"
     status: claimed
-    verified_at: 2026-10-04
+    verified_at: 2026-11-17
     verified_by: agent
-    note: Enligt sidan är plattformen i sluten beta med tidig åtkomst.
+    note: Plattformen är i sluten beta enligt webbplatsen. Produktsidan /platform svarar med statuskod 404 till länkkontrollen, fast den visas i en webbläsare.
 
 links:
   linkedin: https://www.linkedin.com/company/repli5/
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-04
+record_updated_at: 2026-11-17

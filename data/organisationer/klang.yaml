@@ -71,6 +71,15 @@ kommun:
   verified_by: agent
   note: "Kommunsäte enligt allabolag.se: Helsingborg."
 
+coordinates:
+  value: { lat: 56.04844, lng: 12.68947 }
+  status: claimed
+  source_url: https://klang.ai/
+  source_type: own_site
+  verified_at: 2026-11-17
+  verified_by: agent
+  note: "Adressen i webbplatsens sidfot, tillsammans med bolagets namn och organisationsnummer. Geokodad med OpenStreetMap Nominatim (ODbL). Tillagd efter ärende #103."
+
 founded:
   value: 2022
   status: confirmed
@@ -116,4 +125,4 @@ links:
   huggingface: https://huggingface.co/KlangAI
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-04
+record_updated_at: 2026-11-17

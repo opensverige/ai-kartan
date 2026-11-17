@@ -37,27 +37,28 @@ org_number:
 website: https://atlasai.se
 
 description:
-  value: AI-byrå som bygger och driftar skräddarsydda AI-agenter och automationer åt företag, bland annat för offerter, leverantörsfakturor och dokumentsökning samt ritningsjämförelse och bygglovsgranskning.
+  value: Utvecklar AI-verktyg åt byggbranschen, till exempel för att granska ritningar mot krav och brandregler, ta fram utkast till markundersökningsrapporter och skriva mötesprotokoll. Bygger också verktyg på beställning.
   status: claimed
-  source_url: https://atlasai.se/byggen
+  source_url: https://atlasai.se/
   source_type: own_site
-  verified_at: 2026-10-04
+  verified_at: 2026-11-17
   verified_by: agent
+  note: Webbplatsen anger att klippen där är exempel på hur verktygen kan se ut.
 
 offers:
   value: [utveckling]
   status: claimed
-  source_url: https://atlasai.se/byggen
+  source_url: https://atlasai.se/
   source_type: own_site
-  verified_at: 2026-10-04
+  verified_at: 2026-11-17
   verified_by: agent
 
 areas:
-  value: [agenter_automation, fastighet_bygg]
+  value: [fastighet_bygg, agenter_automation]
   status: claimed
-  source_url: https://atlasai.se/byggen
+  source_url: https://atlasai.se/
   source_type: own_site
-  verified_at: 2026-10-04
+  verified_at: 2026-11-17
   verified_by: agent
 
 kommun:
@@ -97,15 +98,16 @@ active:
   note: "Status enligt allabolag.se: Aktiv."
 
 evidence:
-  - url: https://atlasai.se/byggen
+  - url: https://atlasai.se/kunder
     kind: case
-    title: "Byggen: egna AI-system och automationer byggda åt kunder"
+    title: "Kundcase: analysmotor som gör givardata till färdiga presentationer åt Contribum"
     status: claimed
-    verified_at: 2026-10-04
+    verified_at: 2026-11-17
     verified_by: agent
+    note: Sidan säger inte vilken AI som används. Den tidigare sidan Byggen finns inte längre.
 
 links:
   linkedin: https://www.linkedin.com/company/atlas-ai-ab
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-13
+record_updated_at: 2026-11-17
