@@ -41,6 +41,7 @@ import { url, SAJT } from '../lib/data';
     <li>Uppgifter på organisationsnivå: namn, organisationsnummer, säte på kommunnivå, vad organisationen bygger, publika länkar.</li>
     <li>Schemat saknar fält för kontaktpersoner, anställda, ägare, e-post och telefon. Den automatiska kontrollen stoppar sådana uppgifter innan de kan publiceras.</li>
     <li>En organisation ritas på sin adress när den anger en besöksadress på sin webbplats, och annars på den registrerade postadressen hos Bolagsverket eller SCB. En registrerad adress med c/o eller lägenhetsnummer används inte, om organisationen inte själv anger adressen på sin webbplats. Enskilda firmor får aldrig exakt position. Bara koordinaten sparas, aldrig gatuadressen. Övriga organisationer visas på kommunnivå.</li>
+    <li>En organisation kan ha platser utöver sätet, till exempel kontor på andra orter. En sådan plats sparas bara som kommun, aldrig som adress eller koordinat.</li>
     <li>Bolagsverket visar styrelse och vd med namn. De fälten importeras aldrig.</li>
   </ul>
 

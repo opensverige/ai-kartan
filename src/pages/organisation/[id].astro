@@ -100,9 +100,9 @@ const citat = `OpenSverige AI-kartan, ”${org.name.value}”, hämtad ${idag}, 
             <tr><th>Uppgift</th><th>Värde</th><th>Status</th><th>Källa</th><th>Datum</th></tr>
           </thead>
           <tbody>
-            {fakta.map(({ nyckel, etikett, fakta: f }) => (
-              <tr id={`falt-${nyckel}`}>
-                <th scope="row"><a class="ankare" href={`#falt-${nyckel}`} aria-label={`Länk till ${etikett}`}>#</a> {etikett}</th>
+            {fakta.map(({ nyckel, ankare, etikett, fakta: f }) => (
+              <tr id={`falt-${ankare}`}>
+                <th scope="row"><a class="ankare" href={`#falt-${ankare}`} aria-label={`Länk till ${etikett}`}>#</a> {etikett}</th>
                 <td>
                   {nyckel === 'offers' ? (
                     <span class="rad">{(f.value as string[]).map((x) => <a class="tagg" href={url(`/organisationer?erbjuder=${x}`)}>{d.etikett.erbjuder.get(x)?.label ?? x}</a>)}</span>

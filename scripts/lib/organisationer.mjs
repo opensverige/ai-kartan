@@ -92,11 +92,16 @@ export function lasOrganisationer(katalog = KATALOG_ORG) {
   });
 }
 
-/** Alla fakta i en post som [namn, fakta]-par, inklusive belägg. */
+/** Alla fakta i en post som [namn, fakta]-par. Varje plats är en egen uppgift, platser[0], platser[1] och så vidare. */
 export function faktaIPost(data) {
   const ut = [];
   for (const f of FAKTAFALT) {
     if (data && data[f] && typeof data[f] === 'object') ut.push([f, data[f]]);
+  }
+  if (Array.isArray(data?.platser)) {
+    data.platser.forEach((p, i) => {
+      if (p && typeof p === 'object') ut.push([`platser[${i}]`, p]);
+    });
   }
   return ut;
 }

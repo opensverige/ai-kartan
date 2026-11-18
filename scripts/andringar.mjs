@@ -35,6 +35,8 @@ function platta(data) {
   const ut = new Map();
   if (!data) return ut;
   for (const [namn, fakta] of faktaIPost(data)) {
+    // Platserna jämförs som en lista, som beläggen, så att en ny plats i början inte flyttar alla de andra.
+    if (namn.startsWith('platser[')) continue;
     ut.set(namn, {
       value: fakta.value ?? null,
       status: fakta.status ?? null,
@@ -45,6 +47,8 @@ function platta(data) {
   ut.set('website', { value: data.website ?? null, status: null, source_url: data.website ?? null, verified_at: null });
   const belagg = (data.evidence ?? []).map((b) => b.url).filter(Boolean).sort();
   ut.set('evidence', { value: belagg, status: null, source_url: null, verified_at: null });
+  const platser = (data.platser ?? []).map((p) => p?.value?.kommun).filter(Boolean).sort();
+  if (platser.length) ut.set('platser', { value: platser, status: null, source_url: null, verified_at: null });
   if (data.links) ut.set('links', { value: data.links, status: null, source_url: null, verified_at: null });
   return ut;
 }

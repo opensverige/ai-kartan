@@ -68,6 +68,136 @@ kommun:
   verified_by: agent
   note: "Kommunsäte enligt allabolag.se: Stockholm."
 
+coordinates:
+  value: { lat: 59.33476, lng: 18.06468 }
+  status: claimed
+  source_url: https://www.knowit.se/kontakt/stockholm/
+  source_type: own_site
+  verified_at: 2026-11-05
+  verified_by: agent
+  note: "Besöksadress enligt webbplatsen, geokodad med OpenStreetMap Nominatim (ODbL)."
+
+platser:
+  - value:
+      kommun: "0380"
+    status: claimed
+    source_url: https://www.knowit.se/kontakt/uppsala/
+    source_type: own_site
+    verified_at: 2026-11-02
+    verified_by: agent
+  - value:
+      kommun: "0580"
+    status: claimed
+    source_url: https://www.knowit.se/kontakt/linkoping/
+    source_type: own_site
+    verified_at: 2026-11-02
+    verified_by: agent
+  - value:
+      kommun: "0680"
+    status: claimed
+    source_url: https://www.knowit.se/kontakt/jonkoping/
+    source_type: own_site
+    verified_at: 2026-11-02
+    verified_by: agent
+  - value:
+      kommun: "1080"
+    status: claimed
+    source_url: https://www.knowit.se/kontakt/karlskrona/
+    source_type: own_site
+    verified_at: 2026-11-02
+    verified_by: agent
+  - value:
+      kommun: "1280"
+    status: claimed
+    source_url: https://www.knowit.se/kontakt/malmo/
+    source_type: own_site
+    verified_at: 2026-11-02
+    verified_by: agent
+  - value:
+      kommun: "1281"
+    status: claimed
+    source_url: https://www.knowit.se/kontakt/lund/
+    source_type: own_site
+    verified_at: 2026-11-02
+    verified_by: agent
+  - value:
+      kommun: "1283"
+    status: claimed
+    source_url: https://www.knowit.se/kontakt/helsingborg/
+    source_type: own_site
+    verified_at: 2026-11-02
+    verified_by: agent
+  - value:
+      kommun: "1480"
+    status: claimed
+    source_url: https://www.knowit.se/kontakt/goteborg/
+    source_type: own_site
+    verified_at: 2026-11-02
+    verified_by: agent
+  - value:
+      kommun: "1488"
+    status: claimed
+    source_url: https://www.knowit.se/kontakt/trollhattan/
+    source_type: own_site
+    verified_at: 2026-11-02
+    verified_by: agent
+  - value:
+      kommun: "1780"
+    status: claimed
+    source_url: https://www.knowit.se/kontakt/karlstad/
+    source_type: own_site
+    verified_at: 2026-11-02
+    verified_by: agent
+  - value:
+      kommun: "1880"
+    status: claimed
+    source_url: https://www.knowit.se/kontakt/orebro/
+    source_type: own_site
+    verified_at: 2026-11-02
+    verified_by: agent
+  - value:
+      kommun: "2081"
+    status: claimed
+    source_url: https://www.knowit.se/kontakt/borlange/
+    source_type: own_site
+    verified_at: 2026-11-02
+    verified_by: agent
+  - value:
+      kommun: "2180"
+    status: claimed
+    source_url: https://www.knowit.se/kontakt/gavle/
+    source_type: own_site
+    verified_at: 2026-11-02
+    verified_by: agent
+  - value:
+      kommun: "2281"
+    status: claimed
+    source_url: https://www.knowit.se/kontakt/sundsvall/
+    source_type: own_site
+    verified_at: 2026-11-02
+    verified_by: agent
+  - value:
+      kommun: "2380"
+    status: claimed
+    source_url: https://www.knowit.se/kontakt/ostersund-radhusgatan/
+    source_type: own_site
+    verified_at: 2026-11-02
+    verified_by: agent
+  - value:
+      kommun: "2480"
+    status: claimed
+    source_url: https://www.knowit.se/kontakt/umea/
+    source_type: own_site
+    verified_at: 2026-11-02
+    verified_by: agent
+  - value:
+      kommun: "2580"
+    status: claimed
+    source_url: https://www.knowit.se/kontakt/lulea/
+    source_type: own_site
+    verified_at: 2026-11-02
+    verified_by: agent
+
 founded:
   value: 1990
   status: confirmed
@@ -98,4 +228,4 @@ links:
   linkedin: https://www.linkedin.com/company/knowit
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-04
+record_updated_at: 2026-11-05
