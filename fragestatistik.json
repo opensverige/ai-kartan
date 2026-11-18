@@ -93,6 +93,36 @@
         "01": 12,
         "ovrigt": 5
       }
+    },
+    "2026-11-17": {
+      "fragor": 107,
+      "modellen_svarade": 106,
+      "svar": {
+        "traffar": 40,
+        "bred": 37,
+        "opensverige": 5,
+        "tomt": 22,
+        "utanfor": 2,
+        "ranking": 1
+      },
+      "modellfel": {},
+      "omrade": {
+        "halsa": 4,
+        "ovrigt": 7
+      },
+      "typ": {
+        "ovrigt": 3
+      },
+      "erbjuder": {
+        "infrastruktur": 6,
+        "ovrigt": 3
+      },
+      "lan": {
+        "12": 3,
+        "14": 9,
+        "01": 9,
+        "ovrigt": 11
+      }
     }
   },
   "luckor": [
