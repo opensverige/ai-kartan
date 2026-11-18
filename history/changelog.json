@@ -1,8 +1,20 @@
 {
-  "generated_at": "2026-11-18T21:52:51Z",
-  "antal": 571,
+  "generated_at": "2026-11-18T21:58:57Z",
+  "antal": 572,
   "senaste_andring": "2026-11-18",
   "rader": [
+    {
+      "datum": "2026-11-18",
+      "commit": "d19384cfd1",
+      "id": "bolagskvarnen",
+      "namn": "Bolagskvarnen",
+      "falt": "hela posten",
+      "andring": "tillagd",
+      "gammalt": null,
+      "nytt": null,
+      "status": null,
+      "kalla": "https://bolagskvarnen.se"
+    },
     {
       "datum": "2026-11-18",
       "commit": "0c39e4e4dd",
