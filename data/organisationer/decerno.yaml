@@ -1,0 +1,136 @@
+id: decerno
+
+name:
+  value: Decerno
+  status: claimed
+  source_url: https://www.decerno.se/
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: Anmäld i ärende #134 2026-11-18.
+
+legal_name:
+  value: Decerno Aktiebolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5564985025
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Ingår i Addnode Group enligt allabolag.se och webbplatsens sidfot."
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5564985025
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "556498-5025"
+  status: confirmed
+  source_url: https://www.allabolag.se/5564985025
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: Webbplatsens strukturerade data anger samma organisationsnummer.
+
+website: https://www.decerno.se
+
+description:
+  value: Konsultbolag som bygger verksamhetssystem och AI-lösningar åt myndigheter och företag. Bland dem finns Skrivmaskinen, där generativ AI skriver förslag till objektbeskrivningar åt Fastighetsbyråns mäklare, en AI-säljassistent åt Volvo Cars och GAIA, som tolkar flygbilder med AI för kartering.
+  status: claimed
+  source_url: https://www.decerno.se/erbjudanden/ai-och-machine-learning/
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+
+offers:
+  value: [utveckling, utbildning]
+  status: claimed
+  source_url: https://www.decerno.se/erbjudanden/ai-och-machine-learning/
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: Sidan beskriver utveckling av AI-lösningar åt kunder och utbildningar och workshoppar om AI.
+
+areas:
+  value: [offentlig_sektor, datorseende, sprakteknik]
+  status: claimed
+  source_url: https://www.decerno.se/erbjudanden/ai-for-offentlig-sektor/
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5564985025
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm. Stockholmskontoret på webbplatsens kontaktsida ligger i samma kommun."
+
+coordinates:
+  value: { lat: 59.34546, lng: 18.03224 }
+  status: claimed
+  source_url: https://www.decerno.se/kontakt/
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Stockholmskontoret enligt webbplatsens kontaktsida, som också anger kontor i Göteborg, Malmö och Uppsala. Registret har samma adress, utan c/o. OpenStreetMap har husnumret bara med uppgångsbokstav, så nålen står på en av husets uppgångar (Nominatim, ODbL)."
+
+founded:
+  value: 1994
+  status: confirmed
+  source_url: https://www.allabolag.se/5564985025
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 1994-11-03. Webbplatsen (https://www.decerno.se/erbjudanden/modernisering-av-legacysystem/) anger att bolaget utvecklat system sedan 1984."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5564985025
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.decerno.se/kundcase/fastighetsbyran-ai/
+    kind: case
+    title: "Skrivmaskinen: förslag till objektbeskrivningar med generativ AI i Fastighetsbyråns mäklarsystem"
+    status: claimed
+    verified_at: 2026-11-18
+    verified_by: agent
+    note: Bolagets eget kundcase. Lösningen bygger enligt sidan på OpenAI:s API och Azures bildanalys och lanserades på alla Fastighetsbyråns kontor i mars 2024.
+  - url: https://www.decerno.se/kundcase/ai-gis-gaia/
+    kind: case
+    title: "GAIA: tolkning av flygbilder med AI för kommunernas kartering"
+    status: claimed
+    verified_at: 2026-11-18
+    verified_by: agent
+    note: Bolagets eget kundcase. Projektet drivs enligt sidan tillsammans med bland andra Göteborgs stad, Stockholms stad och Linköpings universitet och beskrivs som pågående.
+  - url: https://www.decerno.se/kundcase/ai-saljassistent-at-volvo-cars/
+    kind: case
+    title: Digital säljassistent med AI-chatt åt Volvo Cars
+    status: claimed
+    verified_at: 2026-11-18
+    verified_by: agent
+    note: Bolagets eget kundcase. Assistenten bygger enligt sidan på Azure OpenAI och Azure AI Search.
+  - url: https://www.decerno.se/kundcase/sa-minskade-vinnova-trycket-pa-supporten-med-ai/
+    kind: case
+    title: Chattassistent för supportfrågor i Vinnovas e-tjänster
+    status: claimed
+    verified_at: 2026-11-18
+    verified_by: agent
+    note: Bolagets eget kundcase. Chatten bygger enligt sidan på GPT-4.1 med RAG mot Azure AI Search och är i produktion.
+
+links:
+  linkedin: https://www.linkedin.com/company/decerno-ab/
+
+record_created_at: 2026-11-18
+record_updated_at: 2026-11-18

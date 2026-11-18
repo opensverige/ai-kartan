@@ -1,0 +1,120 @@
+id: demoskop
+
+name:
+  value: Demoskop
+  status: claimed
+  source_url: https://demoskop.se/
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: Anmäld i ärende #135 2026-11-18.
+
+legal_name:
+  value: Demoskop AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5592038961
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: Integritetspolicyerna på demoskop.se och stellaresearch.ai anger Demoskop AB med samma organisationsnummer.
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5592038961
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559203-8961"
+  status: confirmed
+  source_url: https://www.allabolag.se/5592038961
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+
+website: https://demoskop.se
+
+description:
+  value: Analysföretag för marknads- och opinionsundersökningar. Utvecklar Stella Research Engine, en AI-plattform som analyserar undersökningsdata och textdokument och tar fram rapporter. Plattformen används i det egna undersökningsarbetet och licensieras till andra organisationer.
+  status: claimed
+  source_url: https://demoskop.se/experter-pa-datadrivna-beslutsunderlag/demoskops-ai-stella/
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://demoskop.se/experter-pa-datadrivna-beslutsunderlag/demoskops-ai-stella/
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+
+areas:
+  value: [agenter_automation, sprakteknik]
+  status: claimed
+  source_url: https://stellaresearch.ai/
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5592038961
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm. Stockholmskontoret på webbplatsen ligger i samma kommun."
+
+coordinates:
+  value: { lat: 59.33378, lng: 18.06448 }
+  status: claimed
+  source_url: https://demoskop.se/om-oss/kontakta-oss/
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Stockholmskontoret under Kontor i webbplatsens sidfot, som också anger ett kontor i Göteborg. Integritetspolicyn och registret har samma adress, utan c/o. Geokodad med OpenStreetMap Nominatim (ODbL)."
+
+founded:
+  value: 2019
+  status: confirmed
+  source_url: https://www.allabolag.se/5592038961
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2019-04-29. Webbplatsen (https://demoskop.se/om-oss/om-demoskop/) anger att Demoskop grundades 1989 och gick samman med Inizio 2019."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5592038961
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://stellaresearch.ai/
+    kind: produkt
+    title: "Stella Research Engine: AI-plattform med agenter för analys av undersökningsdata och dokument"
+    status: claimed
+    verified_at: 2026-11-18
+    verified_by: agent
+    note: Sidfoten anger att plattformen drivs av Demoskop AB och länkar till demoskop.se. Integritetspolicyn på stellaresearch.ai anger Demoskop AB med samma organisationsnummer som registret.
+  - url: https://demoskop.se/kundcase/cloudberryaistella/
+    kind: case
+    title: Cloudberry Communications AI-verktyg byggt på Stella Research Engine
+    status: claimed
+    verified_at: 2026-11-18
+    verified_by: agent
+    note: Bolagets eget kundcase. PR-byrån har licens på plattformen och har enligt sidan byggt egna assistenter och agenter i den.
+
+links:
+  linkedin: https://www.linkedin.com/company/demoskop-ab
+
+record_created_at: 2026-11-18
+record_updated_at: 2026-11-18
