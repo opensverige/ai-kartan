@@ -313,8 +313,9 @@ export function visaVarde(d: Dataset, o: Org, nyckel: keyof OrgData, fakta: Fakt
     case 'kommun':
       return o.h.kommun_namn ? `${o.h.kommun_namn}, ${o.h.lan_namn}` : String(v);
     case 'coordinates': {
+      // Bara koordinaten sparas, aldrig gatuadressen. Varifrån adressen kommer står i källan bredvid.
       const c = v as { lat: number; lng: number };
-      return `${c.lat.toFixed(4)}, ${c.lng.toFixed(4)}`;
+      return `Exakt adress (${c.lat.toFixed(4)}, ${c.lng.toFixed(4)})`;
     }
     case 'active':
       return v ? 'Ja' : 'Nej, nedlagd eller avregistrerad';
@@ -435,6 +436,8 @@ export function tillKartpost(o: Org) {
     lat: o.h.position?.lat ?? null,
     lng: o.h.position?.lng ?? null,
     pt: o.h.position_typ,
+    // Sidan där den exakta adressen står, så att detaljvyn kan säga varifrån den kommer.
+    pu: o.h.position_typ === 'exakt' ? (o.coordinates?.source_url ?? null) : null,
     d: o.description.value,
     s: o.h.senast_verifierad,
     c: o.h.antal_bekraftade,

@@ -32,6 +32,13 @@ const beskrivning = metabeskrivning(`${typOchPlats ? `${typOchPlats}: ` : ''}${o
 const rattelseUrl = `${SAJT.repo}/issues/new?template=rattelse.yml&title=${encodeURIComponent(`Rättelse: ${org.name.value}`)}&organisation=${encodeURIComponent(org.id)}`;
 const borttagningUrl = `${SAJT.repo}/issues/new?template=borttagning.yml&title=${encodeURIComponent(`Borttagning: ${org.name.value}`)}&organisation=${encodeURIComponent(org.id)}`;
 const redigeraUrl = `${SAJT.repo}/edit/main/data/organisationer/${org.id}.yaml`;
+// Utan exakt adress får tabellen ändå en rad om positionen, så att sidan säger det kartan visar.
+// En enskild firma får aldrig exakt position (metoden, Plats), så den får ingen länk att lägga till en.
+const utanAdress = !org.coordinates;
+const adressUrl =
+  `${SAJT.repo}/issues/new?template=rattelse.yml&title=${encodeURIComponent(`Adress: ${org.name.value}`)}` +
+  `&organisation=${encodeURIComponent(org.id)}&falt=${encodeURIComponent('coordinates (adress på kartan)')}` +
+  `&nuvarande=${encodeURIComponent('Bara kommun, ingen exakt adress.')}&korrekt=${encodeURIComponent('Besöksadress: ')}`;
 const kallkodUrl = `${SAJT.repo}/blob/main/data/organisationer/${org.id}.yaml`;
 
 const sameAs = [org.links?.github, org.links?.huggingface, org.links?.linkedin, org.links?.wikidata ? `https://www.wikidata.org/wiki/${org.links.wikidata}` : undefined].filter(Boolean);
@@ -101,6 +108,7 @@ const citat = `OpenSverige AI-kartan, ”${org.name.value}”, hämtad ${idag}, 
           </thead>
           <tbody>
             {fakta.map(({ nyckel, etikett, fakta: f }) => (
+              <Fragment>
               <tr id={`falt-${nyckel}`}>
                 <th scope="row"><a class="ankare" href={`#falt-${nyckel}`} aria-label={`Länk till ${etikett}`}>#</a> {etikett}</th>
                 <td>
@@ -119,6 +127,26 @@ const citat = `OpenSverige AI-kartan, ”${org.name.value}”, hämtad ${idag}, 
                 </td>
                 <td class="meta">{formateraDatum(f.verified_at)}{f.corroborated_at && <span title="Automatiskt bekräftad mot källan vid detta datum"> · styrkt {formateraDatum(f.corroborated_at)}</span>}</td>
               </tr>
+              {nyckel === 'kommun' && utanAdress && (
+                <tr id="falt-coordinates">
+                  <th scope="row"><a class="ankare" href="#falt-coordinates" aria-label="Länk till Position">#</a> Position</th>
+                  <td>
+                    Bara kommun, ingen exakt adress än.
+                    {org.type.value === 'enskild_firma' ? (
+                      <div class="meta fakta__not">En enskild firma visas alltid på kommunnivå.</div>
+                    ) : (
+                      <Fragment>
+                        {' '}<a href={adressUrl} rel="noopener">Lägg till adress</a>
+                        <div class="meta fakta__not">Organisationen ritas på kommunnivå. En besöksadress på den egna webbplatsen räcker som källa.</div>
+                      </Fragment>
+                    )}
+                  </td>
+                  <td><span class="ljus">–</span></td>
+                  <td class="fakta__kalla"><span class="ljus">–</span></td>
+                  <td class="meta">–</td>
+                </tr>
+              )}
+              </Fragment>
             ))}
           </tbody>
         </table>

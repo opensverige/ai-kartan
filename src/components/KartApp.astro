@@ -258,7 +258,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
 
   type Post = {
     id: string; n: string; t: string; o: string[]; a: string[]; k: string | null; kn: string | null;
-    l: string | null; ln: string | null; lat: number | null; lng: number | null; pt: string | null;
+    l: string | null; ln: string | null; lat: number | null; lng: number | null; pt: string | null; pu?: string | null;
     d: string; s: string | null; c: number; f: number; w: string; i: string | null;
     ds: Kartpost['ds']; dv: Kartpost['dv'];
   };
@@ -844,12 +844,25 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
 
     /* ---------- Detaljvy ---------- */
 
-    // Rutan om platsen säger bara något extra när adressen saknas. Markören framför är kartans
-    // kontur, och länken leder till den vanliga vägen för rättelser. Varifrån en känd adress
-    // kommer står på organisationens sida, bland källorna. I en pixelstad flyter den som saknar
-    // adress i vattnet, och med en adress ritas dess hus ut.
+    // Rutan om platsen säger alltid om adressen är exakt. Med en exakt adress står varifrån den
+    // kommer, med en länk till sidan där den står, och i en pixelstad att huset tänds: annars syns
+    // huset på kartan utan att detaljvyn säger något om adressen. Gatuadressen står aldrig som
+    // text, bara koordinaten sparas (metoden, Plats). Markören framför är kartans egen: fylld för
+    // en exakt adress, en kontur för kommunnivå. Utan adress leder länken till den vanliga vägen
+    // för rättelser, utom för en enskild firma, som aldrig får exakt position. I en pixelstad
+    // flyter den som saknar adress i vattnet.
     function platsnotHtml(o: Rad): string {
-      if (o.pt !== 'kommun') return '';
+      if (o.pt === 'exakt') {
+        let kalla = '';
+        try {
+          if (o.pu) kalla = ` enligt <a href="${esc(o.pu)}" target="_blank" rel="noopener nofollow">${esc(new URL(o.pu).hostname.replace(/^www\./, ''))}</a>`;
+        } catch {
+          /* en källa som inte är en adress visas inte */
+        }
+        const stad = pixel?.hus(o.id);
+        return `<dd class="rutor__not rutor__not--exakt">Exakt adress${kalla}.${stad ? ` Huset tänds i pixelstaden ${esc(stad)}.` : ''}</dd>`;
+      }
+      if (o.pt !== 'kommun' || o.t === 'enskild_firma') return '';
       const lank = `<a href="${orgbas}${encodeURIComponent(o.id)}#ratta">Lägg till adress</a>`;
       return pixel?.vatten(o.id)
         ? `<dd class="rutor__not">Ingen bekräftad adress än: flyter i vattnet. ${lank} så tänds huset.</dd>`
@@ -884,7 +897,8 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       const not = vyDetalj?.querySelector('.rutor__not');
       const knuff = vyDetalj?.querySelector('[data-knuff]');
       if (o && knuff) knuff.innerHTML = knuffHtml(o);
-      if (o && not && o.pt === 'kommun') not.outerHTML = platsnotHtml(o);
+      const ny = o && not ? platsnotHtml(o) : '';
+      if (not && ny) not.outerHTML = ny;
     }
 
     function detaljHtml(o: Rad): string {
@@ -3236,6 +3250,10 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     height: 9px;
     border: 2px solid var(--f);
     border-radius: 50%;
+  }
+  /* En exakt adress har kartans fyllda prick. */
+  .rutor .rutor__not--exakt::before {
+    background: var(--f);
   }
   .app .detalj__ratta {
     margin-top: 16px;

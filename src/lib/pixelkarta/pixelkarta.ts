@@ -67,6 +67,11 @@ export interface Pixelkarta {
    * har sitt hus tänt, och en bild av ett tänt hus. Tomt annars.
    */
   knuff(id: string): { stad: string; tanda: number; bild: string | null } | null;
+  /**
+   * Stadens namn för en organisation med exakt adress vars hus kan ritas ut i en pixelstad.
+   * Null för alla andra, och när pixelkartan inte visas.
+   */
+  hus(id: string): string | null;
   /** Hur nära kartan går när en organisation i en pixelstad väljs, eller null för sajtens vanliga avstånd. */
   narzoom(id: string): number | null;
   /** Den valda organisationen: dess hus ritas ut i pixelstaden, och staden runt det tonas ner. */
@@ -1136,6 +1141,7 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
       const tanda = new Set(Object.values(stad.addresses ?? {}).filter((nyckel) => stad.houses?.[nyckel])).size;
       return { stad: stad.label, tanda, bild: fil.example ? bas + fil.example : null };
     },
+    hus: (id) => (aktiv() ? (husAv.get(id)?.lage.stad.label ?? null) : null),
     narzoom(id) {
       if (!aktiv()) return null;
       const hus = husAv.get(id);

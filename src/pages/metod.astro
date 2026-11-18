@@ -71,6 +71,7 @@ const s = d.statistik;
     <li>Ligger adressen i en annan kommun än sätet ritas organisationen på kommunnivå, i sätets kommun.</li>
   </ul>
   <p>Koordinaten räknas fram ur adressen med OpenStreetMaps Nominatim (© OpenStreetMaps bidragsgivare, ODbL). Länet härleds ur kommunkoden.</p>
+  <p>I pixelstäderna tänds huset på adressen när organisationen väljs. Huset är byggnaden i OpenStreetMap som punkten ligger i, annars den närmaste inom 40 meter. Den som bara har kommun flyter i vattnet tills en adress finns. Husen och platserna i vattnet räknas om när en ändring har publicerats. Detaljvyn och organisationens sida säger alltid om adressen är exakt och länkar till sidan där den står.</p>
 
   <h2 id="historik">Ändringshistoriken är vallgraven</h2>
   <p>Git-repot är sanningen. Varje ändring är en commit med datum, avsändare och diff. Nya poster och rättelser går via pull request. Den första datamängden lades direkt på huvudgrenen, och den automatiska historikfilen skrivs dit av en bot. Ur historiken byggs <a href={url('/andringar')}>ändringsloggen</a>: varje ändrat fält med gammalt och nytt värde. Den är append-only och går inte att kopiera i efterhand genom att skrapa om kartan i dag.</p>
