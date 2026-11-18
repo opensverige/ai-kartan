@@ -99,15 +99,15 @@ evidence:
     status: claimed
     verified_at: 2026-10-04
     verified_by: agent
-  - url: https://www.brikka.se/tjanster/ai-poc-shop
-    kind: produkt
-    title: "Poc Shop: proof of concept med AI"
+  - url: https://www.brikka.se/tillampningar/mail
+    kind: case
+    title: "Tillämpning: språkmodell kopplad till en FAQ skriver utkast till svar på e-post"
     status: claimed
-    verified_at: 2026-10-04
+    verified_at: 2026-11-18
     verified_by: agent
 
 links:
   linkedin: https://www.linkedin.com/company/brikka
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-13
+record_updated_at: 2026-11-18

@@ -1,0 +1,102 @@
+id: ipairu
+
+name:
+  value: iPairU
+  status: claimed
+  source_url: https://ipairu.com/
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: Tips i ärende #99 på GitHub 2026-11-16. Webbplatsen skriver namnet både iPairU och I Pair U.
+
+legal_name:
+  value: I Pair U AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5594546458
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: Webbplatsens om-sida anger iPairU AB, utan organisationsnummer. Organisationsnumret kommer från tipset och stämmer med registrets namn.
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5594546458
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559454-6458"
+  status: confirmed
+  source_url: https://www.allabolag.se/5594546458
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+
+website: https://ipairu.com
+
+description:
+  value: Utvecklar en plattform för yrkesnätverk med verifierade meriter, där AI-funktionerna Compass och Match Me matchar personer mot jobb, uppdrag och kontakter. Plattformen har också verktyg för communities, evenemang och organisationers rekrytering.
+  status: claimed
+  source_url: https://ipairu.com/platform/match-me
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://ipairu.com/
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+
+areas:
+  value: [agenter_automation]
+  status: claimed
+  source_url: https://ipairu.com/platform/match-me
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: Plattformen används för matchning av personer mot jobb och uppdrag.
+
+kommun:
+  value: "0120"
+  status: confirmed
+  source_url: https://www.allabolag.se/5594546458
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Värmdö. Registrets adress ligger i Stockholm, en annan kommun än sätet, och används inte för position. Webbplatsen anger bara Stockholm utan besöksadress."
+
+founded:
+  value: 2023
+  status: confirmed
+  source_url: https://www.allabolag.se/5594546458
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2023-10-30."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5594546458
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://ipairu.com/platform/match-me
+    kind: produkt
+    title: "Compass och Match Me: AI-matchning av personer mot jobb, uppdrag och introduktioner"
+    status: claimed
+    verified_at: 2026-11-18
+    verified_by: agent
+    note: Produktsidan beskriver funktionerna med exempelmatchningar. Tipsets länk var registreringssidan app.ipairu.com/signup, som inte visar produkten.
+
+record_created_at: 2026-11-18
+record_updated_at: 2026-11-18

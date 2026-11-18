@@ -30,25 +30,25 @@ website: https://www.tjorn.se/
 description:
   value: "Medarbetare i vård och omsorg deltar i träningen av en AI-driven assistent för offentlig sektor i ett projekt som leds av AI Sweden."
   status: claimed
-  source_url: https://www.tjorn.se/kommun-och-politik/utveckling-och-samverkan/digitalisering/en-gemensam-digital-assistent-for-offentlig-sektor
+  source_url: https://www.tjorn.se/kommun-och-politik/utveckling-och-samverkan/en-gemensam-digital-assistent-for-offentlig-sektor
   source_type: own_site
-  verified_at: 2026-10-04
+  verified_at: 2026-11-18
   verified_by: agent
 
 offers:
   value: [utveckling]
   status: claimed
-  source_url: https://www.tjorn.se/kommun-och-politik/utveckling-och-samverkan/digitalisering/en-gemensam-digital-assistent-for-offentlig-sektor
+  source_url: https://www.tjorn.se/kommun-och-politik/utveckling-och-samverkan/en-gemensam-digital-assistent-for-offentlig-sektor
   source_type: own_site
-  verified_at: 2026-10-04
+  verified_at: 2026-11-18
   verified_by: agent
 
 areas:
   value: [offentlig_sektor, agenter_automation]
   status: claimed
-  source_url: https://www.tjorn.se/kommun-och-politik/utveckling-och-samverkan/digitalisering/en-gemensam-digital-assistent-for-offentlig-sektor
+  source_url: https://www.tjorn.se/kommun-och-politik/utveckling-och-samverkan/en-gemensam-digital-assistent-for-offentlig-sektor
   source_type: own_site
-  verified_at: 2026-10-04
+  verified_at: 2026-11-18
   verified_by: agent
 
 kommun:
@@ -61,11 +61,11 @@ kommun:
   note: "Kommunhuset ligger i Skärhamn."
 
 evidence:
-  - url: https://www.tjorn.se/kommun-och-politik/utveckling-och-samverkan/digitalisering/en-gemensam-digital-assistent-for-offentlig-sektor
+  - url: https://www.tjorn.se/kommun-och-politik/utveckling-och-samverkan/en-gemensam-digital-assistent-for-offentlig-sektor
     kind: case
     title: "En gemensam digital assistent för offentlig sektor"
     status: claimed
-    verified_at: 2026-10-04
+    verified_at: 2026-11-18
     verified_by: agent
   - url: https://www.ai.se/en/news/strong-interest-collaboration-shared-digital-assistant-public-sector
     kind: case
@@ -76,4 +76,4 @@ evidence:
     note: "AI Sweden samordnar projektet och listar kommunen bland de offentliga deltagarna i fas 1 (avslutad 2024)."
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-04
+record_updated_at: 2026-11-18

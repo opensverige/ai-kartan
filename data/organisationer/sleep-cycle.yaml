@@ -11,26 +11,26 @@ name:
 legal_name:
   value: Sleep Cycle AB (publ)
   status: confirmed
-  source_url: https://www.allabolag.se/foretag/sleep-cycle-ab-publ/g%C3%B6teborg/konsulter/2K1XUSOI5YF3I
+  source_url: https://www.allabolag.se/5566147368
   source_type: third_party
-  verified_at: 2026-10-04
+  verified_at: 2026-11-18
   verified_by: agent
 
 type:
   value: bolag
   status: confirmed
-  source_url: https://www.allabolag.se/foretag/sleep-cycle-ab-publ/g%C3%B6teborg/konsulter/2K1XUSOI5YF3I
+  source_url: https://www.allabolag.se/5566147368
   source_type: third_party
-  verified_at: 2026-10-04
+  verified_at: 2026-11-18
   verified_by: agent
   note: "Bolagsform enligt allabolag.se: Publikt aktiebolag."
 
 org_number:
   value: "556614-7368"
   status: confirmed
-  source_url: https://www.allabolag.se/foretag/sleep-cycle-ab-publ/g%C3%B6teborg/konsulter/2K1XUSOI5YF3I
+  source_url: https://www.allabolag.se/5566147368
   source_type: third_party
-  verified_at: 2026-10-04
+  verified_at: 2026-11-18
   verified_by: agent
   note: "Numret anges även i integritetspolicyn: https://sleepcycle.com/privacy-policy"
 
@@ -63,9 +63,9 @@ areas:
 kommun:
   value: "1480"
   status: confirmed
-  source_url: https://www.allabolag.se/foretag/sleep-cycle-ab-publ/g%C3%B6teborg/konsulter/2K1XUSOI5YF3I
+  source_url: https://www.allabolag.se/5566147368
   source_type: third_party
-  verified_at: 2026-10-04
+  verified_at: 2026-11-18
   verified_by: agent
   note: "Kommunsäte enligt allabolag.se: Göteborg."
 
@@ -81,18 +81,18 @@ coordinates:
 founded:
   value: 2001
   status: confirmed
-  source_url: https://www.allabolag.se/foretag/sleep-cycle-ab-publ/g%C3%B6teborg/konsulter/2K1XUSOI5YF3I
+  source_url: https://www.allabolag.se/5566147368
   source_type: third_party
-  verified_at: 2026-10-04
+  verified_at: 2026-11-18
   verified_by: agent
   note: "Registreringsdatum enligt allabolag.se: 2001-09-03. Newsroom-sidan anger 2009 som grundår för Sleep Cycle."
 
 active:
   value: true
   status: confirmed
-  source_url: https://www.allabolag.se/foretag/sleep-cycle-ab-publ/g%C3%B6teborg/konsulter/2K1XUSOI5YF3I
+  source_url: https://www.allabolag.se/5566147368
   source_type: third_party
-  verified_at: 2026-10-04
+  verified_at: 2026-11-18
   verified_by: agent
   note: "Status enligt allabolag.se: Aktiv."
 
@@ -112,4 +112,4 @@ evidence:
     note: Sidan anger att ljud bearbetas lokalt av en AI-algoritm på enheten.
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-13
+record_updated_at: 2026-11-18

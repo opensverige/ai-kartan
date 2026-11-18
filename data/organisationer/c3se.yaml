@@ -77,20 +77,20 @@ evidence:
     status: claimed
     verified_at: 2026-10-04
     verified_by: agent
-  - url: https://www.c3se.chalmers.se/about/Alvis/
+  - url: https://www.c3se.chalmers.se/supr/available_resources/
     kind: resurs
-    title: "Alvis: nationellt GPU-kluster för AI och maskininlärning (avvecklat)"
+    title: "Alvis: NAISS-kluster för forskning inom AI och maskininlärning som C3SE drev (avvecklat)"
     status: claimed
-    verified_at: 2026-10-04
+    verified_at: 2026-11-18
     verified_by: agent
-    note: Startsidan anger att Alvis är avvecklat och att GPU-noder flyttats till Vera 2026-10-01.
-  - url: https://www.naiss.se/resource/alvis/
+    note: Sidan räknar Alvis bland de NAISS-system som C3SE tidigare var värd för.
+  - url: https://www.naiss.se/resources/retired-systems/
     kind: resurs
-    title: NAISS beskriver Alvis som nationell AI-resurs med C3SE som värd
+    title: NAISS beskriver Alvis som avvecklat GPU-kluster för AI och maskininlärning med Chalmers som värd
     status: confirmed
-    verified_at: 2026-10-04
+    verified_at: 2026-11-18
     verified_by: agent
-    note: Beskrivning från NAISS, inte från C3SE.
+    note: Beskrivning från NAISS, inte från C3SE. Sidan anger att Alvis avvecklades som NAISS-resurs i september 2026.
   - url: https://www.c3se.chalmers.se/about/Vera/
     kind: resurs
     title: "Vera: kluster med GPU-noder och tilldelningar för 2026 till Chalmers institutioner"
@@ -105,4 +105,4 @@ evidence:
     verified_by: agent
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-06
+record_updated_at: 2026-11-18

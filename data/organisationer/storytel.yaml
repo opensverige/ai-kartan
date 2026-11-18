@@ -1,0 +1,138 @@
+id: storytel
+
+name:
+  value: Storytel
+  status: claimed
+  source_url: https://www.storytel.com/se/c/app-features
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: Tips i ärende #111 på GitHub 2026-11-16. Posten gäller det svenska dotterbolaget till det börsnoterade Storytel AB (publ).
+
+legal_name:
+  value: Storytel Sweden AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5566962865
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Moderbolag enligt allabolag.se: Storytel AB (publ). Registrets verksamhetsbeskrivning omfattar utveckling av den tekniska plattformen för digital media."
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5566962865
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "556696-2865"
+  status: confirmed
+  source_url: https://www.allabolag.se/5566962865
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+
+website: https://www.storytel.com
+
+description:
+  value: Strömmar ljudböcker och e-böcker. Appen har AI-funktioner som Voice Switcher, där lyssnaren kan välja AI-röster i stället för uppläsaren, Recaps med AI-sammanfattningar av handlingen och Story Scan, som känner igen böcker från foton.
+  status: claimed
+  source_url: https://www.storytel.com/se/c/app-features
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: Voice Switcher beskrivs också i The Conversation 2026-06-02.
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.storytel.com/se/c/app-features
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+
+areas:
+  value: [media_kreativt, sprakteknik]
+  status: claimed
+  source_url: https://www.storytel.com/se/c/app-features
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5566962865
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+coordinates:
+  value: { lat: 59.32605, lng: 18.06300 }
+  status: claimed
+  source_url: https://storytelgroup.com/sv/kontakt
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Besöksadressen på koncernens kontaktsida. Registret anger samma gatuadress för Storytel Sweden AB, utan c/o. Geokodad med OpenStreetMap Nominatim (ODbL)."
+
+founded:
+  value: 2006
+  status: confirmed
+  source_url: https://www.allabolag.se/5566962865
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2006-01-12."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5566962865
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.storytel.com/se/c/app-features
+    kind: produkt
+    title: "Appens funktioner: Voice Switcher med AI-röster, Recaps med AI-sammanfattningar och Story Scan med bildigenkänning"
+    status: claimed
+    verified_at: 2026-11-18
+    verified_by: agent
+  - url: https://theconversation.com/from-cloning-romance-authors-to-youtube-piracy-ai-is-transforming-audiobooks-283885
+    kind: case
+    title: "The Conversation 2026-06-02: AI-röster i ljudböcker, med Storytels Voice Switcher som exempel"
+    status: claimed
+    verified_at: 2026-11-18
+    verified_by: agent
+    note: Oberoende artikel av en forskare. Uppgiften om lyssnartestet hänvisar till Storytels egen rapport från 2024.
+  - url: https://elevenlabs.io/blog/storytel-rethinks-audiobook-narration-with-voice-switcher-built-on-elevenlabs
+    kind: case
+    title: "ElevenLabs 2026-05-27: Voice Switcher och en talmodell för nordiska språk tränad med ljud ur Storytels katalog"
+    status: claimed
+    verified_at: 2026-11-18
+    verified_by: agent
+    note: Leverantörens egen kundberättelse. Storytel producerar uppläsningarna via ElevenLabs API med egen för- och efterbearbetning.
+  - url: https://storytelgroup.com/en/storytels-new-ai-powered-recaps-let-users-pick-up-where-they-left-off
+    kind: produkt
+    title: "Pressmeddelande 2026-05-04: Recaps och Sleep Timer Recaps, AI-sammanfattningar av ljudböcker"
+    status: claimed
+    verified_at: 2026-11-18
+    verified_by: agent
+    note: Koncernens eget pressmeddelande.
+  - url: https://storytelgroup.com/en/wp-content/uploads/sites/2/2021/10/storytel-group-annual-report-2025-260326.pdf
+    kind: publikation
+    title: "Årsredovisning 2025 för Storytel AB (publ), med koncernens AI-initiativ som AI-uppläsning och AI-översättning"
+    status: claimed
+    verified_at: 2026-11-18
+    verified_by: agent
+    note: Moderbolagets egen årsredovisning. Den gäller koncernen, inte bara det svenska dotterbolaget.
+
+record_created_at: 2026-11-18
+record_updated_at: 2026-11-18

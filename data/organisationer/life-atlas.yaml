@@ -1,0 +1,107 @@
+id: life-atlas
+
+name:
+  value: LifeAtlas
+  status: claimed
+  source_url: https://mylifeatlas.com/
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: Tips i ärende #116 på GitHub 2026-11-16. Webbplatsen anger inte bolagets namn. Kopplingen till Life Atlas AB bygger på WINNIIO:s sida om egna satsningar, som länkar till mylifeatlas.com, och på registret, där bolaget ingår i samma koncern som Winniio AB.
+
+legal_name:
+  value: Life Atlas AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5595044396
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5595044396
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559504-4396"
+  status: confirmed
+  source_url: https://www.allabolag.se/5595044396
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+
+website: https://mylifeatlas.com
+
+description:
+  value: Utvecklar LifeAtlas, en plattform som samlar data från bärbara mätare, labbsvar och genetik i en hälsotidslinje. En AI-assistent svarar på frågor utifrån användarens egna data, och tjänsten är öppen i tidig åtkomst.
+  status: claimed
+  source_url: https://mylifeatlas.com/
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://mylifeatlas.com/
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+
+areas:
+  value: [halsa]
+  status: claimed
+  source_url: https://mylifeatlas.com/
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+
+kommun:
+  value: "1480"
+  status: confirmed
+  source_url: https://www.allabolag.se/5595044396
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Göteborg. Webbplatsen anger ingen besöksadress, och registrets adress är samma som systerbolagets postadress med c/o. Den används inte för position."
+
+founded:
+  value: 2024
+  status: confirmed
+  source_url: https://www.allabolag.se/5595044396
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2024-11-11."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5595044396
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://mylifeatlas.com/
+    kind: produkt
+    title: "LifeAtlas: hälsotidslinje med AI-assistent och utläsning av biomarkörer ur uppladdade labbsvar"
+    status: claimed
+    verified_at: 2026-11-18
+    verified_by: agent
+    note: Produktsidan med länk till inloggning i portalen. Tjänsten är i beta.
+  - url: https://winniio.io/ventures
+    kind: produkt
+    title: "WINNIIO om Life Atlas, en digital tvilling av människan som bolagsgruppen bygger"
+    status: claimed
+    verified_at: 2026-11-18
+    verified_by: agent
+    note: Sidan tillhör systerbolaget Winniio AB, som har en egen post på kartan.
+
+record_created_at: 2026-11-18
+record_updated_at: 2026-11-18

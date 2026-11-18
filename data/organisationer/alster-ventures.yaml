@@ -1,0 +1,102 @@
+id: alster-ventures
+
+name:
+  value: Alster Ventures
+  status: claimed
+  source_url: https://alster.se/ventures
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: Tips i ärende #108 på GitHub 2026-11-16. Dotterbolag till Alster Digital AB, som har en egen post (alster).
+
+legal_name:
+  value: Alster Ventures AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5568073513
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Moderbolag enligt allabolag.se: Alster Digital AB."
+
+type:
+  value: finansiar
+  status: confirmed
+  source_url: https://www.allabolag.se/5568073513
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Aktiebolag med SNI-bransch 64991 Investmentverksamhet enligt allabolag.se. Webbplatsen beskriver en venturestudio."
+
+org_number:
+  value: "556807-3513"
+  status: confirmed
+  source_url: https://www.allabolag.se/5568073513
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+
+website: https://alster.se/ventures
+
+description:
+  value: Venturestudio som bygger och investerar i tidiga bolag. Portföljen omfattar bland annat Pacy, en app för AI-driven kompetensutveckling, och Chatflights, resebokning via chatt med AI-stöd.
+  status: claimed
+  source_url: https://alster.se/ventures
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: Registrets verksamhetsbeskrivning nämner produkter baserade på artificiell intelligens och maskininlärning i onoterade bolag.
+
+offers:
+  value: [finansiering]
+  status: claimed
+  source_url: https://alster.se/ventures
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+
+areas:
+  value: [generell]
+  status: claimed
+  source_url: https://alster.se/ventures
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+
+kommun:
+  value: "0380"
+  status: confirmed
+  source_url: https://www.allabolag.se/5568073513
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Uppsala. Registrets adress och webbplatsens besöksadress ligger i Stockholm, en annan kommun än sätet, och används därför inte för position."
+
+founded:
+  value: 2010
+  status: confirmed
+  source_url: https://www.allabolag.se/5568073513
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2010-05-04."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5568073513
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv. Inga anställda och ingen omsättning 2025."
+
+evidence:
+  - url: https://alster.se/ventures
+    kind: portfolj
+    title: "Portföljen: åtta bolag, bland dem AI-appen Pacy och Chatflights med AI-stödd bokning"
+    status: claimed
+    verified_at: 2026-11-18
+    verified_by: agent
+    note: Bolagets egen sida. Den anger inte ägarandelar eller vilket av Alsters bolag som äger andelarna.
+
+record_created_at: 2026-11-18
+record_updated_at: 2026-11-18

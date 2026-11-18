@@ -37,12 +37,13 @@ org_number:
 website: https://winniio.io
 
 description:
-  value: "Studio i Göteborg som bygger digitala tvillingar och autonoma AI-agenter för fysiska tillgångar, bland annat AI-baserad värmestyrning på rumsnivå i en skola."
+  value: "Studio i Göteborg som bygger digitala tvillingar och autonoma AI-agenter för fysiska tillgångar, bland annat AI-baserad värmestyrning på rumsnivå i en skola och en fabrikstvilling byggd ur skanningar."
   status: claimed
   source_url: https://winniio.io/work
   source_type: own_site
-  verified_at: 2026-10-04
+  verified_at: 2026-11-18
   verified_by: agent
+  note: "Fabrikstvillingen enligt bolagets artikel om fabriksvyn (2026-10-07). Komplettering begärd i ärende #115."
 
 offers:
   value: [utveckling]
@@ -101,6 +102,13 @@ evidence:
     status: claimed
     verified_at: 2026-10-04
     verified_by: agent
+  - url: https://winniio.io/insights/fran-skanning-till-fabriksvy
+    kind: case
+    title: "Fabriksvy: panoramabilder, punktmoln och en tränad rekonstruktion (Gaussian splat) i en lokal fabrikstvilling"
+    status: claimed
+    verified_at: 2026-11-18
+    verified_by: agent
+    note: "Bolagets egen artikel, 2026-10-07. Artikeln anger att mätnoggrannheten inte är oberoende verifierad."
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-04
+record_updated_at: 2026-11-18

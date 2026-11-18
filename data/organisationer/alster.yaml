@@ -1,0 +1,114 @@
+id: alster
+
+name:
+  value: Alster
+  status: claimed
+  source_url: https://alster.se/
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: Tips i ärende #106 på GitHub 2026-11-16. Posten gäller moderbolaget Alster Digital AB. Dotterbolaget Alster Ventures har en egen post.
+
+legal_name:
+  value: Alster Digital AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5566110382
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: Varumärket Alster är registrerat på bolaget enligt allabolag.se.
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5566110382
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "556611-0382"
+  status: confirmed
+  source_url: https://www.allabolag.se/5566110382
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+
+website: https://alster.se
+
+description:
+  value: Produktstudio som bygger digitala produkter åt kunder. Tar fram AI-lösningar som kunskapsassistenter och säljassistenter, och har byggt AI-funktioner åt resebokningstjänsten Chatflights.
+  status: claimed
+  source_url: https://ai.alster.se/
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: Produktstudion och kundarbetet enligt https://alster.se/. AI-arbetet enligt bolagets AI-sida.
+
+offers:
+  value: [utveckling]
+  status: claimed
+  source_url: https://alster.se/
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+
+areas:
+  value: [agenter_automation]
+  status: claimed
+  source_url: https://ai.alster.se/
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5566110382
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+coordinates:
+  value: { lat: 59.33673, lng: 18.06930 }
+  status: claimed
+  source_url: https://alster.se/contact
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Besöksadressen på webbplatsens kontaktsida. Registret anger ett grannhus på samma gata. Geokodad med OpenStreetMap Nominatim (ODbL)."
+
+founded:
+  value: 2001
+  status: confirmed
+  source_url: https://www.allabolag.se/5566110382
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2001-05-08."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5566110382
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://ai.alster.se/
+    kind: case
+    title: "Alster AI: kunskapsassistent, säljassistent och AI-funktioner åt Chatflights, beskrivna i korthet"
+    status: claimed
+    verified_at: 2026-11-18
+    verified_by: agent
+    note: Bolagets egen sida. Casen är en rad var, utan länkar eller närmare beskrivning, och ett av dem är en ej namngiven kund.
+
+links:
+  linkedin: https://www.linkedin.com/company/alsterverse
+
+record_created_at: 2026-11-18
+record_updated_at: 2026-11-18

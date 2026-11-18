@@ -1,0 +1,128 @@
+id: expandtalk
+
+name:
+  value: ExpandTalk
+  status: claimed
+  source_url: https://expandtalk.se/
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: Tips i ärende #97 på GitHub 2026-11-16.
+
+legal_name:
+  value: Expandtalk Corporation AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5593588824
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: Webbplatsens sida Legal anger ExpandTalk Corporation AB med samma organisationsnummer. Tipset angav Expandtalk Corp AB.
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5593588824
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559358-8824"
+  status: confirmed
+  source_url: https://www.allabolag.se/5593588824
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+
+website: https://expandtalk.se
+
+description:
+  value: Konsultbolag inom digital tillväxt som bygger AI-arbetsflöden och agenter åt kunder. Bolaget utvecklar också Sentrisk, en plattform för CRM, formulär och marknadsföring med AI-agenter och en MCP-server.
+  status: claimed
+  source_url: https://expandtalk.se/sentrisk
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: Sentrisks användarvillkor anger att tjänsten tillhandahålls av Expandtalk Corporation AB.
+
+offers:
+  value: [utveckling, produkt]
+  status: claimed
+  source_url: https://expandtalk.se/use-cases
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+
+areas:
+  value: [agenter_automation, media_kreativt]
+  status: claimed
+  source_url: https://expandtalk.se/
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: Bolaget arbetar med marknadsföring, sökmotoroptimering och automation.
+
+kommun:
+  value: "1480"
+  status: confirmed
+  source_url: https://www.allabolag.se/5593588824
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Göteborg. Webbplatsen anger också kontor i Stockholm."
+
+coordinates:
+  value: { lat: 57.71908, lng: 11.97017 }
+  status: claimed
+  source_url: https://expandtalk.se/legal
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Adressen på webbplatsens sida Legal, tillsammans med bolagets namn och organisationsnummer. Registrets adress har lägenhetsnummer och används inte. Geokodad med OpenStreetMap Nominatim (ODbL)."
+
+founded:
+  value: 2022
+  status: confirmed
+  source_url: https://www.allabolag.se/5593588824
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2022-01-05."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5593588824
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.sentrisk.se/
+    kind: produkt
+    title: "Sentrisk: CRM, formulär och uppföljning med AI-agenter, AI-prognos av intäkter och val av AI-modell per uppgift"
+    status: claimed
+    verified_at: 2026-11-18
+    verified_by: agent
+    note: Användarvillkoren på sentrisk.se anger Expandtalk Corporation AB som leverantör, med samma organisationsnummer.
+  - url: https://www.sentrisk.se/mcp
+    kind: produkt
+    title: Sentrisk MCP, en MCP-server som kopplar Claude och Cursor till Sentrisks CRM och SEO-data
+    status: claimed
+    verified_at: 2026-11-18
+    verified_by: agent
+  - url: https://expandtalk.se/use-cases
+    kind: case
+    title: "Use cases, bland annat ett AI-arbetsflöde åt SE360 som gör vertikal video av stillbilder från fastighetsfotografering"
+    status: claimed
+    verified_at: 2026-11-18
+    verified_by: agent
+    note: Bolagets eget case. Kunden bekräftar det inte i någon källa som agenten har läst.
+
+links:
+  linkedin: https://www.linkedin.com/company/info-expandtalk-se
+
+record_created_at: 2026-11-18
+record_updated_at: 2026-11-18

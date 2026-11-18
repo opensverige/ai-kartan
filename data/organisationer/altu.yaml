@@ -1,0 +1,116 @@
+id: altu
+
+name:
+  value: Altu
+  status: claimed
+  source_url: https://www.altu.se/
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: Tips i ärende #118 på GitHub 2026-11-17.
+
+legal_name:
+  value: Altu Group AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5595465823
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: Webbplatsens integritetspolicy anger Altu Group AB med samma organisationsnummer.
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5595465823
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559546-5823"
+  status: confirmed
+  source_url: https://www.allabolag.se/5595465823
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+
+website: https://www.altu.se
+
+description:
+  value: Konsultbolag som bygger skräddarsydda affärssystem och AI-agenter på kundernas egen data. Det egna systemet Central Command har ett MCP-lager med 47 verktyg som Claude arbetar i, med en godkännandekö för ändringar.
+  status: claimed
+  source_url: https://www.altu.se/case/altu-central-command
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+
+offers:
+  value: [utveckling]
+  status: claimed
+  source_url: https://www.altu.se/
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+
+areas:
+  value: [agenter_automation]
+  status: claimed
+  source_url: https://www.altu.se/case
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+
+kommun:
+  value: "1480"
+  status: confirmed
+  source_url: https://www.allabolag.se/5595465823
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Göteborg."
+
+coordinates:
+  value: { lat: 57.7028, lng: 11.9567 }
+  status: claimed
+  source_url: https://www.altu.se/integritetspolicy
+  source_type: own_site
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Adressen i webbplatsens integritetspolicy, tillsammans med bolagets namn och organisationsnummer. Registret har samma adress, med postadress c/o ett coworkingkontor. Geokodad med OpenStreetMap Nominatim (ODbL)."
+
+founded:
+  value: 2025
+  status: confirmed
+  source_url: https://www.allabolag.se/5595465823
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2025-09-26."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5595465823
+  source_type: third_party
+  verified_at: 2026-11-18
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.altu.se/case/altu-central-command
+    kind: case
+    title: "Central Command: eget CRM och affärssystem med ett MCP-lager där Claude arbetar via en godkännandekö (2026-09-24)"
+    status: claimed
+    verified_at: 2026-11-18
+    verified_by: agent
+    note: Bolagets eget system, beskrivet av bolaget.
+  - url: https://www.altu.se/case/sa-driver-altu-byran-med-agenter
+    kind: case
+    title: "Samordnande AI-agent och specialistagenter i Central Command, från kundmejl till pull requests (2026-10-16)"
+    status: claimed
+    verified_at: 2026-11-18
+    verified_by: agent
+
+record_created_at: 2026-11-18
+record_updated_at: 2026-11-18
