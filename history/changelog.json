@@ -1,8 +1,32 @@
 {
-  "generated_at": "2026-11-18T21:58:57Z",
-  "antal": 572,
-  "senaste_andring": "2026-11-18",
+  "generated_at": "2026-11-19T07:35:03Z",
+  "antal": 574,
+  "senaste_andring": "2026-11-19",
   "rader": [
+    {
+      "datum": "2026-11-19",
+      "commit": "a9e3328bd5",
+      "id": "demoskop",
+      "namn": "Demoskop",
+      "falt": "hela posten",
+      "andring": "tillagd",
+      "gammalt": null,
+      "nytt": null,
+      "status": null,
+      "kalla": "https://demoskop.se"
+    },
+    {
+      "datum": "2026-11-19",
+      "commit": "a9e3328bd5",
+      "id": "decerno",
+      "namn": "Decerno",
+      "falt": "hela posten",
+      "andring": "tillagd",
+      "gammalt": null,
+      "nytt": null,
+      "status": null,
+      "kalla": "https://www.decerno.se"
+    },
     {
       "datum": "2026-11-18",
       "commit": "d19384cfd1",
