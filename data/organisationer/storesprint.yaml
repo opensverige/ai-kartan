@@ -1,0 +1,102 @@
+id: storesprint
+
+name:
+  value: StoreSprint
+  status: claimed
+  source_url: https://www.storesprint.com/sv/
+  source_type: own_site
+  verified_at: 2026-11-19
+  verified_by: agent
+  note: Anmäld i OpenSveriges Discord 2026-11-18.
+
+legal_name:
+  value: Storesprint AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5591236657
+  source_type: third_party
+  verified_at: 2026-11-19
+  verified_by: agent
+  note: Webbplatsens sidfot anger StoreSprint AB och samma adress som registret.
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5591236657
+  source_type: third_party
+  verified_at: 2026-11-19
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559123-6657"
+  status: confirmed
+  source_url: https://www.allabolag.se/5591236657
+  source_type: third_party
+  verified_at: 2026-11-19
+  verified_by: agent
+
+website: https://www.storesprint.com
+
+description:
+  value: Utvecklar StoreSprint, en plattform för driften i butikskedjor med uppgifter, rutiner, avvikelser och integrationer. En AI-assistent som svarar utifrån kedjans egen data, rutiner och system håller på att lanseras.
+  status: claimed
+  source_url: https://www.storesprint.com/sv/ai
+  source_type: own_site
+  verified_at: 2026-11-19
+  verified_by: agent
+  note: Plattformen enligt startsidan. AI-assistenten enligt sidan om AI, som tar emot anmälningar till en väntelista.
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.storesprint.com/sv/
+  source_type: own_site
+  verified_at: 2026-11-19
+  verified_by: agent
+
+areas:
+  value: [handel, agenter_automation]
+  status: claimed
+  source_url: https://www.storesprint.com/sv/ai
+  source_type: own_site
+  verified_at: 2026-11-19
+  verified_by: agent
+
+kommun:
+  value: "0380"
+  status: confirmed
+  source_url: https://www.allabolag.se/5591236657
+  source_type: third_party
+  verified_at: 2026-11-19
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Uppsala. Webbplatsen och registret anger en adress i Stockholm, en annan kommun än sätet, så organisationen ritas på kommunnivå."
+
+founded:
+  value: 2017
+  status: confirmed
+  source_url: https://www.allabolag.se/5591236657
+  source_type: third_party
+  verified_at: 2026-11-19
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2017-09-01."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5591236657
+  source_type: third_party
+  verified_at: 2026-11-19
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.storesprint.com/sv/ai
+    kind: produkt
+    title: "StoreSprint AI: assistent för butikspersonal och chefer, kopplad till kedjans rutiner, kunskapsbas, personal och system"
+    status: claimed
+    verified_at: 2026-11-19
+    verified_by: agent
+    note: Sidan anger att assistenten lanseras och tar emot anmälningar till en väntelista.
+
+record_created_at: 2026-11-19
+record_updated_at: 2026-11-19
