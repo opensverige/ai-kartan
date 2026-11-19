@@ -1,0 +1,266 @@
+---
+// Första steget: medlemmen skriver sin e-post och får en engångslänk. Svaret är detsamma för
+// alla adresser, så att sidan aldrig avslöjar vem som är medlem. Samma väg gäller den som redan
+// har en rad och vill ändra eller ta bort den: det finns inget konto och inget lösenord.
+import Bas from '../../layouts/Bas.astro';
+import Uppdragsbas from '../../components/Uppdragsbas.astro';
+import { url } from '../../lib/data';
+import { ikon } from '../../lib/ikoner';
+import { BLI_MEDLEM, uppdragUrl } from '../../lib/uppdrag';
+---
+
+<Bas
+  titel="Lägg upp dig"
+  beskrivning="Lägg upp dig under Tar uppdrag på AI-kartan. Bara för medlemmar i föreningen OpenSverige."
+  stig="/uppdrag/lagg-upp"
+  noindex
+>
+  <Uppdragsbas />
+
+  <section class="morka morka--hel" aria-labelledby="lagg-rubrik">
+    <div class="ram morka__ram morka__ram--smal">
+      <p class="morka__kicker"><a class="tillbaka" href={url('/uppdrag')}>← Tar uppdrag</a></p>
+      <h1 id="lagg-rubrik">Lägg upp dig.</h1>
+      <p class="morka__ingress">Vi mejlar en länk till din rad. Inget konto, inget lösenord.</p>
+
+      <form class="uppdragsform lankform" id="lank-form" data-api={uppdragUrl('/lank')} novalidate>
+        <div class="falt">
+          <label class="falt__etikett" for="epost">Din e-post</label>
+          <div class="faltrad">
+            <input
+              id="epost"
+              name="epost"
+              type="email"
+              autocomplete="email"
+              inputmode="email"
+              autocapitalize="off"
+              spellcheck="false"
+              placeholder="Samma som när du blev medlem"
+              required
+              aria-describedby="epost-fel"
+            />
+            <button class="knapp" type="submit" id="lank-knapp">Skicka länken →</button>
+          </div>
+          <p class="falt__fel" id="epost-fel" hidden></p>
+          <div class="epostforslag" id="epost-forslag" role="status" hidden>
+            <p class="faltnot">Menade du <strong id="epost-forslag-adress"></strong>?</p>
+            <button class="knapp knapp--liten" type="button" id="epost-ratta">Ja, rätta →</button>
+            <button class="lankknapp" type="button" id="epost-behall">Nej, skicka som det står</button>
+          </div>
+        </div>
+        <div class="honung" aria-hidden="true">
+          <label for="webbplats">Lämna tomt</label>
+          <input id="webbplats" name="webbplats" type="text" tabindex="-1" autocomplete="off" />
+        </div>
+      </form>
+
+      <div class="besked" id="lank-skickad" role="status" tabindex="-1" hidden>
+        <p><strong>Kolla din inkorg.</strong> Länken går till <strong id="skickad-adress"></strong>, om adressen är medlem. Den gäller i 30 minuter.</p>
+        <p>Kom inget? Titta i skräpposten, eller prova adressen du gick med med.</p>
+        <p class="skickad__knappar">
+          <button class="knapp knapp--ghost knapp--liten" type="button" id="lank-igen">Prova en annan adress →</button>
+          <a class="knapp knapp--ghost knapp--liten" href={BLI_MEDLEM} rel="noopener">Bli medlem →</a>
+        </p>
+      </div>
+      <div class="besked besked--fel" id="lank-fel" role="alert" hidden></div>
+
+      <ul class="vagar">
+        <li>
+          <span class="vagar__ikon" set:html={ikon('las', 16)} />
+          <p><strong>Bara medlemmar.</strong> Länken går till adressen i registret.</p>
+        </li>
+        <li>
+          <span class="vagar__ikon" set:html={ikon('brev', 16)} />
+          <p><strong>Har du redan en rad?</strong> Samma väg, för att ändra eller ta bort.</p>
+        </li>
+        <li>
+          <span class="vagar__ikon vagar__ikon--tal" aria-hidden="true">0 kr</span>
+          <p><strong>Inte medlem?</strong> Gratis, två minuter. <a href={BLI_MEDLEM} rel="noopener">Bli medlem →</a></p>
+        </li>
+      </ul>
+    </div>
+  </section>
+</Bas>
+
+<style>
+  .tillbaka {
+    color: inherit;
+    text-decoration: none;
+  }
+  .tillbaka:hover {
+    color: #f6f2e8;
+  }
+  .lankform {
+    margin-top: 30px;
+  }
+  .lankform .knapp {
+    min-height: 52px;
+    padding: 0 22px;
+    font-size: 16px;
+  }
+  #lank-skickad,
+  #lank-fel {
+    margin-top: 30px;
+  }
+  .epostforslag {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 14px;
+  }
+  .epostforslag[hidden] {
+    display: none;
+  }
+  .lankform .epostforslag .knapp {
+    min-height: 40px;
+    padding: 0 14px;
+    font-size: 14px;
+  }
+  .epostforslag strong {
+    color: #f6f2e8;
+    overflow-wrap: anywhere;
+  }
+  #skickad-adress {
+    overflow-wrap: anywhere;
+  }
+  .skickad__knappar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .vagar {
+    display: grid;
+    gap: 14px;
+    max-width: 600px;
+    margin: 34px 0 0;
+    padding: 24px 0 0;
+    border-top: 1px solid #2b2924;
+    list-style: none;
+  }
+  .vagar li {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+  }
+  .vagar p {
+    margin: 6px 0 0;
+    color: #a39f92;
+    font-size: 14.5px;
+    line-height: 1.45;
+  }
+  .vagar strong {
+    color: #f6f2e8;
+    font-weight: 600;
+  }
+  .vagar__ikon {
+    display: inline-grid;
+    flex: none;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #26241f;
+    color: #f6f2e8;
+  }
+  .vagar__ikon--tal {
+    font: 600 10px/1 var(--font-mono);
+  }
+  @media (max-width: 560px) {
+    .lankform .knapp {
+      flex: 1;
+      justify-content: center;
+    }
+  }
+</style>
+
+<script>
+  import { epostforslag } from '../../lib/uppdrag';
+
+  const form = document.getElementById('lank-form') as HTMLFormElement;
+  const epost = document.getElementById('epost') as HTMLInputElement;
+  const epostFel = document.getElementById('epost-fel') as HTMLElement;
+  const knapp = document.getElementById('lank-knapp') as HTMLButtonElement;
+  const skickad = document.getElementById('lank-skickad') as HTMLElement;
+  const fel = document.getElementById('lank-fel') as HTMLElement;
+
+  const forslag = document.getElementById('epost-forslag') as HTMLElement;
+  const forslagAdress = document.getElementById('epost-forslag-adress') as HTMLElement;
+  /** Adressen som medlemmen har sagt ska skickas som den står, trots att den ser felskriven ut. */
+  let behallen = '';
+
+  function visaFaltfel(text: string): void {
+    epostFel.textContent = text;
+    epostFel.hidden = !text;
+    epost.setAttribute('aria-invalid', text ? 'true' : 'false');
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    fel.hidden = true;
+    const adress = epost.value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(adress)) {
+      visaFaltfel('Skriv en e-postadress, till exempel namn@exempel.se.');
+      epost.focus();
+      return;
+    }
+    visaFaltfel('');
+    // Sidan säger samma sak oavsett adress, så en felskriven adress märks aldrig i svaret.
+    // Den fångas här i stället, innan något skickas.
+    const rattad = epostforslag(adress);
+    if (rattad && behallen !== adress) {
+      forslagAdress.textContent = rattad;
+      forslag.hidden = false;
+      return;
+    }
+    forslag.hidden = true;
+    knapp.disabled = true;
+    knapp.textContent = 'Skickar …';
+    try {
+      const svar = await fetch(form.dataset.api ?? '', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ epost: adress, webbplats: (form.elements.namedItem('webbplats') as HTMLInputElement).value }),
+      });
+      const data = (await svar.json().catch(() => ({}))) as { fel?: string };
+      if (svar.ok) {
+        (document.getElementById('skickad-adress') as HTMLElement).textContent = adress;
+        form.hidden = true;
+        skickad.hidden = false;
+        skickad.focus();
+        return;
+      }
+      if (svar.status === 422) visaFaltfel(data.fel ?? 'Skriv en e-postadress.');
+      else {
+        fel.textContent = data.fel ?? 'Något gick fel. Försök igen om en stund.';
+        fel.hidden = false;
+      }
+    } catch {
+      fel.textContent = 'Det gick inte att nå servern. Kolla uppkopplingen och försök igen.';
+      fel.hidden = false;
+    } finally {
+      knapp.disabled = false;
+      knapp.textContent = 'Skicka länken →';
+    }
+  });
+
+  document.getElementById('epost-ratta')?.addEventListener('click', () => {
+    epost.value = forslagAdress.textContent ?? epost.value;
+    forslag.hidden = true;
+    form.requestSubmit();
+  });
+  document.getElementById('epost-behall')?.addEventListener('click', () => {
+    behallen = epost.value.trim();
+    forslag.hidden = true;
+    form.requestSubmit();
+  });
+  epost.addEventListener('input', () => {
+    forslag.hidden = true;
+  });
+  // Tillbaka till fältet, med adressen kvar och markerad, så att den går att rätta eller byta.
+  document.getElementById('lank-igen')?.addEventListener('click', () => {
+    skickad.hidden = true;
+    form.hidden = false;
+    epost.focus();
+    epost.select();
+  });
+</script>

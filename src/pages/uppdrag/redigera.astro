@@ -1,0 +1,1265 @@
+---
+// Andra steget: länken i mejlet öppnar den här sidan. Engångskoden ligger efter #, så den når
+// aldrig en server eller en logg. Den byts mot en session på en timme först när medlemmen
+// klickar på Öppna min rad. Ett säkerhetsfilter i mejlen som öppnar länken, även ett som
+// kör JavaScript, förbrukar den därför inte.
+//
+// Formuläret är byggt för att gå fort. Två fält räcker för att synas: länken och raden om vad
+// medlemmen gör. Raden överst är samma rad som i listan och följer med medan man skriver. Namnet
+// står inte i formuläret: det kommer ur medlemsregistret. Det som sällan behövs ligger hopfällt,
+// och Spara står kvar längst ner.
+import Bas from '../../layouts/Bas.astro';
+import Uppdragsbas from '../../components/Uppdragsbas.astro';
+import { hamtaData, url } from '../../lib/data';
+import { SAMTYCKE_TEXT } from '../../lib/uppdrag';
+
+const d = hamtaData();
+const kommuner = [...d.kommuner].sort((a, b) => a.namn.localeCompare(b.namn, 'sv'));
+---
+
+<Bas
+  titel="Din rad"
+  beskrivning="Lägg upp eller ändra din rad under Tar uppdrag på AI-kartan."
+  stig="/uppdrag/redigera"
+  noindex
+>
+  <Uppdragsbas />
+
+  <section class="morka morka--hel" aria-labelledby="r-rubrik">
+    <div class="ram morka__ram">
+      <p class="morka__kicker"><a class="tillbaka" href={url('/uppdrag')}>← Tar uppdrag</a></p>
+      <h1 id="r-rubrik">Din rad.</h1>
+      <p class="morka__ingress">Länk och en rad räcker. Resten är frivilligt.</p>
+
+      <div class="lagen">
+        <div class="besked" id="r-laddar" role="status">
+          <p>Öppnar din rad …</p>
+        </div>
+
+        <div class="besked" id="r-oppna" hidden>
+          <p>Länken är klar. Den fungerar en gång och gäller sedan i en timme.</p>
+          <p><button class="knapp" type="button" id="r-oppna-knapp">Öppna min rad →</button></p>
+        </div>
+
+        <div class="besked besked--fel" id="r-fel" role="alert" hidden>
+          <p id="r-fel-text"></p>
+          <p><a href={url('/uppdrag/lagg-upp')}>Be om en ny länk →</a></p>
+        </div>
+
+        <div class="besked" id="r-klar" role="status" tabindex="-1" hidden>
+          <p id="r-klar-text"></p>
+          <p><a href={url('/uppdrag')}>Till listan →</a></p>
+        </div>
+      </div>
+
+      <div class="redigera" id="r-yta" hidden>
+        <div class="redigera__forhand" role="group" aria-labelledby="forhand-rubrik">
+          <div class="redigera__huvud">
+            <p class="redigera__etikett" id="forhand-rubrik">Så här syns du</p>
+            <p class="lage" id="r-lage" role="status"></p>
+          </div>
+          <div class="medlemslista" id="forhand"></div>
+        </div>
+
+        <div class="besked" id="r-utkast" hidden>
+          <p><strong>Det du skrev förra gången är tillbaka.</strong> Det är inte sparat än.</p>
+          <p><button class="lankknapp" type="button" id="r-utkast-bort">Börja om från början →</button></p>
+        </div>
+
+        <div class="redigera__spalter">
+          <form class="uppdragsform" id="profil-form" novalidate>
+            <div class="falt">
+              <label class="falt__etikett" for="f-lank">Din länk</label>
+              <input
+                id="f-lank"
+                name="lank"
+                type="text"
+                inputmode="url"
+                autocapitalize="off"
+                autocomplete="url"
+                spellcheck="false"
+                maxlength="300"
+                placeholder="github.com/dig, din sida eller LinkedIn"
+                required
+                aria-describedby="lank-not fel-lank"
+              />
+              <div class="lanknot">
+                <p class="faltnot" id="lank-not" role="status">Hit leder din rad.</p>
+                <span class="lanknot__val">
+                  <a class="lankknapp" id="f-lankprova" target="_blank" rel="noopener noreferrer nofollow" hidden>Prova länken ↗</a>
+                  <button class="knapp knapp--ghost knapp--liten" type="button" id="f-lankhamta" hidden></button>
+                </span>
+              </div>
+              <p class="falt__fel" id="fel-lank" hidden></p>
+            </div>
+
+            <div class="falt">
+              <label class="falt__etikett" for="f-rubrik">Vad du gör, på en rad <span class="falt__vid" id="rubrik-kvar"></span></label>
+              <input
+                id="f-rubrik"
+                name="rubrik"
+                type="text"
+                maxlength="90"
+                placeholder="Bygger agenter och RAG åt mindre bolag"
+                required
+                aria-describedby="fel-rubrik"
+              />
+              <p class="falt__fel" id="fel-rubrik" hidden></p>
+            </div>
+
+            <div class="falt">
+              <label class="falt__etikett" for="f-kunskap">Kunskaper <span class="falt__vid" id="kunskaper-antal">0 av 6</span></label>
+              <div class="ordfalt" id="kunskaper-ruta">
+                <ul class="ordval" id="kunskaper-valda" aria-label="Dina kunskaper"></ul>
+                <input
+                  id="f-kunskap"
+                  type="text"
+                  maxlength="24"
+                  autocomplete="off"
+                  autocapitalize="off"
+                  spellcheck="false"
+                  enterkeyhint="done"
+                  placeholder="Skriv ett ord, tryck Enter"
+                  aria-describedby="fel-kunskaper"
+                />
+              </div>
+              <div class="ordval ordval--forslag" id="kunskaper-forslag" role="group" aria-label="Förslag på kunskaper"></div>
+              <p class="falt__fel" id="fel-kunskaper" role="status" hidden></p>
+            </div>
+
+            <fieldset aria-describedby="bild-status fel-bild">
+              <legend>Bild <span class="falt__vid">frivillig</span></legend>
+              <div class="bildval__rad">
+                <span class="bildval__visning bildval__visning--utan" id="bild-ruta"><img id="bild-visning" src={url('/hammarhand.webp')} alt="" /></span>
+                <input class="bildval__fil" type="file" id="f-bildfil" accept="image/jpeg,image/png,image/webp" />
+                <label class="knapp knapp--ghost knapp--liten" for="f-bildfil">Ladda upp</label>
+                <button class="knapp knapp--ghost knapp--liten" type="button" id="f-xvisa" aria-expanded="false" aria-controls="f-xrad">Hämta från X</button>
+                <button class="lankknapp" type="button" id="f-bildbort" hidden>Ta bort</button>
+              </div>
+              <div class="bildval__x" id="f-xrad" hidden>
+                <label class="visuellt-dold" for="f-xnamn">Ditt användarnamn på X</label>
+                <input id="f-xnamn" type="text" maxlength="16" placeholder="@användarnamn" autocomplete="off" autocapitalize="off" spellcheck="false" />
+                <button class="knapp knapp--ghost" type="button" id="f-xhamta">Hämta →</button>
+              </div>
+              <p class="faltnot" id="bild-status" role="status"></p>
+              <p class="falt__fel" id="fel-bild" hidden></p>
+            </fieldset>
+
+            <div class="falt">
+              <label class="falt__etikett" for="f-kommun">Var du finns <span class="falt__vid">frivilligt</span></label>
+              <div class="faltrad">
+                <select id="f-kommun" name="kommun" aria-describedby="kommun-not fel-kommun">
+                  <option value="">Ingen ort</option>
+                  {kommuner.map((k) => <option value={k.kod}>{k.namn}</option>)}
+                </select>
+                <label class="val val--rad"><input type="checkbox" name="distans" id="f-distans" /> Tar uppdrag på distans</label>
+              </div>
+              <p class="faltnot" id="kommun-not">Bara kommunen visas. Du får också en hand på kartan.</p>
+              <p class="falt__fel" id="fel-kommun" hidden></p>
+            </div>
+
+            <details class="mer" id="f-mer">
+              <summary>Mer, om du vill <span>områden, bolag och vad du erbjuder</span></summary>
+              <div class="mer__kropp">
+                <fieldset aria-describedby="fel-omraden">
+                  <legend>Områden <span class="falt__vid">högst tre</span></legend>
+                  <div class="brickval">
+                    {d.taxonomi.omraden.map((o) => (
+                      <label class="bricka"><input type="checkbox" name="omraden" value={o.id} /> {o.label}</label>
+                    ))}
+                  </div>
+                  <p class="falt__fel" id="fel-omraden" hidden></p>
+                </fieldset>
+
+                <fieldset aria-describedby="fel-erbjuder">
+                  <legend>Vad du erbjuder</legend>
+                  <div class="brickval">
+                    <label class="bricka"><input type="radio" name="erbjuder" value="uppdrag" checked /> Tar uppdrag</label>
+                    <label class="bricka"><input type="radio" name="erbjuder" value="tjanster" /> Säljer tjänster</label>
+                    <label class="bricka"><input type="radio" name="erbjuder" value="bada" /> Båda</label>
+                  </div>
+                  <p class="falt__fel" id="fel-erbjuder" hidden></p>
+                </fieldset>
+
+                <div class="falt">
+                  <label class="falt__etikett" for="f-bolag-namn">Bolag</label>
+                  <input id="f-bolag-namn" name="bolag_namn" type="text" maxlength="80" placeholder="Bolagets namn" aria-describedby="fel-bolag_namn" />
+                  <p class="falt__fel" id="fel-bolag_namn" hidden></p>
+                  <label class="visuellt-dold" for="f-bolag-webb">Bolagets webbplats</label>
+                  <input
+                    id="f-bolag-webb"
+                    name="bolag_webbplats"
+                    type="text"
+                    inputmode="url"
+                    autocapitalize="off"
+                    spellcheck="false"
+                    maxlength="300"
+                    placeholder="bolaget.se"
+                    aria-describedby="fel-bolag_webbplats"
+                  />
+                  <p class="falt__fel" id="fel-bolag_webbplats" hidden></p>
+                </div>
+              </div>
+            </details>
+
+            <div class="falt">
+              <p class="falt__fel" id="samtycke-nytt" hidden>Texten har ändrats sedan du sparade sist. Läs den och kryssa i igen.</p>
+              <label class="val">
+                <input type="checkbox" name="samtycke" id="f-samtycke" aria-describedby="samtycke-info fel-samtycke" />
+                <span>{SAMTYCKE_TEXT}</span>
+              </label>
+              <p class="faltnot" id="samtycke-info">
+                Föreningen OpenSverige ansvarar för uppgifterna.
+                <a href={url('/integritet#uppdrag')} target="_blank" rel="noopener">Så behandlas de ↗</a>
+              </p>
+              <p class="falt__fel" id="fel-samtycke" hidden></p>
+            </div>
+
+            <div class="sparrad">
+              <button class="knapp" type="submit" id="r-spara">Spara och visa →</button>
+              <p class="sparrad__kvitto" id="r-kvitto" role="status"></p>
+              <p class="sparrad__varning" id="r-tid" role="status"></p>
+              <div class="besked besked--fel" id="r-sparfel" role="alert" hidden></div>
+            </div>
+          </form>
+
+          <div class="redigera__fot">
+            <p class="redigera__not">
+              Namnet kommer ur medlemsregistret. Ändra när du vill, med en ny länk.
+              <span id="r-klick" hidden></span>
+              <span id="r-session"></span>
+            </p>
+            <p class="redigera__val">
+              <button class="lankknapp" type="button" id="r-hamta" hidden>Ladda ner mina uppgifter</button>
+              <button class="lankknapp lankknapp--fara" type="button" id="r-ta-bort" hidden>Ta bort min rad</button>
+            </p>
+            <div class="besked besked--fel" id="r-bekrafta" hidden>
+              <p><strong>Ta bort raden?</strong> Den försvinner från listan direkt.</p>
+              <p class="redigera__knappar">
+                <button class="knapp knapp--fara knapp--liten" type="button" id="r-ja-ta-bort">Ja, ta bort</button>
+                <button class="knapp knapp--ghost knapp--liten" type="button" id="r-avbryt">Avbryt</button>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Bas>
+
+<style>
+  .tillbaka {
+    color: inherit;
+    text-decoration: none;
+  }
+  .tillbaka:hover {
+    color: #f6f2e8;
+  }
+  .lagen {
+    margin-top: 28px;
+  }
+  .lagen:not(:has(> :not([hidden]))) {
+    display: none;
+  }
+  .redigera {
+    display: grid;
+    gap: 26px;
+    margin-top: 22px;
+  }
+  /* Raden står kvar överst medan man fyller i, så att man ser vad varje fält gör. Inte på en smal
+     skärm, där den är hög och skulle ta halva fönstret. */
+  .redigera__forhand {
+    position: sticky;
+    top: var(--huvud-h);
+    z-index: 3;
+    margin: 0 -8px;
+    padding: 14px 8px 16px;
+    border-bottom: 1px solid #2b2924;
+    background: #141310;
+  }
+  .redigera__huvud {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px 14px;
+    margin-bottom: 9px;
+  }
+  /* Läget ska inte gå att missa: om raden syns i listan, och om det som står här är sparat. */
+  .lage {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin: 0;
+    color: #a39f92;
+    font: 500 11.5px/1.2 var(--font-mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .lage::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+  }
+  .lage[data-lage='publicerad'] {
+    color: #b9d8a8;
+  }
+  .lage[data-lage='publicerad']::before {
+    background: currentColor;
+  }
+  .lage[data-lage='osparat'] {
+    color: #f3a683;
+  }
+  .lage[data-lage='osparat']::before {
+    background: currentColor;
+  }
+  .lanknot__val {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 14px;
+  }
+  a.lankknapp {
+    display: inline-block;
+  }
+  .sparrad__varning {
+    flex-basis: 100%;
+    margin: 0;
+    color: #f3a683;
+    font-size: 13.5px;
+  }
+  .sparrad__varning:empty {
+    display: none;
+  }
+  .redigera__etikett {
+    margin: 0;
+    color: #a39f92;
+    font: 500 11.5px/1.2 var(--font-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .redigera__spalter {
+    display: grid;
+    gap: 22px;
+  }
+  .lanknot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 14px;
+  }
+  /* Det som är bra att veta men inte behövs för att bli klar står sist, i en rad. */
+  .redigera__fot {
+    max-width: 600px;
+    color: #a39f92;
+    font-size: 13.5px;
+    line-height: 1.5;
+  }
+  .redigera__fot p {
+    margin: 0 0 10px;
+  }
+  .redigera__val {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 20px;
+  }
+  .redigera__knappar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  @media (max-width: 760px) {
+    .redigera__forhand {
+      position: static;
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+  }
+</style>
+
+<script>
+  import {
+    bildUrl,
+    forslagFranGithub,
+    giltigKunskap,
+    harPersonnummer,
+    KUNSKAPSFORSLAG,
+    lankEtikett,
+    lanktyp,
+    MAX_KUNSKAPER,
+    SAMTYCKE_VERSION,
+    medKunskap,
+    normaliseraLank,
+    somRubrik,
+    uppdragUrl,
+    type GithubForrad,
+    type Profil,
+  } from '../../lib/uppdrag';
+  import { hammarhandSrc, ritaKort, type Etiketter } from '../../lib/uppdragkort';
+
+  type Lagrat = {
+    session: string;
+    utgar_at: string;
+    profil: Profil | null;
+    /** Namnet ur medlemsregistret. Det är det som står på raden. */
+    forslag: { namn: string };
+    klick30: number;
+  };
+
+  /** Det som står i fälten, i samma form som det sparas. */
+  type Varden = {
+    rubrik: string;
+    lank: string;
+    erbjuder: string;
+    kommun: string;
+    distans: boolean;
+    omraden: string[];
+    kunskaper: string[];
+    bolag_namn: string;
+    bolag_webbplats: string;
+    samtycke: boolean;
+  };
+  /** Osparade ändringar, sparade i webbläsaren så att en utgången länk inte kostar medlemmen arbetet. */
+  type Utkast = { at: number; vem: string; version: string; varden: Varden; bild: string | null; bildBort: boolean };
+
+  const NYCKEL = 'uppdrag-session';
+  const UTKAST = 'uppdrag-utkast';
+  const UTKAST_SPARAS_MS = 24 * 3600 * 1000;
+  const form = document.getElementById('profil-form') as HTMLFormElement;
+  const etiketter = JSON.parse(document.getElementById('uppdrag-etiketter')?.textContent || '{}') as Etiketter;
+  const hitta = <T extends HTMLElement>(id: string): T => document.getElementById(id) as T;
+  const laddar = hitta('r-laddar');
+  const oppna = hitta('r-oppna');
+  const felruta = hitta('r-fel');
+  const klar = hitta('r-klar');
+  const yta = hitta('r-yta');
+  const forhand = hitta('forhand');
+  const spara = hitta<HTMLButtonElement>('r-spara');
+  const kvitto = hitta('r-kvitto');
+  const taBort = hitta<HTMLButtonElement>('r-ta-bort');
+  const bekrafta = hitta('r-bekrafta');
+  const sparfel = hitta('r-sparfel');
+  const mer = hitta<HTMLDetailsElement>('f-mer');
+
+  let lagrat: Lagrat | null = null;
+  /** En ny bild, beskuren och omkodad, som en data-adress. Skickas med när raden sparas. */
+  let nyBild: string | null = null;
+  /** Medlemmen har bett att få den sparade bilden borttagen. Det sker när raden sparas. */
+  let taBortBild = false;
+  /** Kunskaperna som de står i formuläret, och förslagen som hämtats från medlemmens GitHub. */
+  let kunskaper: string[] = [];
+  let hamtade: string[] = [];
+  /** Fälten som de såg ut när de senast var sparade, eller när sidan öppnades. Skiljer sig det som står nu är det osparat. */
+  let sparatLage = '';
+  /** Sant när sidan lämnas med flit, så att frågan om osparade ändringar inte ställs. */
+  let lamnar = false;
+  const BILD_SIDA = 512;
+  const BILD_MIN = 160;
+  const BILD_MAX_BYTES = 300 * 1024;
+
+  function lasLagrat(): Lagrat | null {
+    try {
+      const l = JSON.parse(sessionStorage.getItem(NYCKEL) || 'null') as Lagrat | null;
+      return l && new Date(l.utgar_at).getTime() > Date.now() ? l : null;
+    } catch {
+      return null;
+    }
+  }
+  function sparaLagrat(l: Lagrat | null): void {
+    try {
+      if (l) sessionStorage.setItem(NYCKEL, JSON.stringify(l));
+      else sessionStorage.removeItem(NYCKEL);
+    } catch {
+      // Utan lagring fungerar sidan ändå, men en omladdning kräver en ny länk.
+    }
+  }
+
+  function visa(del: 'laddar' | 'oppna' | 'fel' | 'yta' | 'klar', text = ''): void {
+    laddar.hidden = del !== 'laddar';
+    oppna.hidden = del !== 'oppna';
+    felruta.hidden = del !== 'fel';
+    yta.hidden = del !== 'yta';
+    klar.hidden = del !== 'klar';
+    if (del === 'fel') hitta('r-fel-text').textContent = text;
+    if (del === 'klar') {
+      hitta('r-klar-text').textContent = text;
+      klar.focus();
+    }
+  }
+
+  const falt = (namn: string): HTMLInputElement => form.elements.namedItem(namn) as HTMLInputElement;
+  const lankFalt = hitta<HTMLInputElement>('f-lank');
+  const rubrikFalt = hitta<HTMLInputElement>('f-rubrik');
+
+  function franProfil(p: Profil | null): Varden {
+    return {
+      rubrik: p?.rubrik ?? '',
+      lank: p?.lank ?? '',
+      erbjuder: p?.erbjuder ?? 'uppdrag',
+      kommun: p?.kommun ?? '',
+      distans: p?.distans ?? false,
+      omraden: [...(p?.omraden ?? [])],
+      kunskaper: [...(p?.kunskaper ?? [])],
+      bolag_namn: p?.bolag_namn ?? '',
+      bolag_webbplats: p?.bolag_webbplats ?? '',
+      // Rutan är bara ikryssad för den text medlemmen redan har godkänt, aldrig för en ny.
+      samtycke: p?.samtycke_version === SAMTYCKE_VERSION,
+    };
+  }
+
+  function sattVarden(v: Varden): void {
+    lankFalt.value = v.lank;
+    rubrikFalt.value = v.rubrik;
+    for (const r of form.querySelectorAll<HTMLInputElement>('input[name="erbjuder"]')) r.checked = r.value === v.erbjuder;
+    (form.elements.namedItem('kommun') as HTMLSelectElement).value = v.kommun;
+    falt('distans').checked = v.distans;
+    for (const c of form.querySelectorAll<HTMLInputElement>('input[name="omraden"]')) c.checked = v.omraden.includes(c.value);
+    falt('bolag_namn').value = v.bolag_namn;
+    falt('bolag_webbplats').value = v.bolag_webbplats;
+    falt('samtycke').checked = v.samtycke;
+    kunskaper = [...v.kunskaper];
+    // Det hopfällda öppnas när det redan står något där.
+    mer.open = Boolean(v.omraden.length || v.bolag_namn || v.bolag_webbplats || v.erbjuder !== 'uppdrag');
+  }
+
+  function lasVarden(): Varden {
+    return {
+      rubrik: rubrikFalt.value.trim(),
+      lank: normaliseraLank(lankFalt.value),
+      erbjuder: form.querySelector<HTMLInputElement>('input[name="erbjuder"]:checked')?.value ?? 'uppdrag',
+      kommun: (form.elements.namedItem('kommun') as HTMLSelectElement).value,
+      distans: falt('distans').checked,
+      omraden: [...form.querySelectorAll<HTMLInputElement>('input[name="omraden"]:checked')].map((c) => c.value),
+      kunskaper,
+      bolag_namn: falt('bolag_namn').value.trim(),
+      bolag_webbplats: normaliseraLank(falt('bolag_webbplats').value),
+      samtycke: falt('samtycke').checked,
+    };
+  }
+
+  const lagesnyckel = (): string => JSON.stringify({ ...lasVarden(), bild: nyBild, bort: taBortBild });
+
+  function fyll(l: Lagrat): void {
+    sattVarden(franProfil(l.profil));
+    hamtade = [];
+    nyBild = null;
+    taBortBild = false;
+    sparatLage = lagesnyckel();
+    // Osparade ändringar från förra gången läggs tillbaka, till exempel efter en länk som gick ut.
+    const utkast = lasUtkast(l.forslag.namn);
+    if (utkast) {
+      // Ett kryss i utkastet gäller bara om det sattes för samma text som står här nu.
+      sattVarden({ ...utkast.varden, samtycke: utkast.varden.samtycke && utkast.version === SAMTYCKE_VERSION });
+      nyBild = utkast.bild;
+      taBortBild = utkast.bildBort;
+    }
+    hitta('r-utkast').hidden = !utkast;
+    hitta('samtycke-nytt').hidden = !l.profil || l.profil.samtycke_version === SAMTYCKE_VERSION;
+    visaKunskaper();
+    visaBild();
+    visaRubrikKvar();
+    visaLankhjalp();
+    begransaOmraden();
+    visaNoter(l);
+    visaTid();
+    forhandsvisa();
+  }
+
+  function visaNoter(l: Lagrat): void {
+    const tid = new Intl.DateTimeFormat('sv-SE', { hour: '2-digit', minute: '2-digit' }).format(new Date(l.utgar_at));
+    hitta('r-session').textContent = `Länken gäller till ${tid}.`;
+    const klick = hitta('r-klick');
+    klick.hidden = !l.profil;
+    klick.textContent = `${l.klick30} klick på din rad de senaste 30 dagarna.`;
+    taBort.hidden = !l.profil;
+    hitta('r-hamta').hidden = !l.profil;
+  }
+
+  function lasForm(): Record<string, unknown> {
+    return { ...lasVarden(), samtycke_version: SAMTYCKE_VERSION, bild: nyBild ?? undefined, bild_bort: taBortBild || undefined };
+  }
+
+  function forhandsvisa(): void {
+    const f = lasForm();
+    const profil: Profil = {
+      slug: lagrat?.profil?.slug ?? 'forhandsvisning',
+      namn: lagrat?.forslag.namn ?? '',
+      rubrik: String(f.rubrik),
+      lank: String(f.lank) || 'https://',
+      erbjuder: f.erbjuder as Profil['erbjuder'],
+      kommun: String(f.kommun) || null,
+      distans: Boolean(f.distans),
+      omraden: f.omraden as string[],
+      kunskaper,
+      bolag_namn: String(f.bolag_namn) || null,
+      bolag_webbplats: String(f.bolag_webbplats) || null,
+      uppdaterad_at: lagrat?.profil?.uppdaterad_at ?? new Date().toISOString(),
+      bild: taBortBild ? null : (lagrat?.profil?.bild ?? null),
+    };
+    forhand.replaceChildren(ritaKort(profil, etiketter, { forhandsvisning: true, form: 'rad', bildSrc: nyBild ?? undefined }));
+    visaLage();
+  }
+
+  /* ---------- Läget och utkastet ---------- */
+
+  const lage = hitta('r-lage');
+  const tidnot = hitta('r-tid');
+
+  function lasUtkast(vem: string): Utkast | null {
+    try {
+      const u = JSON.parse(localStorage.getItem(UTKAST) || 'null') as Utkast | null;
+      if (u && u.vem === vem && Date.now() - u.at < UTKAST_SPARAS_MS && u.varden && Array.isArray(u.varden.kunskaper)) return u;
+      localStorage.removeItem(UTKAST);
+    } catch {
+      // Utan lagring finns inget utkast. Formuläret fungerar ändå.
+    }
+    return null;
+  }
+
+  function sparaUtkast(): void {
+    if (!lagrat) return;
+    const utkast: Utkast = {
+      at: Date.now(),
+      vem: lagrat.forslag.namn,
+      version: SAMTYCKE_VERSION,
+      varden: lasVarden(),
+      bild: nyBild,
+      bildBort: taBortBild,
+    };
+    try {
+      localStorage.setItem(UTKAST, JSON.stringify(utkast));
+    } catch {
+      // Lagringen kan vara full av bilden. Texten är det viktiga, så den sparas utan.
+      try {
+        localStorage.setItem(UTKAST, JSON.stringify({ ...utkast, bild: null }));
+      } catch {
+        // Utan lagring finns inget utkast. Formuläret fungerar ändå.
+      }
+    }
+  }
+
+  function rensaUtkast(): void {
+    try {
+      localStorage.removeItem(UTKAST);
+    } catch {
+      // Inget att ta bort.
+    }
+  }
+
+  const arAndrad = (): boolean => Boolean(lagrat) && lagesnyckel() !== sparatLage;
+
+  /**
+   * Säger om raden syns i listan och om det som står i fälten är sparat. Osparade ändringar
+   * läggs också undan i webbläsaren, så att de finns kvar om länken hinner gå ut.
+   */
+  function visaLage(): void {
+    if (!lagrat) return;
+    const andrad = arAndrad();
+    const nytt = andrad && lagrat.profil ? 'osparat' : lagrat.profil ? 'publicerad' : 'utkast';
+    if (lage.dataset.lage !== nytt) {
+      lage.dataset.lage = nytt;
+      lage.textContent = nytt === 'osparat' ? 'Osparade ändringar' : nytt === 'publicerad' ? 'Syns i listan' : 'Syns inte än';
+    }
+    if (andrad) {
+      // Kvittot gäller det som sparades. Efter en ändring stämmer det inte längre.
+      kvitto.replaceChildren();
+      sparaUtkast();
+    } else {
+      rensaUtkast();
+    }
+  }
+
+  /** Varnar när länken snart går ut, i stället för att låta medlemmen upptäcka det vid Spara. */
+  function visaTid(): void {
+    if (!lagrat) return;
+    const slut = new Date(lagrat.utgar_at);
+    const kvar = slut.getTime() - Date.now();
+    const tid = new Intl.DateTimeFormat('sv-SE', { hour: '2-digit', minute: '2-digit' }).format(slut);
+    tidnot.textContent =
+      kvar <= 0
+        ? 'Länken har gått ut. Be om en ny, så finns det du har skrivit kvar.'
+        : kvar < 10 * 60 * 1000
+          ? `Länken går ut ${tid}. Spara innan dess.`
+          : '';
+  }
+  setInterval(visaTid, 30 * 1000);
+
+  hitta('r-utkast-bort').addEventListener('click', () => {
+    rensaUtkast();
+    if (lagrat) fyll(lagrat);
+    lankFalt.focus();
+  });
+
+  // Den som går härifrån med osparade ändringar får en fråga först. Ändringarna ligger kvar
+  // som utkast, men raden i listan ändras inte förrän någon sparar.
+  addEventListener('beforeunload', (e) => {
+    if (!lamnar && arAndrad()) e.preventDefault();
+  });
+
+  function begransaOmraden(): void {
+    const rutor = [...form.querySelectorAll<HTMLInputElement>('input[name="omraden"]')];
+    const fulla = rutor.filter((c) => c.checked).length >= 3;
+    for (const c of rutor) c.disabled = fulla && !c.checked;
+  }
+
+  const FELTEXT: Record<string, string> = {
+    rubrik: 'Skriv en rad, högst 90 tecken. Inga länkar och inget personnummer.',
+    lank: 'Skriv en länk, till exempel github.com/dig. En e-postadress går inte.',
+    erbjuder: 'Välj vad du erbjuder.',
+    kommun: 'Välj en kommun ur listan.',
+    distans: 'Något gick fel med valet Distans. Ladda om sidan.',
+    omraden: 'Välj högst tre områden.',
+    kunskaper: 'Korta ord, högst 24 tecken var. Inga länkar eller adresser.',
+    bolag_namn: 'Högst 80 tecken, och inget organisationsnummer.',
+    bolag_webbplats: 'Skriv en adress, till exempel bolaget.se.',
+    samtycke: 'Kryssa i rutan för att synas i listan.',
+    bild: 'Bilden gick inte att spara. Prova en annan, eller spara utan bild.',
+  };
+  const I_MER = new Set(['erbjuder', 'omraden', 'bolag_namn', 'bolag_webbplats']);
+
+  function visaFel(namn: string[]): void {
+    for (const id of Object.keys(FELTEXT)) {
+      const p = document.getElementById(`fel-${id}`);
+      if (!p) continue;
+      const fel = namn.includes(id);
+      p.textContent = fel ? FELTEXT[id] : '';
+      p.hidden = !fel;
+      const input = form.elements.namedItem(id);
+      if (input instanceof HTMLInputElement || input instanceof HTMLSelectElement) input.setAttribute('aria-invalid', String(fel));
+    }
+    const forsta = namn[0];
+    if (!forsta) return;
+    // Det första felet får fokus. Ligger det i det hopfällda öppnas det först.
+    if (namn.some((n) => I_MER.has(n))) mer.open = true;
+    const input = form.elements.namedItem(forsta);
+    if (forsta === 'kunskaper') kunskapFalt.focus();
+    else if (forsta === 'bild') hitta('f-bildfil').focus();
+    else if (input instanceof HTMLElement) input.focus();
+    else form.querySelector<HTMLInputElement>(`input[name="${forsta}"]`)?.focus();
+  }
+
+  /** Samma regler som funktionen, så att de vanliga felen syns innan något skickas. */
+  function provaLokalt(f: Record<string, unknown>): string[] {
+    const fel: string[] = [];
+    const https = (s: string): boolean => {
+      try {
+        const u = new URL(s);
+        // En e-postadress tolkas som en adress med inloggning. Den är ingen länk.
+        return u.protocol === 'https:' && u.hostname.includes('.') && !u.username && !u.password;
+      } catch {
+        return false;
+      }
+    };
+    const rubrik = String(f.rubrik);
+    if (!https(String(f.lank))) fel.push('lank');
+    if (!rubrik || /[<>]|:\/\//.test(rubrik) || harPersonnummer(rubrik)) fel.push('rubrik');
+    if ((f.omraden as string[]).length > 3) fel.push('omraden');
+    if (harPersonnummer(String(f.bolag_namn))) fel.push('bolag_namn');
+    if (f.bolag_webbplats && !https(String(f.bolag_webbplats))) fel.push('bolag_webbplats');
+    if (!f.samtycke) fel.push('samtycke');
+    return fel;
+  }
+
+  /* ---------- Raden om vad medlemmen gör ---------- */
+
+  const rubrikKvar = hitta('rubrik-kvar');
+  /** Räknaren syns först när det börjar bli trångt. Innan dess är den bara brus. */
+  function visaRubrikKvar(): void {
+    const kvar = 90 - rubrikFalt.value.length;
+    rubrikKvar.textContent = kvar <= 20 ? `${kvar} tecken kvar` : '';
+  }
+  rubrikFalt.addEventListener('input', visaRubrikKvar);
+
+  /* ---------- Bilden ---------- */
+
+  const bildVisning = hitta<HTMLImageElement>('bild-visning');
+  const bildRuta = hitta('bild-ruta');
+  const bildStatus = hitta('bild-status');
+  const bildBort = hitta<HTMLButtonElement>('f-bildbort');
+
+  function visaBild(): void {
+    const sparad = lagrat?.profil && !taBortBild ? bildUrl(lagrat.profil) : null;
+    const src = nyBild ?? sparad;
+    bildVisning.src = src ?? hammarhandSrc();
+    bildRuta.classList.toggle('bildval__visning--utan', !src);
+    bildBort.hidden = !src;
+  }
+
+  /** WebP med ett enda bildblock. Funktionen godtar inte det utökade formatet, som kan bära metadata. */
+  function enkelWebp(data: string): boolean {
+    const start = data.indexOf(',') + 1;
+    const b = atob(data.slice(start, start + 24));
+    return b.slice(0, 4) === 'RIFF' && b.slice(8, 12) === 'WEBP' && (b.slice(12, 16) === 'VP8 ' || b.slice(12, 16) === 'VP8L');
+  }
+
+  /**
+   * Beskär till en kvadrat i mitten och kodar om. Omkodningen tar bort all metadata, som plats.
+   * WebP där webbläsaren kan, annars JPEG.
+   */
+  async function kodaOm(kalla: Blob): Promise<string> {
+    const bitmap = await createImageBitmap(kalla);
+    const sida = Math.min(bitmap.width, bitmap.height);
+    if (sida < BILD_MIN) {
+      bitmap.close();
+      throw new Error('liten');
+    }
+    const ut = Math.min(BILD_SIDA, sida);
+    const duk = document.createElement('canvas');
+    duk.width = ut;
+    duk.height = ut;
+    // Utan alfakanal blir WebP det enkla formatet, och en genomskinlig bild får mörk botten.
+    const ctx = duk.getContext('2d', { alpha: false });
+    if (!ctx) throw new Error('duk');
+    ctx.fillStyle = '#141310';
+    ctx.fillRect(0, 0, ut, ut);
+    ctx.drawImage(bitmap, (bitmap.width - sida) / 2, (bitmap.height - sida) / 2, sida, sida, 0, 0, ut, ut);
+    bitmap.close();
+    const forsok: [string, number][] = [['image/webp', 0.86], ['image/jpeg', 0.88], ['image/jpeg', 0.72]];
+    for (const [typ, kvalitet] of forsok) {
+      const data = duk.toDataURL(typ, kvalitet);
+      if (!data.startsWith(`data:${typ};base64,`)) continue;
+      if (typ === 'image/webp' && !enkelWebp(data)) continue;
+      if ((data.length - data.indexOf(',') - 1) * 0.75 <= BILD_MAX_BYTES) return data;
+    }
+    throw new Error('stor');
+  }
+
+  /** Tar in en bild och säger om det gick. Varför det inte gick står under bilden. */
+  async function taIn(kalla: Blob, klarText: string): Promise<boolean> {
+    bildStatus.textContent = 'Beskär bilden …';
+    try {
+      nyBild = await kodaOm(kalla);
+      taBortBild = false;
+      bildStatus.textContent = klarText;
+      const fel = hitta('fel-bild');
+      fel.hidden = true;
+      fel.textContent = '';
+      visaBild();
+      forhandsvisa();
+      return true;
+    } catch (e) {
+      const skal = e instanceof Error ? e.message : '';
+      bildStatus.textContent =
+        skal === 'liten'
+          ? `Bilden är för liten. Välj en som är minst ${BILD_MIN} punkter på bredden och höjden.`
+          : skal === 'stor'
+            ? 'Bilden blev för stor. Prova en annan.'
+            : 'Kunde inte läsa bilden. Prova en JPG eller PNG.';
+      return false;
+    }
+  }
+
+  const bildfil = hitta<HTMLInputElement>('f-bildfil');
+  bildfil.addEventListener('change', () => {
+    const fil = bildfil.files?.[0];
+    bildfil.value = '';
+    if (fil) void taIn(fil, 'Bilden är klar. Den sparas när du sparar.');
+  });
+
+  bildBort.addEventListener('click', () => {
+    nyBild = null;
+    taBortBild = Boolean(lagrat?.profil?.bild);
+    bildStatus.textContent = taBortBild ? 'Bilden tas bort när du sparar.' : '';
+    visaBild();
+    forhandsvisa();
+  });
+
+  // Bilden från X hämtas av medlemmens webbläsare via unavatar.io, som slår upp profilbilden.
+  // Bara användarnamnet skickas, och bilden kodas om här som en uppladdad bild. Fältet för
+  // namnet visas först när någon vill ha det.
+  const UTAN_SPAR: RequestInit = { credentials: 'omit', referrerPolicy: 'no-referrer' };
+  const xvisa = hitta<HTMLButtonElement>('f-xvisa');
+  const xrad = hitta('f-xrad');
+  const xnamn = hitta<HTMLInputElement>('f-xnamn');
+  const xhamta = hitta<HTMLButtonElement>('f-xhamta');
+  xvisa.addEventListener('click', () => {
+    xrad.hidden = !xrad.hidden;
+    xvisa.setAttribute('aria-expanded', String(!xrad.hidden));
+    if (!xrad.hidden) xnamn.focus();
+  });
+
+  async function hamtaBild(adress: string, klarText: string): Promise<boolean> {
+    try {
+      const r = await fetch(adress, UTAN_SPAR);
+      if (!r.ok) return false;
+      const blob = await r.blob();
+      if (!blob.type.startsWith('image/')) return false;
+      return await taIn(blob, klarText);
+    } catch {
+      return false;
+    }
+  }
+
+  async function hamtaFranX(): Promise<void> {
+    const namn = xnamn.value.trim().replace(/^@/, '');
+    if (!/^[A-Za-z0-9_]{1,15}$/.test(namn)) {
+      bildStatus.textContent = 'Skriv ditt användarnamn på X, med eller utan @.';
+      return;
+    }
+    bildStatus.textContent = 'Hämtar bilden från X …';
+    xhamta.disabled = true;
+    const gick = await hamtaBild(`https://unavatar.io/x/${encodeURIComponent(namn)}?fallback=false`, `Bilden från @${namn} är klar. Den sparas när du sparar.`);
+    if (!gick && !nyBild) bildStatus.textContent = 'Hittade ingen bild för det namnet på X just nu. Ladda upp en i stället.';
+    xhamta.disabled = false;
+  }
+  xhamta.addEventListener('click', () => void hamtaFranX());
+  // Enter i namnfältet hämtar bilden i stället för att skicka hela formuläret.
+  xnamn.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    void hamtaFranX();
+  });
+
+  /* ---------- Kunskaperna ---------- */
+
+  const kunskapFalt = hitta<HTMLInputElement>('f-kunskap');
+  const kunskaperValda = hitta('kunskaper-valda');
+  const kunskaperAntal = hitta('kunskaper-antal');
+  const forslagRad = hitta('kunskaper-forslag');
+  const kunskapFel = hitta('fel-kunskaper');
+  const sammaOrd = (a: string, b: string): boolean => a.toLowerCase() === b.toLowerCase();
+
+  function ordknapp(ord: string, text: string, etikett: string): HTMLButtonElement {
+    const knapp = document.createElement('button');
+    knapp.type = 'button';
+    knapp.className = 'ordval__ord';
+    knapp.textContent = text;
+    knapp.dataset.ord = ord;
+    knapp.setAttribute('aria-label', etikett);
+    return knapp;
+  }
+
+  /**
+   * Förslagen under fältet: först det som hämtats från medlemmens GitHub, sedan vanliga ord.
+   * Medan medlemmen skriver visas de som börjar likadant, så att ett tryck räcker.
+   */
+  function visaForslag(): void {
+    const skrivet = kunskapFalt.value.trim().toLowerCase();
+    const alla = [...hamtade, ...KUNSKAPSFORSLAG].filter((f, i, lista) => lista.findIndex((x) => sammaOrd(x, f)) === i);
+    const lediga = alla.filter((f) => !kunskaper.some((k) => sammaOrd(k, f)));
+    const passande = skrivet ? lediga.filter((f) => f.toLowerCase().startsWith(skrivet)) : [];
+    // Sex förslag räcker. Fler blir en vägg att läsa, särskilt på en telefon.
+    const visade = (passande.length ? passande : lediga).slice(0, 6);
+    forslagRad.replaceChildren(...visade.map((f) => ordknapp(f, `+ ${f}`, `Lägg till ${f}`)));
+    forslagRad.hidden = kunskaper.length >= MAX_KUNSKAPER || visade.length === 0;
+  }
+
+  function visaKunskaper(): void {
+    kunskaperValda.replaceChildren(
+      ...kunskaper.map((k) => {
+        const li = document.createElement('li');
+        li.append(ordknapp(k, `${k} ×`, `Ta bort ${k}`));
+        return li;
+      }),
+    );
+    kunskaperAntal.textContent = `${kunskaper.length} av ${MAX_KUNSKAPER}`;
+    kunskapFalt.placeholder = kunskaper.length >= MAX_KUNSKAPER ? 'Fullt. Ta bort ett ord för att byta.' : kunskaper.length ? 'Ett ord till' : 'Skriv ett ord, tryck Enter';
+    visaForslag();
+  }
+
+  /** Lägger till det som står i texten. Flera ord går att skriva eller klistra in med komma emellan. */
+  function laggTillKunskaper(text: string): void {
+    const ord = text.split(',').map((o) => o.trim()).filter(Boolean);
+    if (!ord.length) return;
+    const full = kunskaper.length >= MAX_KUNSKAPER;
+    for (const o of ord) kunskaper = medKunskap(kunskaper, o);
+    const fel = full ? 'Högst sex. Ta bort ett ord för att lägga till ett nytt.' : ord.some((o) => !giltigKunskap(o.replace(/\s+/g, ' '))) ? FELTEXT.kunskaper : '';
+    kunskapFel.textContent = fel;
+    kunskapFel.hidden = !fel;
+    visaKunskaper();
+    forhandsvisa();
+  }
+
+  function laggTillFranFaltet(): void {
+    laggTillKunskaper(kunskapFalt.value);
+    if (kunskapFel.hidden) kunskapFalt.value = '';
+    visaForslag();
+  }
+  kunskapFalt.addEventListener('input', visaForslag);
+  // Enter och komma lägger till ordet i stället för att skicka hela formuläret. Backsteg i ett
+  // tomt fält tar bort det senaste ordet, som i andra fält av samma slag.
+  kunskapFalt.addEventListener('keydown', (e) => {
+    if (e.key === 'Backspace' && !kunskapFalt.value && kunskaper.length) {
+      kunskaper = kunskaper.slice(0, -1);
+      kunskapFel.hidden = true;
+      visaKunskaper();
+      forhandsvisa();
+      return;
+    }
+    if (e.key !== 'Enter' && e.key !== ',') return;
+    e.preventDefault();
+    laggTillFranFaltet();
+  });
+  // Ett tryck var som helst i rutan hamnar i fältet.
+  hitta('kunskaper-ruta').addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) kunskapFalt.focus();
+  });
+  kunskaperValda.addEventListener('click', (e) => {
+    const ord = (e.target as Element | null)?.closest<HTMLElement>('[data-ord]')?.dataset.ord;
+    if (!ord) return;
+    kunskaper = kunskaper.filter((k) => k !== ord);
+    kunskapFel.hidden = true;
+    visaKunskaper();
+    forhandsvisa();
+    kunskapFalt.focus();
+  });
+  forslagRad.addEventListener('click', (e) => {
+    const ord = (e.target as Element | null)?.closest<HTMLElement>('[data-ord]')?.dataset.ord;
+    if (!ord) return;
+    kunskapFalt.value = '';
+    laggTillKunskaper(ord);
+  });
+
+  /* ---------- Länken, och det som går att hämta från den ---------- */
+
+  // Medlemmen skriver sin länk först. Går den till GitHub, X eller en egen sida erbjuder sidan
+  // att hämta det som ligger öppet där: bilden via unavatar.io, och från GitHub också
+  // presentationen och språken i de öppna kodförråden. Bara kontots namn eller sidans adress
+  // skickas, och först när medlemmen trycker. Inget sparas förrän medlemmen sparar.
+  const lankNot = hitta('lank-not');
+  const lankHamta = hitta<HTMLButtonElement>('f-lankhamta');
+  const lankProva = hitta<HTMLAnchorElement>('f-lankprova');
+  const LANKNOT = 'Hit leder din rad.';
+
+  /** Det som står under länkfältet: vad som går att hämta från just den här länken. */
+  function visaLankhjalp(): void {
+    const typ = lanktyp(normaliseraLank(lankFalt.value));
+    lankHamta.hidden = !typ || typ.typ === 'linkedin';
+    if (typ?.typ === 'github') lankHamta.textContent = 'Hämta bild och kunskaper från GitHub →';
+    else if (typ?.typ === 'x') lankHamta.textContent = 'Hämta din bild från X →';
+    else if (typ?.typ === 'sida') lankHamta.textContent = `Hämta loggan från ${typ.host} →`;
+    lankNot.textContent = typ?.typ === 'linkedin' ? 'LinkedIn släpper inte ut bild eller text, så här fyller du i själv.' : LANKNOT;
+    // En felskriven länk är det vanligaste felet, och det enda som inte syns på raden. Den går att prova.
+    const adress = normaliseraLank(lankFalt.value);
+    lankProva.hidden = !typ;
+    if (typ) lankProva.href = adress;
+    else lankProva.removeAttribute('href');
+  }
+  lankFalt.addEventListener('input', visaLankhjalp);
+  // Den som skrev utan https får det när fältet lämnas, så att det som sparas syns.
+  lankFalt.addEventListener('change', () => {
+    lankFalt.value = normaliseraLank(lankFalt.value);
+    visaLankhjalp();
+    forhandsvisa();
+  });
+  const bolagWebb = hitta<HTMLInputElement>('f-bolag-webb');
+  bolagWebb.addEventListener('change', () => {
+    bolagWebb.value = normaliseraLank(bolagWebb.value);
+    forhandsvisa();
+  });
+
+  async function hamtaGithub(namn: string): Promise<{ rubrik: string; forslag: string[] }> {
+    const las = async <T,>(vag: string): Promise<T | null> => {
+      try {
+        const r = await fetch(`https://api.github.com/users/${encodeURIComponent(namn)}${vag}`, {
+          ...UTAN_SPAR,
+          headers: { Accept: 'application/vnd.github+json' },
+        });
+        return r.ok ? ((await r.json()) as T) : null;
+      } catch {
+        return null;
+      }
+    };
+    const [konto, forrad] = await Promise.all([
+      las<{ bio?: string | null }>(''),
+      las<GithubForrad[]>('/repos?per_page=100&sort=pushed'),
+    ]);
+    return { rubrik: somRubrik(konto?.bio ?? ''), forslag: Array.isArray(forrad) ? forslagFranGithub(forrad) : [] };
+  }
+
+  async function hamtaFranLanken(): Promise<void> {
+    const typ = lanktyp(normaliseraLank(lankFalt.value));
+    if (!typ || typ.typ === 'linkedin') return;
+    lankHamta.disabled = true;
+    lankNot.textContent = 'Hämtar …';
+    const klarText = 'Bilden från länken är klar. Den sparas när du sparar.';
+    try {
+      const hamtat: string[] = [];
+      if (typ.typ === 'github') {
+        const [bild, konto] = await Promise.all([
+          hamtaBild(`https://unavatar.io/github/${encodeURIComponent(typ.namn)}?fallback=false`, klarText),
+          hamtaGithub(typ.namn),
+        ]);
+        if (bild) hamtat.push('bilden');
+        if (konto.rubrik && !rubrikFalt.value.trim()) {
+          rubrikFalt.value = konto.rubrik;
+          visaRubrikKvar();
+          hamtat.push('raden om vad du gör');
+        }
+        hamtade = konto.forslag;
+        if (hamtade.length) hamtat.push('förslag på kunskaper');
+        visaKunskaper();
+      } else if (typ.typ === 'x') {
+        if (await hamtaBild(`https://unavatar.io/x/${encodeURIComponent(typ.namn)}?fallback=false`, klarText)) hamtat.push('bilden');
+      } else if (await hamtaBild(`https://unavatar.io/${encodeURIComponent(typ.host)}?fallback=false`, klarText)) {
+        hamtat.push('loggan');
+      }
+      forhandsvisa();
+      const uppraknat = hamtat.length > 1 ? `${hamtat.slice(0, -1).join(', ')} och ${hamtat.at(-1)}` : hamtat[0];
+      lankNot.textContent = hamtat.length
+        ? `Hämtade ${uppraknat}. Ändra det som inte stämmer.`
+        : `Hittade inget att hämta från ${lankEtikett(normaliseraLank(lankFalt.value))} just nu. Fyll i själv.`;
+      if (!hamtat.length && !nyBild) visaBild();
+    } finally {
+      lankHamta.disabled = false;
+    }
+  }
+  lankHamta.addEventListener('click', () => void hamtaFranLanken());
+
+  /* ---------- Spara och ta bort ---------- */
+
+  async function anrop(metod: 'PUT' | 'DELETE', kropp?: unknown): Promise<Response> {
+    return fetch(uppdragUrl('/profil'), {
+      method: metod,
+      headers: { 'Content-Type': 'application/json', 'x-uppdrag-session': lagrat?.session ?? '' },
+      body: kropp === undefined ? undefined : JSON.stringify(kropp),
+    });
+  }
+
+  function sessionSlut(): void {
+    // Det som står i fälten ligger redan som utkast och kommer tillbaka med nästa länk.
+    lamnar = true;
+    sparaLagrat(null);
+    lagrat = null;
+    visa('fel', 'Länken har gått ut. Be om en ny, så finns det du har skrivit kvar.');
+  }
+
+  form.addEventListener('input', () => {
+    begransaOmraden();
+    forhandsvisa();
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    sparfel.hidden = true;
+    kvitto.replaceChildren();
+    // Ett ord som står kvar i fältet räknas med, också när medlemmen inte tryckte Enter.
+    if (kunskapFalt.value.trim()) laggTillFranFaltet();
+    lankFalt.value = normaliseraLank(lankFalt.value);
+    const f = lasForm();
+    const lokala = provaLokalt(f);
+    visaFel(lokala);
+    if (lokala.length) return;
+    spara.disabled = true;
+    spara.textContent = 'Sparar …';
+    try {
+      const svar = await anrop('PUT', f);
+      const data = (await svar.json().catch(() => ({}))) as { profil?: Profil; klick30?: number; fel?: string; falt?: string[] };
+      if (svar.status === 401) return sessionSlut();
+      if (svar.status === 422) return visaFel(data.falt ?? []);
+      if (!svar.ok || !data.profil || !lagrat) throw new Error(data.fel ?? 'Kunde inte spara.');
+      lagrat = { ...lagrat, profil: data.profil, klick30: data.klick30 ?? lagrat.klick30 };
+      sparaLagrat(lagrat);
+      nyBild = null;
+      taBortBild = false;
+      bildStatus.textContent = '';
+      sparatLage = lagesnyckel();
+      hitta('r-utkast').hidden = true;
+      hitta('samtycke-nytt').hidden = true;
+      visaBild();
+      visaNoter(lagrat);
+      forhandsvisa();
+      // Kvittot står bredvid knappen, där blicken redan är.
+      const lank = document.createElement('a');
+      lank.href = new URL('../uppdrag', location.href).pathname;
+      lank.textContent = 'Se listan →';
+      kvitto.replaceChildren('Sparat. Du syns i listan. ', lank);
+    } catch (err) {
+      sparfel.textContent = err instanceof Error && err.message ? err.message : 'Kunde inte spara. Försök igen.';
+      sparfel.hidden = false;
+    } finally {
+      spara.disabled = false;
+      spara.textContent = 'Spara och visa →';
+    }
+  });
+
+  // Rätten att få ut sina uppgifter: det sparade, som en fil som går att läsa av en maskin.
+  // Filen görs i webbläsaren av det som redan finns här. Inget hämtas och inget skickas.
+  hitta('r-hamta').addEventListener('click', () => {
+    if (!lagrat?.profil) return;
+    const innehall = { ...lagrat.profil, bild: bildUrl(lagrat.profil), klick_senaste_30_dagarna: lagrat.klick30 };
+    const adress = URL.createObjectURL(new Blob([JSON.stringify(innehall, null, 2)], { type: 'application/json' }));
+    const lank = document.createElement('a');
+    lank.href = adress;
+    lank.download = 'tar-uppdrag-mina-uppgifter.json';
+    lank.click();
+    URL.revokeObjectURL(adress);
+  });
+
+  taBort.addEventListener('click', () => {
+    bekrafta.hidden = false;
+    hitta<HTMLButtonElement>('r-avbryt').focus();
+  });
+  hitta('r-avbryt').addEventListener('click', () => {
+    bekrafta.hidden = true;
+    taBort.focus();
+  });
+  hitta('r-ja-ta-bort').addEventListener('click', async () => {
+    try {
+      const svar = await anrop('DELETE');
+      if (svar.status === 401) return sessionSlut();
+      if (!svar.ok) throw new Error();
+      if (lagrat) {
+        lagrat = { ...lagrat, profil: null, klick30: 0 };
+        sparaLagrat(lagrat);
+      }
+      rensaUtkast();
+      lamnar = true;
+      visa('klar', 'Raden är borttagen. Den syns inte längre i listan.');
+    } catch {
+      bekrafta.hidden = true;
+      sparfel.textContent = 'Kunde inte ta bort raden. Försök igen.';
+      sparfel.hidden = false;
+    }
+  });
+
+  /* ---------- Öppna ---------- */
+
+  async function oppnaMedKod(token: string): Promise<void> {
+    visa('laddar');
+    try {
+      const svar = await fetch(uppdragUrl('/session'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token }),
+      });
+      const data = (await svar.json().catch(() => ({}))) as Partial<Lagrat> & { fel?: string };
+      if (!svar.ok || !data.session || !data.utgar_at) {
+        return visa('fel', data.fel ?? 'Länken fungerade inte. Be om en ny.');
+      }
+      lagrat = {
+        session: data.session,
+        utgar_at: data.utgar_at,
+        profil: data.profil ?? null,
+        forslag: data.forslag ?? { namn: '' },
+        klick30: data.klick30 ?? 0,
+      };
+      sparaLagrat(lagrat);
+      fyll(lagrat);
+      visa('yta');
+    } catch {
+      visa('fel', 'Det gick inte att nå servern. Öppna länken i mejlet igen om en stund.');
+    }
+  }
+
+  function starta(): void {
+    const token = new URLSearchParams(location.hash.slice(1)).get('t');
+    if (token) {
+      // Koden ska inte ligga kvar i adressfältet eller historiken. Den finns bara i minnet
+      // tills medlemmen klickar, och en omladdning innan dess kräver länken igen.
+      history.replaceState(null, '', location.pathname);
+      hitta('r-oppna-knapp').addEventListener('click', () => oppnaMedKod(token), { once: true });
+      visa('oppna');
+      return;
+    }
+    lagrat = lasLagrat();
+    if (!lagrat) return visa('fel', 'Den här sidan öppnas med länken i mejlet. Be om en ny om den har gått ut.');
+    fyll(lagrat);
+    visa('yta');
+  }
+
+  starta();
+</script>
