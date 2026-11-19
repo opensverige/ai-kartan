@@ -66,9 +66,18 @@ kommun:
   status: confirmed
   source_url: https://www.allabolag.se/5593350001
   source_type: third_party
-  verified_at: 2026-11-16
+  verified_at: 2026-11-19
   verified_by: agent
-  note: "Kommunsäte enligt allabolag.se: Österåker. Besöksadressen på webbplatsen och adressen i registret ligger i Stockholm, en annan kommun än sätet, så organisationen ritas på kommunnivå."
+  note: "Kommunsäte enligt allabolag.se: Österåker. Kontoret ligger i Stockholm, se position."
+
+coordinates:
+  value: { lat: 59.33429, lng: 18.06138 }
+  status: claimed
+  source_url: https://techtify.io/ai-byra
+  source_type: own_site
+  verified_at: 2026-11-19
+  verified_by: agent
+  note: "Kontoret i Klara i Stockholm enligt webbplatsen. Registret har samma adress, utan c/o. Rättelse i OpenSveriges Discord 2026-11-18. Geokodad med OpenStreetMap Nominatim (ODbL)."
 
 founded:
   value: 2021
@@ -115,4 +124,4 @@ links:
   linkedin: https://www.linkedin.com/company/techtify-ab/
 
 record_created_at: 2026-11-16
-record_updated_at: 2026-11-16
+record_updated_at: 2026-11-19

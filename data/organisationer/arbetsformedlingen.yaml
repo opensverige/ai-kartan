@@ -62,7 +62,16 @@ kommun:
   source_type: third_party
   verified_at: 2026-10-04
   verified_by: agent
-  note: Kommunsäte enligt allabolag. Huvudkontorets besöksadress ligger i Solna enligt arbetsformedlingen.se.
+  note: Kommunsäte enligt allabolag. Huvudkontoret ligger i Solna, se position.
+
+coordinates:
+  value: { lat: 59.35646, lng: 17.97869 }
+  status: claimed
+  source_url: https://arbetsformedlingen.se/kontakt/vaxel-och-huvudkontor
+  source_type: own_site
+  verified_at: 2026-11-19
+  verified_by: agent
+  note: "Besöksadressen för huvudkontoret i Solna enligt webbplatsens sida Växel och huvudkontor. Registret har samma adress, utan c/o. Geokodad med OpenStreetMap Nominatim (ODbL)."
 
 active:
   value: true
@@ -94,4 +103,4 @@ evidence:
     verified_by: agent
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-04
+record_updated_at: 2026-11-19

@@ -69,7 +69,16 @@ kommun:
   source_type: third_party
   verified_at: 2026-11-19
   verified_by: agent
-  note: "Kommunsäte enligt allabolag.se: Uppsala. Webbplatsen och registret anger en adress i Stockholm, en annan kommun än sätet, så organisationen ritas på kommunnivå."
+  note: "Kommunsäte enligt allabolag.se: Uppsala. Kontoret ligger i Stockholm, se position."
+
+coordinates:
+  value: { lat: 59.31405, lng: 18.08649 }
+  status: claimed
+  source_url: https://www.storesprint.com/sv/
+  source_type: own_site
+  verified_at: 2026-11-19
+  verified_by: agent
+  note: "Kontoret på Södermalm i Stockholm enligt webbplatsens sidfot. Registret har samma adress, utan c/o. Geokodad med OpenStreetMap Nominatim (ODbL)."
 
 founded:
   value: 2017
