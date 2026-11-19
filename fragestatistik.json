@@ -123,6 +123,32 @@
         "01": 9,
         "ovrigt": 11
       }
+    },
+    "2026-11-18": {
+      "fragor": 44,
+      "modellen_svarade": 43,
+      "svar": {
+        "traffar": 21,
+        "bred": 12,
+        "utanfor": 5,
+        "tomt": 5,
+        "ranking": 1
+      },
+      "modellfel": {},
+      "omrade": {
+        "ovrigt": 7
+      },
+      "typ": {
+        "ovrigt": 1
+      },
+      "erbjuder": {
+        "ovrigt": 2
+      },
+      "lan": {
+        "12": 3,
+        "01": 5,
+        "ovrigt": 2
+      }
     }
   },
   "luckor": [
