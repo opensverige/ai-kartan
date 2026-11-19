@@ -1,4 +1,5 @@
 [
+  { "datum": "2026-11-08", "text": "Första skärmen säger vad kartan är, Lägg till syns i telefonen, och varje organisationssida har en delalänk för organisationen själv." },
   { "datum": "2026-10-23", "text": "Sökpaletten skiljer på att fråga AI:n och att bläddra i kartan: frågorna på en egen grön yta, kartans områden, typer och län som en lista med antalet i linje." },
   { "datum": "2026-10-20", "text": "Öppen frågestatistik: vad Fråga kartan får för frågor, räknat per dag och ämne ur kartans fasta listor och publicerat när dagen är slut, aldrig frågornas text." },
   { "datum": "2026-10-20", "text": "Länets sida går att dela: en karta med en prick per kommun, antalet som hittills belagt med en tipslänk, ett färdigt citat och en delningsbild per län med namn, antal och datum." },
