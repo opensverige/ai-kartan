@@ -1,8 +1,20 @@
 {
-  "generated_at": "2026-11-19T07:35:03Z",
-  "antal": 574,
+  "generated_at": "2026-11-19T08:13:46Z",
+  "antal": 575,
   "senaste_andring": "2026-11-19",
   "rader": [
+    {
+      "datum": "2026-11-19",
+      "commit": "9519f03b91",
+      "id": "storesprint",
+      "namn": "StoreSprint",
+      "falt": "hela posten",
+      "andring": "tillagd",
+      "gammalt": null,
+      "nytt": null,
+      "status": null,
+      "kalla": "https://www.storesprint.com"
+    },
     {
       "datum": "2026-11-19",
       "commit": "a9e3328bd5",
