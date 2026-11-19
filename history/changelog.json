@@ -1,8 +1,113 @@
 {
-  "generated_at": "2026-11-19T08:13:46Z",
-  "antal": 575,
-  "senaste_andring": "2026-11-19",
+  "generated_at": "2026-11-19T23:14:50Z",
+  "antal": 582,
+  "senaste_andring": "2026-11-20",
   "rader": [
+    {
+      "datum": "2026-11-20",
+      "commit": "0ffd84371e",
+      "id": "techtify",
+      "namn": "Techtify",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.33429,
+        "lng": 18.06138
+      },
+      "status": "claimed",
+      "kalla": "https://techtify.io/ai-byra"
+    },
+    {
+      "datum": "2026-11-20",
+      "commit": "0ffd84371e",
+      "id": "storesprint",
+      "namn": "StoreSprint",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.31405,
+        "lng": 18.08649
+      },
+      "status": "claimed",
+      "kalla": "https://www.storesprint.com/sv/"
+    },
+    {
+      "datum": "2026-11-20",
+      "commit": "0ffd84371e",
+      "id": "indicate-me",
+      "namn": "Indicate me",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.37673,
+        "lng": 18.03221
+      },
+      "status": "claimed",
+      "kalla": "https://info.indicateme.se/kontakt"
+    },
+    {
+      "datum": "2026-11-20",
+      "commit": "0ffd84371e",
+      "id": "flower",
+      "namn": "Flower",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.31907,
+        "lng": 18.07511
+      },
+      "status": "confirmed",
+      "kalla": "https://www.allabolag.se/5592575558"
+    },
+    {
+      "datum": "2026-11-20",
+      "commit": "0ffd84371e",
+      "id": "domstolsverket",
+      "namn": "Domstolsverket",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 57.78068,
+        "lng": 14.16326
+      },
+      "status": "claimed",
+      "kalla": "https://www.domstol.se/domstolsverket/oppettider-och-kontakt/"
+    },
+    {
+      "datum": "2026-11-20",
+      "commit": "0ffd84371e",
+      "id": "arbetsformedlingen",
+      "namn": "Arbetsförmedlingen",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.35646,
+        "lng": 17.97869
+      },
+      "status": "claimed",
+      "kalla": "https://arbetsformedlingen.se/kontakt/vaxel-och-huvudkontor"
+    },
+    {
+      "datum": "2026-11-20",
+      "commit": "0ffd84371e",
+      "id": "alster-ventures",
+      "namn": "Alster Ventures",
+      "falt": "coordinates",
+      "andring": "ny uppgift",
+      "gammalt": null,
+      "nytt": {
+        "lat": 59.33673,
+        "lng": 18.0693
+      },
+      "status": "claimed",
+      "kalla": "https://alster.se/contact"
+    },
     {
       "datum": "2026-11-19",
       "commit": "9519f03b91",
