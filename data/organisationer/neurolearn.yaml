@@ -66,7 +66,7 @@ kommun:
   source_type: third_party
   verified_at: 2026-10-04
   verified_by: agent
-  note: "Säte Örebro enligt allabolag (länssäte Örebro län). Bolagets postadress ligger i Karlskoga, som också ligger i Örebro län."
+  note: "Säte Örebro enligt allabolag (länssäte Örebro län). Registret anger bara orten Karlskoga som adress, och postadressen är en box med c/o ett annat bolag. Webbplatsen anger ingen besöksadress, så ingen adress används för position."
 
 founded:
   value: 2016
@@ -95,4 +95,4 @@ evidence:
     verified_by: agent
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-04
+record_updated_at: 2026-11-19

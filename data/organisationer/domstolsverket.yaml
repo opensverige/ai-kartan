@@ -71,6 +71,15 @@ kommun:
   verified_by: agent
   note: Kommunsäte enligt allabolag.se. Huvudkontoret ligger i Jönköping enligt https://www.domstol.se/domstolsverket/oppettider-och-kontakt/.
 
+coordinates:
+  value: { lat: 57.78068, lng: 14.16326 }
+  status: claimed
+  source_url: https://www.domstol.se/domstolsverket/oppettider-och-kontakt/
+  source_type: own_site
+  verified_at: 2026-11-19
+  verified_by: agent
+  note: "Besöksadressen för huvudkontoret i Jönköping enligt webbplatsens sida Öppettider och kontakt. Registret har samma adress. Husnumret saknas i OpenStreetMap, så nålen står på Domstolsverkets kontor på samma gata (Nominatim, ODbL)."
+
 active:
   value: true
   status: confirmed
@@ -96,4 +105,4 @@ evidence:
     verified_by: agent
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-04
+record_updated_at: 2026-11-19
