@@ -29,6 +29,18 @@ node scripts/andringar.mjs --skriv-ut   # se vad som ändrats
 ```
 
 - Ny organisation: kopiera `data/MALL.yaml`, fyll i, validera. Filnamn = `id`.
+
+### Ny organisation: det som lätt missas
+
+- **Belägget.** Tipsets länk är en ledtråd, inte ett belägg. Läs den. Visar den inte något som organisationen har byggt med AI, leta efter case, produkt eller kod på webbplatsen. Finns inget: lägg inte till posten, utan svara i ärendet och be om en länk.
+- **Rätt bolag.** Kontrollera att organisationsnumret hör till webbplatsen: integritetspolicy, villkor eller sidfot med samma nummer. Står namnet olika i tips, register och webbplats, säg det i en not.
+- **Position.**
+  - Besöksadressen på organisationens webbplats går före registrets.
+  - Registrets adress används inte med c/o eller lägenhetsnummer.
+  - Den används inte heller när den ser ut att vara en bostad: villagata, inga anställda, eller samma adress som en person eller ett systerbolags c/o. Skriv i kommunens not varför posten saknar nål.
+  - Ligger adressen i en annan kommun än sätet ritas organisationen på kommunnivå. Valideringen varnar för en nål mer än 2 km utanför sätets kommun.
+- **Noter beskriver källan.** Din bedömning av om belägget räcker hör hemma i pull requesten, inte i datan.
+- **Pixelstäderna.** Husen i Stockholm, Göteborg och Malmö tänds av `hus/tand_hus.py` i `opensverige/pixelkarta-worker`, inte i det här repot. Jobbet `pixelhus` där kör skriptet varje timme, men skriver bara när det ligger på main med en R2-nyckel. Tills dess körs `tand_hus.py --wrangler` för hand efter varje merge som ger en ny position. Organisationer på kommunnivå får en plats i vattnet bara i vissa kommuner.
 - Kommunkod: slå upp i `data/geo/kommuner.json`, skriv inom citattecken.
 - Datum: dagens datum i `verified_at`, `record_created_at`, `record_updated_at` (ÅÅÅÅ-MM-DD).
 - Rör aldrig `history/changelog.json` för hand; den genereras.
