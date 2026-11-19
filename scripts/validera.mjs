@@ -25,7 +25,6 @@ import {
 } from './lib/organisationer.mjs';
 import { provaBelaggstyp, utanEgetBelagg } from './lib/belagg.mjs';
 import { MARKNADSORD } from './lib/marknadsord.mjs';
-import { GRANS_TOLERANS_M, granserPerKod, meterUtanfor } from './lib/kommungrans.mjs';
 
 const argv = process.argv.slice(2);
 const somJson = argv.includes('--json');
@@ -34,8 +33,6 @@ const valdaFiler = argv.filter((a) => !a.startsWith('--'));
 const schema = lasJson(SCHEMA_FIL);
 const tax = lasTaxonomi();
 const geo = lasGeo();
-const GRANSFIL = path.join(ROT, 'public', 'geo', 'kommuner.geojson');
-const granser = fs.existsSync(GRANSFIL) ? granserPerKod(lasJson(GRANSFIL)) : null;
 const ajv = new Ajv({ allErrors: true, strict: false });
 addFormats(ajv);
 const validera = ajv.compile(schema);
@@ -134,17 +131,6 @@ function kontrolleraPost(post) {
   const kommunKod = data.kommun?.value;
   if (kommunKod && geo && !geo.kommunPerKod.has(kommunKod)) e(`kommun: koden "${kommunKod}" finns inte i data/geo/kommuner.json.`);
   if (kommunKod && !geo) w('kommun: geodata saknas lokalt, koden kunde inte kontrolleras.');
-
-  // 5b. Metoden: ligger adressen i en annan kommun än sätet ritas organisationen på kommunnivå.
-  const punkt = data.coordinates?.value;
-  const grans = kommunKod && granser ? granser.get(kommunKod) : null;
-  if (grans && typeof punkt?.lat === 'number' && typeof punkt?.lng === 'number') {
-    const ute = meterUtanfor([punkt.lng, punkt.lat], grans);
-    if (ute > GRANS_TOLERANS_M) {
-      const namn = geo?.kommunPerKod.get(kommunKod)?.namn ?? kommunKod;
-      w(`coordinates: punkten ligger ${(ute / 1000).toFixed(1).replace('.', ',')} km utanför sätets kommun (${namn}). Enligt metoden ritas organisationen då på kommunnivå: ta bort coordinates, eller rätta kommun om sätet är fel.`);
-    }
-  }
 
   // 6. Belägg
   const belagg = Array.isArray(data.evidence) ? data.evidence : [];
