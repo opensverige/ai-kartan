@@ -1,0 +1,120 @@
+id: demoskop
+
+name:
+  value: Demoskop
+  status: claimed
+  source_url: https://demoskop.se/
+  source_type: own_site
+  verified_at: 2026-11-19
+  verified_by: agent
+  note: Tips i ärende #135 på GitHub 2026-11-18. AI-plattformen Stella har en egen webbplats, stellaresearch.ai, vars integritetspolicy anger Demoskop AB med samma organisationsnummer.
+
+legal_name:
+  value: Demoskop AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5592038961
+  source_type: third_party
+  verified_at: 2026-11-19
+  verified_by: agent
+  note: "Särskilt företagsnamn enligt allabolag.se: Inizio Sverige. Bolaget ingår i en koncern med Auronus AB som moderbolag."
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5592038961
+  source_type: third_party
+  verified_at: 2026-11-19
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559203-8961"
+  status: confirmed
+  source_url: https://www.allabolag.se/5592038961
+  source_type: third_party
+  verified_at: 2026-11-19
+  verified_by: agent
+  note: Samma organisationsnummer står i integritetspolicyn på demoskop.se och på stellaresearch.ai.
+
+website: https://demoskop.se
+
+description:
+  value: Undersöknings- och analysföretag som har byggt AI-plattformen Stella Research Engine. Plattformen kombinerar flera språkmodeller med egna agenter som analyserar dokument, enkätdata och öppna svar och skriver rapporter.
+  status: claimed
+  source_url: https://stellaresearch.ai/
+  source_type: own_site
+  verified_at: 2026-11-19
+  verified_by: agent
+  note: Agenterna och språkmodellerna beskrivs också i en intervju som återges på demoskop.se.
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://stellaresearch.ai/
+  source_type: own_site
+  verified_at: 2026-11-19
+  verified_by: agent
+  note: Stella säljs som abonnemang till kunder enligt intervjun på demoskop.se. Bolagets huvudsakliga verksamhet är marknads- och opinionsundersökningar.
+
+areas:
+  value: [agenter_automation, sprakteknik]
+  status: claimed
+  source_url: https://stellaresearch.ai/
+  source_type: own_site
+  verified_at: 2026-11-19
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5592038961
+  source_type: third_party
+  verified_at: 2026-11-19
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+coordinates:
+  value: { lat: 59.33378, lng: 18.06448 }
+  status: claimed
+  source_url: https://demoskop.se/integritetspolicy/
+  source_type: own_site
+  verified_at: 2026-11-19
+  verified_by: agent
+  note: "Bolagets adress enligt webbplatsens integritetspolicy, på Norrmalm. Registret har samma adress, utan c/o. Geokodad med OpenStreetMap Nominatim (ODbL)."
+
+founded:
+  value: 2019
+  status: confirmed
+  source_url: https://www.allabolag.se/5592038961
+  source_type: third_party
+  verified_at: 2026-11-19
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2019-04-29. Enligt webbplatsen grundades Demoskop 1989 och gick samman med Inizio 2019."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5592038961
+  source_type: third_party
+  verified_at: 2026-11-19
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://stellaresearch.ai/
+    kind: produkt
+    title: Stella Research Engine, AI-plattform med agenter för analys av dokument, enkätdata och öppna svar
+    status: claimed
+    verified_at: 2026-11-19
+    verified_by: agent
+    note: Produktens egen webbplats. Integritetspolicyn på samma webbplats anger Demoskop AB som personuppgiftsansvarig.
+  - url: https://demoskop.se/stella-gjorde-demoskop-beroende-av-ai/
+    kind: case
+    title: "Intervju 2025 om Stella: ett tiotal agenter, flera språkmodeller och ett femtontal kunder med egna versioner"
+    status: claimed
+    verified_at: 2026-11-19
+    verified_by: agent
+    note: Utdrag ur en intervju i Veckans Brief, återgivet på bolagets webbplats.
+
+record_created_at: 2026-11-19
+record_updated_at: 2026-11-19
