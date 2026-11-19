@@ -68,7 +68,7 @@ kommun:
   source_type: third_party
   verified_at: 2026-10-20
   verified_by: agent
-  note: Säte i Nacka enligt allabolag.se. Integritetspolicyn på gettabula.app och registret anger en adress i Malmö, i ett område med mest bostäder och i ett bolag med en anställd. Den används inte för position.
+  note: Säte i Nacka enligt allabolag.se. Webbplatsen anger Malmö, utan besöksadress. Adressen i registret ligger i en annan kommun än sätet, så organisationen ritas på kommunnivå.
 
 founded:
   value: 2022
@@ -106,4 +106,4 @@ links:
   github: https://github.com/gettabula-app
 
 record_created_at: 2026-10-20
-record_updated_at: 2026-11-19
+record_updated_at: 2026-10-20
