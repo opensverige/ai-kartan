@@ -149,6 +149,30 @@
         "01": 5,
         "ovrigt": 2
       }
+    },
+    "2026-11-19": {
+      "fragor": 25,
+      "modellen_svarade": 25,
+      "svar": {
+        "traffar": 14,
+        "utanfor": 3,
+        "tomt": 6,
+        "bred": 2
+      },
+      "modellfel": {},
+      "omrade": {
+        "handel": 6,
+        "ovrigt": 7
+      },
+      "typ": {
+        "ovrigt": 1
+      },
+      "erbjuder": {
+        "ovrigt": 2
+      },
+      "lan": {
+        "ovrigt": 5
+      }
     }
   },
   "luckor": [
