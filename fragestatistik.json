@@ -173,6 +173,25 @@
       "lan": {
         "ovrigt": 5
       }
+    },
+    "2026-11-20": {
+      "fragor": 20,
+      "modellen_svarade": 20,
+      "svar": {
+        "traffar": 7,
+        "tomt": 2,
+        "bred": 10,
+        "utanfor": 1
+      },
+      "modellfel": {},
+      "omrade": {
+        "ovrigt": 1
+      },
+      "typ": {},
+      "erbjuder": {},
+      "lan": {
+        "ovrigt": 4
+      }
     }
   },
   "luckor": [
