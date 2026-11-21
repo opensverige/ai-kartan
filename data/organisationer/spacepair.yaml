@@ -1,0 +1,109 @@
+id: spacepair
+
+name:
+  value: SpacePair
+  status: claimed
+  source_url: https://spacepair.com/sv
+  source_type: own_site
+  verified_at: 2026-11-21
+  verified_by: agent
+  note: Tips i ärende #138 på GitHub 2026-11-19.
+
+legal_name:
+  value: SpacePair AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5595272336
+  source_type: third_party
+  verified_at: 2026-11-21
+  verified_by: agent
+  note: Webbplatsens integritetspolicy anger SpacePair AB, utan organisationsnummer. Organisationsnumret kommer från tipset och stämmer med registrets namn.
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5595272336
+  source_type: third_party
+  verified_at: 2026-11-21
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559527-2336"
+  status: confirmed
+  source_url: https://www.allabolag.se/5595272336
+  source_type: third_party
+  verified_at: 2026-11-21
+  verified_by: agent
+
+website: https://spacepair.com
+
+description:
+  value: Utvecklar SpacePair, en plattform som matchar företag som söker lokal med lediga lokaler hos fastighetsägare. Enligt användarvillkoren ingår AI-baserad matchning och AI-genererade förslag för matchningar och kommunikation.
+  status: claimed
+  source_url: https://spacepair.com/sv/anvandarvillkor
+  source_type: own_site
+  verified_at: 2026-11-21
+  verified_by: agent
+  note: Plattformen enligt startsidan och användarvillkoren. AI-funktionerna enligt användarvillkoren, avsnitt 2 och 6.
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://spacepair.com/sv/anvandarvillkor
+  source_type: own_site
+  verified_at: 2026-11-21
+  verified_by: agent
+
+areas:
+  value: [fastighet_bygg]
+  status: claimed
+  source_url: https://spacepair.com/sv/anvandarvillkor
+  source_type: own_site
+  verified_at: 2026-11-21
+  verified_by: agent
+
+kommun:
+  value: "1480"
+  status: confirmed
+  source_url: https://www.allabolag.se/5595272336
+  source_type: third_party
+  verified_at: 2026-11-21
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Göteborg. Webbplatsen anger ingen besöksadress. Registrets adress används inte för position, eftersom bolaget saknar anställda och adressen kan vara en bostad."
+
+founded:
+  value: 2025
+  status: confirmed
+  source_url: https://www.allabolag.se/5595272336
+  source_type: third_party
+  verified_at: 2026-11-21
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2025-04-10."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5595272336
+  source_type: third_party
+  verified_at: 2026-11-21
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://spacepair.com/sv/anvandarvillkor
+    kind: produkt
+    title: "Användarvillkor för SpacePair: AI-baserad matchning och AI-förslag för matchningar och kommunikation"
+    status: claimed
+    verified_at: 2026-11-21
+    verified_by: agent
+    note: Villkorssida, avsnitt 2 och 6.
+  - url: https://spacepair.com/sv/ai-data
+    kind: produkt
+    title: Hur SpacePair hanterar data i sina AI-funktioner
+    status: claimed
+    verified_at: 2026-11-21
+    verified_by: agent
+    note: Sidan beskriver vilken data AI-funktionerna använder och att externa AI-leverantörer används som personuppgiftsbiträden.
+
+record_created_at: 2026-11-21
+record_updated_at: 2026-11-21

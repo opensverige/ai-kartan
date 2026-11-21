@@ -1,0 +1,118 @@
+id: abundly-ai
+
+name:
+  value: Abundly
+  status: claimed
+  source_url: https://www.abundly.ai/
+  source_type: own_site
+  verified_at: 2026-11-21
+  verified_by: agent
+  note: Tips i ärende #141 på GitHub 2026-11-19. Webbplatsen skriver både Abundly och Abundly AI.
+
+legal_name:
+  value: Abundly AI AB
+  status: confirmed
+  source_url: https://www.allabolag.se/5594375510
+  source_type: third_party
+  verified_at: 2026-11-21
+  verified_by: agent
+  note: Webbplatsens personuppgiftsbiträdesavtal anger Abundly AI AB med samma organisationsnummer.
+
+type:
+  value: bolag
+  status: confirmed
+  source_url: https://www.allabolag.se/5594375510
+  source_type: third_party
+  verified_at: 2026-11-21
+  verified_by: agent
+  note: "Bolagsform enligt allabolag.se: Aktiebolag."
+
+org_number:
+  value: "559437-5510"
+  status: confirmed
+  source_url: https://www.allabolag.se/5594375510
+  source_type: third_party
+  verified_at: 2026-11-21
+  verified_by: agent
+
+website: https://www.abundly.ai
+
+description:
+  value: Utvecklar en plattform där företags team bygger AI-agenter med naturligt språk, med drift i EU. Agenterna kan köras på schema, kommunicera via e-post, Slack och SMS och delegera till varandra.
+  status: claimed
+  source_url: https://www.abundly.ai/agent-platform
+  source_type: own_site
+  verified_at: 2026-11-21
+  verified_by: agent
+
+offers:
+  value: [produkt]
+  status: claimed
+  source_url: https://www.abundly.ai/agent-platform
+  source_type: own_site
+  verified_at: 2026-11-21
+  verified_by: agent
+
+areas:
+  value: [agenter_automation]
+  status: claimed
+  source_url: https://www.abundly.ai/agent-platform
+  source_type: own_site
+  verified_at: 2026-11-21
+  verified_by: agent
+
+kommun:
+  value: "0180"
+  status: confirmed
+  source_url: https://www.allabolag.se/5594375510
+  source_type: third_party
+  verified_at: 2026-11-21
+  verified_by: agent
+  note: "Kommunsäte enligt allabolag.se: Stockholm."
+
+coordinates:
+  value: { lat: 59.34239, lng: 18.05171 }
+  status: claimed
+  source_url: https://www.abundly.ai/dpa
+  source_type: own_site
+  verified_at: 2026-11-21
+  verified_by: agent
+  note: "Bolagets adress i Vasastaden i Stockholm enligt webbplatsens personuppgiftsbiträdesavtal och integritetspolicy. Registret har samma adress, utan c/o. Geokodad med OpenStreetMap Nominatim (ODbL)."
+
+founded:
+  value: 2023
+  status: confirmed
+  source_url: https://www.allabolag.se/5594375510
+  source_type: third_party
+  verified_at: 2026-11-21
+  verified_by: agent
+  note: "Registreringsdatum enligt allabolag.se: 2023-06-12."
+
+active:
+  value: true
+  status: confirmed
+  source_url: https://www.allabolag.se/5594375510
+  source_type: third_party
+  verified_at: 2026-11-21
+  verified_by: agent
+  note: "Status enligt allabolag.se: Aktiv."
+
+evidence:
+  - url: https://www.abundly.ai/agent-platform
+    kind: produkt
+    title: "Plattform för att bygga, driftsätta och styra AI-agenter, med exempel på agenter för offerter och avtalsgranskning"
+    status: claimed
+    verified_at: 2026-11-21
+    verified_by: agent
+  - url: https://www.abundly.ai/
+    kind: case
+    title: "Två agenter i bolagets egen drift: en utvecklingsagent som öppnar pull requests och en agent för intäktsrapporter"
+    status: claimed
+    verified_at: 2026-11-21
+    verified_by: agent
+
+links:
+  linkedin: https://www.linkedin.com/company/abundly
+
+record_created_at: 2026-11-21
+record_updated_at: 2026-11-21
