@@ -1,8 +1,76 @@
 {
-  "generated_at": "2026-11-19T23:14:50Z",
-  "antal": 582,
-  "senaste_andring": "2026-11-20",
+  "generated_at": "2026-11-22T00:44:19Z",
+  "antal": 587,
+  "senaste_andring": "2026-11-22",
   "rader": [
+    {
+      "datum": "2026-11-22",
+      "commit": "c4db6501ec",
+      "id": "spacepair",
+      "namn": "SpacePair",
+      "falt": "hela posten",
+      "andring": "tillagd",
+      "gammalt": null,
+      "nytt": null,
+      "status": null,
+      "kalla": "https://spacepair.com"
+    },
+    {
+      "datum": "2026-11-22",
+      "commit": "c4db6501ec",
+      "id": "saldes-technology-group",
+      "namn": "Saldes Technology Group",
+      "falt": "evidence",
+      "andring": "ändrad",
+      "gammalt": [
+        "https://gettabula.app/docs/ai-bar",
+        "https://github.com/gettabula-app/tabula"
+      ],
+      "nytt": [
+        "https://gettabula.app/docs/ai-bar"
+      ],
+      "status": null,
+      "gammal_status": null,
+      "kalla": null
+    },
+    {
+      "datum": "2026-11-22",
+      "commit": "c4db6501ec",
+      "id": "saldes-technology-group",
+      "namn": "Saldes Technology Group",
+      "falt": "active",
+      "andring": "ny status",
+      "gammalt": true,
+      "nytt": true,
+      "status": "confirmed",
+      "gammal_status": "claimed",
+      "kalla": "https://www.allabolag.se/5593912776"
+    },
+    {
+      "datum": "2026-11-22",
+      "commit": "c4db6501ec",
+      "id": "saldes-technology-group",
+      "namn": "Saldes Technology Group",
+      "falt": "description",
+      "andring": "ändrad",
+      "gammalt": "Utvecklar Tabula, en digital whiteboard för team. AI-raden sammanfattar tavlan, grupperar lappar och föreslår idéer med en språkmodell, och via MCP kan AI-verktyg läsa, kommentera och redigera tavlor. Källkoden är publik under licensen FSL-1.1.",
+      "nytt": "Utvecklar Tabula, en digital whiteboard för team. AI-raden sammanfattar tavlan, grupperar lappar och föreslår idéer med en språkmodell, och via MCP kan AI-verktyg läsa, kommentera och redigera tavlor.",
+      "status": "claimed",
+      "gammal_status": "claimed",
+      "kalla": "https://gettabula.app/docs/ai-bar"
+    },
+    {
+      "datum": "2026-11-22",
+      "commit": "c4db6501ec",
+      "id": "abundly-ai",
+      "namn": "Abundly",
+      "falt": "hela posten",
+      "andring": "tillagd",
+      "gammalt": null,
+      "nytt": null,
+      "status": null,
+      "kalla": "https://www.abundly.ai"
+    },
     {
       "datum": "2026-11-20",
       "commit": "0ffd84371e",
