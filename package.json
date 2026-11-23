@@ -27,12 +27,12 @@
     "delalank": "node scripts/delalank.mjs"
   },
   "dependencies": {
-    "@astrojs/sitemap": "^3.7.4",
+    "@astrojs/sitemap": "^3.7.6",
     "ajv": "^8.20.0",
     "ajv-formats": "^3.0.1",
-    "astro": "^7.4.11",
+    "astro": "^7.4.13",
     "fontkitten": "^1.0.3",
-    "maplibre-gl": "^6.18.0",
+    "maplibre-gl": "^6.19.0",
     "openseadragon": "^6.1.1",
     "sharp": "^0.35.5",
     "yaml": "^2.9.1"
