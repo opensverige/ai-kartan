@@ -108,13 +108,35 @@ export function topplista(rutor: Ruta[], antal = 5): { namn: string; rutor: numb
   return [...per.values()].sort((a, b) => b.rutor - a.rutor || a.namn.localeCompare(b.namn, 'sv')).slice(0, antal);
 }
 
+/** Vad ett blad ritas från. Googles 3D-bilder kräver byggarens eget Cesium-konto. */
+export type Kalla = 'oppen' | 'google';
+const KALLOR: Record<string, Kalla> = { 'stockholm-norr': 'google' };
+
+export function kalla(blad: string): Kalla {
+  return KALLOR[blad] ?? 'oppen';
+}
+
+const KRAV_ALLTID: readonly string[] = [
+  'Ett NVIDIA-kort med 12 GB minne',
+  'Windows eller Linux, inte Mac',
+  'Cirka 25 GB ledig disk',
+  'Python 3.11 eller nyare, och Git',
+  'Ett GitHub-konto. Namnet syns på dina rutor.',
+];
+const KRAV_GOOGLE: readonly string[] = ['Node 22 eller nyare', 'Ett eget Cesium ion-konto. Det är gratis.'];
+
+/** Det en byggare måste ha för att bygga en ruta på bladet. Samma lista står i repots README. */
+export function krav(blad: string): string[] {
+  return kalla(blad) === 'google' ? [...KRAV_ALLTID, ...KRAV_GOOGLE] : [...KRAV_ALLTID];
+}
+
 /** Raden som en besökare ger till sin AI-agent för att bygga en ruta. */
 export function agentrad(blad: string, kol: number, rad: number): string {
   return `Klona ${REPO.replace('https://', '')}. Läs AGENTS.md. Bygg ruta ${blad} ${kol}_${rad}.`;
 }
 
 const TEXT: Record<Lage, { namn: string; mening: string }> = {
-  fri: { namn: 'Ledig', mening: 'Ingen har tagit rutan än.' },
+  fri: { namn: 'Ledig', mening: 'Marken saknas på kartan. Ingen har tagit rutan än.' },
   last: { namn: 'Låst', mening: 'Någon bygger rutan just nu.' },
   vantar: { namn: 'Väntar', mening: 'Rutan är uppladdad och granskas av en människa.' },
   godkand: { namn: 'Godkänd', mening: 'Rutan är godkänd och tänds när kartan uppdateras.' },
