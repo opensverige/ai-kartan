@@ -3,7 +3,7 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { RUTA, lasAnkare, ankare, rutaVidPunkt, rakna, topplista, agentrad, lasRutor, lasBlad, lage } from './rutnat.ts';
+import { RUTA, lasAnkare, ankare, rutaVidPunkt, rakna, topplista, agentrad, lasRutor, lasBlad, lage, lasUtgava, kartbild } from './rutnat.ts';
 
 test('adressen till en ruta går att läsa tillbaka', () => {
   assert.equal(ankare('goteborg-norr', 64, 52), '#goteborg-norr/64_52');
@@ -120,4 +120,21 @@ test('kraven för att bygga en ruta följer bladets källa', async () => {
   assert.deepEqual(google.slice(0, alltid.length), alltid);
   assert.ok(google.some((k) => k.includes('Cesium')));
   assert.ok(google.some((k) => k.includes('Node 22')));
+});
+
+test('bladets utgåva läses ur bildtjänstens fil, och är noll när den saknas eller är konstig', () => {
+  const fil = { sheets: { 'stockholm-norr': { rev: 3, island: 'oar/norr-u3.webp', edge: 'oar/norr-kant-u3.png', cells: [[74, 20, 'ab']] } } };
+  assert.equal(lasUtgava(fil, 'stockholm-norr'), 3);
+  assert.equal(lasUtgava(fil, 'goteborg-norr'), 0);
+  for (const konstig of [null, undefined, 'x', [], {}, { sheets: [] }, { sheets: { 'stockholm-norr': 3 } },
+    { sheets: { 'stockholm-norr': { rev: '3' } } }, { sheets: { 'stockholm-norr': { rev: -1 } } },
+    { sheets: { 'stockholm-norr': { rev: 1.5 } } }, { sheets: { 'stockholm-norr': { rev: 10000000 } } },
+    { sheets: { 'stockholm-norr': { rev: true } } }]) {
+    assert.equal(lasUtgava(konstig, 'stockholm-norr'), 0, JSON.stringify(konstig));
+  }
+});
+
+test('kartbilden hämtas i bladets utgåva, och är basens när bladet inte har någon', () => {
+  assert.equal(kartbild('https://bilder.example/v1/', 'stockholm-norr', 3), 'https://bilder.example/v1/stockholm-norr@3.dzi');
+  assert.equal(kartbild('https://bilder.example/v1/', 'stockholm-norr', 0), 'https://bilder.example/v1/stockholm-norr.dzi');
 });
