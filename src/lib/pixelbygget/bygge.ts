@@ -8,7 +8,7 @@
 // sidan som text (textContent), aldrig som HTML.
 
 import type OpenSeadragon from 'openseadragon';
-import { RUTA, REPO, agentrad, ankare, lage, lasAnkare, lasBlad, lasRutor, rakna, rutaVidPunkt, topplista } from './rutnat';
+import { RUTA, REPO, agentrad, ankare, kalla, krav, lage, lasAnkare, lasBlad, lasRutor, rakna, rutaVidPunkt, topplista } from './rutnat';
 import type { Blad, Ruta } from './rutnat';
 
 interface Val {
@@ -24,6 +24,7 @@ const MOSS = 'hsl(120 24% 23%)';
 const ROST = 'hsl(25 60% 40%)';
 const BARNSTEN = 'hsl(38 74% 33%)';
 const BLACK = 'hsl(45 17% 5%)';
+const LEDIG = 'hsl(42 45% 98% / 0.78)';
 // En tom bildruta i papprets färg, för visning utan bildtjänst.
 const TOM_RUTA = 'data:image/gif;base64,R0lGODlhAQABAIAAAPLu5QAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==';
 
@@ -112,9 +113,16 @@ export async function startaBygge(val: Val): Promise<void> {
     monster ??= randning(g);
     const tjock = Math.max(1, Math.min(2.5, s / 28));
     for (const r of rutor) {
-      if (r.kol < k0 || r.kol > k1 || r.rad < r0 || r.rad > r1 || r.lage === 'fri') continue;
+      if (r.kol < k0 || r.kol > k1 || r.rad < r0 || r.rad > r1) continue;
       const rx = x(r.kol);
       const ry = y(r.rad);
+      if (r.lage === 'fri') {
+        // En ledig ruta är mark som saknas på kartan. Den lyfts fram ur det grå, så att den
+        // går att skilja från marken utanför staden, som ingen ritar.
+        g.fillStyle = LEDIG;
+        g.fillRect(rx, ry, s, s);
+        continue;
+      }
       if (r.lage === 'live') {
         g.clearRect(rx, ry, s, s);
         g.strokeStyle = MOSS;
@@ -278,8 +286,14 @@ export async function startaBygge(val: Val): Promise<void> {
         delar.push(vem);
       }
     } else {
-      const krav = el('ul', 'bygge__krav');
-      for (const k of ['Ett NVIDIA-kort med 12 GB minne', 'Windows eller Linux', 'Ett GitHub-konto', 'Cirka 25 GB ledig disk']) krav.append(el('li', undefined, k));
+      const lista = el('ul', 'bygge__krav');
+      for (const k of krav(b.id)) lista.append(el('li', undefined, k));
+      const kostar = el('p', 'bygge__fot', 'Första gången laddas cirka 20 GB ner. Sedan tar en ruta några minuter.');
+      // Den som bygger från Googles bilder ska veta det innan hen börjar.
+      const varning =
+        kalla(b.id) === 'google'
+          ? el('p', 'bygge__fot', `${b.namn} ritas från Googles 3D-bilder via ditt Cesium-konto. Googles regler tillåter inte det. Läs rad 10 i villkoren och avgör själv.`)
+          : null;
       const rad1 = agentrad(b.id, kol, rad);
       const kod = el('div', 'bygge__kod');
       const knapp = el('button', 'bygge__kopiera', 'Kopiera raden');
@@ -301,7 +315,9 @@ export async function startaBygge(val: Val): Promise<void> {
       lank.href = `${REPO}/blob/main/TERMS.md`;
       lank.rel = 'noopener';
       villkor.append('Frivilligt och oavlönat. Rutan är din i 48 timmar. En människa granskar den innan den tänds. ', lank, '.');
-      delar.push(el('h3', 'bygge__rubrik', 'Du behöver'), krav, el('h3', 'bygge__rubrik', 'Ge raden till din AI-agent'), kod, sjalv, repo, villkor);
+      delar.push(el('h3', 'bygge__rubrik', 'Du behöver'), lista, kostar);
+      if (varning) delar.push(varning);
+      delar.push(el('h3', 'bygge__rubrik', 'Ge raden till din AI-agent'), kod, sjalv, repo, villkor);
     }
     blad.replaceChildren(...delar);
     blad.hidden = false;
@@ -318,22 +334,26 @@ export async function startaBygge(val: Val): Promise<void> {
     rita();
   }
 
-  /** Den lediga ruta som ligger närmast en tänd ruta, annars närmast stadens mitt. */
+  /** Den lediga ruta som rutor claim --next skulle ge: intill en tänd ruta om det finns en
+      sådan, och bland dem den som ligger närmast bladets mitt. */
   function nastaLediga(): { kol: number; rad: number } | null {
     const b = aktivt;
     if (!b) return null;
-    const tanda = rutor.filter((r) => r.lage === 'live');
-    const avstand = (r: Ruta): number =>
-      tanda.length ? Math.min(...tanda.map((t) => (t.kol - r.kol) ** 2 + (t.rad - r.rad) ** 2)) : (r.kol - b.kolumner / 2) ** 2 + (r.rad - b.rader / 2) ** 2;
-    let bast: Ruta | null = null;
-    let bastAvstand = Infinity;
-    for (const r of rutor) {
-      if (r.lage !== 'fri') continue;
-      const a = avstand(r);
-      if (a < bastAvstand) {
-        bast = r;
-        bastAvstand = a;
+    const mitt = (r: Ruta): number => (r.kol - (b.kolumner - 1) / 2) ** 2 + (r.rad - (b.rader - 1) / 2) ** 2;
+    const intill = (r: Ruta): boolean => {
+      for (let dk = -1; dk <= 1; dk += 1) {
+        for (let dr = -1; dr <= 1; dr += 1) {
+          if ((dk || dr) && perPlats.get(`${r.kol + dk}_${r.rad + dr}`)?.lage === 'live') return true;
+        }
       }
+      return false;
+    };
+    const lediga = rutor.filter((r) => r.lage === 'fri');
+    const narmast = lediga.filter(intill);
+    const urval = narmast.length ? narmast : lediga;
+    let bast: Ruta | null = null;
+    for (const r of urval) {
+      if (!bast || mitt(r) < mitt(bast) || (mitt(r) === mitt(bast) && (r.rad < bast.rad || (r.rad === bast.rad && r.kol < bast.kol)))) bast = r;
     }
     return bast ? { kol: bast.kol, rad: bast.rad } : null;
   }
@@ -362,6 +382,8 @@ export async function startaBygge(val: Val): Promise<void> {
     rutor = [];
     perPlats = new Map();
     vald = null;
+    // Raden om vad staden ritas från följer bladet.
+    for (const rad of val.el.querySelectorAll<HTMLElement>('[data-kalla]')) rad.hidden = rad.dataset.kalla !== kalla(b.id);
     ritaStader();
     ritaRakning();
     if (!visare) {
@@ -390,14 +412,14 @@ export async function startaBygge(val: Val): Promise<void> {
         valj(rutaVidPunkt(aktivt, p.x, p.y));
       });
     }
-    const kalla = bilder
+    const bildkalla = bilder
       ? `${bilder}${b.id}.dzi`
       : { width: b.kolumner * RUTA, height: b.rader * RUTA, tileSize: 512, getTileUrl: () => TOM_RUTA };
     visare.addOnceHandler('open', () => {
       if (ruta) valj(ruta, true);
       else valj(null);
     });
-    visare.open(kalla as unknown as OpenSeadragon.TileSourceSpecifier);
+    visare.open(bildkalla as unknown as OpenSeadragon.TileSourceSpecifier);
     await laddaRutor();
   }
 

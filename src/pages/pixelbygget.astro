@@ -23,20 +23,26 @@ const REPO = 'https://github.com/opensverige/karta.opensverige-3d';
     <section class="bygge__panel" aria-label="Pixelbygget">
       <p class="kicker">Pixelbygget</p>
       <h1>Bygg staden</h1>
-      <p class="bygge__ingress">Städerna ritas ruta för ruta, av frivilliga. Ta en ledig ruta.</p>
+      <p class="bygge__ingress">Frivilliga ritar det som saknas på kartan, ruta för ruta. Ta en ledig ruta.</p>
       <div class="bygge__stader" data-stader></div>
       <div data-rakning></div>
       <button class="knapp knapp--liten" type="button" data-nasta>Visa en ledig ruta →</button>
       <ul class="bygge__forklaring">
-        <li><span class="bygge__prov bygge__prov--live" aria-hidden="true"></span><span><b>Tänd.</b> På kartan, med byggarens namn.</span></li>
+        <li><span class="bygge__prov bygge__prov--live" aria-hidden="true"></span><span><b>Tänd.</b> Finns på kartan, med byggarens namn.</span></li>
         <li><span class="bygge__prov bygge__prov--vantar" aria-hidden="true"></span><span><b>Väntar.</b> Uppladdad, granskas av en människa.</span></li>
         <li><span class="bygge__prov bygge__prov--last" aria-hidden="true"></span><span><b>Låst.</b> Någon bygger den just nu.</span></li>
-        <li><span class="bygge__prov bygge__prov--fri" aria-hidden="true"></span><span><b>Ledig.</b> Klicka för att ta den.</span></li>
+        <li><span class="bygge__prov bygge__prov--fri" aria-hidden="true"></span><span><b>Ledig.</b> Saknas på kartan. Klicka för att ta den.</span></li>
       </ul>
       <div data-topplista></div>
-      <p class="bygge__kallor">
+      <p class="bygge__kallor" data-kalla="oppen">
         Göteborg ritas från Göteborgs Stads flygfoto och höjdmodell (CC0) och
         <a href="https://www.openstreetmap.org/copyright" rel="noopener">© OpenStreetMap</a> (ODbL).
+      </p>
+      <p class="bygge__kallor" data-kalla="google" hidden>
+        Stockholm ritas från Googles 3D-bilder, via byggarens eget Cesium-konto.
+      </p>
+      <p class="bygge__kallor">
+        <a href={`${REPO}#what-you-need`} rel="noopener">Vad som krävs för att bygga</a>.
         <a href={`${REPO}#readme`} rel="noopener">Så fungerar bygget</a>.
       </p>
     </section>
@@ -207,7 +213,7 @@ const REPO = 'https://github.com/opensverige/karta.opensverige-3d';
   }
   .bygge__prov--fri {
     border: 1px solid hsl(var(--ink) / 0.4);
-    background: #e9e5db;
+    background: hsl(42 45% 98%);
   }
   .bygge__rubrik {
     font-size: 15px;

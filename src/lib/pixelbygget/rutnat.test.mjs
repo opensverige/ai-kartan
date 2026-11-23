@@ -102,3 +102,22 @@ test('varje läge har ett namn och en mening på svenska', () => {
     assert.ok(text.mening.split(' ').length <= 12, text.mening);
   }
 });
+
+test('kraven för att bygga en ruta följer bladets källa', async () => {
+  const { krav, kalla } = await import('./rutnat.ts');
+  assert.equal(kalla('stockholm-norr'), 'google');
+  assert.equal(kalla('goteborg-norr'), 'oppen');
+  // Ett blad sidan inte känner: bara det som alltid gäller.
+  assert.equal(kalla('eslov'), 'oppen');
+  const alltid = krav('goteborg-norr');
+  assert.ok(alltid.some((k) => k.includes('NVIDIA') && k.includes('12 GB')));
+  assert.ok(alltid.some((k) => k.includes('Windows eller Linux')));
+  assert.ok(alltid.some((k) => k.includes('25 GB')));
+  assert.ok(alltid.some((k) => k.includes('Python 3.11')));
+  assert.ok(alltid.some((k) => k.includes('GitHub')));
+  assert.ok(!alltid.some((k) => k.includes('Cesium') || k.includes('Node')));
+  const google = krav('stockholm-norr');
+  assert.deepEqual(google.slice(0, alltid.length), alltid);
+  assert.ok(google.some((k) => k.includes('Cesium')));
+  assert.ok(google.some((k) => k.includes('Node 22')));
+});
