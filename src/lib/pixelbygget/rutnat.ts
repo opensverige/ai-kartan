@@ -108,6 +108,25 @@ export function topplista(rutor: Ruta[], antal = 5): { namn: string; rutor: numb
   return [...per.values()].sort((a, b) => b.rutor - a.rutor || a.namn.localeCompare(b.namn, 'sv')).slice(0, antal);
 }
 
+/**
+ * Bladets utgåva enligt bildtjänstens fil karta-utgava.json, eller 0 när bladet inte har någon.
+ *
+ * Kartbildens bildrutor ändras aldrig på sin adress. När en frivilligs ruta läggs in i kartan
+ * får bladet en ny utgåva, och bildrutorna hämtas då som <blad>@<utgåva>_files/...
+ * Filen kommer utifrån: allt annat än ett positivt heltal betyder basen.
+ */
+export function lasUtgava(svar: unknown, blad: string): number {
+  const bladen = (svar as { sheets?: unknown } | null)?.sheets;
+  if (typeof bladen !== 'object' || bladen === null || Array.isArray(bladen)) return 0;
+  const rev = (bladen as Record<string, { rev?: unknown } | null>)[blad]?.rev;
+  return typeof rev === 'number' && Number.isInteger(rev) && rev > 0 && rev <= 999_999 ? rev : 0;
+}
+
+/** Adressen till bladets kartbild, i utgåvan eller i basen. `bilder` slutar med snedstreck. */
+export function kartbild(bilder: string, blad: string, utgava: number): string {
+  return utgava > 0 ? `${bilder}${blad}@${utgava}.dzi` : `${bilder}${blad}.dzi`;
+}
+
 /** Vad ett blad ritas från. Googles 3D-bilder kräver byggarens eget Cesium-konto. */
 export type Kalla = 'oppen' | 'google';
 const KALLOR: Record<string, Kalla> = { 'stockholm-norr': 'google' };

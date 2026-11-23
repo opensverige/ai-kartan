@@ -8,7 +8,7 @@
 // sidan som text (textContent), aldrig som HTML.
 
 import type OpenSeadragon from 'openseadragon';
-import { RUTA, REPO, agentrad, ankare, kalla, krav, lage, lasAnkare, lasBlad, lasRutor, rakna, rutaVidPunkt, topplista } from './rutnat';
+import { RUTA, REPO, agentrad, ankare, kalla, kartbild, krav, lage, lasAnkare, lasBlad, lasRutor, lasUtgava, rakna, rutaVidPunkt, topplista } from './rutnat';
 import type { Blad, Ruta } from './rutnat';
 
 interface Val {
@@ -75,6 +75,10 @@ export async function startaBygge(val: Val): Promise<void> {
     sag('Rutnätet svarar inte just nu. Försök igen om en stund.');
     return;
   }
+  // Vilken utgåva av varje kartbild som gäller: rutor som redan har lagts in ska synas här.
+  // Svarar bildtjänsten inte visas basen, som förut.
+  let utgavor: unknown = null;
+  if (bilder) utgavor = await hamta(`${bilder}karta-utgava.json`).catch(() => null);
   if (bladen.length === 0) {
     sag('Ingen stad är öppen för bygge just nu.');
     return;
@@ -292,7 +296,7 @@ export async function startaBygge(val: Val): Promise<void> {
       // Den som bygger från Googles bilder ska veta det innan hen börjar.
       const varning =
         kalla(b.id) === 'google'
-          ? el('p', 'bygge__fot', `${b.namn} ritas från Googles 3D-bilder via ditt Cesium-konto. Googles regler tillåter inte det. Läs rad 10 i villkoren och avgör själv.`)
+          ? el('p', 'bygge__fot', `${b.namn} ritas från Googles 3D-bilder via ditt Cesium-konto. Googles regler tillåter inte det. Läs punkt 10 i villkoren och avgör själv.`)
           : null;
       const rad1 = agentrad(b.id, kol, rad);
       const kod = el('div', 'bygge__kod');
@@ -413,7 +417,7 @@ export async function startaBygge(val: Val): Promise<void> {
       });
     }
     const bildkalla = bilder
-      ? `${bilder}${b.id}.dzi`
+      ? kartbild(bilder, b.id, lasUtgava(utgavor, b.id))
       : { width: b.kolumner * RUTA, height: b.rader * RUTA, tileSize: 512, getTileUrl: () => TOM_RUTA };
     visare.addOnceHandler('open', () => {
       if (ruta) valj(ruta, true);
