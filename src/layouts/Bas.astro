@@ -28,9 +28,11 @@ interface Props {
   helTitel?: boolean;
   /** Appskal: sidan fyller skärmen och saknar sidfot. Används av kartsidan. */
   app?: boolean;
+  /** Appsidor har en genväg till filtren. En appsida utan filter stänger av den. */
+  hoppaFilter?: boolean;
 }
 
-const { titel, beskrivning, stig, bild = '/og-image.jpg', bildAlt = 'Pixelhand som håller en röd kartnål. Alla som bygger AI i Sverige.', bildNyckel, noindex = false, bred = false, jsonLd, ogTyp = 'website', helTitel = false, app = false } = Astro.props;
+const { titel, beskrivning, stig, bild = '/og-image.jpg', bildAlt = 'Pixelhand som håller en röd kartnål. Alla som bygger AI i Sverige.', bildNyckel, noindex = false, bred = false, jsonLd, ogTyp = 'website', helTitel = false, app = false, hoppaFilter = app } = Astro.props;
 const fullTitel = helTitel ? titel : `${titel} | ${SAJT.namn}`;
 const kanonisk = absolutUrl(stig);
 // Delningsbilden får en version ur sitt innehåll, så att en ny bild inte fastnar i någons cache.
@@ -98,7 +100,7 @@ Astro.csp?.insertScriptHash(`sha256-${createHash('sha256').update(lageSkript).di
   <body class:list={[{ 'app-sida': app }]}>
     <a class="hoppa visuellt-dold" href="#innehall">Hoppa till innehållet</a>
     {/* På kartsidan ligger filtren efter alla organisationskort i tabbordningen. */}
-    {app && <a class="hoppa visuellt-dold" href="#filter">Hoppa till filtren</a>}
+    {hoppaFilter && <a class="hoppa visuellt-dold" href="#filter">Hoppa till filtren</a>}
     <Sidhuvud />
     <main id="innehall" class:list={['huvud', { 'huvud--bred': bred }]}>
       <slot />

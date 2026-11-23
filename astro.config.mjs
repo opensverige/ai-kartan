@@ -28,11 +28,13 @@ const DATASIDA = /^https?:\/\/[^/]+\/(organisationer|plats|lan|andringar|data)?(
 // Stilattribut: kortens och detaljvyns färg sätts som style-attribut (--f) i HTML som byggs i
 // webbläsaren. Attribut går inte att hasha, så de tillåts (style-src-attr); stilelementen har hashar.
 const pixelkarta = process.env.PUBLIC_PIXELKARTA_URL ? new URL(process.env.PUBLIC_PIXELKARTA_URL).origin : '';
+// Pixelbyggets rutnät (/pixelbygget) läses från rut-tjänsten. Samma adress som i src/pages/pixelbygget.astro.
+const pixelbygget = new URL(process.env.PUBLIC_PIXELBYGGET_URL || 'https://pixelbygget.gustaf-garnow.workers.dev').origin;
 const kallor = (...v) => v.filter(Boolean).join(' ');
 const CSP = [
   "default-src 'self'",
   `img-src ${kallor("'self'", 'data:', pixelkarta)}`,
-  `connect-src ${kallor("'self'", 'https://tiles.openfreemap.org', pixelkarta)}`,
+  `connect-src ${kallor("'self'", 'https://tiles.openfreemap.org', pixelkarta, pixelbygget)}`,
   "worker-src 'self'",
   "font-src 'self'",
   "object-src 'none'",
