@@ -206,6 +206,26 @@
       "lan": {
         "ovrigt": 1
       }
+    },
+    "2026-11-22": {
+      "fragor": 7,
+      "modellen_svarade": 7,
+      "svar": {
+        "bred": 3,
+        "traffar": 3,
+        "ranking": 1
+      },
+      "modellfel": {},
+      "omrade": {
+        "ovrigt": 2
+      },
+      "typ": {},
+      "erbjuder": {
+        "ovrigt": 1
+      },
+      "lan": {
+        "ovrigt": 2
+      }
     }
   },
   "luckor": [
