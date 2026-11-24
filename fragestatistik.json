@@ -226,6 +226,27 @@
       "lan": {
         "ovrigt": 2
       }
+    },
+    "2026-11-23": {
+      "fragor": 12,
+      "modellen_svarade": 12,
+      "svar": {
+        "traffar": 6,
+        "bred": 3,
+        "opensverige": 1,
+        "tomt": 1,
+        "utanfor": 1
+      },
+      "modellfel": {},
+      "omrade": {},
+      "typ": {
+        "ovrigt": 2
+      },
+      "erbjuder": {
+        "infrastruktur": 3,
+        "ovrigt": 1
+      },
+      "lan": {}
     }
   },
   "luckor": [
