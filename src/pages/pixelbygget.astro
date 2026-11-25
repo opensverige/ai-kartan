@@ -22,8 +22,14 @@ const REPO = 'https://github.com/opensverige/karta.opensverige-3d';
 
     <section class="bygge__panel" aria-label="Pixelbygget">
       <p class="kicker">Pixelbygget</p>
-      <h1>Bygg staden</h1>
-      <p class="bygge__ingress">Frivilliga ritar det som saknas på kartan, ruta för ruta. Ta en ledig ruta.</p>
+      <h1>Rita kartan</h1>
+      <p class="bygge__ingress">Frivilliga ritar det som saknas, ruta för ruta. Var som helst i Sverige.</p>
+      <div class="bygge__agent">
+        <p>Säg till din AI-agent:</p>
+        <p class="bygge__agentrad" data-agentrad>Klona github.com/opensverige/karta.opensverige-3d. Läs AGENTS.md. Rita en ruta i Eslöv.</p>
+        <button class="bygge__agentknapp" type="button" data-kopiera-agent>Kopiera →</button>
+        <p class="bygge__agentnot">Byt Eslöv mot din ort. En ort räcker, ingen adress.</p>
+      </div>
       <div class="bygge__stader" data-stader></div>
       <div data-rakning></div>
       <button class="knapp knapp--liten" type="button" data-nasta>Visa en ledig ruta →</button>
@@ -123,6 +129,43 @@ const REPO = 'https://github.com/opensverige/karta.opensverige-3d';
   .bygge__ingress {
     font-size: 15px;
     color: hsl(var(--ink-soft));
+  }
+  /* Vägen in för den som har en AI-agent: raden att klistra in, och en knapp som kopierar den. */
+  .bygge__agent {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 12px 14px;
+    border: 1px solid hsl(var(--kant));
+    border-radius: var(--r-ruta);
+    background: hsl(var(--yta-chip));
+    font-size: 14px;
+  }
+  .bygge__agent p {
+    margin: 0;
+  }
+  .bygge__agentrad {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+  }
+  .bygge__agentnot {
+    color: hsl(var(--ink-mute));
+    font-size: 13px;
+  }
+  .bygge__agentknapp {
+    align-self: flex-start;
+    padding: 6px 12px;
+    border: 1px solid hsl(var(--kant));
+    border-radius: var(--r-btn);
+    background: hsl(var(--yta-kort));
+    color: hsl(var(--ink));
+    font: 600 13px var(--font-sans);
+    cursor: pointer;
+  }
+  .bygge__agentknapp:hover {
+    border-color: hsl(var(--ink-mute));
   }
   .bygge__stader {
     display: flex;

@@ -219,8 +219,10 @@ export async function startaBygge(val: Val): Promise<void> {
   // ---- panelen till vänster
 
   function ritaStader(): void {
+    // Städer som är ritade för hand har en knapp. En plats som frivilliga har börjat rita får
+    // ingen: de blir många, och de nås med en länk eller med raden till agenten.
     stader.replaceChildren(
-      ...bladen.map((b) => {
+      ...bladen.filter((b) => !b.rutnat || b === aktivt).map((b) => {
         const a = el('a', 'bygge__stad', b.namn);
         a.href = ankare(b.id);
         if (b === aktivt) a.setAttribute('aria-current', 'true');
@@ -429,11 +431,33 @@ export async function startaBygge(val: Val): Promise<void> {
 
   function foljAdressen(): void {
     const mal = lasAnkare(location.hash);
-    const b = bladen.find((x) => x.id === mal?.blad) ?? aktivt ?? bladen[0];
+    // Utan adress öppnas den första staden där det finns något kvar att rita.
+    const b = bladen.find((x) => x.id === mal?.blad) ?? aktivt ?? bladen.find((x) => !x.rutnat && x.totalt > x.tanda) ?? bladen[0];
     const ruta = mal && mal.kol !== null && mal.rad !== null && mal.kol < b.kolumner && mal.rad < b.rader ? { kol: mal.kol, rad: mal.rad } : null;
     if (b !== aktivt) void oppna(b, ruta);
     else if (ruta) valj(ruta, true);
   }
+
+  // Raden till agenten kopieras med en knapp. Går det inte markeras raden, så att den kan kopieras för hand.
+  const agentText = val.el.querySelector<HTMLElement>('[data-agentrad]');
+  const kopiera = val.el.querySelector<HTMLButtonElement>('[data-kopiera-agent]');
+  kopiera?.addEventListener('click', () => {
+    const text = agentText?.textContent?.trim() ?? '';
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        kopiera.textContent = 'Kopierad';
+        window.setTimeout(() => (kopiera.textContent = 'Kopiera →'), 2000);
+      })
+      .catch(() => {
+        if (!agentText) return;
+        const urval = window.getSelection();
+        const omrade = document.createRange();
+        omrade.selectNodeContents(agentText);
+        urval?.removeAllRanges();
+        urval?.addRange(omrade);
+      });
+  });
 
   nastaKnapp.addEventListener('click', () => {
     const ruta = nastaLediga();

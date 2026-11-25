@@ -913,20 +913,17 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
 
   /* ---------- av och på ---------- */
 
-  // Vem som har gjort pixelkartan: ett märke i kartans hörn, med länk till skaparen. Över landet,
-  // där städerna bara är öar, står också en fråga under namnet.
-  const marke = document.createElement('a');
+  // Vem som har gjort pixelkartan: ett märke i kartans hörn, med länk till skaparen. Under namnet
+  // står vägen in för den som vill rita sin egen ort: två länkar, så märket är ingen länk själv.
+  const marke = document.createElement('div');
   marke.className = 'skaparmarke skaparmarke--fraga';
-  marke.href = SKAPARE.lank;
-  marke.target = '_blank';
-  marke.rel = 'noopener';
   // Pilen följer med namnets sista ord om raden bryts, så att den aldrig står ensam på en rad.
   const ord = SKAPARE.namn.split(' ');
   const sist = ord.pop();
   const fore = ord.join(' ');
   marke.innerHTML =
-    `<span class="skaparmarke__rad"><span class="skaparmarke__liten">Skapad av</span> ${fore} <span class="skaparmarke__sist">${sist} <span class="skaparmarke__pil" aria-hidden="true">↗</span></span></span>` +
-    '<span class="skaparmarke__fraga">Vill du se din stad i pixlar? Hör av dig.</span>';
+    `<a class="skaparmarke__rad" href="${SKAPARE.lank}" target="_blank" rel="noopener"><span class="skaparmarke__liten">Skapad av</span> ${fore} <span class="skaparmarke__sist">${sist} <span class="skaparmarke__pil" aria-hidden="true">↗</span></span></a>` +
+    '<a class="skaparmarke__fraga" href="/pixelbygget">Rita din ort i pixlar <span class="skaparmarke__pil" aria-hidden="true">→</span></a>';
   el.parentElement?.appendChild(marke);
   // I telefon står märket uppe till höger. På sajtens startskärm ligger kartans källrad också där
   // uppe, och märket täckte den. Källradens nederkant mäts när den ändras, och märket står under den.
