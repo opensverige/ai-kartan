@@ -35,6 +35,7 @@ import {
   lutning,
   glugg,
   iBild,
+  narmast,
 } from './geometri.ts';
 import './pixelkarta.css';
 import type { Liv } from './liv';
@@ -666,7 +667,9 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
   function oppnaLiv(lage: Lage) {
     const v = visare;
     const b = bibliotek;
-    if (lugn.matches || !v || !b) return;
+    // En plats som frivilliga har börjat rita har inga vägar eller vatten att röra sig på, och
+    // ballonger över tre rutor mitt i en tom karta vore fel. Den får vara stilla.
+    if (lugn.matches || !v || !b || !lage.stad.life) return;
     livlofte ??= Promise.all([import('./liv'), import('./liv-pixlar'), import('./liv-luft')])
       .then(([l, p, u]) => (liv = l.skapaLiv({ bibliotek: b, visare: v, fore: husduk, bas, mpb, ruta, sag, delar: [p.pixeldel, u.luftdel] })))
       .catch(() => {
@@ -689,7 +692,7 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
   }
   /** Rörelsen går medan en pixelstad syns genom gluggen, och står still annars. */
   function styrLiv() {
-    liv?.satt(aktiv() && !!oppen && redo && oppen.visad > 0 && !lugn.matches);
+    liv?.satt(aktiv() && !!oppen && !!oppen.stad.life && redo && oppen.visad > 0 && !lugn.matches);
   }
   // Den som slår av "mindre rörelse" medan en stad är öppen får rörelsen i den staden, inte först i nästa.
   lugn.addEventListener('change', () => {
@@ -870,19 +873,14 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
     const pa = aktiv();
     const mitt = mittIRutan();
     const zoom = karta.getZoom();
-    let narmast: Lage | null = null;
-    let narmastAvstand = Infinity;
-    for (const lage of lagen) {
-      const n = narhetVid(lage, mitt.lat, mitt.lng, zoom);
-      if (pa && n.ibild > 0 && n.avstand < FORBERED && n.avstand < narmastAvstand) {
-        narmast = lage;
-        narmastAvstand = n.avstand;
-      }
+    const narheter = lagen.map((lage) => narhetVid(lage, mitt.lat, mitt.lng, zoom));
+    lagen.forEach((lage, i) => {
       // Gluggen öppnas bara där kartan ligger i pixelkartans vinkel och pixelstaden finns att visa.
       const liggerRatt = Math.abs(karta.getPitch() - VINKEL) < 0.5 && Math.abs(karta.getBearing() - lage.stad.map.heading) < 0.5;
-      lage.mal = pa && lage === oppen && sedd && lage.kantbild && liggerRatt ? glugg(n) : 0;
-    }
-    if (narmast) forbered(narmast);
+      lage.mal = pa && lage === oppen && sedd && lage.kantbild && liggerRatt ? glugg(narheter[i]) : 0;
+    });
+    const narmaste = pa ? narmast(narheter, FORBERED) : -1;
+    if (narmaste >= 0) forbered(lagen[narmaste]);
     // Frågan under skaparens namn står där ingen pixelstad är öppen.
     marke.classList.toggle('skaparmarke--fraga', !lagen.some((lage) => lage.mal > 0.5));
     // Ritade bildvisaren ritades husen med den. Annars ritas de här: de kan behöva tas bort.

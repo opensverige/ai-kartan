@@ -135,3 +135,38 @@ test('en plats utanför kartbilden ligger inte i bilden', () => {
   assert.ok(iBild(blad, projektion.tillBild(mitt.lat, mitt.lon)));
   assert.ok(!iBild(blad, projektion.tillBild(59.86, 17.64)));
 });
+
+// En plats som frivilliga har börjat rita: ett blad med bara id, namn och kartbild, utan vatten,
+// hus eller det som rör sig. Bladen ligger i ett rutnät över landet, 0,15 grader höga och 0,25 breda.
+const nyttBlad = (n, lat, lon) => ({
+  id: `se-${n}`,
+  label: `Blad ${n}`,
+  map: { id: `se-${n}`, dzi: `se-${n}.dzi`, heading: 0, origin: { lat, lon }, xMeters: -7808, yMeters: 6016, groundHeight: 40, width: 62464, height: 48128, island: `oar/se-${n}.webp`, edge: `oar/se-${n}-kant.png` },
+});
+
+test('med fyrtio nya blad är det närmaste bladet det som förbereds', async () => {
+  const { narmast } = await import('./geometri.ts');
+  const stader = [];
+  for (let i = 0; i < 40; i += 1) stader.push(nyttBlad(i, 56.025 + 0.15 * (i % 8), 12.625 + 0.25 * Math.floor(i / 8)));
+  const lagen = stader.map((stad) => ({ stad, projektion: skapaProjektion(stad.map, MPB) }));
+  for (const mal of [0, 17, 39]) {
+    const { stad, projektion: p } = lagen[mal];
+    const m = p.tillMark(stad.map.width / 2, stad.map.height / 2);
+    const vy = { lat: m.lat, lng: m.lon, zoom: zoomVid(m.lat, hemskala(stad.map, MPB, ruta) * 1.2) };
+    const narheter = lagen.map((l) => narhet(l.stad.map, l.projektion, MPB, ruta, vy));
+    assert.equal(narmast(narheter, 4), mal, `blad ${mal}`);
+  }
+  // Långt ute över landet, utan något blad i rutans mitt, förbereds inget.
+  const ute = lagen.map((l) => narhet(l.stad.map, l.projektion, MPB, ruta, { lat: 64, lng: 20, zoom: 6 }));
+  assert.equal(narmast(ute, 4), -1);
+});
+
+test('ett blad utan vatten, hus och liv går att räkna på som en stad', () => {
+  const stad = nyttBlad(1, 56.025, 12.625);
+  const p = skapaProjektion(stad.map, MPB);
+  const m = p.tillMark(stad.map.width / 2, stad.map.height / 2);
+  assert.ok(Math.abs(m.lat - 56.025) < 0.05 && Math.abs(m.lon - 12.625) < 0.05, `${m.lat},${m.lon}`);
+  assert.ok(iBild(stad.map, p.tillBild(m.lat, m.lon)));
+  const n = narhet(stad.map, p, MPB, ruta, { lat: m.lat, lng: m.lon, zoom: zoomVid(m.lat, hemskala(stad.map, MPB, ruta)) });
+  assert.ok(n.ibild >= 1 && Math.abs(n.avstand - 1) < 1e-9);
+});
