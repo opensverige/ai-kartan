@@ -240,6 +240,25 @@ export function glugg(n: Narhet): number {
   return mjukt(n.ibild) >= 1 ? mjukt(nara) : 0;
 }
 
+/**
+ * Den stad som ska förberedas, bland dem som är i bild och närmare än `inom` (i "hela staden
+ * i bild"): den som ligger mest under rutans mitt, och vid lika den som fyller rutan mest.
+ * Index i listan, eller -1 när ingen är det.
+ *
+ * Städerna kan vara många och lika stora: varje plats som frivilliga har börjat rita är ett eget
+ * blad, och grannblad ligger kant i kant. Skalan ensam skiljer dem inte åt, läget gör det.
+ */
+export function narmast(narheter: readonly Narhet[], inom: number): number {
+  let bast = -1;
+  for (let i = 0; i < narheter.length; i += 1) {
+    const n = narheter[i];
+    if (!(n.ibild > 0 && n.avstand < inom)) continue;
+    const b = bast < 0 ? null : narheter[bast];
+    if (!b || n.ibild > b.ibild || (n.ibild === b.ibild && n.avstand < b.avstand)) bast = i;
+  }
+  return bast;
+}
+
 /** Om en bildpunkt ligger i kartbilden. */
 export function iBild(blad: Kartblad, p: { x: number; y: number }): boolean {
   return p.x >= 0 && p.y >= 0 && p.x <= blad.width && p.y <= blad.height;
