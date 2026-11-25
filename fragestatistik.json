@@ -247,6 +247,27 @@
         "ovrigt": 1
       },
       "lan": {}
+    },
+    "2026-11-24": {
+      "fragor": 18,
+      "modellen_svarade": 18,
+      "svar": {
+        "traffar": 10,
+        "tomt": 3,
+        "bred": 2,
+        "opensverige": 1,
+        "manniska": 2
+      },
+      "modellfel": {},
+      "omrade": {
+        "handel": 5,
+        "ovrigt": 2
+      },
+      "typ": {},
+      "erbjuder": {
+        "ovrigt": 1
+      },
+      "lan": {}
     }
   },
   "luckor": [
