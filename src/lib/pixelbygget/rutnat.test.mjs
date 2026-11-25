@@ -110,8 +110,8 @@ test('kraven för att bygga en ruta följer bladets källa', async () => {
   const { krav, kalla } = await import('./rutnat.ts');
   assert.equal(kalla('stockholm-norr'), 'google');
   assert.equal(kalla('goteborg-norr'), 'oppen');
-  // Ett blad sidan inte känner: bara det som alltid gäller.
-  assert.equal(kalla('eslov'), 'oppen');
+  // Ett blad i rutnätet, som Helsingborgs: Google, som alla nya orter.
+  assert.equal(kalla('se-n5602-e1262'), 'google');
   const alltid = krav('goteborg-norr');
   assert.ok(alltid.some((k) => k.includes('NVIDIA') && k.includes('12 GB')));
   assert.ok(alltid.some((k) => k.includes('Windows eller Linux')));

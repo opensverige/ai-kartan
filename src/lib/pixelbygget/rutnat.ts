@@ -132,10 +132,11 @@ export function kartbild(bilder: string, blad: string, utgava: number): string {
 
 /** Vad ett blad ritas från. Googles 3D-bilder kräver byggarens eget Cesium-konto. */
 export type Kalla = 'oppen' | 'google';
-const KALLOR: Record<string, Kalla> = { 'stockholm-norr': 'google' };
+// Bara Göteborg ritas från öppna flygfoton. Alla andra blad, också nya orter, ritas från Google.
+const OPPNA: readonly string[] = ['goteborg-norr'];
 
 export function kalla(blad: string): Kalla {
-  return KALLOR[blad] ?? 'oppen';
+  return OPPNA.includes(blad) ? 'oppen' : 'google';
 }
 
 const KRAV_ALLTID: readonly string[] = [

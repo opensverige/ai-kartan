@@ -34,7 +34,7 @@ const kallor = (...v) => v.filter(Boolean).join(' ');
 const CSP = [
   "default-src 'self'",
   `img-src ${kallor("'self'", 'data:', pixelkarta)}`,
-  `connect-src ${kallor("'self'", 'https://tiles.openfreemap.org', pixelkarta, pixelbygget)}`,
+  `connect-src ${kallor("'self'", 'https://tiles.openfreemap.org', pixelkarta, pixelbygget, 'https://nominatim.openstreetmap.org')}`,
   "worker-src 'self'",
   "font-src 'self'",
   "object-src 'none'",
