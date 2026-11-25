@@ -110,6 +110,15 @@
 .skaparmarke--fraga .skaparmarke__fraga {
   display: block;
 }
+.skaparmarke a {
+  color: inherit;
+  text-decoration: none;
+}
+.skaparmarke a:hover,
+.skaparmarke a:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 .skaparmarke:hover {
   border-color: var(--typ-community);
 }

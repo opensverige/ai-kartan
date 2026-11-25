@@ -50,9 +50,12 @@ test('bladet läses med sina mått', () => {
     kolumner: 130,
     rader: 118,
     oppet: true,
+    rutnat: false,
     tanda: 3,
     totalt: 3071,
   });
+  // En plats som frivilliga har börjat rita känns igen, så att den inte får en stadsknapp.
+  assert.equal(lasBlad({ id: 'se-n5602-e1262', name: 'N 56,02 E 12,62', cols: 61, rows: 47, state: 'open', made: 'grid' }).rutnat, true);
   assert.equal(lasBlad({ id: '../x', name: 'X', cols: 1, rows: 1 }), null);
   assert.equal(lasBlad({ id: 'x', name: 'X', cols: 0, rows: 1 }), null);
   assert.equal(lasBlad(null), null);

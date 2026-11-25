@@ -25,6 +25,8 @@ export interface Blad {
   kolumner: number;
   rader: number;
   oppet: boolean;
+  /** En plats som frivilliga har börjat rita, inte en stad ritad för hand. */
+  rutnat: boolean;
   tanda: number;
   totalt: number;
 }
@@ -65,6 +67,7 @@ export function lasBlad(v: unknown): Blad | null {
     kolumner: b.cols,
     rader: b.rows,
     oppet: b.state === 'open',
+    rutnat: b.made === 'grid',
     tanda: heltal(b.done) ? b.done : 0,
     totalt: heltal(b.total) ? b.total : 0,
   };
