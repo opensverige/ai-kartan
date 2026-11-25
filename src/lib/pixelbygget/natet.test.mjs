@@ -74,3 +74,9 @@ test('rutorna att rita hoppar över mark som en stad ritad för hand äger', () 
   assert.ok(ritas.length > 0);
   assert.equal(ritas.some((r) => r.kol === 47 && r.rad === 16), false);
 });
+
+test('ett brett fönster där rutnätet först syns får alla sina blad', () => {
+  // Ett fönster 2560 punkter brett, där en ruta är 14 punkter: tolv blad i bild.
+  const runt = bladIRutan({ west: 12.6, east: 13.35, south: 55.75, north: 56.0 });
+  assert.equal(runt.length, 12);
+});

@@ -23,10 +23,10 @@ interface Val {
 const SVERIGE: LngLatBoundsLike = [[10.6, 55.1], [24.4, 69.2]];
 const GRUNDTAK = 14;
 /** Rutnätet ritas när en ruta är minst så här många skärmpunkter bred. */
-const MINSTA_RUTA_PX = 9;
+const MINSTA_RUTA_PX = 14;
 const RUTA_M = 256;
 /** Så många rutor ritas som mest på en gång. */
-const STORST_ANTAL = 9000;
+const STORST_ANTAL = 15000;
 /** Hur länge ett blads rutor gäller innan de hämtas igen, i millisekunder. */
 const RUTOR_GALLER = 60_000;
 const NOMINATIM = 'https://nominatim.openstreetmap.org/search';
@@ -172,7 +172,7 @@ export async function startaByggkarta(val: Val): Promise<void> {
     paint: {
       'line-color': ['match', ['get', 'lage'], 'live', FARG.live, FARG.fri],
       'line-opacity': ['match', ['get', 'lage'], 'live', 0.25, 0.4],
-      'line-width': ['interpolate', ['linear'], ['zoom'], 12, 0.4, 16, 1.2],
+      'line-width': ['interpolate', ['linear'], ['zoom'], 12, 0.9, 16, 1.2],
     },
   });
   // Den valda rutan får en ljus kant under den färgade, så att den syns även ovanpå en ritad stad.
@@ -215,7 +215,6 @@ export async function startaByggkarta(val: Val): Promise<void> {
       zoomtips.hidden = false;
       return;
     }
-    zoomtips.hidden = true;
     const g = karta.getBounds();
     const ruta = { west: g.getWest(), east: g.getEast(), south: g.getSouth(), north: g.getNorth() };
     const features: GeoJSON.Feature[] = [];
@@ -244,6 +243,8 @@ export async function startaByggkarta(val: Val): Promise<void> {
     }
     if (nr !== ritning) return; // kartan har hunnit flytta sig
     kalla.setData({ type: 'FeatureCollection', features });
+    // Tipset står kvar tills rutor syns. Ett klick öppnar bara en ruta som syns.
+    zoomtips.hidden = features.length > 0;
   }
 
   let vantar: number | undefined;

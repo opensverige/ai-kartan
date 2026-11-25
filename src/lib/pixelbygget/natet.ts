@@ -21,7 +21,7 @@ const LAT_MIKRO = 150000;
 const LON_MIKRO = 250000;
 const RUTNAT_ID = /^se-n(\d{4})-e(\d{4})$/;
 /** Fler blad än så i bild ritas inte: då är kartan för långt ut för att en ruta ska synas. */
-const STORST_ANTAL_BLAD = 6;
+const STORST_ANTAL_BLAD = 12;
 
 /** Ett blad som tjänsten räknar ut det, innan någon har tagit en ruta där. */
 export interface Ruta0 {
