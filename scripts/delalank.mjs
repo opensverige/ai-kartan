@@ -14,6 +14,9 @@ import { lasOrganisationer, ROT } from './lib/organisationer.mjs';
 import { delalank, delatext } from '../src/lib/dela.ts';
 
 const SAJT = (process.env.SITE_URL || 'https://karta.opensverige.se').replace(/\/$/, '');
+// Stjärnorna är data om vilka som bryr sig om kartan. Frågan ställs först när organisationen
+// redan ligger inne och är aldrig ett villkor för att komma med.
+const REPO = 'https://github.com/opensverige/ai-kartan';
 const ID = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 const argv = process.argv.slice(2);
 
@@ -43,6 +46,8 @@ function stycke(radnamn, id) {
     'Färdigt att skicka:',
     '',
     `> Hej! ${delatext(namn, false)} Titta gärna att uppgifterna stämmer. Vill ni berätta det ligger en färdig text här: ${lank}`,
+    '>',
+    `> Nu är ni inne. Vi la tid på det. Stjärnmärk kartan: ${REPO}`,
   ].join('\n');
 }
 
