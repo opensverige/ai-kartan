@@ -391,6 +391,8 @@ export async function startaByggkarta(val: Val): Promise<void> {
       steg3.append(el('div', 'byggkarta__stegrubrik', 'En människa granskar. Sedan syns ditt namn.'));
       steg.append(steg1, steg2, steg3);
       delar.push(steg);
+      // Byggsidan testas fortfarande. Det ska stå där man börjar, också i telefon.
+      delar.push(el('p', 'byggkarta__not', 'Beta. Ett experiment som testas nu. Vi kan inte lova att din ruta kommer med.'));
 
       // Kraven fälls ihop: sammanfattningen säger det viktigaste, listan resten.
       const behov = el('details', 'byggkarta__behov');

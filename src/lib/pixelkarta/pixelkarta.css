@@ -70,86 +70,155 @@
   display: none;
 }
 
-/* Vem som har gjort pixelkartan: ett märke nere till vänster i kartan, över raden om prickarna.
-   Det syns bara medan pixelkartan är på. */
-.skaparmarke {
+/* Glimten på startskärmen: ett fönster utan ram över havet, uppe till vänster i kartan. Bilden
+   tonar ut i kartan som pixelstäderna gör, och glider sakta över en stad i taget. Den syns bara på
+   startskärmen och från surfplattans bredd: i telefon ligger frågerutan och bladet över kartan. */
+.pixelglimt {
+  display: none;
   position: absolute;
-  left: 12px;
-  bottom: 42px;
+  left: 16px;
+  top: 16px;
   z-index: 3;
-  display: none;
-  flex-direction: column;
-  gap: 5px;
-  max-width: calc(100% - 96px);
-  padding: 8px 14px;
-  border: 1px solid hsl(var(--kant));
-  border-radius: 16px;
-  background: hsl(var(--yta-kort));
-  box-shadow: var(--skugga-flyt);
-  color: hsl(var(--ink));
-  font: 700 13px/1.2 var(--font-sans);
-  text-decoration: none;
+  width: 300px;
 }
-.app--pixel .skaparmarke {
-  display: flex;
-}
-.skaparmarke__liten,
-.skaparmarke__fraga {
-  font-weight: 500;
-  color: hsl(var(--ink-mute));
-}
-.skaparmarke__sist {
-  white-space: nowrap;
-}
-.skaparmarke__pil {
-  color: var(--typ-community);
-}
-.skaparmarke__fraga {
-  display: none;
-}
-.skaparmarke--fraga .skaparmarke__fraga {
-  display: block;
-}
-.skaparmarke a {
-  color: inherit;
-  text-decoration: none;
-}
-.skaparmarke a:hover,
-.skaparmarke a:focus-visible {
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-.skaparmarke:hover {
-  border-color: var(--typ-community);
-}
-/* I en smal kartyta ligger raden om prickarna högre upp och bryts på två rader, och kartans
-   källrad når hit när den är utfälld. Märket står över båda. */
-@media (max-width: 1180px) {
-  .skaparmarke {
-    bottom: 106px;
+@media (min-width: 768px) {
+  html[data-fraga][data-fragelage='hem'] .app[data-lage='karta'] .pixelglimt:not([hidden]) {
+    display: block;
   }
 }
-/* På sajtens startskärm ligger frågerutan över kartans nedre del, och dess toning över märkets
-   vanliga plats: märket syntes inte men gick att trycka på. Där står det uppe till vänster,
-   där kartans knappar annars står. */
-html[data-fraga][data-fragelage='hem'] .app[data-lage='karta'] .skaparmarke {
-  top: 12px;
-  bottom: auto;
+@media (min-width: 768px) and (max-width: 1099px) {
+  .pixelglimt {
+    width: 230px;
+  }
 }
-/* I telefon har filterknappen hörnet uppe till vänster och bladet ligger nedtill. Märket står uppe
-   till höger. På startskärmen ligger kartans källrad också där uppe: då står märket under den
-   (--under-kallor sätts av pixelkarta.ts, som mäter källraden). */
+/* På surfplattan går kartans källrad över hela bredden upptill. Glimten står under den. */
 @media (max-width: 900px) {
-  .skaparmarke,
-  html[data-fraga][data-fragelage='hem'] .app[data-lage='karta'] .skaparmarke {
-    left: auto;
-    right: 12px;
-    top: calc(12px + var(--under-kallor, 0px));
-    bottom: auto;
-    max-width: calc(100% - 132px);
-    padding: 7px 11px;
-    font-size: 12px;
+  .pixelglimt {
+    top: 52px;
   }
+}
+.pixelglimt__fonster {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  padding: 0;
+  border: 0;
+  background: none;
+  overflow: hidden;
+  cursor: pointer;
+  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 35%, transparent 100%);
+  mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 35%, transparent 100%);
+}
+.pixelglimt__fonster:focus-visible {
+  outline: 2px solid hsl(var(--rust));
+  outline-offset: -6px;
+}
+/* Fyra bildrutor om 512 punkter, visade i halv storlek: 512 punkter i fyrkant att glida över. */
+.pixelglimt__stad {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: grid;
+  grid-template-columns: 512px 512px;
+  transform-origin: 0 0;
+  transform: translate(-110px, -150px) scale(0.5);
+  opacity: 0;
+  transition: opacity 1.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pixelglimt__stad img {
+  display: block;
+  width: 512px;
+  height: 512px;
+}
+.pixelglimt__stad--syns {
+  opacity: 1;
+  animation: pixelglimt-glid 18s ease-in-out infinite alternate;
+}
+.pixelglimt__fonster:hover .pixelglimt__stad--syns {
+  animation-play-state: paused;
+}
+@keyframes pixelglimt-glid {
+  from {
+    transform: translate(-30px, -40px) scale(0.5);
+  }
+  to {
+    transform: translate(-200px, -270px) scale(0.5);
+  }
+}
+.pixelglimt__under {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-top: -14px;
+}
+.pixelglimt__ort {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: 600 12.5px var(--font-sans);
+  color: hsl(var(--ink-soft));
+  text-shadow: 0 0 6px hsl(var(--yta)), 0 0 2px hsl(var(--yta));
+}
+.pixelglimt__ort i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: hsl(var(--moss));
+  animation: pixelglimt-puls 2.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+@keyframes pixelglimt-puls {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+.pixelglimt__knapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid hsl(var(--kant));
+  border-radius: var(--r-pill);
+  background: hsl(var(--yta-kort));
+  color: hsl(var(--ink));
+  font: 600 13.5px var(--font-sans);
+  text-decoration: none;
+}
+.pixelglimt__knapp span {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pixelglimt__knapp:hover span,
+.pixelglimt__knapp:focus-visible span {
+  transform: translateX(3px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .pixelglimt__stad,
+  .pixelglimt__knapp span {
+    transition: none;
+  }
+  .pixelglimt__stad--syns,
+  .pixelglimt__ort i {
+    animation: none;
+  }
+}
+
+/* Kartans källor och pixelkartans skapare står på en rad. Utfälld är den en lätt toning över
+   kartan, ingen vit låda. */
+.maplibregl-ctrl.maplibregl-ctrl-attrib.maplibregl-compact-show {
+  background: hsl(var(--yta) / 0.74);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  color: hsl(var(--ink-soft));
+}
+.maplibregl-ctrl-attrib a {
+  color: hsl(var(--ink));
 }
 
 /* Beskedet står upptill i kartan, där sajtens eget besked om kartbilden står. Nedtill ligger bladet i telefon. */

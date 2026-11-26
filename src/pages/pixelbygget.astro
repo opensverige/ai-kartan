@@ -23,8 +23,9 @@ const REPO = 'https://github.com/opensverige/karta.opensverige-3d';
 
     <section class="byggkarta__panel" aria-label="Rita kartan">
       <div class="byggkarta__titel">
-        <h1>Rita kartan</h1>
+        <h1>Rita kartan <span class="byggkarta__beta">Beta</span></h1>
         <p class="byggkarta__ingress">Frivilliga ritar Sverige i pixlar, ruta för ruta.</p>
+        <p class="byggkarta__betatext">Ett experiment som testas nu. Vi kan inte lova att din ruta kommer med.</p>
       </div>
       <form class="byggkarta__sok" data-sok role="search">
         <label for="byggkarta-sokfalt" class="visuellt-dold">Hitta din ort</label>
@@ -77,10 +78,6 @@ const REPO = 'https://github.com/opensverige/karta.opensverige-3d';
     position: absolute;
     inset: 0;
   }
-  /* Märket i kartans hörn leder hit. Här, på sidan det leder till, behövs det inte. */
-  .byggkarta .skaparmarke {
-    display: none !important;
-  }
   .byggkarta p {
     margin: 0;
   }
@@ -129,6 +126,23 @@ const REPO = 'https://github.com/opensverige/karta.opensverige-3d';
     margin-top: 2px !important;
     font-size: 14px;
     color: hsl(var(--ink-soft));
+  }
+  .byggkarta__beta {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 2px 8px;
+    border-radius: var(--r-pill);
+    background: hsl(38 74% 40% / 0.18);
+    color: hsl(var(--ink));
+    font: 600 11.5px var(--font-mono);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    vertical-align: 4px;
+  }
+  .byggkarta__betatext {
+    margin-top: 4px !important;
+    font-size: 12.5px;
+    color: hsl(var(--ink-mute));
   }
   .byggkarta__sok {
     display: flex;

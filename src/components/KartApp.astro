@@ -501,7 +501,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       // Orden får stå på kartan, men inte på det som ligger över den: bladet, knapparna, filtren och källraden.
       const ruta = (r: DOMRect): Ruta => ({ v: r.left - yta.left, t: r.top - yta.top, h: r.right - yta.left, b: r.bottom - yta.top });
       const fri: Ruta = { v: 8, t: 8, h: yta.width - 8, b: yta.height - 8 };
-      const ovanpa = ['.kartknappar', smal.matches ? '#oppna-filter' : '.filterrad', '.karta__not', '.skaparmarke', '.maplibregl-ctrl-bottom-right', ...(smal.matches ? ['#panel'] : [])];
+      const ovanpa = ['.kartknappar', smal.matches ? '#oppna-filter' : '.filterrad', '.karta__not', '.pixelglimt', '.maplibregl-ctrl-bottom-right', ...(smal.matches ? ['#panel'] : [])];
       const hinder = ovanpa
         .map((v) => app.querySelector<HTMLElement>(v)?.getBoundingClientRect())
         .filter((r): r is DOMRect => !!r && r.width > 0 && r.height > 0)

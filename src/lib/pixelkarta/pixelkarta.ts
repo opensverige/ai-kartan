@@ -37,6 +37,7 @@ import {
   iBild,
   narmast,
 } from './geometri.ts';
+import { glimtRutor, skapaGlimt } from './glimt.ts';
 import './pixelkarta.css';
 import type { Liv } from './liv';
 
@@ -353,12 +354,13 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
     bild.src = bas + lage.stad.map.edge;
   }
 
-  // Vem som har gjort pixelkartan och vad den bygger på står där kartans övriga källor står.
+  // Vem som har gjort pixelkartan och vad den bygger på står där kartans övriga källor står:
+  // en rad för skaparen och rättigheterna, inget eget märke.
   // Raden hör till en tom källa med ett eget lager, och syns när det lagret gör det.
   karta.addSource(KALLRAD, {
     type: 'geojson',
     data: { type: 'FeatureCollection', features: [] },
-    attribution: `Pixelkarta © <a href="${SKAPARE.lank}" target="_blank" rel="noopener">${SKAPARE.namn}</a> · underlag Google 3D Tiles`,
+    attribution: `Pixelkarta av <a href="${SKAPARE.lank}" target="_blank" rel="noopener">${SKAPARE.namn} ↗</a> · underlag Google 3D Tiles`,
   });
   karta.addLayer({ id: KALLRAD, type: 'circle', source: KALLRAD });
 
@@ -881,8 +883,6 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
     });
     const narmaste = pa ? narmast(narheter, FORBERED) : -1;
     if (narmaste >= 0) forbered(lagen[narmaste]);
-    // Frågan under skaparens namn står där ingen pixelstad är öppen.
-    marke.classList.toggle('skaparmarke--fraga', !lagen.some((lage) => lage.mal > 0.5));
     // Ritade bildvisaren ritades husen med den. Annars ritas de här: de kan behöva tas bort.
     if (!folj()) ritaHus();
     styrLiv();
@@ -913,34 +913,28 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
 
   /* ---------- av och på ---------- */
 
-  // Vem som har gjort pixelkartan: ett märke i kartans hörn, med länk till skaparen. Under namnet
-  // står vägen in för den som vill rita sin egen ort: två länkar, så märket är ingen länk själv.
-  const marke = document.createElement('div');
-  marke.className = 'skaparmarke skaparmarke--fraga';
-  // Pilen följer med namnets sista ord om raden bryts, så att den aldrig står ensam på en rad.
-  const ord = SKAPARE.namn.split(' ');
-  const sist = ord.pop();
-  const fore = ord.join(' ');
-  marke.innerHTML =
-    `<a class="skaparmarke__rad" href="${SKAPARE.lank}" target="_blank" rel="noopener"><span class="skaparmarke__liten">Skapad av</span> ${fore} <span class="skaparmarke__sist">${sist} <span class="skaparmarke__pil" aria-hidden="true">↗</span></span></a>` +
-    '<a class="skaparmarke__fraga" href="/pixelbygget">Rita din ort i pixlar <span class="skaparmarke__pil" aria-hidden="true">→</span></a>';
-  el.parentElement?.appendChild(marke);
-  // I telefon står märket uppe till höger. På sajtens startskärm ligger kartans källrad också där
-  // uppe, och märket täckte den. Källradens nederkant mäts när den ändras, och märket står under den.
-  const kallhorn = el.querySelector<HTMLElement>('.maplibregl-ctrl-bottom-right');
-  function flyttaMarke() {
-    const k = kallhorn?.getBoundingClientRect();
-    const r = el.getBoundingClientRect();
-    const uppe = !!k && k.height > 0 && k.bottom < r.top + r.height / 2;
-    marke.style.setProperty('--under-kallor', uppe && k ? `${Math.max(0, Math.round(k.bottom - r.top))}px` : '0px');
+  // Glimten på startskärmen: ett fönster över havet som glider över de ritade städerna, med vägen
+  // in till byggsidan. Bara städerna ritade för hand: ett blad i rutnätet har mest tom mark än.
+  const glimt = skapaGlimt(
+    el.parentElement ?? el,
+    lagen
+      .filter((lage) => lage.stad.houses)
+      .map((lage) => ({
+        namn: lage.stad.label,
+        rutor: glimtRutor(lage.stad.map, bas, mpb),
+        flyg: () => karta.flyTo({ center: lage.mitt, zoom: zoomVid(lage.mitt.lat, hemskala(lage.stad.map, mpb, ruta())) }),
+      }))
+      .filter((s) => s.rutor.length),
+  );
+  // Den syns medan kartan visar hela landet och pixelkartan är på, från surfplattans bredd. Var den
+  // står styr pixelkarta.css. Smalare än så hämtas inga bilder alls.
+  const GLIMT_TILL_ZOOM = 6.5;
+  const bredNog = matchMedia('(min-width: 768px)');
+  function visaGlimt() {
+    glimt?.visa(bredNog.matches && vald && !trasig && !vilar && karta.getZoom() < GLIMT_TILL_ZOOM);
   }
-  if (kallhorn && typeof ResizeObserver !== 'undefined') new ResizeObserver(flyttaMarke).observe(kallhorn);
-  new MutationObserver(() => {
-    flyttaMarke();
-    window.setTimeout(flyttaMarke, 400); // och en gång till när skärmen har bytt läge färdigt
-  }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-fragelage'] });
-  karta.on('resize', flyttaMarke);
-  flyttaMarke();
+  karta.on('zoomend', visaGlimt);
+  bredNog.addEventListener('change', visaGlimt);
 
   const besked = document.createElement('p');
   besked.className = 'pixelbesked';
@@ -1081,6 +1075,7 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
     }
     visaKnapp();
     skifta();
+    visaGlimt();
     sag(pa ? 'Pixelkartan är på.' : 'Pixelkartan är av. Du ser den vanliga kartan.');
   }
 
@@ -1101,10 +1096,12 @@ export async function kopplaPixelkarta(val: Val): Promise<Pixelkarta | null> {
     if (nu === vilar) return;
     vilar = nu;
     skifta();
+    visaGlimt();
   }).observe(app, { attributes: true, attributeFilter: ['data-vy'] });
 
   visaKnapp();
   skifta();
+  visaGlimt();
 
   return {
     zoomtak(lng, lat, zoom) {
