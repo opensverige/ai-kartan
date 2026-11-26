@@ -1,6 +1,6 @@
 // Byggkartan: sajtens karta över Sverige, med pixelstäderna och rutnätet ovanpå.
 //
-// Rutnätet ritas när kartan är så nära att en ruta syns. Tända, väntande och låsta rutor har färg,
+// Rutnätet ritas när kartan är så nära att en ruta syns. Ritade, granskade och upptagna rutor har färg,
 // lediga är tomma rutor att klicka på. Vilken ruta ett klick betyder avgör rut-tjänsten
 // (/v1/place), inte sidan: då kan sidan aldrig erbjuda en ruta som en claim inte tar.
 //
@@ -11,7 +11,7 @@ import type { Map as MapLibreMap, GeoJSONSource, LngLatBoundsLike } from 'maplib
 import type { Pixelkarta } from '../pixelkarta/pixelkarta';
 import { meterPerPunkt } from '../pixelkarta/geometri.ts';
 import { bladFranRad, bladIRutan, bladMedId, rutansHorn, rutorAttRita, rutorIBild, type Bladrad, type Ritblad } from './natet.ts';
-import { REPO, agentrad, ankare, kalla, krav, lage, lasAnkare, lasRutor } from './rutnat.ts';
+import { REPO, agentrad, agentradFler, ankare, kalla, krav, lage, lasAnkare, lasRutor } from './rutnat.ts';
 
 interface Val {
   el: HTMLElement;
@@ -24,6 +24,8 @@ const SVERIGE: LngLatBoundsLike = [[10.6, 55.1], [24.4, 69.2]];
 const GRUNDTAK = 14;
 /** Rutnätet ritas när en ruta är minst så här många skärmpunkter bred. */
 const MINSTA_RUTA_PX = 14;
+/** Från den här zoomen står byggarens namn på ritade rutor: en ruta är då runt 65 punkter bred. */
+const NAMN_FRAN_ZOOM = 13.5;
 const RUTA_M = 256;
 /** Så många rutor ritas som mest på en gång. */
 const STORST_ANTAL = 15000;
@@ -32,7 +34,7 @@ const RUTOR_GALLER = 60_000;
 const NOMINATIM = 'https://nominatim.openstreetmap.org/search';
 const FARG = {
   live: 'hsl(120, 24%, 35%)',
-  godkand: 'hsl(38, 74%, 40%)',
+  godkand: 'hsl(170, 40%, 30%)',
   vantar: 'hsl(38, 74%, 40%)',
   last: 'hsl(25, 60%, 45%)',
   fri: 'hsl(45, 17%, 20%)',
@@ -175,6 +177,21 @@ export async function startaByggkarta(val: Val): Promise<void> {
       'line-width': ['interpolate', ['linear'], ['zoom'], 12, 0.9, 16, 1.2],
     },
   });
+  // Byggarens namn på varje ritad ruta, när rutorna är stora nog att bära det.
+  karta.addLayer({
+    id: 'natet-namn',
+    type: 'symbol',
+    source: 'natet',
+    minzoom: NAMN_FRAN_ZOOM,
+    filter: ['all', ['has', 'namn'], ['!=', ['get', 'lage'], 'fri']],
+    layout: {
+      'text-field': ['get', 'namn'],
+      'text-font': ['Noto Sans Regular'],
+      'text-size': ['interpolate', ['linear'], ['zoom'], NAMN_FRAN_ZOOM, 11, 17, 13],
+      'text-max-width': 8,
+    },
+    paint: { 'text-color': '#1c1a17', 'text-halo-color': '#fdfbf7', 'text-halo-width': 1.6 },
+  });
   // Den valda rutan får en ljus kant under den färgade, så att den syns även ovanpå en ritad stad.
   karta.addLayer({
     id: 'vald-ljus',
@@ -218,9 +235,10 @@ export async function startaByggkarta(val: Val): Promise<void> {
     const g = karta.getBounds();
     const ruta = { west: g.getWest(), east: g.getEast(), south: g.getSouth(), north: g.getNorth() };
     const features: GeoJSON.Feature[] = [];
-    const lagg = (blad: Ritblad, id: string, kol: number, rad: number, l: string): void => {
+    const lagg = (blad: Ritblad, id: string, kol: number, rad: number, l: string, namn: string | null): void => {
       if (features.length >= STORST_ANTAL) return;
-      features.push({ type: 'Feature', properties: { blad: id, kol, rad, lage: l }, geometry: { type: 'Polygon', coordinates: [rutansHorn(blad, kol, rad)] } });
+      const egenskaper: GeoJSON.GeoJsonProperties = namn ? { blad: id, kol, rad, lage: l, namn } : { blad: id, kol, rad, lage: l };
+      features.push({ type: 'Feature', properties: egenskaper, geometry: { type: 'Polygon', coordinates: [rutansHorn(blad, kol, rad)] } });
     };
     // Städerna ritade för hand: deras egna rutor, utom de som inte erbjuds.
     for (const stad of stader) {
@@ -229,7 +247,7 @@ export async function startaByggkarta(val: Val): Promise<void> {
       const per = await rutorI(stad.rad.id);
       for (const r of i) {
         const finns = per.get(`${r.kol}_${r.rad}`);
-        if (finns) lagg(stad, stad.rad.id, r.kol, r.rad, finns.lage);
+        if (finns) lagg(stad, stad.rad.id, r.kol, r.rad, finns.lage, finns.namn);
       }
     }
     // Rutnätet över resten av landet. Rutor som ingen har tagit är lediga.
@@ -239,7 +257,10 @@ export async function startaByggkarta(val: Val): Promise<void> {
       const i = rutorAttRita(blad, stader, ruta);
       if (!i.length) continue;
       const per = lagrade.has(b0.id) ? await rutorI(b0.id) : new Map<string, { lage: string; namn: string | null }>();
-      for (const r of i) lagg(blad, b0.id, r.kol, r.rad, per.get(`${r.kol}_${r.rad}`)?.lage ?? 'fri');
+      for (const r of i) {
+        const finns = per.get(`${r.kol}_${r.rad}`);
+        lagg(blad, b0.id, r.kol, r.rad, finns?.lage ?? 'fri', finns?.namn ?? null);
+      }
     }
     if (nr !== ritning) return; // kartan har hunnit flytta sig
     kalla.setData({ type: 'FeatureCollection', features });
@@ -312,7 +333,14 @@ export async function startaByggkarta(val: Val): Promise<void> {
       const rad1 = el('p', 'byggkarta__lage');
       rad1.append(el('strong', undefined, `${t.namn}. `), t.mening);
       delar.push(rad1);
-      if (byggare) delar.push(el('p', 'byggkarta__byggare', `Byggd av ${byggare}`));
+      if (byggare) {
+        const vem = el('p', 'byggkarta__byggare', 'Ritad av ');
+        const lank = el('a', undefined, byggare);
+        lank.href = `https://github.com/${encodeURIComponent(byggare)}`;
+        lank.rel = 'noopener';
+        vem.append(lank);
+        delar.push(vem);
+      }
       if (l === 'fri') {
         delar.push(el('p', undefined, 'Säg till din AI-agent:'));
         const kod = el('p', 'byggkarta__agentrad', agentrad(rad.id, kol, rd));
@@ -320,6 +348,15 @@ export async function startaByggkarta(val: Val): Promise<void> {
         knapp.type = 'button';
         knapp.addEventListener('click', () => kopiera(kod, knapp));
         delar.push(kod, knapp);
+        // Den som vill rita mer: agenten tar rutan och sedan nästa bredvid, en i taget.
+        const fler = el('details', 'byggkarta__fler');
+        const fraga = el('summary', undefined, 'Vill du rita fler rutor?');
+        const kodFler = el('p', 'byggkarta__agentrad', agentradFler(rad.id, kol, rd));
+        const knappFler = el('button', 'byggkarta__kopiera', 'Kopiera →');
+        knappFler.type = 'button';
+        knappFler.addEventListener('click', () => kopiera(kodFler, knappFler));
+        fler.append(fraga, el('p', 'byggkarta__not', 'Agenten ritar en ruta i taget. Högst fem väntar på granskning samtidigt.'), kodFler, knappFler);
+        delar.push(fler);
         const lista = el('ul', 'byggkarta__krav');
         for (const k of krav(rad.id)) lista.append(el('li', undefined, k));
         const lank = el('a', undefined, 'Allt som krävs, i repot →');

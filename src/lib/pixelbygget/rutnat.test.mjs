@@ -3,7 +3,7 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { RUTA, lasAnkare, ankare, rutaVidPunkt, rakna, topplista, agentrad, lasRutor, lasBlad, lage, lasUtgava, kartbild } from './rutnat.ts';
+import { RUTA, lasAnkare, ankare, rutaVidPunkt, rakna, topplista, agentrad, agentradFler, lasRutor, lasBlad, lage, lasUtgava, kartbild } from './rutnat.ts';
 
 test('adressen till en ruta går att läsa tillbaka', () => {
   assert.equal(ankare('goteborg-norr', 64, 52), '#goteborg-norr/64_52');
@@ -96,6 +96,18 @@ test('raden till agenten nämner repot, reglerna och rutan', () => {
   assert.match(rad, /github\.com\/opensverige\/karta\.opensverige-3d/);
   assert.match(rad, /AGENTS\.md/);
   assert.match(rad, /goteborg-norr 64_52/);
+});
+
+test('raden för fler rutor börjar i rutan och ber om en i taget', () => {
+  const rad = agentradFler('se-n5587-e1337', 13, 35);
+  assert.match(rad, /github\.com\/opensverige\/karta\.opensverige-3d/);
+  assert.match(rad, /AGENTS\.md/);
+  assert.match(rad, /se-n5587-e1337 13_35/);
+  assert.match(rad, /en i taget/);
+});
+
+test('lägena heter det en besökare säger', () => {
+  assert.deepEqual(['fri', 'last', 'vantar', 'godkand', 'live'].map((l) => lage(l).namn), ['Ledig', 'Upptagen', 'Granskas', 'Godkänd', 'Ritad']);
 });
 
 test('varje läge har ett namn och en mening på svenska', () => {

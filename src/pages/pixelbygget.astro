@@ -34,9 +34,10 @@ const REPO = 'https://github.com/opensverige/karta.opensverige-3d';
       </form>
       <p class="byggkarta__zoomtips" data-zoomtips>Zooma in, så syns rutorna. Klicka på en ledig ruta.</p>
       <ul class="byggkarta__forklaring">
-        <li><span class="byggkarta__prov byggkarta__prov--live" aria-hidden="true"></span><span><b>Tänd.</b> Ritad, finns på kartan.</span></li>
-        <li><span class="byggkarta__prov byggkarta__prov--vantar" aria-hidden="true"></span><span><b>Väntar.</b> Granskas av en människa.</span></li>
-        <li><span class="byggkarta__prov byggkarta__prov--last" aria-hidden="true"></span><span><b>Låst.</b> Någon ritar den just nu.</span></li>
+        <li><span class="byggkarta__prov byggkarta__prov--live" aria-hidden="true"></span><span><b>Ritad.</b> Finns på kartan, med byggarens namn.</span></li>
+        <li><span class="byggkarta__prov byggkarta__prov--godkand" aria-hidden="true"></span><span><b>Godkänd.</b> Syns vid nästa uppdatering.</span></li>
+        <li><span class="byggkarta__prov byggkarta__prov--vantar" aria-hidden="true"></span><span><b>Granskas.</b> En människa tittar på den.</span></li>
+        <li><span class="byggkarta__prov byggkarta__prov--last" aria-hidden="true"></span><span><b>Upptagen.</b> Någon ritar den just nu.</span></li>
         <li><span class="byggkarta__prov byggkarta__prov--fri" aria-hidden="true"></span><span><b>Ledig.</b> Klicka för att ta den.</span></li>
       </ul>
       <p class="byggkarta__kallor">
@@ -198,6 +199,9 @@ const REPO = 'https://github.com/opensverige/karta.opensverige-3d';
     background: hsl(120 24% 35% / 0.35);
     border-color: hsl(120 24% 35% / 0.6);
   }
+  .byggkarta__prov--godkand {
+    background: hsl(170 40% 30% / 0.45);
+  }
   .byggkarta__prov--vantar {
     background: hsl(38 74% 40% / 0.5);
   }
@@ -238,6 +242,43 @@ const REPO = 'https://github.com/opensverige/karta.opensverige-3d';
     background: hsl(var(--yta-chip));
     font: 12.5px/1.45 var(--font-mono);
     overflow-wrap: anywhere;
+  }
+  .byggkarta__byggare a {
+    color: hsl(var(--ink));
+    font-weight: 600;
+  }
+  .byggkarta__fler {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 10px;
+    border-top: 1px solid hsl(var(--kant));
+  }
+  .byggkarta__fler[open] {
+    gap: 10px;
+  }
+  .byggkarta__fler summary {
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    min-height: 32px;
+    display: flex;
+    align-items: center;
+    list-style: none;
+  }
+  .byggkarta__fler summary::-webkit-details-marker {
+    display: none;
+  }
+  .byggkarta__fler summary::after {
+    content: ' →';
+    margin-left: 4px;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .byggkarta__fler[open] summary::after {
+    transform: rotate(90deg);
+  }
+  .byggkarta__fler > :not(summary) {
+    margin-top: 8px;
   }
   .byggkarta__underrubrik {
     font-size: 13px;
