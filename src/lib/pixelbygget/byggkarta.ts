@@ -317,6 +317,7 @@ export async function startaByggkarta(val: Val): Promise<void> {
   }
 
   function fyllPanel(rad: Bladrad & { namn: string; handgjord: boolean; state: string }, kol: number, rd: number, l: string, byggare: string | null): void {
+    // Huvudet: var rutan ligger, vilken ruta, och dess läge som en liten etikett.
     const huvud = el('div', 'byggkarta__rutahuvud');
     const rubriker = el('div');
     rubriker.append(el('p', 'kicker', rad.handgjord ? rad.namn : 'Ny plats'), el('h2', undefined, `Ruta ${kol}_${rd}`));
@@ -325,46 +326,85 @@ export async function startaByggkarta(val: Val): Promise<void> {
     stang_.addEventListener('click', stang);
     huvud.append(rubriker, stang_);
     const delar: HTMLElement[] = [huvud];
+
     if (l === 'ute') {
       const text = rad.state === 'done' ? 'Staden är färdigritad. Här finns inget kvar att rita.' : 'Den här rutan ritas inte.';
       delar.push(el('p', 'byggkarta__lage', text));
-    } else {
-      const t = lage(l);
-      const rad1 = el('p', 'byggkarta__lage');
-      rad1.append(el('strong', undefined, `${t.namn}. `), t.mening);
-      delar.push(rad1);
-      if (byggare) {
-        const vem = el('p', 'byggkarta__byggare', 'Ritad av ');
-        const lank = el('a', undefined, byggare);
-        lank.href = `https://github.com/${encodeURIComponent(byggare)}`;
-        lank.rel = 'noopener';
-        vem.append(lank);
-        delar.push(vem);
-      }
-      if (l === 'fri') {
-        delar.push(el('p', undefined, 'Säg till din AI-agent:'));
-        const kod = el('p', 'byggkarta__agentrad', agentrad(rad.id, kol, rd));
-        const knapp = el('button', 'byggkarta__kopiera', 'Kopiera →');
+      panel.replaceChildren(...delar);
+      panel.hidden = false;
+      return;
+    }
+
+    const t = lage(l);
+    const status = el('p', 'byggkarta__lage');
+    const etikett = el('span', `byggkarta__etikett byggkarta__etikett--${l}`, t.namn);
+    status.append(etikett, ` ${t.mening}`);
+    delar.push(status);
+    if (byggare) {
+      const vem = el('p', 'byggkarta__byggare', 'Ritad av ');
+      const lank = el('a', undefined, byggare);
+      lank.href = `https://github.com/${encodeURIComponent(byggare)}`;
+      lank.rel = 'noopener';
+      vem.append(lank);
+      delar.push(vem);
+    }
+
+    if (l === 'fri') {
+      // Tre steg. Raden till agenten finns i två varianter: en ruta, eller rutan och sedan fler.
+      const rader = { en: agentrad(rad.id, kol, rd), fler: agentradFler(rad.id, kol, rd) };
+      const steg = el('ol', 'byggkarta__steg');
+
+      const steg1 = el('li');
+      const rubrik1 = el('div', 'byggkarta__stegrubrik');
+      rubrik1.append(el('span', undefined, 'Ge raden till din AI-agent'));
+      const val = el('div', 'byggkarta__val');
+      val.setAttribute('role', 'group');
+      val.setAttribute('aria-label', 'Hur många rutor');
+      const knappEn = el('button', undefined, 'En ruta');
+      const knappFler = el('button', undefined, 'Flera');
+      const kodruta = el('div', 'byggkarta__kodruta');
+      const kod = el('p', 'byggkarta__agentrad', rader.en);
+      const kopieraKnapp = el('button', 'byggkarta__kopiera', 'Kopiera →');
+      kopieraKnapp.type = 'button';
+      kopieraKnapp.addEventListener('click', () => kopiera(kod, kopieraKnapp));
+      kodruta.append(kod, kopieraKnapp);
+      const flerNot = el('p', 'byggkarta__not', 'En ruta i taget. Högst fem väntar på granskning.');
+      flerNot.hidden = true;
+      const valj = (fler: boolean): void => {
+        kod.textContent = fler ? rader.fler : rader.en;
+        knappEn.setAttribute('aria-pressed', String(!fler));
+        knappFler.setAttribute('aria-pressed', String(fler));
+        flerNot.hidden = !fler;
+      };
+      for (const [knapp, fler] of [[knappEn, false], [knappFler, true]] as const) {
         knapp.type = 'button';
-        knapp.addEventListener('click', () => kopiera(kod, knapp));
-        delar.push(kod, knapp);
-        // Den som vill rita mer: agenten tar rutan och sedan nästa bredvid, en i taget.
-        const fler = el('details', 'byggkarta__fler');
-        const fraga = el('summary', undefined, 'Vill du rita fler rutor?');
-        const kodFler = el('p', 'byggkarta__agentrad', agentradFler(rad.id, kol, rd));
-        const knappFler = el('button', 'byggkarta__kopiera', 'Kopiera →');
-        knappFler.type = 'button';
-        knappFler.addEventListener('click', () => kopiera(kodFler, knappFler));
-        fler.append(fraga, el('p', 'byggkarta__not', 'Agenten ritar en ruta i taget. Högst fem väntar på granskning samtidigt.'), kodFler, knappFler);
-        delar.push(fler);
-        const lista = el('ul', 'byggkarta__krav');
-        for (const k of krav(rad.id)) lista.append(el('li', undefined, k));
-        const lank = el('a', undefined, 'Allt som krävs, i repot →');
-        lank.href = `${REPO}#what-you-need`;
-        lank.rel = 'noopener';
-        delar.push(el('p', 'byggkarta__underrubrik', 'Det här behövs'), lista, lank);
-        if (kalla(rad.id) === 'google') delar.push(el('p', 'byggkarta__not', 'Ritas från Googles 3D-bilder, genom ditt eget Cesium-konto.'));
+        knapp.addEventListener('click', () => valj(fler));
+        val.append(knapp);
       }
+      valj(false);
+      rubrik1.append(val);
+      steg1.append(rubrik1, kodruta, flerNot);
+
+      const steg2 = el('li');
+      steg2.append(el('div', 'byggkarta__stegrubrik', 'Agenten ritar på ditt grafikkort'));
+      const steg3 = el('li');
+      steg3.append(el('div', 'byggkarta__stegrubrik', 'En människa granskar. Sedan syns ditt namn.'));
+      steg.append(steg1, steg2, steg3);
+      delar.push(steg);
+
+      // Kraven fälls ihop: sammanfattningen säger det viktigaste, listan resten.
+      const behov = el('details', 'byggkarta__behov');
+      const sammanfattning = el('summary');
+      sammanfattning.append(el('span', undefined, 'Det här behövs'), el('span', 'byggkarta__kort', 'NVIDIA-kort, GitHub' + (kalla(rad.id) === 'google' ? ', Cesium' : '')));
+      const lista = el('ul', 'byggkarta__krav');
+      for (const k of krav(rad.id)) lista.append(el('li', undefined, k));
+      const lank = el('a', undefined, 'Allt som krävs, i repot →');
+      lank.href = `${REPO}#what-you-need`;
+      lank.rel = 'noopener';
+      behov.append(sammanfattning, lista);
+      if (kalla(rad.id) === 'google') behov.append(el('p', 'byggkarta__not', 'Ritas från Googles 3D-bilder, genom ditt eget Cesium-konto.'));
+      behov.append(lank);
+      delar.push(behov);
     }
     panel.replaceChildren(...delar);
     panel.hidden = false;
