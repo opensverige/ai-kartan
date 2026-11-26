@@ -5,8 +5,11 @@
 //
 //   npm run delalank -- berget-ai accounted      en eller flera organisationer
 //   node scripts/delalank.mjs --nya <före> <efter>   de som lagts till mellan två commits
+//   --arende                                     texten till tipsärendet i stället för pull requesten
 //
 // Skriver markdown till terminalen. Finns inget att säga skrivs ingenting.
+// Pull requestens kommentar är till den som granskar och har ett meddelande att skicka vidare.
+// Tipsärendets kommentar är till den som tipsade, ofta organisationen själv.
 // Enskilda firmor hoppas över: namnet är en personuppgift och ska inte stå kvar i en kommentar.
 
 import { execFileSync } from 'node:child_process';
@@ -18,7 +21,8 @@ const SAJT = (process.env.SITE_URL || 'https://karta.opensverige.se').replace(/\
 // redan ligger inne och är aldrig ett villkor för att komma med.
 const REPO = 'https://github.com/opensverige/ai-kartan';
 const ID = /^[a-z0-9]+(-[a-z0-9]+)*$/;
-const argv = process.argv.slice(2);
+const tillArende = process.argv.includes('--arende');
+const argv = process.argv.slice(2).filter((a) => a !== '--arende');
 
 /** Id för de organisationsfiler som finns i efter men inte i före. */
 function nya(fore, efter) {
@@ -37,6 +41,14 @@ function stycke(radnamn, id) {
   const namn = radnamn.replace(/\s+/g, ' ').replace(/@/g, '@\u200b');
   const sida = `${SAJT}/organisation/${id}`;
   const lank = delalank(sida);
+  if (tillArende) {
+    return [
+      `### ${namn}`,
+      '',
+      `- Sidan: ${sida}`,
+      `- Är det ni? Den här länken öppnar sidan med en färdig text att dela: ${lank}`,
+    ].join('\n');
+  }
   return [
     `### ${namn}`,
     '',
@@ -71,6 +83,11 @@ for (const id of onskade) {
 }
 
 if (stycken.length) {
-  const rubrik = iNyaLage ? 'Nu på kartan. Länken öppnar organisationens sida med delningsbladet framme, i vi-form.\n\n' : '';
-  console.log(`${rubrik}${stycken.join('\n\n')}`);
+  if (tillArende) {
+    const fot = `Stämmer något inte? Svara här, eller rätta via ${SAJT}/bidra#ratta.`;
+    console.log(`Nu på kartan.\n\n${stycken.join('\n\n')}\n\n${fot}`);
+  } else {
+    const rubrik = iNyaLage ? 'Nu på kartan. Länken öppnar organisationens sida med delningsbladet framme, i vi-form.\n\n' : '';
+    console.log(`${rubrik}${stycken.join('\n\n')}`);
+  }
 }
