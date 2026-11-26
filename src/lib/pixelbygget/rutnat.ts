@@ -132,10 +132,11 @@ export function kartbild(bilder: string, blad: string, utgava: number): string {
 
 /** Vad ett blad ritas från. Googles 3D-bilder kräver byggarens eget Cesium-konto. */
 export type Kalla = 'oppen' | 'google';
-const KALLOR: Record<string, Kalla> = { 'stockholm-norr': 'google' };
+// Bara Göteborg ritas från öppna flygfoton. Alla andra blad, också nya orter, ritas från Google.
+const OPPNA: readonly string[] = ['goteborg-norr'];
 
 export function kalla(blad: string): Kalla {
-  return KALLOR[blad] ?? 'oppen';
+  return OPPNA.includes(blad) ? 'oppen' : 'google';
 }
 
 const KRAV_ALLTID: readonly string[] = [
@@ -157,12 +158,20 @@ export function agentrad(blad: string, kol: number, rad: number): string {
   return `Klona ${REPO.replace('https://', '')}. Läs AGENTS.md. Bygg ruta ${blad} ${kol}_${rad}.`;
 }
 
+/**
+ * Raden för den som vill rita mer än en ruta. AGENTS.md låter agenten ta en ruta i taget och
+ * sedan nästa bredvid (rutor claim --next), högst fem som väntar på granskning.
+ */
+export function agentradFler(blad: string, kol: number, rad: number): string {
+  return `Klona ${REPO.replace('https://', '')}. Läs AGENTS.md. Bygg ruta ${blad} ${kol}_${rad} och sedan rutorna bredvid, en i taget.`;
+}
+
 const TEXT: Record<Lage, { namn: string; mening: string }> = {
-  fri: { namn: 'Ledig', mening: 'Marken saknas på kartan. Ingen har tagit rutan än.' },
-  last: { namn: 'Låst', mening: 'Någon bygger rutan just nu.' },
-  vantar: { namn: 'Väntar', mening: 'Rutan är uppladdad och granskas av en människa.' },
-  godkand: { namn: 'Godkänd', mening: 'Rutan är godkänd och tänds när kartan uppdateras.' },
-  live: { namn: 'Tänd', mening: 'Rutan ligger på kartan.' },
+  fri: { namn: 'Ledig', mening: 'Ingen har ritat rutan än. Den kan bli din.' },
+  last: { namn: 'Upptagen', mening: 'Någon ritar rutan just nu.' },
+  vantar: { namn: 'Granskas', mening: 'Rutan är inskickad. En människa tittar på den.' },
+  godkand: { namn: 'Godkänd', mening: 'Rutan syns på kartan vid nästa uppdatering.' },
+  live: { namn: 'Ritad', mening: 'Rutan finns på kartan.' },
 };
 
 export function lage(namn: string): { namn: string; mening: string } {
