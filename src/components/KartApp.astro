@@ -924,7 +924,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         : '';
       return (
         `<article class="detalj" style="--f:${FARG[o.t] || FARG.bolag}">` +
-        `<div class="detalj__banner"><button type="button" class="rundknapp" data-tillbaka aria-label="Tillbaka till listan">${ikon('vanster', 20)}</button></div>` +
+        `<div class="detalj__banner"><button type="button" class="rundknapp" data-tillbaka aria-label="Tillbaka till listan">${ikon('vanster', 20)}</button>${stegHtml(o)}</div>` +
         `<div class="detalj__kropp">${logoHtml(o, 'logo--stor')}` +
         `<h2 class="detalj__namn" tabindex="-1">${esc(o.n)}</h2>` +
         `<p class="detalj__text">${esc(o.d)}</p>` +
@@ -943,6 +943,38 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         `<a class="detalj__cta" href="${orgbas}${encodeURIComponent(o.id)}">Källor och belägg ${ikon('hoger', 18)}</a></div>` +
         `</article>`
       );
+    }
+
+    /**
+     * Föregående och nästa i urvalet, i listans ordning, med var i listan man är. Så går det att
+     * gå igenom en kategori eller en plats utan att se listan. Piltangenterna gör samma sak.
+     * Står organisationen inte i urvalet, eller är den ensam där, finns inget att stega i.
+     */
+    function stegHtml(o: Rad): string {
+      const ordning = sorterat();
+      const i = ordning.findIndex((x) => x.id === o.id);
+      if (i < 0 || ordning.length < 2) return '';
+      const n = ordning.length;
+      const fore = ordning[(i - 1 + n) % n];
+      const efter = ordning[(i + 1) % n];
+      return (
+        `<div class="detalj__steg" role="group" aria-label="Bläddra i urvalet">` +
+        `<button type="button" class="rundknapp" data-steg="-1" aria-label="Föregående: ${esc(fore.n)}" title="Föregående (←)">${ikon('vanster', 18)}</button>` +
+        `<span class="detalj__stegtal">${i + 1} av ${n}</span>` +
+        `<button type="button" class="rundknapp" data-steg="1" aria-label="Nästa: ${esc(efter.n)}" title="Nästa (→)">${ikon('hoger', 18)}</button>` +
+        `</div>`
+      );
+    }
+
+    /** Öppnar organisationen före eller efter den som visas, runt i urvalet. */
+    function stegaDetalj(steg: number, fokusKnapp: boolean) {
+      if (!valdId) return;
+      const ordning = sorterat();
+      const i = ordning.findIndex((x) => x.id === valdId);
+      if (i < 0 || ordning.length < 2) return;
+      visaDetalj(ordning[(i + steg + ordning.length) % ordning.length]);
+      // Den som trycker på knappen ska kunna trycka igen. Detaljvyn ritas om, så fokus läggs tillbaka.
+      if (fokusKnapp) vyDetalj?.querySelector<HTMLElement>(`[data-steg="${steg}"]`)?.focus({ preventScroll: true });
     }
 
     function visaDetalj(o: Rad, flyg = true, nyPost = true) {
@@ -2303,6 +2335,8 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       if (brodKnapp) return sattPlats(brodKnapp.dataset.brod === 'lan' ? lasFilter().lan : '');
 
       if (mal.closest('[data-tillbaka]')) return detaljIHistorik ? history.back() : stangDetalj();
+      const stegKnapp = mal.closest<HTMLElement>('[data-steg]');
+      if (stegKnapp) return stegaDetalj(Number(stegKnapp.dataset.steg), true);
       if (mal.closest('[data-ladda-om]')) return location.reload();
 
       // Kort i listan öppnar detaljvyn på kartsidan. Med ctrl, cmd eller mittenklick
@@ -2414,6 +2448,18 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       // Sist i raden: stänger något annat på samma tryck (sökrutan, menyn) står vyn kvar.
       const menyOppen = !!document.querySelector('details[open].meny, .meny[open]');
       if (medlemslage && !e.defaultPrevented && !menyOppen) sattMedlemsvy(false);
+    });
+
+    // Vänster och höger går till föregående och nästa organisation när en är öppen. Inte i ett fält,
+    // inte när kartan har fokus (där flyttar pilarna kartan), och inte när en dialog är öppen.
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+      if (!vyDetalj || vyDetalj.hidden || e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+      const mal = e.target instanceof Element ? e.target : null;
+      if (mal?.closest('input, textarea, select, [contenteditable="true"], .maplibregl-canvas, .fpill--oppen')) return;
+      if (document.querySelector('dialog[open]')) return;
+      e.preventDefault();
+      stegaDetalj(e.key === 'ArrowRight' ? 1 : -1, false);
     });
 
     // Greppet går både att trycka på och att svepa upp eller ner.
@@ -3145,6 +3191,34 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     background:
       radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--f) 30%, transparent) 1.2px, transparent 0) 0 0 / 15px 15px,
       linear-gradient(135deg, color-mix(in srgb, var(--f) 26%, hsl(var(--yta))), color-mix(in srgb, var(--f) 8%, hsl(var(--yta))));
+  }
+  .detalj__steg {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 3px;
+    border-radius: 999px;
+    background: hsl(var(--yta-kort));
+    box-shadow: var(--skugga-flyt);
+  }
+  .detalj__steg .rundknapp {
+    width: 38px;
+    height: 38px;
+    background: none;
+    box-shadow: none;
+  }
+  .detalj__steg .rundknapp:hover {
+    background: hsl(var(--yta-chip));
+  }
+  .detalj__stegtal {
+    min-width: 4.6em;
+    color: hsl(var(--ink-mute));
+    font: 500 13px/1 var(--font-sans);
+    font-variant-numeric: tabular-nums;
+    text-align: center;
   }
   .detalj__kropp {
     flex: 1;
