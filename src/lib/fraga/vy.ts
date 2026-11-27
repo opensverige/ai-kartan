@@ -6,6 +6,7 @@
 import { normalisera } from '../sok.ts';
 import type { Etiketter } from '../sokindex.ts';
 import { arInfrafraga } from './forfilter.ts';
+import { forstaGrupp, platsvikt } from './ordning.ts';
 import type { Platsrad } from './kartgranssnitt.ts';
 import { MAX_TECKEN, type Kunskap, type Modellfelsort, type Svar } from './typer.ts';
 
@@ -131,30 +132,39 @@ function skalUnder(o: Radpost, skal: readonly string[]): string {
   return esc([skal.length ? `Matchar ${skal.join(' · ')}` : '', o.d ?? ''].filter(Boolean).join(' · '));
 }
 
-/** Medan man skriver: Fråga AI överst, sedan organisationer och platser ur kartans egen sökning. */
+/**
+ * Medan man skriver: Fråga AI, organisationer och platser ur kartans egen sökning. Vilken grupp som
+ * står först, och som Enter därför väljer, avgör ordning.ts. En plats som heter så står först, en
+ * fråga ger Fråga AI först. Fråga AI finns alltid kvar, sist när något annat står först.
+ */
 export function forslagHtml(q: string, org: readonly Radpost[], platser: readonly Platsrad[], e: Vyetiketter, l: Lankar): string {
   const fraga = q.trim();
   const forLang = fraga.length > MAX_TECKEN;
   const forsta = fraga.split(/\s+/)[0] ?? '';
-  const delar = [
+  const grupp = forstaGrupp(fraga, org.map((o) => o.n), platser.map((p) => p.namn));
+  // Platsen som heter exakt det man skrev står först: "Stockholm" är kommunen före länet.
+  const platsordning = [...platser].sort((a, b) => platsvikt(fraga, b.namn) - platsvikt(fraga, a.namn));
+  const ai = [
     `<div class="palett-rad palett-rad--ai" role="option" aria-selected="false" data-fraga${forLang ? ' aria-disabled="true"' : ''}>` +
       `<span class="palett-rad__ikon palett-rad__ikon--ai" aria-hidden="true">✦</span>` +
       `<span class="palett-rad__text"><span class="palett-rad__namn">Fråga AI <span class="palett-rad__fraga">”${esc(fraga)}”</span></span>` +
       `<span class="palett-rad__under">${forLang ? 'Frågan är för lång. Korta den lite.' : 'Svarar med organisationer på kartan, med källor'}</span></span>` +
       `<kbd class="palett-rad__tangent" aria-hidden="true">↵</kbd></div>`,
   ];
-  if (arInfrafraga(fraga)) delar.push(infraradHtml(l));
+  if (arInfrafraga(fraga)) ai.push(infraradHtml(l));
+  const orgdel: string[] = [];
   if (org.length) {
-    delar.push(
+    orgdel.push(
       `<div role="group" aria-label="Organisationer"><p class="palett__rubrik" aria-hidden="true">Organisationer</p>` +
         org.map((o) => radHtml(o, utdrag(o.d ?? '', forsta), e)).join('') +
         `</div>`,
     );
   }
-  if (platser.length) {
-    delar.push(
+  const platsdel: string[] = [];
+  if (platsordning.length) {
+    platsdel.push(
       `<div role="group" aria-label="Platser"><p class="palett__rubrik" aria-hidden="true">Platser</p>` +
-        platser
+        platsordning
           .map(
             (p) =>
               `<div class="palett-rad" role="option" aria-selected="false" data-plats="${esc(p.typ)}:${esc(p.kod)}">` +
@@ -166,6 +176,8 @@ export function forslagHtml(q: string, org: readonly Radpost[], platser: readonl
         `</div>`,
     );
   }
+  const delar =
+    grupp === 'plats' ? [...platsdel, ...orgdel, ...ai] : grupp === 'org' ? [...orgdel, ...platsdel, ...ai] : [...ai, ...orgdel, ...platsdel];
   return `<div class="palett-rader" id="palett-lista" role="listbox" aria-label="Förslag">${delar.join('')}</div>`;
 }
 

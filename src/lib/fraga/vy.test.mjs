@@ -68,6 +68,25 @@ test('förslagen: Fråga AI först, sedan organisationer och platser', () => {
   assert.ok(!h.includes('aria-disabled'));
 });
 
+test('förslagen: ett ortnamn ger platsen först, kommunen före länet, och Fråga AI sist', () => {
+  const platser = [
+    { typ: 'lan', kod: '01', namn: 'Stockholms län', under: 'Län', antal: 158 },
+    { typ: 'kommun', kod: '0180', namn: 'Stockholm', under: 'Stockholms län', antal: 120 },
+  ];
+  const h = forslagHtml('Stockholm', [POST], platser, E, L);
+  assert.ok(h.indexOf('data-plats="kommun:0180"') < h.indexOf('data-plats="lan:01"'));
+  assert.ok(h.indexOf('data-plats="lan:01"') < h.indexOf('Sinch'));
+  assert.ok(h.indexOf('Sinch') < h.indexOf('Fråga AI'));
+  // En fråga om samma ort ger Fråga AI först.
+  const f = forslagHtml('vilka bygger AI i Stockholm', [POST], platser, E, L);
+  assert.ok(f.indexOf('Fråga AI') < f.indexOf('data-plats'));
+});
+
+test('förslagen: ett organisationsnamn ger organisationen först', () => {
+  const h = forslagHtml('Sinch', [POST], [], E, L);
+  assert.ok(h.indexOf('Sinch') < h.indexOf('Fråga AI'));
+});
+
 test('en för lång fråga kan inte väljas', () => {
   const h = forslagHtml('a'.repeat(301), [], [], E, L);
   assert.ok(h.includes('aria-disabled="true"'));
