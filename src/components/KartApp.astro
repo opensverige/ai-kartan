@@ -336,6 +336,8 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     const MITT_UTZOOMAD: [[number, number], [number, number]] = [[-15, 59.5], [26, 66.5]];
     const MITT_INZOOMAD: [[number, number], [number, number]] = [[-25, 54.5], [32, 71]];
     const STORSTA_ZOOM = 14;
+    /** En hel stad i bild. Dit backar Rensa från gatan. */
+    const STADSZOOM = 11;
     let zoomgolv = 2;
     const FACETTER: FacettNamn[] = ['erbjuder', 'typ', 'omrade', 'lan'];
     const stdRubrik = rubrik?.textContent ?? '';
@@ -758,12 +760,31 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       if (vad === 'alla') {
         for (const namn of ['erbjuder', 'typ', 'omrade']) sattVal(namn, []);
         if (sokFalt) sokFalt.value = '';
-        sattPlats('');
+        sattPlats('', '', true);
+        backaUt();
         return;
       }
-      if (vad === 'lan') return sattPlats('');
+      if (vad === 'lan') {
+        sattPlats('', '', true);
+        backaUt();
+        return;
+      }
       sattVal(vad, []);
       filtrera();
+    }
+
+    /**
+     * Rensa backar en bit från där man är, i stället för att flyga ut till hela Sverige. Från
+     * gatan landar man i staden, från staden i trakten runt den. Aldrig längre ut än golvet, och
+     * aldrig in. Brödsmulan Sverige går fortfarande till hela landet.
+     */
+    function backaUt() {
+      if (!karta || !kartaKlar) return;
+      const z = karta.getZoom();
+      const mal = Math.max(zoomgolv, Math.min(z - 2, STADSZOOM));
+      if (mal >= z) return;
+      const lugn = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      karta.easeTo({ zoom: mal, duration: lugn ? 0 : 900 }, AV_KOD);
     }
 
     /* ---------- Lista ---------- */
@@ -3967,9 +3988,10 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     .app[data-lage='karta'] {
       display: block;
       position: relative;
-      /* Så mycket av bladet syns i det nedfällda läget: handtag, rubrik, två rader text och frågorna.
+      /* Så mycket av bladet syns i det nedfällda läget: handtag, rubrik och en rad text. Resten av
+         skärmen är kartan. Frågorna står i bladets inledning när det fälls upp.
          Kartans marginal, knapparna och källraden räknar med samma tal. */
-      --titt-h: 148px;
+      --titt-h: 84px;
     }
     .app[data-lage='karta'] .kartyta {
       position: absolute;
@@ -4030,11 +4052,11 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       font: 400 13.5px/1.4 var(--font-sans);
       letter-spacing: 0;
       -webkit-box-orient: vertical;
-      -webkit-line-clamp: 2;
+      -webkit-line-clamp: 1;
     }
-    .fragor--titt {
-      flex: none;
-      margin-top: 8px;
+    /* Frågorna tar en rad av kartan i det nedfällda läget. De står i bladets inledning. */
+    .app[data-lage='karta'] .fragor--titt {
+      display: none;
     }
     /* Uppfällt är greppet bara vägen tillbaka till kartan. Frågorna står då i bladets inledning. */
     .panel[data-blad='oppen'] .titt {
@@ -4046,9 +4068,14 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       font: 600 15px/1.2 var(--font-sans);
       letter-spacing: 0;
     }
-    .panel[data-blad='oppen'] .panel__greppnot,
-    .panel[data-blad='oppen'] .fragor--titt {
+    .panel[data-blad='oppen'] .panel__greppnot {
       display: none;
+    }
+    /* På en pekskärm zoomar fingrarna. Plus och minus tar bara kartyta. */
+    @media (pointer: coarse) {
+      .kartknappar__grupp {
+        display: none;
+      }
     }
     /* Tryckytor på minst 44 px, och 16 px text i fält så att iOS inte zoomar in. */
     .ikonknapp {
@@ -4103,11 +4130,14 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     }
 
     /* Filterraden: bara Filter och Bekräftat syns. Facetterna ligger i ett blad. */
+    /* Rensa står bredvid Filter, inte på en egen rad under. Kartan får raden. */
     .app[data-lage='karta'] .filteryta {
       top: 12px;
       left: 12px;
       right: 12px;
-      align-items: flex-start;
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
     }
     /* Ingen egen staplingsordning här: filterbladet ska kunna lägga sig över bottenbladet. */
     .filterrad {
