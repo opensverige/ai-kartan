@@ -93,9 +93,39 @@ evidence:
     status: claimed
     verified_at: 2026-10-04
     verified_by: agent
+  - url: https://www.knowit.se/kunder/ai-applikationen-som-gor-50-000-produkter-hanterbara-for-procurator/
+    kind: case
+    title: "Case: AI-applikation för produktinformation åt Procurator"
+    status: claimed
+    verified_at: 2026-11-12
+    verified_by: agent
+  - url: https://www.knowit.se/kunder/boxon-revolutionerar-forpackningsindustrin-med-ai-boten-aiden/
+    kind: case
+    title: "Case: AI-boten AIDEN för förpackningsrekommendationer åt Boxon"
+    status: claimed
+    verified_at: 2026-11-12
+    verified_by: agent
+  - url: https://www.knowit.se/kunder/ai-och-automatisering-sparar-tid-i-aterkommande-moment/
+    kind: case
+    title: "Case: digital assistent för utkast till handlingar åt Familjens Jurist"
+    status: claimed
+    verified_at: 2026-11-12
+    verified_by: agent
+  - url: https://www.knowit.se/kunder/ai-driven-bevakning-av-kritisk-infrastruktur/
+    kind: case
+    title: "Case: Yggdrasil, maskininlärning för bevakning av kritisk infrastruktur"
+    status: claimed
+    verified_at: 2026-11-12
+    verified_by: agent
+  - url: https://www.knowit.se/kunder/ny-teknik-for-starkt-skydd-och-framtida-forsvarsformaga/
+    kind: case
+    title: "Case: Yggdrasil i konceptprövning av perimeterskydd åt Flygvapnet"
+    status: claimed
+    verified_at: 2026-11-12
+    verified_by: agent
 
 links:
   linkedin: https://www.linkedin.com/company/knowit
 
 record_created_at: 2026-10-04
-record_updated_at: 2026-10-04
+record_updated_at: 2026-11-12
