@@ -284,6 +284,18 @@
       },
       "erbjuder": {},
       "lan": {}
+    },
+    "2026-11-26": {
+      "fragor": 1,
+      "modellen_svarade": 1,
+      "svar": {
+        "utanfor": 1
+      },
+      "modellfel": {},
+      "omrade": {},
+      "typ": {},
+      "erbjuder": {},
+      "lan": {}
     }
   },
   "luckor": [
