@@ -336,6 +336,8 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     const MITT_UTZOOMAD: [[number, number], [number, number]] = [[-15, 59.5], [26, 66.5]];
     const MITT_INZOOMAD: [[number, number], [number, number]] = [[-25, 54.5], [32, 71]];
     const STORSTA_ZOOM = 14;
+    /** En hel stad i bild. Dit backar Rensa från gatan. */
+    const STADSZOOM = 11;
     let zoomgolv = 2;
     const FACETTER: FacettNamn[] = ['erbjuder', 'typ', 'omrade', 'lan'];
     const stdRubrik = rubrik?.textContent ?? '';
@@ -758,12 +760,31 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       if (vad === 'alla') {
         for (const namn of ['erbjuder', 'typ', 'omrade']) sattVal(namn, []);
         if (sokFalt) sokFalt.value = '';
-        sattPlats('');
+        sattPlats('', '', true);
+        backaUt();
         return;
       }
-      if (vad === 'lan') return sattPlats('');
+      if (vad === 'lan') {
+        sattPlats('', '', true);
+        backaUt();
+        return;
+      }
       sattVal(vad, []);
       filtrera();
+    }
+
+    /**
+     * Rensa backar en bit från där man är, i stället för att flyga ut till hela Sverige. Från
+     * gatan landar man i staden, från staden i trakten runt den. Aldrig längre ut än golvet, och
+     * aldrig in. Brödsmulan Sverige går fortfarande till hela landet.
+     */
+    function backaUt() {
+      if (!karta || !kartaKlar) return;
+      const z = karta.getZoom();
+      const mal = Math.max(zoomgolv, Math.min(z - 2, STADSZOOM));
+      if (mal >= z) return;
+      const lugn = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      karta.easeTo({ zoom: mal, duration: lugn ? 0 : 900 }, AV_KOD);
     }
 
     /* ---------- Lista ---------- */
@@ -903,7 +924,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         : '';
       return (
         `<article class="detalj" style="--f:${FARG[o.t] || FARG.bolag}">` +
-        `<div class="detalj__banner"><button type="button" class="rundknapp" data-tillbaka aria-label="Tillbaka till listan">${ikon('vanster', 20)}</button></div>` +
+        `<div class="detalj__banner"><button type="button" class="rundknapp" data-tillbaka aria-label="Tillbaka till listan">${ikon('vanster', 20)}</button>${stegHtml(o)}</div>` +
         `<div class="detalj__kropp">${logoHtml(o, 'logo--stor')}` +
         `<h2 class="detalj__namn" tabindex="-1">${esc(o.n)}</h2>` +
         `<p class="detalj__text">${esc(o.d)}</p>` +
@@ -922,6 +943,38 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         `<a class="detalj__cta" href="${orgbas}${encodeURIComponent(o.id)}">Källor och belägg ${ikon('hoger', 18)}</a></div>` +
         `</article>`
       );
+    }
+
+    /**
+     * Föregående och nästa i urvalet, i listans ordning, med var i listan man är. Så går det att
+     * gå igenom en kategori eller en plats utan att se listan. Piltangenterna gör samma sak.
+     * Står organisationen inte i urvalet, eller är den ensam där, finns inget att stega i.
+     */
+    function stegHtml(o: Rad): string {
+      const ordning = sorterat();
+      const i = ordning.findIndex((x) => x.id === o.id);
+      if (i < 0 || ordning.length < 2) return '';
+      const n = ordning.length;
+      const fore = ordning[(i - 1 + n) % n];
+      const efter = ordning[(i + 1) % n];
+      return (
+        `<div class="detalj__steg" role="group" aria-label="Bläddra i urvalet">` +
+        `<button type="button" class="rundknapp" data-steg="-1" aria-label="Föregående: ${esc(fore.n)}" title="Föregående (←)">${ikon('vanster', 18)}</button>` +
+        `<span class="detalj__stegtal">${i + 1} av ${n}</span>` +
+        `<button type="button" class="rundknapp" data-steg="1" aria-label="Nästa: ${esc(efter.n)}" title="Nästa (→)">${ikon('hoger', 18)}</button>` +
+        `</div>`
+      );
+    }
+
+    /** Öppnar organisationen före eller efter den som visas, runt i urvalet. */
+    function stegaDetalj(steg: number, fokusKnapp: boolean) {
+      if (!valdId) return;
+      const ordning = sorterat();
+      const i = ordning.findIndex((x) => x.id === valdId);
+      if (i < 0 || ordning.length < 2) return;
+      visaDetalj(ordning[(i + steg + ordning.length) % ordning.length]);
+      // Den som trycker på knappen ska kunna trycka igen. Detaljvyn ritas om, så fokus läggs tillbaka.
+      if (fokusKnapp) vyDetalj?.querySelector<HTMLElement>(`[data-steg="${steg}"]`)?.focus({ preventScroll: true });
     }
 
     function visaDetalj(o: Rad, flyg = true, nyPost = true) {
@@ -2282,6 +2335,8 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       if (brodKnapp) return sattPlats(brodKnapp.dataset.brod === 'lan' ? lasFilter().lan : '');
 
       if (mal.closest('[data-tillbaka]')) return detaljIHistorik ? history.back() : stangDetalj();
+      const stegKnapp = mal.closest<HTMLElement>('[data-steg]');
+      if (stegKnapp) return stegaDetalj(Number(stegKnapp.dataset.steg), true);
       if (mal.closest('[data-ladda-om]')) return location.reload();
 
       // Kort i listan öppnar detaljvyn på kartsidan. Med ctrl, cmd eller mittenklick
@@ -2393,6 +2448,18 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       // Sist i raden: stänger något annat på samma tryck (sökrutan, menyn) står vyn kvar.
       const menyOppen = !!document.querySelector('details[open].meny, .meny[open]');
       if (medlemslage && !e.defaultPrevented && !menyOppen) sattMedlemsvy(false);
+    });
+
+    // Vänster och höger går till föregående och nästa organisation när en är öppen. Inte i ett fält,
+    // inte när kartan har fokus (där flyttar pilarna kartan), och inte när en dialog är öppen.
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+      if (!vyDetalj || vyDetalj.hidden || e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+      const mal = e.target instanceof Element ? e.target : null;
+      if (mal?.closest('input, textarea, select, [contenteditable="true"], .maplibregl-canvas, .fpill--oppen')) return;
+      if (document.querySelector('dialog[open]')) return;
+      e.preventDefault();
+      stegaDetalj(e.key === 'ArrowRight' ? 1 : -1, false);
     });
 
     // Greppet går både att trycka på och att svepa upp eller ner.
@@ -3124,6 +3191,34 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     background:
       radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--f) 30%, transparent) 1.2px, transparent 0) 0 0 / 15px 15px,
       linear-gradient(135deg, color-mix(in srgb, var(--f) 26%, hsl(var(--yta))), color-mix(in srgb, var(--f) 8%, hsl(var(--yta))));
+  }
+  .detalj__steg {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 3px;
+    border-radius: 999px;
+    background: hsl(var(--yta-kort));
+    box-shadow: var(--skugga-flyt);
+  }
+  .detalj__steg .rundknapp {
+    width: 38px;
+    height: 38px;
+    background: none;
+    box-shadow: none;
+  }
+  .detalj__steg .rundknapp:hover {
+    background: hsl(var(--yta-chip));
+  }
+  .detalj__stegtal {
+    min-width: 4.6em;
+    color: hsl(var(--ink-mute));
+    font: 500 13px/1 var(--font-sans);
+    font-variant-numeric: tabular-nums;
+    text-align: center;
   }
   .detalj__kropp {
     flex: 1;
@@ -3967,9 +4062,10 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     .app[data-lage='karta'] {
       display: block;
       position: relative;
-      /* Så mycket av bladet syns i det nedfällda läget: handtag, rubrik, två rader text och frågorna.
+      /* Så mycket av bladet syns i det nedfällda läget: handtag, rubrik och en rad text. Resten av
+         skärmen är kartan. Frågorna står i bladets inledning när det fälls upp.
          Kartans marginal, knapparna och källraden räknar med samma tal. */
-      --titt-h: 148px;
+      --titt-h: 84px;
     }
     .app[data-lage='karta'] .kartyta {
       position: absolute;
@@ -4030,11 +4126,11 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       font: 400 13.5px/1.4 var(--font-sans);
       letter-spacing: 0;
       -webkit-box-orient: vertical;
-      -webkit-line-clamp: 2;
+      -webkit-line-clamp: 1;
     }
-    .fragor--titt {
-      flex: none;
-      margin-top: 8px;
+    /* Frågorna tar en rad av kartan i det nedfällda läget. De står i bladets inledning. */
+    .app[data-lage='karta'] .fragor--titt {
+      display: none;
     }
     /* Uppfällt är greppet bara vägen tillbaka till kartan. Frågorna står då i bladets inledning. */
     .panel[data-blad='oppen'] .titt {
@@ -4046,9 +4142,14 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       font: 600 15px/1.2 var(--font-sans);
       letter-spacing: 0;
     }
-    .panel[data-blad='oppen'] .panel__greppnot,
-    .panel[data-blad='oppen'] .fragor--titt {
+    .panel[data-blad='oppen'] .panel__greppnot {
       display: none;
+    }
+    /* På en pekskärm zoomar fingrarna. Plus och minus tar bara kartyta. */
+    @media (pointer: coarse) {
+      .kartknappar__grupp {
+        display: none;
+      }
     }
     /* Tryckytor på minst 44 px, och 16 px text i fält så att iOS inte zoomar in. */
     .ikonknapp {
@@ -4103,11 +4204,14 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     }
 
     /* Filterraden: bara Filter och Bekräftat syns. Facetterna ligger i ett blad. */
+    /* Rensa står bredvid Filter, inte på en egen rad under. Kartan får raden. */
     .app[data-lage='karta'] .filteryta {
       top: 12px;
       left: 12px;
       right: 12px;
-      align-items: flex-start;
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
     }
     /* Ingen egen staplingsordning här: filterbladet ska kunna lägga sig över bottenbladet. */
     .filterrad {

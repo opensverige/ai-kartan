@@ -79,7 +79,11 @@ const citat = `OpenSverige AI-kartan, ”${org.name.value}”, hämtad ${idag}, 
       <p class="org__beskrivning">{org.description.value} <StatusMarke status={org.description.status} kort /></p>
       <p class="rad">
         <a class="knapp knapp--ghost knapp--liten" href={org.website} rel="noopener">{org.website.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}</a>
-        {org.h.position && <a class="knapp knapp--ghost knapp--liten ej-utskrift" href={url(`/?org=${org.id}#karta`)}>Visa på kartan</a>}
+        {org.h.position && (
+          <a class="knapp knapp--ghost knapp--liten org__kartknapp ej-utskrift" href={url(`/?org=${org.id}#karta`)} aria-label="Visa på kartan" title="Visa på kartan">
+            <Fragment set:html={ikon('karta', 16)} />
+          </a>
+        )}
         {org.links?.github && <a class="knapp knapp--ghost knapp--liten" href={org.links.github} rel="noopener">GitHub</a>}
         {org.links?.huggingface && <a class="knapp knapp--ghost knapp--liten" href={org.links.huggingface} rel="noopener">Hugging Face</a>}
         {org.links?.linkedin && <a class="knapp knapp--ghost knapp--liten" href={org.links.linkedin} rel="noopener">LinkedIn</a>}
@@ -87,6 +91,11 @@ const citat = `OpenSverige AI-kartan, ”${org.name.value}”, hämtad ${idag}, 
           <Fragment set:html={ikon('dela', 15)} /> Dela
         </button>
       </p>
+      {/* Det tända huset i pixelstaden, när organisationen har ett. Skriptet nedan fyller i det. */}
+      <a class="orghus ej-utskrift" id="orghus" href={url(`/?org=${org.id}#karta`)} data-org={org.id} hidden>
+        <span class="orghus__fonster" id="orghus-fonster" aria-hidden="true"></span>
+        <span class="orghus__text"><strong>Huset lyser i <span id="orghus-stad"></span></strong><span>Visa det på kartan →</span></span>
+      </a>
       {nedlagd && <div class="notis notis--rust"><strong>Markerad som nedlagd eller avregistrerad.</strong> Posten ligger kvar tills den tas bort, så att historiken behålls.</div>}
       {gammal && <div class="notis"><strong>Inte omkontrollerad på över 180 dagar.</strong> Uppgifterna kan vara inaktuella. <a href={rattelseUrl} rel="noopener">Hjälp till att kontrollera.</a></div>}
     </header>
@@ -201,6 +210,66 @@ const citat = `OpenSverige AI-kartan, ”${org.name.value}”, hämtad ${idag}, 
 </Bas>
 
 <script>
+  import { husutsnitt } from '../../lib/pixelkarta/husbild';
+  import type { Kartfil } from '../../lib/pixelkarta/geometri';
+
+  // Pixelkartans tända hus. Bara när pixelkartan är påslagen vid bygget och bildtjänsten svarar.
+  // Annars står sidan som förut, utan besked.
+  const BILDER: string | undefined = import.meta.env.PUBLIC_PIXELKARTA_URL;
+  const orghus = document.getElementById('orghus') as HTMLAnchorElement | null;
+  if (BILDER && orghus?.dataset.org) {
+    const id = orghus.dataset.org;
+    fetch(BILDER.replace(/\/+$/, '') + '/karta.json')
+      .then((svar) => (svar.ok ? (svar.json() as Promise<Kartfil>) : null))
+      .then((fil) => {
+        const u = fil ? husutsnitt(fil, id, BILDER) : null;
+        const fonster = document.getElementById('orghus-fonster');
+        const stad = document.getElementById('orghus-stad');
+        if (!u || !fonster || !stad) return;
+        const span = (klass: string, x: number, y: number, w: number, h: number): HTMLSpanElement => {
+          const el = document.createElement('span');
+          el.className = klass;
+          el.style.left = `${x}px`;
+          el.style.top = `${y}px`;
+          el.style.width = `${w}px`;
+          el.style.height = `${h}px`;
+          return el;
+        };
+        // Rutorna förskjutna så att (dx, dy) i utsnittet hamnar i lagrets övre vänstra hörn.
+        const rutor = (dx: number, dy: number): HTMLImageElement[] =>
+          u.rutor.map((r) => {
+            const img = document.createElement('img');
+            img.src = r.src;
+            img.alt = '';
+            img.decoding = 'async';
+            img.className = 'orghus__ruta';
+            img.style.left = `${r.x - dx}px`;
+            img.style.top = `${r.y - dy}px`;
+            return img;
+          });
+        // Elementen byggs här, så sidans stilar når dem bara som :global inom .orghus.
+        // Som på kartan: staden tonas ner, och huset lyser i färg genom sin form.
+        const yta = span('orghus__yta', 0, 0, u.bredd, u.hojd);
+        const stadslager = span('orghus__stad', 0, 0, u.bredd, u.hojd);
+        stadslager.append(...rutor(0, 0));
+        const sken = span('orghus__sken', u.hus.x, u.hus.y, u.hus.w, u.hus.h);
+        const hus = span('orghus__hus', 0, 0, u.hus.w, u.hus.h);
+        hus.style.maskImage = `url("${u.hus.src}")`;
+        hus.append(...rutor(u.hus.x, u.hus.y));
+        sken.append(hus);
+        yta.append(stadslager, sken);
+        fonster.style.setProperty('--b', String(u.bredd));
+        fonster.style.setProperty('--h', String(u.hojd));
+        fonster.replaceChildren(yta);
+        stad.textContent = u.stad;
+        orghus.hidden = false;
+        const skala = () => (yta.style.transform = `scale(${fonster.clientWidth / u.bredd})`);
+        new ResizeObserver(skala).observe(fonster);
+        skala();
+      })
+      .catch(() => {});
+  }
+
   const knapp = document.getElementById('kopiera') as HTMLButtonElement | null;
   knapp?.addEventListener('click', async () => {
     try {
@@ -216,6 +285,82 @@ const citat = `OpenSverige AI-kartan, ”${org.name.value}”, hämtad ${idag}, 
 <style>
   .brod {
     margin-bottom: 18px;
+  }
+  /* Kartan som ikon bland länkarna. Lika hög som knapparna med text. */
+  .org__kartknapp {
+    padding: 7px 9px;
+  }
+  /* Det tända huset: ett fönster ur pixelstaden med huset i mitten. Hela kortet går till kartan. */
+  .orghus {
+    display: grid;
+    gap: 10px;
+    width: min(100%, 480px);
+    margin-top: 18px;
+    color: inherit;
+    text-decoration: none;
+  }
+  .orghus[hidden] {
+    display: none;
+  }
+  .orghus__fonster {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    aspect-ratio: calc(var(--b, 480) / var(--h, 260));
+    border: 1px solid hsl(var(--kant));
+    border-radius: 16px;
+    background: hsl(var(--yta-chip));
+  }
+  /* Utsnittet är byggt för 480 punkter. I ett smalare fönster krymper skriptet det i samma proportion. */
+  .orghus :global(.orghus__yta) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform-origin: 0 0;
+  }
+  .orghus :global(.orghus__stad),
+  .orghus :global(.orghus__sken),
+  .orghus :global(.orghus__hus),
+  .orghus :global(.orghus__ruta) {
+    position: absolute;
+  }
+  .orghus :global(.orghus__ruta) {
+    max-width: none;
+    image-rendering: pixelated;
+  }
+  /* Staden tonas ner mot papper, som när en organisation väljs på kartan. */
+  .orghus :global(.orghus__stad) {
+    overflow: hidden;
+    filter: grayscale(0.85) brightness(1.12) contrast(0.85);
+    opacity: 0.7;
+  }
+  /* Huset i färg genom sin form, med ett ljust sken runt. Skenet sitter på ett eget lager:
+     en mask klipper bort det filter som sitter på samma element. */
+  .orghus :global(.orghus__sken) {
+    filter: drop-shadow(0 0 1.5px #fff) drop-shadow(0 0 7px hsl(45 100% 62%));
+    transition: filter 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .orghus:hover :global(.orghus__sken),
+  .orghus:focus-visible :global(.orghus__sken) {
+    filter: drop-shadow(0 0 2px #fff) drop-shadow(0 0 14px hsl(45 100% 62%));
+  }
+  .orghus :global(.orghus__hus) {
+    overflow: hidden;
+    mask-size: 100% 100%;
+    mask-repeat: no-repeat;
+  }
+  .orghus__text {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 4px 12px;
+    font-size: 15px;
+  }
+  .orghus__text span:last-child {
+    color: hsl(var(--ink-mute));
+  }
+  .orghus:hover .orghus__text span:last-child {
+    color: hsl(var(--ink));
   }
   .brod a {
     color: hsl(var(--ink-mute));
