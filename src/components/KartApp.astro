@@ -977,6 +977,11 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       if (fokusKnapp) vyDetalj?.querySelector<HTMLElement>(`[data-steg="${steg}"]`)?.focus({ preventScroll: true });
     }
 
+    /** Sant när organisationen har ett hus i en pixelstad som går att flyga in till. De i vattnet har inget. */
+    function harTantHus(id: string): boolean {
+      return !!pixel && pixel.narzoom(id) !== null && pixel.vatten(id) === null;
+    }
+
     function visaDetalj(o: Rad, flyg = true, nyPost = true) {
       if (!vyDetalj) return;
       lamnaMedlemsvy();
@@ -2076,7 +2081,9 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
           // Ett tryck till på den som redan är vald släpper valet, och kartan visas som vanligt igen.
           if (o.id === valdId && vyDetalj && !vyDetalj.hidden) return slappVald();
           handelser.orgOppnad('karta');
-          visaDetalj(o, false);
+          // En vanlig prick ligger redan där man tittar, så kartan står still. Har organisationen
+          // ett tänt hus flyger kartan in till det, som när den väljs i listan.
+          visaDetalj(o, harTantHus(o.id));
         });
         karta!.on('click', (e) => {
           const finns = (id: string) => !!karta!.getLayer(id);
