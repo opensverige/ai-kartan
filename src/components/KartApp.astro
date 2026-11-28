@@ -227,6 +227,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         </aside>
       )}
       <p class="karta__not meta">Fylld prick: exakt adress. Kontur: plats på kommunnivå. <a href={url('/metod#plats')}>Varför?</a></p>
+      <p class="karta__utanplats" id="utan-plats" role="status" hidden></p>
       <Fraga />
     </div>
   )}
@@ -321,6 +322,9 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     const medlemsknapp = app.querySelector<HTMLButtonElement>('#visa-medlemmar');
     const medlemskort = app.querySelector<HTMLElement>('#medlemskort');
     const medlemsdata = JSON.parse(document.getElementById('medlemsdata')?.textContent || 'null') as Medlemsvy | null;
+    /** Föreningen själv har ingen adress: dess plats är medlemmarna. Kartan visar dem när den öppnas. */
+    const FORENINGEN = 'opensverige';
+    const utanPlats = app.querySelector<HTMLElement>('#utan-plats');
 
     const FARG: Record<string, string> = {
       bolag: '#2d492d', enskild_firma: '#478547', myndighet: '#2d2920', kommun_region: '#6d665f',
@@ -382,6 +386,8 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     // Medlemsvyn: organisationerna göms och föreningens medlemmar visas som antal per region.
     // En organisation i adressen går före: den som går till en organisation lämnar vyn.
     let medlemslage = medKarta && !!medlemsdata && !valdId && start.get('vy') === 'medlemmar';
+    // Medlemmarnas regioner ritade bredvid organisationerna, medan föreningens panel står öppen.
+    let foreningsvy = false;
 
     // Listans första namn, i den ordning den senast ritades. De står i bladets nedfällda läge.
     let forstaNamn: string[] = [];
@@ -870,8 +876,13 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     // kommer står på organisationens sida, bland källorna. I en pixelstad flyter den som saknar
     // adress i vattnet, och med en adress ritas dess hus ut.
     function platsnotHtml(o: Rad): string {
-      if (o.pt !== 'kommun') return '';
       const lank = `<a href="${orgbas}${encodeURIComponent(o.id)}#ratta">Lägg till adress</a>`;
+      if (o.lat === null && !o.kn) {
+        return o.id === FORENINGEN && medlemsdata
+          ? '<dd class="rutor__not">Föreningen finns där medlemmarna är. Kartan visar dem.</dd>'
+          : `<dd class="rutor__not">${lank} så syns den på kartan.</dd>`;
+      }
+      if (o.pt !== 'kommun') return '';
       return pixel?.vatten(o.id)
         ? `<dd class="rutor__not">Ingen bekräftad adress än: flyter i vattnet. ${lank} så tänds huset.</dd>`
         : `<dd class="rutor__not">Exakt adress saknas. ${lank}</dd>`;
@@ -913,7 +924,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       const platsnot = platsnotHtml(o);
       const rutor: [IkonNamn, string, string, string?][] = [
         ['tagg', 'Typ', etiketter.typer[o.t] || o.t],
-        ['nal', 'Plats', o.kn ? `${o.kn}${o.ln ? `, ${o.ln}` : ''}` : 'Saknar plats', platsnot],
+        ['nal', 'Plats', o.kn ? `${o.kn}${o.ln ? `, ${o.ln}` : ''}` : o.id === FORENINGEN ? 'Hela Sverige' : 'Saknar plats', platsnot],
         ['lager', 'Erbjuder', lista(o.o, etiketter.erbjuder)],
         ['kompass', 'Område', lista(o.a, etiketter.omraden)],
         ['bock', 'Bekräftade fält', `${o.c} av ${o.f}`],
@@ -1006,6 +1017,9 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       document.dispatchEvent(new CustomEvent<string>(ORG, { detail: o.id }));
       if (karta && kartaKlar) {
         uppdateraVald();
+        const forening = o.id === FORENINGEN && !!medlemsdata;
+        visaForeningen(forening);
+        visaUtanPlats(!forening && o.lat === null ? o : null);
         const plats = flyg ? platsAv(o) : null;
         if (plats) {
           karta.resize();
@@ -1045,7 +1059,11 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
         requestAnimationFrame(() => rad?.scrollIntoView({ block: 'nearest' }));
         if (fokus) rad?.querySelector<HTMLElement>('a')?.focus({ preventScroll: true });
       }
-      if (karta && kartaKlar) uppdateraVald();
+      if (karta && kartaKlar) {
+        uppdateraVald();
+        visaForeningen(false);
+      }
+      visaUtanPlats(null);
       if (skriv) skrivUrl(lasFilter());
       uppdateraGrepp();
     }
@@ -1503,7 +1521,7 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       for (const lager of karta.getStyle().layers) {
         const kalla = 'source' in lager ? String(lager.source) : '';
         if (ORGKALLOR.includes(kalla)) karta.setLayoutProperty(lager.id, 'visibility', medlemslage ? 'none' : 'visible');
-        else if (MEDLEMSLAGER.includes(lager.id)) karta.setLayoutProperty(lager.id, 'visibility', medlemslage ? 'visible' : 'none');
+        else if (MEDLEMSLAGER.includes(lager.id)) karta.setLayoutProperty(lager.id, 'visibility', medlemslage || foreningsvy ? 'visible' : 'none');
       }
     }
 
@@ -1634,6 +1652,32 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
       const kallrad = app.querySelector('.maplibregl-ctrl-attrib');
       kallrad?.classList.remove('maplibregl-compact-show');
       kallrad?.removeAttribute('open');
+    }
+
+    /**
+     * Föreningens panel: medlemmarnas regioner syns på kartan, och kartan ramar in dem. Det är
+     * medlemsvyns lager utan dess kort, så panelen står kvar. Stängs när panelen stängs.
+     */
+    function visaForeningen(pa: boolean) {
+      if (!karta || !kartaKlar || !medlemsdata || foreningsvy === pa) return;
+      foreningsvy = pa;
+      if (pa) {
+        ritaMedlemmar();
+        void laddaKraftan().catch((fel) => console.warn('Kräftan gick inte att ladda', fel));
+      }
+      visaMedlemslager();
+      if (!pa) return;
+      const horn = medlemsdata.regioner.flatMap((r) => cirkel(r.lat, r.lng, medlemsdata.radieKm, 12));
+      const lng = horn.map((h) => h[0]);
+      const lat = horn.map((h) => h[1]);
+      karta.fitBounds([[Math.min(...lng), Math.min(...lat)], [Math.max(...lng), Math.max(...lat)]], { padding: kartMarginal() }, AV_KOD);
+    }
+
+    /** En rad på kartan när den öppna organisationen saknar plats, så att en stilla karta inte ser ut som ett fel. */
+    function visaUtanPlats(o: Rad | null) {
+      if (!utanPlats) return;
+      utanPlats.hidden = !o;
+      if (o) utanPlats.innerHTML = `${esc(o.n)} saknar plats på kartan. <a href="${orgbas}${encodeURIComponent(o.id)}#ratta">Lägg till adress</a>`;
     }
 
     function sattMedlemsvy(pa: boolean, skriv = true, flyttaKameran = true) {
@@ -3498,6 +3542,26 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
   .app--utan-karta .karta__not {
     display: none;
   }
+  /* Den öppna organisationen saknar plats: en rad mitt på kartan, ovanför förklaringen och källraden. */
+  .app .karta__utanplats {
+    position: absolute;
+    left: 50%;
+    bottom: 92px;
+    z-index: 3;
+    max-width: min(90%, 460px);
+    margin: 0;
+    padding: 8px 14px;
+    border-radius: var(--r-pill);
+    background: hsl(var(--yta-kort));
+    box-shadow: var(--skugga-flyt);
+    font-size: 13.5px;
+    text-align: center;
+    transform: translateX(-50%);
+  }
+  .app .karta__utanplats[hidden],
+  .app--utan-karta .karta__utanplats {
+    display: none;
+  }
 
   /* ---------- Medlemsvyn ---------- */
   .kartknapp--vi {
@@ -4204,6 +4268,9 @@ const stapel = (storlek: number) => Math.round(((storlek - 0.5) / 0.5) ** 2 * 10
     .kartknappar {
       right: 12px;
       bottom: calc(var(--titt-h) + 54px);
+    }
+    .app .karta__utanplats {
+      bottom: calc(var(--titt-h) + 24px);
     }
     .maplibregl-ctrl-bottom-right,
     .maplibregl-ctrl-bottom-left {
