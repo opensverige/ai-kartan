@@ -296,6 +296,22 @@
       "typ": {},
       "erbjuder": {},
       "lan": {}
+    },
+    "2026-11-27": {
+      "fragor": 5,
+      "modellen_svarade": 5,
+      "svar": {
+        "tomt": 1,
+        "traffar": 1,
+        "bred": 3
+      },
+      "modellfel": {},
+      "omrade": {},
+      "typ": {},
+      "erbjuder": {},
+      "lan": {
+        "ovrigt": 1
+      }
     }
   },
   "luckor": [
